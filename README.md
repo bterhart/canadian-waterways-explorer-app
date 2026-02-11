@@ -39,25 +39,42 @@ An interactive educational map app showcasing Canada's major waterways, their In
 
 ## Data Included
 
-### Waterways (31)
+### Waterways (44)
 **Rivers**: St. Lawrence, Mackenzie, Fraser, Ottawa, Saskatchewan, Churchill, Columbia, Nelson, Athabasca, Peace, Red, Assiniboine, Yukon, Coppermine, Thelon, Saguenay, Saint John
 
 **Lakes**: Superior, Huron, Ontario, Erie, Michigan, Winnipeg, Athabasca, Great Slave, Great Bear, Reindeer, Nipigon, Lesser Slave
 
-**Bays**: Hudson Bay, James Bay
+**Bays & Sounds**: Hudson Bay, James Bay, Baie des Chaleurs, Gaspé Bay, Bonavista Bay, Placentia Bay, Nootka Sound, English Bay, Friendly Cove (Yuquot), Queen Charlotte Sound, Lituya Bay
 
-### Historic Locations (21)
-Including Fort Chipewyan, York Factory, Fort William, Fort Garry, Moose Factory, Norway House, Tadoussac, and many more
+**Straits & Inlets**: Strait of Belle Isle, Juan de Fuca Strait, Georgia Strait, Burrard Inlet
 
-### Explorers (24) - Chronological
-- **c. 1000 AD**: Leif Erikson (Norse discovery of North America)
-- **1534**: Jacques Cartier (First to navigate St. Lawrence)
+### Historic Locations (33)
+Including Fort Chipewyan, York Factory, Fort William, Fort Garry, Moose Factory, Norway House, Tadoussac, Cape Bonavista (Cabot's landing), Cartier's Cross at Gaspé, Spanish Banks Beach, Cook's Landing at Friendly Cove, Fort San Miguel, Bligh Island, and many more
+
+### Explorers (38) - Chronological
+
+**East Coast Maritime:**
+- **1497**: John Cabot (First English claim to North America)
+- **1534**: Jacques Cartier (Claimed Gaspé for France)
+
+**West Coast Maritime:**
+- **1741**: Vitus Bering & Aleksei Chirikov (Russian exploration of Alaska)
+- **1774**: Juan Pérez (First European at Nootka Sound)
+- **1775**: Bodega y Quadra, Bruno de Heceta (Spanish claims)
+- **1778**: Captain James Cook (Nootka Sound; sparked fur trade)
+- **1786**: La Pérouse (French expedition; tragedy at Lituya Bay)
+- **1791**: José María Narváez (First through Georgia Strait)
+- **1792**: Captain George Vancouver, Galiano & Valdés (Spanish Banks meeting)
+- **1792**: Robert Gray (First to enter Columbia River)
+
+**Inland Explorers:**
+- **c. 1000 AD**: Leif Erikson (Norse discovery)
 - **1603-1635**: Samuel de Champlain (Father of New France)
-- **1610-1633**: Étienne Brûlé (First European to see the Great Lakes)
+- **1610-1633**: Étienne Brûlé (First European to see Great Lakes)
 - **1610-1611**: Henry Hudson (Discovered Hudson Bay)
-- **1659-1670**: Radisson & Groseilliers (Founded HBC influence)
+- **1659-1670**: Radisson & Groseilliers (HBC founders)
 - **1690-1692**: Henry Kelsey (First European on prairies)
-- **1719**: James Knight (Lost expedition to Hudson Bay)
+- **1719**: James Knight (Lost expedition)
 - **1731-1743**: La Vérendrye (Extended French influence west)
 - **1754-1755**: Anthony Henday (First to see Rockies from prairies)
 - **1769-1771**: Samuel Hearne (First to Arctic Ocean overland)
