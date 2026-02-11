@@ -22,6 +22,7 @@
     "@vibecodeapp/cloud-studio": "^0.2.4",
     "@vibecodeapp/proxy": "^2.0.3",
     "hono": "4.6.0",
+    "nanoid": "^5.1.6",
     "zod": "4.1.11"
   }
 }
