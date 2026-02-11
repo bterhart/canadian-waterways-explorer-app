@@ -5,6 +5,7 @@ import MapView, { Marker, Callout, PROVIDER_DEFAULT, Region, Polyline, Polygon }
 import { useWaterways, useLocations } from '@/lib/api/waterways-api';
 import DetailBottomSheet, { DetailBottomSheetRef } from '@/components/DetailBottomSheet';
 import type { MarkerType, Waterway, Location } from '@/lib/types/waterways';
+import { useTranslation } from '@/lib/i18n';
 
 // Canada center coordinates
 const CANADA_CENTER: Region = {
@@ -74,6 +75,7 @@ const getRegionForCoordinates = (coordinates: { latitude: number; longitude: num
 export default function MapScreen() {
   const { data: waterways, isLoading: waterwaysLoading, isError: waterwaysError } = useWaterways();
   const { data: locations, isLoading: locationsLoading, isError: locationsError } = useLocations();
+  const { t } = useTranslation();
 
   const [selectedMarker, setSelectedMarker] = useState<{
     id: string;
@@ -153,7 +155,7 @@ export default function MapScreen() {
             {waterway.indigenousName ? (
               <Text style={styles.calloutIndigenous}>"{waterway.indigenousName}"</Text>
             ) : null}
-            <Text style={styles.calloutHint}>Tap for details</Text>
+            <Text style={styles.calloutHint}>{t('tapForDetails')}</Text>
           </View>
         </Callout>
       </Marker>
@@ -184,7 +186,7 @@ export default function MapScreen() {
             {location.indigenousName ? (
               <Text style={styles.calloutIndigenous}>"{location.indigenousName}"</Text>
             ) : null}
-            <Text style={styles.calloutHint}>Tap for details</Text>
+            <Text style={styles.calloutHint}>{t('tapForDetails')}</Text>
           </View>
         </Callout>
       </Marker>
@@ -195,7 +197,7 @@ export default function MapScreen() {
     return (
       <View style={styles.centerContainer}>
         <ActivityIndicator size="large" color="#2D5A3D" />
-        <Text style={styles.loadingText}>Loading Canadian waterways...</Text>
+        <Text style={styles.loadingText}>{t('loadingWaterways')}</Text>
       </View>
     );
   }
@@ -203,9 +205,9 @@ export default function MapScreen() {
   if (isError) {
     return (
       <View style={styles.centerContainer}>
-        <Text style={styles.errorTitle}>Unable to Load Map Data</Text>
+        <Text style={styles.errorTitle}>{t('unableToLoadMap')}</Text>
         <Text style={styles.errorText}>
-          Please check your connection and try again.
+          {t('checkConnection')}
         </Text>
       </View>
     );
@@ -254,35 +256,35 @@ export default function MapScreen() {
 
       {/* Legend */}
       <View style={styles.legend}>
-        <Text style={styles.legendTitle}>Map Legend</Text>
+        <Text style={styles.legendTitle}>{t('mapLegend')}</Text>
         <View style={styles.legendSection}>
-          <Text style={styles.legendSectionTitle}>Waterways</Text>
+          <Text style={styles.legendSectionTitle}>{t('waterways')}</Text>
           <View style={styles.legendRow}>
             <View style={[styles.legendDot, { backgroundColor: markerColors.River }]} />
-            <Text style={styles.legendText}>River</Text>
+            <Text style={styles.legendText}>{t('river')}</Text>
           </View>
           <View style={styles.legendRow}>
             <View style={[styles.legendDot, { backgroundColor: markerColors.Lake }]} />
-            <Text style={styles.legendText}>Lake</Text>
+            <Text style={styles.legendText}>{t('lake')}</Text>
           </View>
           <View style={styles.legendRow}>
             <View style={[styles.legendDot, { backgroundColor: markerColors.Bay }]} />
-            <Text style={styles.legendText}>Bay</Text>
+            <Text style={styles.legendText}>{t('bay')}</Text>
           </View>
         </View>
         <View style={styles.legendSection}>
-          <Text style={styles.legendSectionTitle}>Locations</Text>
+          <Text style={styles.legendSectionTitle}>{t('locations')}</Text>
           <View style={styles.legendRow}>
             <View style={[styles.legendDot, { backgroundColor: markerColors.Fort }]} />
-            <Text style={styles.legendText}>Fort</Text>
+            <Text style={styles.legendText}>{t('fort')}</Text>
           </View>
           <View style={styles.legendRow}>
             <View style={[styles.legendDot, { backgroundColor: markerColors['Trading Post'] }]} />
-            <Text style={styles.legendText}>Trading Post</Text>
+            <Text style={styles.legendText}>{t('tradingPost')}</Text>
           </View>
           <View style={styles.legendRow}>
             <View style={[styles.legendDot, { backgroundColor: markerColors.Portage }]} />
-            <Text style={styles.legendText}>Portage</Text>
+            <Text style={styles.legendText}>{t('portage')}</Text>
           </View>
         </View>
       </View>

@@ -433,3 +433,520 @@ export const getGradeLevelLabel = (grade: string | null): string => {
   if (grade === 'K') return 'Kindergarten';
   return `Grade ${grade}`;
 };
+
+// ============= Indigenous Language Learning Types =============
+
+export interface IndigenousWord {
+  id: string;
+  word: string;
+  translation: string;
+  language: string;
+  phonetic: string | null;
+  audioUrl: string | null;
+  meaning: string | null;
+  culturalContext: string | null;
+  category: string | null;
+  relatedWaterwayId: string | null;
+  relatedLocationId: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface WordOfTheDay {
+  id: string;
+  date: string;
+  wordId: string;
+  word: IndigenousWord;
+  createdAt: string;
+}
+
+export interface VocabularyQuizSummary {
+  id: string;
+  title: string;
+  language: string;
+  difficulty: string;
+  description: string | null;
+  createdAt: string;
+}
+
+export interface VocabularyQuizQuestion {
+  id: string;
+  word: string;
+  correctAnswer: string;
+  options: string[];
+}
+
+export interface VocabularyQuizDetail extends VocabularyQuizSummary {
+  questions: VocabularyQuizQuestion[];
+  isPublished: boolean;
+}
+
+export interface VocabularyQuizSubmitPayload {
+  answers: {
+    questionId: string;
+    selectedAnswer: string;
+  }[];
+}
+
+export interface VocabularyQuizResult {
+  score: number;
+  correctCount: number;
+  totalQuestions: number;
+  results: {
+    questionId: string;
+    selectedAnswer: string;
+    correctAnswer: string;
+    isCorrect: boolean;
+    word: string;
+  }[];
+}
+
+export interface IndigenousStorySummary {
+  id: string;
+  title: string;
+  nation: string;
+  language: string | null;
+  theme: string | null;
+  gradeLevel: string | null;
+  summary: string | null;
+  relatedWaterwayId: string | null;
+  createdAt: string;
+}
+
+export interface IndigenousStoryDetail extends IndigenousStorySummary {
+  content: string;
+  audioUrl: string | null;
+  isPublished: boolean;
+}
+
+export interface LanguageInfo {
+  name: string;
+  wordCount: number;
+}
+
+export interface CategoryInfo {
+  name: string;
+  wordCount: number;
+}
+
+// ============= Gamification Types =============
+
+export interface UserProgressStats {
+  waterwaysExplored: number;
+  locationsVisited: number;
+  quizzesTaken: number;
+  quizPointsEarned: number;
+  fieldTripsCompleted: number;
+  journalEntriesWritten: number;
+  pronunciationsLearned: number;
+  documentsRead: number;
+}
+
+export interface UserProgressStreaks {
+  dailyStreak: number;
+  longestStreak: number;
+  lastActiveDate: string | null;
+}
+
+export interface UserProgress {
+  userId: string;
+  totalPoints: number;
+  explorerRank: string;
+  nextRank: string | null;
+  pointsToNextRank: number;
+  progressToNextRank: number;
+  stats: UserProgressStats;
+  streaks: UserProgressStreaks;
+}
+
+export interface AddPointsResponse {
+  pointsAdded: number;
+  newTotalPoints: number;
+  explorerRank: string;
+  rankedUp: boolean;
+  previousRank: string | null;
+}
+
+export interface Achievement {
+  id: string;
+  name: string;
+  description: string;
+  iconName: string;
+  category: string;
+  sortOrder: number;
+  criteria: Record<string, unknown>;
+}
+
+export interface UserAchievement {
+  id: string;
+  name: string;
+  description: string;
+  iconName: string;
+  category: string;
+  earnedAt: string;
+  criteria: Record<string, unknown>;
+}
+
+export interface CheckAchievementsResponse {
+  newAchievements: {
+    id: string;
+    name: string;
+    description: string;
+    iconName: string;
+    category: string;
+  }[];
+}
+
+export interface DailyChallengeOption {
+  id: string;
+  text: string;
+}
+
+export interface DailyChallenge {
+  id: string;
+  date: string;
+  question: string;
+  options: DailyChallengeOption[];
+  category: string;
+  pointsReward: number;
+  hasAttempted: boolean;
+  userAttempt: {
+    answer: string;
+    isCorrect: boolean;
+    completedAt: string;
+  } | null;
+  correctAnswer?: string;
+  explanation?: string;
+}
+
+export interface DailyChallengeSubmitResponse {
+  isCorrect: boolean;
+  correctAnswer: string;
+  explanation: string;
+  pointsEarned: number;
+  completedAt: string;
+}
+
+export interface LeaderboardEntry {
+  rank: number;
+  userId: string;
+  displayName: string;
+  totalPoints: number;
+  explorerRank: string;
+  quizzesTaken: number;
+  fieldTripsCompleted: number;
+  dailyStreak: number;
+}
+
+export interface RankInfo {
+  name: string;
+  minPoints: number;
+  maxPoints: number | null;
+  level: number;
+}
+
+// ============= Voyageur Journey Types =============
+
+export interface VoyageurJourneySummary {
+  id: string;
+  title: string;
+  description: string | null;
+  gradeLevel: string | null;
+  difficulty: string | null;
+  estimatedMinutes: number | null;
+  coverImageUrl: string | null;
+  startingLocation: string | null;
+  endingLocation: string | null;
+  historicalYear: number | null;
+  createdAt: string;
+  nodeCount: number;
+}
+
+export interface JourneyChoice {
+  id: string;
+  text: string;
+  nextNodeId: string;
+  consequence?: string;
+  pointsChange?: number;
+}
+
+export interface JourneyNode {
+  id: string;
+  journeyId: string;
+  orderIndex: number;
+  title: string;
+  narrative: string;
+  latitude: number | null;
+  longitude: number | null;
+  imageUrl: string | null;
+  audioUrl: string | null;
+  choices: JourneyChoice[] | null;
+  historicalFact: string | null;
+  voyageurSong: string | null;
+  songLyrics: string | null;
+  isEnding: boolean;
+  endingType: string | null;
+}
+
+export interface VoyageurJourneyDetail {
+  id: string;
+  title: string;
+  description: string | null;
+  gradeLevel: string | null;
+  difficulty: string | null;
+  estimatedMinutes: number | null;
+  coverImageUrl: string | null;
+  startingLocation: string | null;
+  endingLocation: string | null;
+  historicalYear: number | null;
+  introduction: string | null;
+  conclusion: string | null;
+  isPublished: boolean;
+  createdAt: string;
+  nodes: JourneyNode[];
+}
+
+export interface JourneyProgress {
+  id: string;
+  currentNodeId: string | null;
+  choicesMade: string[];
+  score: number;
+  status: 'not_started' | 'in_progress' | 'completed';
+  startedAt?: string;
+  completedAt?: string | null;
+}
+
+export interface StartJourneyResponse {
+  progress: JourneyProgress;
+  currentNode: JourneyNode;
+  journey: {
+    id: string;
+    title: string;
+    description: string | null;
+    startingLocation: string | null;
+    endingLocation: string | null;
+    historicalYear: number | null;
+  };
+}
+
+export interface JourneyChoiceResponse {
+  choiceMade: {
+    choiceId: string;
+    text: string;
+    consequence?: string;
+    pointsChange: number;
+  };
+  progress: JourneyProgress;
+  currentNode: JourneyNode;
+  isEnding: boolean;
+  endingType: string | null;
+}
+
+export interface JourneyProgressResponse {
+  hasProgress: boolean;
+  progress: JourneyProgress | null;
+  currentNode: JourneyNode | null;
+  journey?: {
+    id: string;
+    title: string;
+    description: string | null;
+    startingLocation: string | null;
+    endingLocation: string | null;
+    historicalYear: number | null;
+  };
+}
+
+// ============= Map Annotation Types =============
+
+export interface MapPin {
+  id: string;
+  annotationId: string;
+  latitude: number;
+  longitude: number;
+  title: string;
+  description: string | null;
+  color: string | null;
+  icon: string | null;
+  linkedWaterwayId: string | null;
+  linkedLocationId: string | null;
+  linkedExplorerId: string | null;
+  createdAt: string;
+}
+
+export interface MapRoute {
+  id: string;
+  annotationId: string;
+  title: string;
+  description: string | null;
+  coordinates: [number, number][];
+  color: string | null;
+  strokeWidth: number;
+  isDashed: boolean;
+  compareToExplorerId: string | null;
+  createdAt: string;
+}
+
+export interface MapNote {
+  id: string;
+  annotationId: string;
+  latitude: number;
+  longitude: number;
+  content: string;
+  backgroundColor: string | null;
+  createdAt: string;
+}
+
+export interface UserMapAnnotation {
+  id: string;
+  userId: string;
+  title: string;
+  description: string | null;
+  centerLatitude: number | null;
+  centerLongitude: number | null;
+  zoomLevel: number | null;
+  isPublic: boolean;
+  shareCode: string | null;
+  createdAt: string;
+  updatedAt: string;
+  pins: MapPin[];
+  routes: MapRoute[];
+  notes: MapNote[];
+}
+
+export interface CreateMapAnnotationPayload {
+  userId: string;
+  title: string;
+  description?: string;
+  centerLatitude?: number;
+  centerLongitude?: number;
+  zoomLevel?: number;
+}
+
+export interface CreatePinPayload {
+  latitude: number;
+  longitude: number;
+  title: string;
+  description?: string;
+  color?: string;
+  icon?: string;
+  linkedWaterwayId?: string;
+  linkedLocationId?: string;
+  linkedExplorerId?: string;
+}
+
+export interface CreateRoutePayload {
+  title: string;
+  description?: string;
+  coordinates: [number, number][];
+  color?: string;
+  strokeWidth?: number;
+  isDashed?: boolean;
+  compareToExplorerId?: string;
+}
+
+export interface CreateNotePayload {
+  latitude: number;
+  longitude: number;
+  content: string;
+  backgroundColor?: string;
+}
+
+// ============= Nearby History Types =============
+
+export interface NearbyHistoryCategory {
+  id: string;
+  label: string;
+  icon: string;
+}
+
+export interface HistoricalEvent {
+  id: string;
+  title: string;
+  description: string | null;
+  year: number;
+  month: number | null;
+  day: number | null;
+  latitude: number;
+  longitude: number;
+  category: string;
+  imageUrl: string | null;
+  sourceUrl: string | null;
+  explorerId: string | null;
+  waterwayId: string | null;
+  locationId: string | null;
+  distance?: number;
+}
+
+export interface HistoricalEventDetail extends HistoricalEvent {
+  relatedExplorer: {
+    id: string;
+    name: string;
+    birthYear: number | null;
+    deathYear: number | null;
+  } | null;
+  relatedWaterway: {
+    id: string;
+    name: string;
+    indigenousName: string | null;
+    latitude: number;
+    longitude: number;
+  } | null;
+  relatedLocation: {
+    id: string;
+    name: string;
+    latitude: number;
+    longitude: number;
+    locationType: string;
+  } | null;
+}
+
+export interface NearbyHistoryResponse {
+  events: HistoricalEvent[];
+  searchLocation: {
+    latitude: number;
+    longitude: number;
+  };
+  radiusKm: number;
+  totalFound: number;
+}
+
+export interface NearbyWaterwaysResponse {
+  waterways: {
+    id: string;
+    name: string;
+    indigenousName: string | null;
+    latitude: number;
+    longitude: number;
+    regionName: string | null;
+    historicalSignificance: string | null;
+    type: { name: string } | null;
+    distance: number;
+  }[];
+  searchLocation: {
+    latitude: number;
+    longitude: number;
+  };
+  radiusKm: number;
+  totalFound: number;
+}
+
+export interface NearbyLocationsResponse {
+  locations: {
+    id: string;
+    name: string;
+    indigenousName: string | null;
+    latitude: number;
+    longitude: number;
+    locationType: string;
+    yearEstablished: number | null;
+    historicalNotes: string | null;
+    waterway: { id: string; name: string } | null;
+    distance: number;
+  }[];
+  searchLocation: {
+    latitude: number;
+    longitude: number;
+  };
+  radiusKm: number;
+  totalFound: number;
+}

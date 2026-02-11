@@ -29,6 +29,47 @@ import type {
   CreateAssignmentPayload,
   ClassAssignment,
   PrintableResource,
+  IndigenousWord,
+  WordOfTheDay,
+  VocabularyQuizSummary,
+  VocabularyQuizDetail,
+  VocabularyQuizSubmitPayload,
+  VocabularyQuizResult,
+  IndigenousStorySummary,
+  IndigenousStoryDetail,
+  LanguageInfo,
+  CategoryInfo,
+  // Gamification types
+  UserProgress,
+  AddPointsResponse,
+  Achievement,
+  UserAchievement,
+  CheckAchievementsResponse,
+  DailyChallenge,
+  DailyChallengeSubmitResponse,
+  LeaderboardEntry,
+  RankInfo,
+  // Voyageur Journey types
+  VoyageurJourneySummary,
+  VoyageurJourneyDetail,
+  StartJourneyResponse,
+  JourneyChoiceResponse,
+  JourneyProgressResponse,
+  // Map Annotation types
+  UserMapAnnotation,
+  CreateMapAnnotationPayload,
+  CreatePinPayload,
+  CreateRoutePayload,
+  CreateNotePayload,
+  MapPin,
+  MapRoute,
+  MapNote,
+  // Nearby History types
+  NearbyHistoryCategory,
+  NearbyHistoryResponse,
+  NearbyWaterwaysResponse,
+  NearbyLocationsResponse,
+  HistoricalEventDetail,
 } from '@/lib/types/education';
 
 // ============= Query Keys =============
@@ -712,6 +753,628 @@ export function usePrintable(id: string | null) {
   return useQuery({
     queryKey: printablesKeys.detail(id ?? ''),
     queryFn: () => api.get<PrintableResource>(`/api/printables/${id}`),
+    enabled: !!id,
+  });
+}
+
+// ============= Indigenous Language Query Keys =============
+
+export const indigenousLanguageKeys = {
+  all: ['indigenous-language'] as const,
+  words: () => [...indigenousLanguageKeys.all, 'words'] as const,
+  wordList: (filters?: { language?: string; category?: string }) =>
+    [...indigenousLanguageKeys.words(), filters] as const,
+  wordDetail: (id: string) => [...indigenousLanguageKeys.words(), 'detail', id] as const,
+  wordOfDay: () => [...indigenousLanguageKeys.all, 'word-of-day'] as const,
+  languages: () => [...indigenousLanguageKeys.all, 'languages'] as const,
+  categories: (language?: string) =>
+    [...indigenousLanguageKeys.all, 'categories', language] as const,
+  quizzes: () => [...indigenousLanguageKeys.all, 'quizzes'] as const,
+  quizList: (filters?: { language?: string; difficulty?: string }) =>
+    [...indigenousLanguageKeys.quizzes(), filters] as const,
+  quizDetail: (id: string) => [...indigenousLanguageKeys.quizzes(), 'detail', id] as const,
+  stories: () => [...indigenousLanguageKeys.all, 'stories'] as const,
+  storyList: (filters?: { nation?: string; theme?: string; gradeLevel?: string }) =>
+    [...indigenousLanguageKeys.stories(), filters] as const,
+  storyDetail: (id: string) => [...indigenousLanguageKeys.stories(), 'detail', id] as const,
+};
+
+// ============= Indigenous Language Hooks =============
+
+export function useIndigenousWords(filters?: { language?: string; category?: string }) {
+  const params = new URLSearchParams();
+  if (filters?.language) params.append('language', filters.language);
+  if (filters?.category) params.append('category', filters.category);
+  const queryString = params.toString();
+
+  return useQuery({
+    queryKey: [...indigenousLanguageKeys.wordList(filters), queryString] as const,
+    queryFn: () =>
+      api.get<IndigenousWord[]>(
+        `/api/indigenous-language/words${queryString ? `?${queryString}` : ''}`
+      ),
+  });
+}
+
+export function useIndigenousWord(id: string | null) {
+  return useQuery({
+    queryKey: indigenousLanguageKeys.wordDetail(id ?? ''),
+    queryFn: () => api.get<IndigenousWord>(`/api/indigenous-language/words/${id}`),
+    enabled: !!id,
+  });
+}
+
+export function useWordOfTheDay() {
+  return useQuery({
+    queryKey: indigenousLanguageKeys.wordOfDay(),
+    queryFn: () => api.get<WordOfTheDay>('/api/indigenous-language/word-of-day'),
+  });
+}
+
+export function useIndigenousLanguages() {
+  return useQuery({
+    queryKey: indigenousLanguageKeys.languages(),
+    queryFn: () => api.get<LanguageInfo[]>('/api/indigenous-language/languages'),
+  });
+}
+
+export function useIndigenousCategories(language?: string) {
+  const params = new URLSearchParams();
+  if (language) params.append('language', language);
+  const queryString = params.toString();
+
+  return useQuery({
+    queryKey: [...indigenousLanguageKeys.categories(language), queryString] as const,
+    queryFn: () =>
+      api.get<CategoryInfo[]>(
+        `/api/indigenous-language/categories${queryString ? `?${queryString}` : ''}`
+      ),
+  });
+}
+
+export function useVocabularyQuizzes(filters?: { language?: string; difficulty?: string }) {
+  const params = new URLSearchParams();
+  if (filters?.language) params.append('language', filters.language);
+  if (filters?.difficulty) params.append('difficulty', filters.difficulty);
+  const queryString = params.toString();
+
+  return useQuery({
+    queryKey: [...indigenousLanguageKeys.quizList(filters), queryString] as const,
+    queryFn: () =>
+      api.get<VocabularyQuizSummary[]>(
+        `/api/indigenous-language/vocabulary-quizzes${queryString ? `?${queryString}` : ''}`
+      ),
+  });
+}
+
+export function useVocabularyQuiz(id: string | null) {
+  return useQuery({
+    queryKey: indigenousLanguageKeys.quizDetail(id ?? ''),
+    queryFn: () =>
+      api.get<VocabularyQuizDetail>(`/api/indigenous-language/vocabulary-quizzes/${id}`),
+    enabled: !!id,
+  });
+}
+
+export function useSubmitVocabularyQuiz() {
+  return useMutation({
+    mutationFn: ({ quizId, payload }: { quizId: string; payload: VocabularyQuizSubmitPayload }) =>
+      api.post<VocabularyQuizResult>(
+        `/api/indigenous-language/vocabulary-quizzes/${quizId}/submit`,
+        payload
+      ),
+  });
+}
+
+export function useIndigenousStories(filters?: {
+  nation?: string;
+  theme?: string;
+  gradeLevel?: string;
+}) {
+  const params = new URLSearchParams();
+  if (filters?.nation) params.append('nation', filters.nation);
+  if (filters?.theme) params.append('theme', filters.theme);
+  if (filters?.gradeLevel) params.append('gradeLevel', filters.gradeLevel);
+  const queryString = params.toString();
+
+  return useQuery({
+    queryKey: [...indigenousLanguageKeys.storyList(filters), queryString] as const,
+    queryFn: () =>
+      api.get<IndigenousStorySummary[]>(
+        `/api/indigenous-language/stories${queryString ? `?${queryString}` : ''}`
+      ),
+  });
+}
+
+export function useIndigenousStory(id: string | null) {
+  return useQuery({
+    queryKey: indigenousLanguageKeys.storyDetail(id ?? ''),
+    queryFn: () => api.get<IndigenousStoryDetail>(`/api/indigenous-language/stories/${id}`),
+    enabled: !!id,
+  });
+}
+
+// ============= Gamification Query Keys =============
+
+export const gamificationKeys = {
+  all: ['gamification'] as const,
+  progress: (userId: string) => [...gamificationKeys.all, 'progress', userId] as const,
+  achievements: () => [...gamificationKeys.all, 'achievements'] as const,
+  achievementList: (category?: string) =>
+    [...gamificationKeys.achievements(), category] as const,
+  userAchievements: (userId: string) =>
+    [...gamificationKeys.all, 'user-achievements', userId] as const,
+  dailyChallenge: (userId?: string) =>
+    [...gamificationKeys.all, 'daily-challenge', userId] as const,
+  leaderboard: (classId?: string) =>
+    [...gamificationKeys.all, 'leaderboard', classId] as const,
+  ranks: () => [...gamificationKeys.all, 'ranks'] as const,
+};
+
+// ============= Gamification Hooks =============
+
+export function useUserProgress(userId: string | null) {
+  return useQuery({
+    queryKey: gamificationKeys.progress(userId ?? ''),
+    queryFn: () => api.get<UserProgress>(`/api/gamification/progress?userId=${userId}`),
+    enabled: !!userId,
+  });
+}
+
+export function useAddPoints() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: {
+      userId: string;
+      points: number;
+      activityType: string;
+      activityData?: Record<string, unknown>;
+    }) => api.post<AddPointsResponse>('/api/gamification/progress/add-points', payload),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: gamificationKeys.progress(variables.userId),
+      });
+      queryClient.invalidateQueries({
+        queryKey: gamificationKeys.userAchievements(variables.userId),
+      });
+    },
+  });
+}
+
+export function useAchievements(category?: string) {
+  return useQuery({
+    queryKey: gamificationKeys.achievementList(category),
+    queryFn: () => {
+      const params = new URLSearchParams();
+      if (category) params.append('category', category);
+      const queryString = params.toString();
+      return api.get<Achievement[]>(
+        `/api/gamification/achievements${queryString ? `?${queryString}` : ''}`
+      );
+    },
+  });
+}
+
+export function useUserAchievements(userId: string | null) {
+  return useQuery({
+    queryKey: gamificationKeys.userAchievements(userId ?? ''),
+    queryFn: () => api.get<UserAchievement[]>(`/api/gamification/achievements/user?userId=${userId}`),
+    enabled: !!userId,
+  });
+}
+
+export function useCheckAchievements() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: { userId: string }) =>
+      api.post<CheckAchievementsResponse>('/api/gamification/achievements/check', payload),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: gamificationKeys.userAchievements(variables.userId),
+      });
+    },
+  });
+}
+
+export function useDailyChallenge(userId?: string) {
+  return useQuery({
+    queryKey: gamificationKeys.dailyChallenge(userId),
+    queryFn: () => {
+      const params = new URLSearchParams();
+      if (userId) params.append('userId', userId);
+      const queryString = params.toString();
+      return api.get<DailyChallenge>(
+        `/api/gamification/daily-challenge${queryString ? `?${queryString}` : ''}`
+      );
+    },
+  });
+}
+
+export function useSubmitDailyChallenge() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: { userId: string; challengeId: string; answer: string }) =>
+      api.post<DailyChallengeSubmitResponse>('/api/gamification/daily-challenge/submit', payload),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: gamificationKeys.dailyChallenge(variables.userId),
+      });
+      queryClient.invalidateQueries({
+        queryKey: gamificationKeys.progress(variables.userId),
+      });
+    },
+  });
+}
+
+export function useLeaderboard(classId?: string, limit?: number) {
+  return useQuery({
+    queryKey: [...gamificationKeys.leaderboard(classId), limit] as const,
+    queryFn: () => {
+      const params = new URLSearchParams();
+      if (classId) params.append('classId', classId);
+      if (limit) params.append('limit', limit.toString());
+      const queryString = params.toString();
+      return api.get<LeaderboardEntry[]>(
+        `/api/gamification/leaderboard${queryString ? `?${queryString}` : ''}`
+      );
+    },
+  });
+}
+
+export function useRanks() {
+  return useQuery({
+    queryKey: gamificationKeys.ranks(),
+    queryFn: () => api.get<RankInfo[]>('/api/gamification/ranks'),
+  });
+}
+
+// ============= Voyageur Journey Query Keys =============
+
+export const voyageurJourneyKeys = {
+  all: ['voyageur-journey'] as const,
+  lists: () => [...voyageurJourneyKeys.all, 'list'] as const,
+  list: (filters?: { gradeLevel?: string; difficulty?: string }) =>
+    [...voyageurJourneyKeys.lists(), filters] as const,
+  details: () => [...voyageurJourneyKeys.all, 'detail'] as const,
+  detail: (id: string) => [...voyageurJourneyKeys.details(), id] as const,
+  progress: (journeyId: string, userId: string) =>
+    [...voyageurJourneyKeys.all, 'progress', journeyId, userId] as const,
+};
+
+// ============= Voyageur Journey Hooks =============
+
+export function useVoyageurJourneys(filters?: { gradeLevel?: string; difficulty?: string }) {
+  const params = new URLSearchParams();
+  if (filters?.gradeLevel) params.append('gradeLevel', filters.gradeLevel);
+  if (filters?.difficulty) params.append('difficulty', filters.difficulty);
+  const queryString = params.toString();
+
+  return useQuery({
+    queryKey: [...voyageurJourneyKeys.list(filters), queryString] as const,
+    queryFn: () =>
+      api.get<VoyageurJourneySummary[]>(
+        `/api/voyageur-journeys${queryString ? `?${queryString}` : ''}`
+      ),
+  });
+}
+
+export function useVoyageurJourney(id: string | null) {
+  return useQuery({
+    queryKey: voyageurJourneyKeys.detail(id ?? ''),
+    queryFn: () => api.get<VoyageurJourneyDetail>(`/api/voyageur-journeys/${id}`),
+    enabled: !!id,
+  });
+}
+
+export function useStartJourney() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ journeyId, userId }: { journeyId: string; userId: string }) =>
+      api.get<StartJourneyResponse>(`/api/voyageur-journeys/${journeyId}/start?userId=${userId}`),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: voyageurJourneyKeys.progress(variables.journeyId, variables.userId),
+      });
+    },
+  });
+}
+
+export function useMakeJourneyChoice() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      journeyId,
+      payload,
+    }: {
+      journeyId: string;
+      payload: { userId: string; nodeId: string; choiceId: string };
+    }) => api.post<JourneyChoiceResponse>(`/api/voyageur-journeys/${journeyId}/choice`, payload),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: voyageurJourneyKeys.progress(variables.journeyId, variables.payload.userId),
+      });
+    },
+  });
+}
+
+export function useJourneyProgress(journeyId: string | null, userId: string | null) {
+  return useQuery({
+    queryKey: voyageurJourneyKeys.progress(journeyId ?? '', userId ?? ''),
+    queryFn: () =>
+      api.get<JourneyProgressResponse>(
+        `/api/voyageur-journeys/${journeyId}/progress?userId=${userId}`
+      ),
+    enabled: !!journeyId && !!userId,
+  });
+}
+
+// ============= Map Annotations Query Keys =============
+
+export const mapAnnotationsKeys = {
+  all: ['map-annotations'] as const,
+  lists: () => [...mapAnnotationsKeys.all, 'list'] as const,
+  list: (userId: string) => [...mapAnnotationsKeys.lists(), userId] as const,
+  details: () => [...mapAnnotationsKeys.all, 'detail'] as const,
+  detail: (id: string) => [...mapAnnotationsKeys.details(), id] as const,
+  shared: (shareCode: string) => [...mapAnnotationsKeys.all, 'shared', shareCode] as const,
+};
+
+// ============= Map Annotations Hooks =============
+
+export function useUserMapAnnotations(userId: string | null) {
+  return useQuery({
+    queryKey: mapAnnotationsKeys.list(userId ?? ''),
+    queryFn: () => api.get<UserMapAnnotation[]>(`/api/map-annotations?userId=${userId}`),
+    enabled: !!userId,
+  });
+}
+
+export function useMapAnnotation(id: string | null) {
+  return useQuery({
+    queryKey: mapAnnotationsKeys.detail(id ?? ''),
+    queryFn: () => api.get<UserMapAnnotation>(`/api/map-annotations/${id}`),
+    enabled: !!id,
+  });
+}
+
+export function useSharedMapAnnotation(shareCode: string | null) {
+  return useQuery({
+    queryKey: mapAnnotationsKeys.shared(shareCode ?? ''),
+    queryFn: () => api.get<UserMapAnnotation>(`/api/map-annotations/shared/${shareCode}`),
+    enabled: !!shareCode,
+  });
+}
+
+export function useCreateMapAnnotation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: CreateMapAnnotationPayload) =>
+      api.post<UserMapAnnotation>('/api/map-annotations', payload),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: mapAnnotationsKeys.list(variables.userId),
+      });
+    },
+  });
+}
+
+export function useUpdateMapAnnotation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      id,
+      payload,
+    }: {
+      id: string;
+      payload: Partial<{
+        title: string;
+        description: string | null;
+        centerLatitude: number | null;
+        centerLongitude: number | null;
+        zoomLevel: number | null;
+        isPublic: boolean;
+      }>;
+    }) => api.put<UserMapAnnotation>(`/api/map-annotations/${id}`, payload),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: mapAnnotationsKeys.detail(data.id) });
+      queryClient.invalidateQueries({ queryKey: mapAnnotationsKeys.list(data.userId) });
+    },
+  });
+}
+
+export function useDeleteMapAnnotation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, userId }: { id: string; userId: string }) =>
+      api.delete<void>(`/api/map-annotations/${id}`),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: mapAnnotationsKeys.list(variables.userId),
+      });
+    },
+  });
+}
+
+export function useShareMapAnnotation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) =>
+      api.post<UserMapAnnotation & { shareUrl: string }>(`/api/map-annotations/${id}/share`, {}),
+    onSuccess: (data) => {
+      queryClient.setQueryData(mapAnnotationsKeys.detail(data.id), data);
+    },
+  });
+}
+
+export function useAddMapPin() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ annotationId, payload }: { annotationId: string; payload: CreatePinPayload }) =>
+      api.post<MapPin>(`/api/map-annotations/${annotationId}/pin`, payload),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: mapAnnotationsKeys.detail(variables.annotationId),
+      });
+    },
+  });
+}
+
+export function useDeleteMapPin() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ annotationId, pinId }: { annotationId: string; pinId: string }) =>
+      api.delete<void>(`/api/map-annotations/${annotationId}/pin/${pinId}`),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: mapAnnotationsKeys.detail(variables.annotationId),
+      });
+    },
+  });
+}
+
+export function useAddMapRoute() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      annotationId,
+      payload,
+    }: {
+      annotationId: string;
+      payload: CreateRoutePayload;
+    }) => api.post<MapRoute>(`/api/map-annotations/${annotationId}/route`, payload),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: mapAnnotationsKeys.detail(variables.annotationId),
+      });
+    },
+  });
+}
+
+export function useDeleteMapRoute() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ annotationId, routeId }: { annotationId: string; routeId: string }) =>
+      api.delete<void>(`/api/map-annotations/${annotationId}/route/${routeId}`),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: mapAnnotationsKeys.detail(variables.annotationId),
+      });
+    },
+  });
+}
+
+export function useAddMapNote() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ annotationId, payload }: { annotationId: string; payload: CreateNotePayload }) =>
+      api.post<MapNote>(`/api/map-annotations/${annotationId}/note`, payload),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: mapAnnotationsKeys.detail(variables.annotationId),
+      });
+    },
+  });
+}
+
+export function useDeleteMapNote() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ annotationId, noteId }: { annotationId: string; noteId: string }) =>
+      api.delete<void>(`/api/map-annotations/${annotationId}/note/${noteId}`),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: mapAnnotationsKeys.detail(variables.annotationId),
+      });
+    },
+  });
+}
+
+// ============= Nearby History Query Keys =============
+
+export const nearbyHistoryKeys = {
+  all: ['nearby-history'] as const,
+  categories: () => [...nearbyHistoryKeys.all, 'categories'] as const,
+  events: (lat: number, lng: number, radius: number) =>
+    [...nearbyHistoryKeys.all, 'events', lat, lng, radius] as const,
+  eventsByCategory: (lat: number, lng: number, radius: number, category?: string) =>
+    [...nearbyHistoryKeys.all, 'events-by-category', lat, lng, radius, category] as const,
+  waterways: (lat: number, lng: number, radius: number) =>
+    [...nearbyHistoryKeys.all, 'waterways', lat, lng, radius] as const,
+  locations: (lat: number, lng: number, radius: number) =>
+    [...nearbyHistoryKeys.all, 'locations', lat, lng, radius] as const,
+  detail: (id: string) => [...nearbyHistoryKeys.all, 'detail', id] as const,
+};
+
+// ============= Nearby History Hooks =============
+
+export function useNearbyHistoryCategories() {
+  return useQuery({
+    queryKey: nearbyHistoryKeys.categories(),
+    queryFn: () => api.get<NearbyHistoryCategory[]>('/api/nearby-history/categories'),
+  });
+}
+
+export function useNearbyHistoryEvents(
+  lat: number | null,
+  lng: number | null,
+  radius: number = 50
+) {
+  return useQuery({
+    queryKey: nearbyHistoryKeys.events(lat ?? 0, lng ?? 0, radius),
+    queryFn: () =>
+      api.get<NearbyHistoryResponse>(`/api/nearby-history?lat=${lat}&lng=${lng}&radius=${radius}`),
+    enabled: lat !== null && lng !== null,
+  });
+}
+
+export function useNearbyHistoryEventsByCategory(
+  lat: number | null,
+  lng: number | null,
+  radius: number = 50,
+  category?: string
+) {
+  return useQuery({
+    queryKey: nearbyHistoryKeys.eventsByCategory(lat ?? 0, lng ?? 0, radius, category),
+    queryFn: () => {
+      const params = new URLSearchParams();
+      params.append('lat', String(lat));
+      params.append('lng', String(lng));
+      params.append('radius', String(radius));
+      if (category) params.append('category', category);
+      return api.get<NearbyHistoryResponse & { category: string }>(
+        `/api/nearby-history/by-category?${params.toString()}`
+      );
+    },
+    enabled: lat !== null && lng !== null,
+  });
+}
+
+export function useNearbyWaterways(lat: number | null, lng: number | null, radius: number = 50) {
+  return useQuery({
+    queryKey: nearbyHistoryKeys.waterways(lat ?? 0, lng ?? 0, radius),
+    queryFn: () =>
+      api.get<NearbyWaterwaysResponse>(
+        `/api/nearby-history/waterways?lat=${lat}&lng=${lng}&radius=${radius}`
+      ),
+    enabled: lat !== null && lng !== null,
+  });
+}
+
+export function useNearbyLocations(lat: number | null, lng: number | null, radius: number = 50) {
+  return useQuery({
+    queryKey: nearbyHistoryKeys.locations(lat ?? 0, lng ?? 0, radius),
+    queryFn: () =>
+      api.get<NearbyLocationsResponse>(
+        `/api/nearby-history/locations?lat=${lat}&lng=${lng}&radius=${radius}`
+      ),
+    enabled: lat !== null && lng !== null,
+  });
+}
+
+export function useHistoricalEventDetail(id: string | null) {
+  return useQuery({
+    queryKey: nearbyHistoryKeys.detail(id ?? ''),
+    queryFn: () => api.get<HistoricalEventDetail>(`/api/nearby-history/${id}`),
     enabled: !!id,
   });
 }

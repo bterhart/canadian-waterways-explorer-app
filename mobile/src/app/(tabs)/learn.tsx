@@ -20,8 +20,15 @@ import {
   GraduationCap,
   Printer,
   ChevronRight,
+  Languages,
+  Settings,
+  Pencil,
+  MapPin,
+  Trophy,
+  Flame,
 } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useTranslation } from '@/lib/i18n';
 
 const { width } = Dimensions.get('window');
 const CARD_WIDTH = (width - 48) / 2;
@@ -107,46 +114,86 @@ function QuickLink({ title, icon, onPress, color }: QuickLinkProps) {
 
 export default function LearnHubScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {/* Hero Section */}
       <View style={styles.heroSection}>
-        <Text style={styles.heroTitle}>Explore and Learn</Text>
+        <View style={styles.heroHeader}>
+          <Text style={styles.heroTitle}>{t('exploreAndLearn')}</Text>
+          <Pressable
+            onPress={() => router.push('/settings')}
+            style={styles.settingsButton}
+          >
+            <Settings size={24} color={colors.forestGreen} />
+          </Pressable>
+        </View>
         <Text style={styles.heroSubtitle}>
-          Discover Canada's rich waterway history through interactive lessons,
-          timelines, and virtual experiences
+          {t('exploreSubtitle')}
         </Text>
       </View>
 
+      {/* My Progress Card */}
+      <Pressable
+        onPress={() => router.push('/achievements')}
+        style={({ pressed }) => [
+          styles.progressCard,
+          pressed && styles.progressCardPressed,
+        ]}
+      >
+        <LinearGradient
+          colors={['#C9A962', '#8B7355'] as const}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.progressCardGradient}
+        >
+          <View style={styles.progressCardContent}>
+            <View style={styles.progressCardIconContainer}>
+              <Trophy size={28} color="white" />
+            </View>
+            <View style={styles.progressCardTextContainer}>
+              <Text style={styles.progressCardTitle}>My Progress</Text>
+              <Text style={styles.progressCardSubtitle}>
+                Track achievements and daily challenges
+              </Text>
+            </View>
+            <View style={styles.progressCardStreakBadge}>
+              <Flame size={16} color="#FCD34D" />
+              <ChevronRight size={20} color="rgba(255,255,255,0.8)" />
+            </View>
+          </View>
+        </LinearGradient>
+      </Pressable>
+
       {/* Main Feature Cards */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Learning Resources</Text>
+        <Text style={styles.sectionTitle}>{t('learningResources')}</Text>
         <View style={styles.cardsGrid}>
           <FeatureCard
-            title="Lesson Plans"
-            description="Curriculum-aligned lessons for K-12"
+            title={t('lessonPlans')}
+            description={t('lessonPlansDesc')}
             icon={<BookOpen size={28} color="white" />}
             gradientColors={['#2D5A3D', '#1A3A24'] as const}
             onPress={() => router.push('/lessons')}
           />
           <FeatureCard
-            title="Timeline"
-            description="Interactive Canadian history timeline"
+            title={t('timeline')}
+            description={t('timelineDesc')}
             icon={<Clock size={28} color="white" />}
             gradientColors={['#3B82F6', '#1D4ED8'] as const}
             onPress={() => router.push('/timeline')}
           />
           <FeatureCard
-            title="Field Trips"
-            description="Virtual exploration adventures"
+            title={t('fieldTrips')}
+            description={t('fieldTripsDesc')}
             icon={<Map size={28} color="white" />}
             gradientColors={['#10B981', '#047857'] as const}
             onPress={() => router.push('/field-trips')}
           />
           <FeatureCard
-            title="Documents"
-            description="Primary source materials"
+            title={t('documents')}
+            description={t('documentsDesc')}
             icon={<FileText size={28} color="white" />}
             gradientColors={['#8B5CF6', '#6D28D9'] as const}
             onPress={() => router.push('/documents')}
@@ -154,20 +201,49 @@ export default function LearnHubScreen() {
         </View>
       </View>
 
-      {/* Tools Section */}
+      {/* Discovery Section */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Learning Tools</Text>
+        <Text style={styles.sectionTitle}>Discovery</Text>
         <View style={styles.cardsGrid}>
           <FeatureCard
-            title="Compare"
-            description="Compare explorers, forts, and more"
+            title="What Happened Here?"
+            description="Discover historical events near your location"
+            icon={<MapPin size={28} color="white" />}
+            gradientColors={['#DC2626', '#991B1B'] as const}
+            onPress={() => router.push('/nearby-history')}
+            isLarge
+          />
+        </View>
+      </View>
+
+      {/* Tools Section */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>{t('learningTools')}</Text>
+        <View style={styles.cardsGrid}>
+          <FeatureCard
+            title={t('myMaps')}
+            description="Draw routes and add pins"
+            icon={<Pencil size={28} color="white" />}
+            gradientColors={['#0EA5E9', '#0284C7'] as const}
+            onPress={() => router.push('/my-maps')}
+          />
+          <FeatureCard
+            title={t('indigenousLanguages')}
+            description={t('indigenousLanguagesDesc')}
+            icon={<Languages size={28} color="white" />}
+            gradientColors={['#059669', '#047857'] as const}
+            onPress={() => router.push('/indigenous-languages')}
+          />
+          <FeatureCard
+            title={t('compare')}
+            description={t('compareDesc')}
             icon={<GitCompare size={28} color="white" />}
             gradientColors={['#F97316', '#C2410C'] as const}
             onPress={() => router.push('/comparisons')}
           />
           <FeatureCard
-            title="Pronunciations"
-            description="Indigenous language guide"
+            title={t('pronunciations')}
+            description={t('pronunciationsDesc')}
             icon={<Volume2 size={28} color="white" />}
             gradientColors={['#EC4899', '#BE185D'] as const}
             onPress={() => router.push('/pronunciations')}
@@ -177,25 +253,31 @@ export default function LearnHubScreen() {
 
       {/* Quick Links */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Quick Access</Text>
+        <Text style={styles.sectionTitle}>{t('quickAccess')}</Text>
         <View style={styles.quickLinksContainer}>
           <QuickLink
-            title="My Journal"
+            title={t('myJournal')}
             icon={<BookMarked size={20} color={colors.forestGreen} />}
             color={colors.forestGreen}
             onPress={() => router.push('/journal')}
           />
           <QuickLink
-            title="Teacher Portal"
+            title={t('teacherPortal')}
             icon={<GraduationCap size={20} color="#3B82F6" />}
             color="#3B82F6"
             onPress={() => router.push('/teacher/login')}
           />
           <QuickLink
-            title="Printable Resources"
+            title={t('printableResources')}
             icon={<Printer size={20} color="#8B5CF6" />}
             color="#8B5CF6"
             onPress={() => router.push('/printables')}
+          />
+          <QuickLink
+            title={t('settings')}
+            icon={<Settings size={20} color="#6B7280" />}
+            color="#6B7280"
+            onPress={() => router.push('/settings')}
           />
         </View>
       </View>
@@ -203,10 +285,10 @@ export default function LearnHubScreen() {
       {/* RCGS Attribution */}
       <View style={styles.attributionSection}>
         <Text style={styles.attributionText}>
-          Part of the Royal Canadian Geographic Society's educational initiative
+          {t('rcgsAttribution')}
         </Text>
         <Text style={styles.attributionSubtext}>
-          Supporting 25,000+ educators across Canada
+          {t('supportingEducators')}
         </Text>
       </View>
 
@@ -224,6 +306,19 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingTop: 16,
     paddingBottom: 8,
+  },
+  heroHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  settingsButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: colors.forestGreen + '15',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   heroTitle: {
     fontSize: 28,
@@ -356,5 +451,54 @@ const styles = StyleSheet.create({
   },
   bottomSpacer: {
     height: 32,
+  },
+  progressCard: {
+    marginHorizontal: 16,
+    marginBottom: 8,
+    borderRadius: 16,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  progressCardPressed: {
+    opacity: 0.9,
+    transform: [{ scale: 0.98 }],
+  },
+  progressCardGradient: {
+    padding: 16,
+  },
+  progressCardContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  progressCardIconContainer: {
+    width: 52,
+    height: 52,
+    borderRadius: 14,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  progressCardTextContainer: {
+    flex: 1,
+    marginLeft: 14,
+  },
+  progressCardTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: 'white',
+  },
+  progressCardSubtitle: {
+    fontSize: 13,
+    color: 'rgba(255,255,255,0.85)',
+    marginTop: 2,
+  },
+  progressCardStreakBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
   },
 });

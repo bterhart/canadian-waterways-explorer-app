@@ -3,6 +3,7 @@ import { Tabs } from 'expo-router';
 import { Map, Compass, Shield, GraduationCap, BookOpen } from 'lucide-react-native';
 import { useColorScheme } from '@/lib/useColorScheme';
 import { useClientOnlyValue } from '@/lib/useClientOnlyValue';
+import { useTranslation } from '@/lib/i18n';
 
 // Theme colors
 const colors = {
@@ -14,6 +15,7 @@ const colors = {
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
+  const { t } = useTranslation();
 
   return (
     <Tabs
@@ -47,8 +49,8 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Map',
-          headerTitle: 'Canadian Waterways',
+          title: t('map'),
+          headerTitle: t('canadianWaterways'),
           tabBarIcon: ({ color, focused }) => (
             <Map
               size={focused ? 26 : 24}
@@ -61,8 +63,8 @@ export default function TabLayout() {
       <Tabs.Screen
         name="two"
         options={{
-          title: 'Explorers',
-          headerTitle: 'Explorers',
+          title: t('explorers'),
+          headerTitle: t('explorers'),
           tabBarIcon: ({ color, focused }) => (
             <Compass
               size={focused ? 26 : 24}
@@ -75,8 +77,8 @@ export default function TabLayout() {
       <Tabs.Screen
         name="quizzes"
         options={{
-          title: 'Quizzes',
-          headerTitle: 'Quizzes',
+          title: t('quizzes'),
+          headerTitle: t('quizzes'),
           tabBarIcon: ({ color, focused }) => (
             <GraduationCap
               size={focused ? 26 : 24}
@@ -89,8 +91,8 @@ export default function TabLayout() {
       <Tabs.Screen
         name="learn"
         options={{
-          title: 'Learn',
-          headerTitle: 'Learn',
+          title: t('learn'),
+          headerTitle: t('learn'),
           tabBarIcon: ({ color, focused }) => (
             <BookOpen
               size={focused ? 26 : 24}
@@ -103,8 +105,8 @@ export default function TabLayout() {
       <Tabs.Screen
         name="admin"
         options={{
-          title: 'Admin',
-          headerTitle: 'Admin Panel',
+          title: t('admin'),
+          headerTitle: t('admin'),
           tabBarIcon: ({ color, focused }) => (
             <Shield
               size={focused ? 26 : 24}

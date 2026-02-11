@@ -26,6 +26,11 @@ import { classesRouter } from "./routes/classes";
 import { printablesRouter } from "./routes/printables";
 import { adminPrintablesRouter } from "./routes/admin-printables";
 import { pronunciationsRouter } from "./routes/pronunciations";
+import { indigenousLanguageRouter } from "./routes/indigenous-language";
+import { gamificationRouter } from "./routes/gamification";
+import { voyageurJourneyRouter } from "./routes/voyageur-journey";
+import { mapAnnotationsRouter } from "./routes/map-annotations";
+import { nearbyHistoryRouter } from "./routes/nearby-history";
 import { logger } from "hono/logger";
 
 const app = new Hono();
@@ -79,6 +84,11 @@ app.route("/api/classes", classesRouter);
 app.route("/api/printables", printablesRouter);
 app.route("/api/admin/printables", adminPrintablesRouter);
 app.route("/api/pronunciations", pronunciationsRouter);
+app.route("/api/indigenous-language", indigenousLanguageRouter);
+app.route("/api/gamification", gamificationRouter);
+app.route("/api/voyageur-journeys", voyageurJourneyRouter);
+app.route("/api/map-annotations", mapAnnotationsRouter);
+app.route("/api/nearby-history", nearbyHistoryRouter);
 
 const port = Number(process.env.PORT) || 3000;
 

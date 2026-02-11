@@ -6,6 +6,7 @@ import { useColorScheme } from '@/lib/useColorScheme';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
+import { LanguageProvider } from '@/lib/i18n';
 
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
@@ -48,6 +49,18 @@ function RootLayoutNav({ colorScheme }: { colorScheme: 'light' | 'dark' | null |
         <Stack.Screen name="teacher/class/new" options={{ headerShown: true }} />
         <Stack.Screen name="teacher/class/[id]" options={{ headerShown: true }} />
         <Stack.Screen name="teacher/assignment/new" options={{ headerShown: true }} />
+        <Stack.Screen name="indigenous-languages" options={{ headerShown: true }} />
+        {/* Settings Screens */}
+        <Stack.Screen name="settings/index" options={{ headerShown: true }} />
+        <Stack.Screen name="settings/language" options={{ headerShown: true }} />
+        {/* My Maps Screens */}
+        <Stack.Screen name="my-maps/index" options={{ headerShown: true }} />
+        <Stack.Screen name="my-maps/new" options={{ headerShown: true }} />
+        <Stack.Screen name="my-maps/[id]" options={{ headerShown: false }} />
+        {/* Nearby History Screen */}
+        <Stack.Screen name="nearby-history" options={{ headerShown: true }} />
+        {/* Achievements & Progress Screen */}
+        <Stack.Screen name="achievements" options={{ headerShown: true }} />
       </Stack>
     </ThemeProvider>
   );
@@ -60,12 +73,14 @@ export default function RootLayout() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <KeyboardProvider>
-          <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
-          <RootLayoutNav colorScheme={colorScheme} />
-        </KeyboardProvider>
-      </GestureHandlerRootView>
+      <LanguageProvider>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <KeyboardProvider>
+            <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+            <RootLayoutNav colorScheme={colorScheme} />
+          </KeyboardProvider>
+        </GestureHandlerRootView>
+      </LanguageProvider>
     </QueryClientProvider>
   );
 }

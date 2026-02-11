@@ -38,6 +38,48 @@ An interactive educational map app showcasing Canada's major waterways, their In
 - **Instant Feedback**: Students see their score and correct answers after completing a quiz
 - **6 Sample Quizzes**: Pre-loaded with 36 questions covering Canadian history
 
+### Gamification & Progress System (NEW)
+- **Explorer Ranks**: Progress from "Apprentice Voyageur" to "Master Explorer" based on points
+- **Achievement Badges**: Earn badges for exploring, learning, and completing activities
+- **Daily Challenges**: New question each day with points rewards
+- **Streak Tracking**: Build daily streaks to maintain engagement
+- **Progress Stats**: Track waterways explored, quizzes completed, documents read, and more
+
+### Indigenous Language Learning Module (NEW)
+- **Word of the Day**: Featured Indigenous word with pronunciation and meaning
+- **Vocabulary by Language**: Browse words in Cree, Ojibwe, Inuktitut, Mi'kmaq, and Dene
+- **Pronunciation Guides**: Phonetic spellings and cultural context
+- **Vocabulary Quizzes**: Test your knowledge of Indigenous words
+- **Traditional Stories**: Stories from Indigenous perspectives about waterways
+
+### Voyageur Journey Simulator (NEW)
+- **Choose Your Own Adventure**: Play as a voyageur making decisions on the fur trade routes
+- **Two Complete Journeys**: "The Grand Portage Route" (Grade 4-6) and "Race to the Pacific" (Grade 7-9)
+- **Historical Decisions**: Choose routes, handle storms, trade with Indigenous guides, portage heavy loads
+- **Voyageur Songs**: Experience authentic voyageur songs with lyrics (e.g., "En Roulant Ma Boule")
+- **Map Integration**: See your journey progress on the map
+
+### My Maps - Drawing & Annotation Tools (NEW)
+- **Custom Maps**: Create your own annotated maps of Canadian waterways
+- **Pin Tool**: Add custom pins with titles and descriptions
+- **Route Drawing**: Draw routes tracing explorer paths
+- **Notes**: Add text notes anywhere on the map
+- **Color Customization**: Choose from 8 colors for annotations
+- **Share Codes**: Share your maps with classmates
+- **Export**: Export map data for reports
+
+### What Happened Here? - Location Feature (NEW)
+- **GPS-Based Discovery**: Find historical events near your current location
+- **Radius Search**: Search within 5km, 10km, 25km, 50km, or 100km
+- **Category Filters**: Filter by exploration, fur trade, Indigenous, settlement, battle, treaty
+- **Distance Display**: See how far you are from each historical event
+- **Perfect for Field Trips**: Discover history wherever you are in Canada
+
+### Multi-Language Support (NEW)
+- **English and French**: Full app available in both official languages
+- **Language Settings**: Switch languages in Settings
+- **French Immersion Ready**: Perfect for French immersion classrooms
+
 ### Map Legend
 - Blue - Rivers
 - Cyan - Lakes
@@ -185,3 +227,43 @@ An interactive educational map app showcasing Canada's major waterways, their In
 - `GET /api/quizzes` - List published quizzes (supports category, gradeLevel, difficulty filters)
 - `GET /api/quizzes/:id` - Get quiz with questions (answers hidden)
 - `POST /api/quizzes/:id/attempt` - Submit quiz answers and get scored results
+
+### Gamification Endpoints (NEW)
+- `GET /api/gamification/progress` - Get user's progress and stats
+- `GET /api/gamification/achievements` - List all achievements
+- `GET /api/gamification/achievements/user` - Get user's earned achievements
+- `GET /api/gamification/daily-challenge` - Get today's challenge
+- `POST /api/gamification/daily-challenge/submit` - Submit challenge answer
+- `GET /api/gamification/ranks` - List explorer ranks
+- `GET /api/gamification/leaderboard` - Get leaderboard
+
+### Indigenous Language Endpoints (NEW)
+- `GET /api/indigenous-language/words` - List Indigenous words (filter by language, category)
+- `GET /api/indigenous-language/word-of-day` - Get featured word of the day
+- `GET /api/indigenous-language/vocabulary-quizzes` - List vocabulary quizzes
+- `POST /api/indigenous-language/vocabulary-quizzes/:id/submit` - Submit quiz answers
+- `GET /api/indigenous-language/stories` - List Indigenous stories
+- `GET /api/indigenous-language/languages` - List available languages
+
+### Voyageur Journey Endpoints (NEW)
+- `GET /api/voyageur-journeys` - List all journeys
+- `GET /api/voyageur-journeys/:id` - Get journey with all nodes
+- `GET /api/voyageur-journeys/:id/start` - Start a journey
+- `POST /api/voyageur-journeys/:id/choice` - Make a choice at a node
+- `GET /api/voyageur-journeys/:id/progress` - Get user's progress
+
+### Map Annotation Endpoints (NEW)
+- `GET /api/map-annotations` - List user's maps
+- `POST /api/map-annotations` - Create new map
+- `GET /api/map-annotations/:id` - Get map with all annotations
+- `POST /api/map-annotations/:id/pin` - Add a pin
+- `POST /api/map-annotations/:id/route` - Add a route
+- `POST /api/map-annotations/:id/note` - Add a note
+- `POST /api/map-annotations/:id/share` - Generate share code
+- `GET /api/map-annotations/shared/:code` - Get shared map
+- `DELETE /api/map-annotations/:id/pin/:pinId` - Delete a pin
+
+### Nearby History Endpoints (NEW)
+- `GET /api/nearby-history` - Get historical events near coordinates
+- `GET /api/nearby-history/categories` - List event categories
+
