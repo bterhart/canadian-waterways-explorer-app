@@ -62,9 +62,6 @@ export default function ExplorersScreen() {
               </Text>
             ) : null}
           </View>
-          <Text style={styles.shortBio} numberOfLines={2}>
-            {item.shortBio}
-          </Text>
         </View>
       </View>
       <View style={styles.viewDetailsButton}>
@@ -270,11 +267,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#6B7280',
     marginLeft: 8,
-  },
-  shortBio: {
-    fontSize: 13,
-    color: '#6B7280',
-    lineHeight: 18,
   },
   viewDetailsButton: {
     backgroundColor: colors.forestGreen,

@@ -4,7 +4,7 @@ import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
 import MapView, { Marker, Callout, PROVIDER_DEFAULT, Region } from 'react-native-maps';
 import { useWaterways, useLocations } from '@/lib/api/waterways-api';
 import DetailBottomSheet, { DetailBottomSheetRef } from '@/components/DetailBottomSheet';
-import type { MarkerType, WaterwayType, LocationType, Waterway, Location } from '@/lib/types/waterways';
+import type { MarkerType, Waterway, Location } from '@/lib/types/waterways';
 
 // Canada center coordinates
 const CANADA_CENTER: Region = {
@@ -15,20 +15,22 @@ const CANADA_CENTER: Region = {
 };
 
 // Marker colors based on type
-const markerColors = {
+const markerColors: Record<string, string> = {
   // Waterway types
-  river: '#3B82F6', // Blue
-  lake: '#06B6D4', // Cyan
-  bay: '#10B981', // Green/Teal
+  River: '#3B82F6', // Blue
+  Lake: '#06B6D4', // Cyan
+  Bay: '#10B981', // Green/Teal
+  Strait: '#0EA5E9', // Sky blue
   // Location types
-  fort: '#EF4444', // Red
-  trading_post: '#F97316', // Orange
-  portage: '#92400E', // Brown
-  settlement: '#8B5CF6', // Purple
+  Fort: '#EF4444', // Red
+  'Trading Post': '#F97316', // Orange
+  Portage: '#92400E', // Brown
+  Settlement: '#8B5CF6', // Purple
+  'Cultural Site': '#EC4899', // Pink
 };
 
-const getMarkerColor = (type: WaterwayType | LocationType): string => {
-  return markerColors[type] || '#6B7280';
+const getMarkerColor = (typeName: string): string => {
+  return markerColors[typeName] || '#6B7280';
 };
 
 export default function MapScreen() {
@@ -57,71 +59,67 @@ export default function MapScreen() {
     setSelectedMarker(null);
   }, []);
 
-  const renderWaterwayMarker = (waterway: Waterway) => (
-    <Marker
-      key={`waterway-${waterway.id}`}
-      coordinate={{
-        latitude: waterway.latitude,
-        longitude: waterway.longitude,
-      }}
-      pinColor={getMarkerColor(waterway.type)}
-      tracksViewChanges={false}
-    >
-      <Callout
-        onPress={() => handleCalloutPress(waterway.id, 'waterway')}
-        tooltip={false}
+  const renderWaterwayMarker = (waterway: Waterway) => {
+    const typeName = waterway.type?.name || 'River';
+    return (
+      <Marker
+        key={`waterway-${waterway.id}`}
+        coordinate={{
+          latitude: waterway.latitude,
+          longitude: waterway.longitude,
+        }}
+        pinColor={getMarkerColor(typeName)}
+        tracksViewChanges={false}
       >
-        <View style={styles.calloutContainer}>
-          <View style={[styles.typeBadge, { backgroundColor: getMarkerColor(waterway.type) }]}>
-            <Text style={styles.typeBadgeText}>
-              {waterway.type === 'river' ? 'River' : waterway.type === 'lake' ? 'Lake' : 'Bay'}
-            </Text>
+        <Callout
+          onPress={() => handleCalloutPress(waterway.id, 'waterway')}
+          tooltip={false}
+        >
+          <View style={styles.calloutContainer}>
+            <View style={[styles.typeBadge, { backgroundColor: getMarkerColor(typeName) }]}>
+              <Text style={styles.typeBadgeText}>{typeName}</Text>
+            </View>
+            <Text style={styles.calloutTitle}>{waterway.name}</Text>
+            {waterway.indigenousName ? (
+              <Text style={styles.calloutIndigenous}>"{waterway.indigenousName}"</Text>
+            ) : null}
+            <Text style={styles.calloutHint}>Tap for details</Text>
           </View>
-          <Text style={styles.calloutTitle}>{waterway.name}</Text>
-          {waterway.indigenousName ? (
-            <Text style={styles.calloutIndigenous}>"{waterway.indigenousName}"</Text>
-          ) : null}
-          <Text style={styles.calloutHint}>Tap for details</Text>
-        </View>
-      </Callout>
-    </Marker>
-  );
+        </Callout>
+      </Marker>
+    );
+  };
 
-  const renderLocationMarker = (location: Location) => (
-    <Marker
-      key={`location-${location.id}`}
-      coordinate={{
-        latitude: location.latitude,
-        longitude: location.longitude,
-      }}
-      pinColor={getMarkerColor(location.type)}
-      tracksViewChanges={false}
-    >
-      <Callout
-        onPress={() => handleCalloutPress(location.id, 'location')}
-        tooltip={false}
+  const renderLocationMarker = (location: Location) => {
+    const locationType = location.locationType || 'Settlement';
+    return (
+      <Marker
+        key={`location-${location.id}`}
+        coordinate={{
+          latitude: location.latitude,
+          longitude: location.longitude,
+        }}
+        pinColor={getMarkerColor(locationType)}
+        tracksViewChanges={false}
       >
-        <View style={styles.calloutContainer}>
-          <View style={[styles.typeBadge, { backgroundColor: getMarkerColor(location.type) }]}>
-            <Text style={styles.typeBadgeText}>
-              {location.type === 'fort'
-                ? 'Historic Fort'
-                : location.type === 'trading_post'
-                ? 'Trading Post'
-                : location.type === 'portage'
-                ? 'Portage'
-                : 'Settlement'}
-            </Text>
+        <Callout
+          onPress={() => handleCalloutPress(location.id, 'location')}
+          tooltip={false}
+        >
+          <View style={styles.calloutContainer}>
+            <View style={[styles.typeBadge, { backgroundColor: getMarkerColor(locationType) }]}>
+              <Text style={styles.typeBadgeText}>{locationType}</Text>
+            </View>
+            <Text style={styles.calloutTitle}>{location.name}</Text>
+            {location.indigenousName ? (
+              <Text style={styles.calloutIndigenous}>"{location.indigenousName}"</Text>
+            ) : null}
+            <Text style={styles.calloutHint}>Tap for details</Text>
           </View>
-          <Text style={styles.calloutTitle}>{location.name}</Text>
-          {location.indigenousName ? (
-            <Text style={styles.calloutIndigenous}>"{location.indigenousName}"</Text>
-          ) : null}
-          <Text style={styles.calloutHint}>Tap for details</Text>
-        </View>
-      </Callout>
-    </Marker>
-  );
+        </Callout>
+      </Marker>
+    );
+  };
 
   if (isLoading) {
     return (
@@ -168,30 +166,30 @@ export default function MapScreen() {
         <View style={styles.legendSection}>
           <Text style={styles.legendSectionTitle}>Waterways</Text>
           <View style={styles.legendRow}>
-            <View style={[styles.legendDot, { backgroundColor: markerColors.river }]} />
+            <View style={[styles.legendDot, { backgroundColor: markerColors.River }]} />
             <Text style={styles.legendText}>River</Text>
           </View>
           <View style={styles.legendRow}>
-            <View style={[styles.legendDot, { backgroundColor: markerColors.lake }]} />
+            <View style={[styles.legendDot, { backgroundColor: markerColors.Lake }]} />
             <Text style={styles.legendText}>Lake</Text>
           </View>
           <View style={styles.legendRow}>
-            <View style={[styles.legendDot, { backgroundColor: markerColors.bay }]} />
+            <View style={[styles.legendDot, { backgroundColor: markerColors.Bay }]} />
             <Text style={styles.legendText}>Bay</Text>
           </View>
         </View>
         <View style={styles.legendSection}>
           <Text style={styles.legendSectionTitle}>Locations</Text>
           <View style={styles.legendRow}>
-            <View style={[styles.legendDot, { backgroundColor: markerColors.fort }]} />
+            <View style={[styles.legendDot, { backgroundColor: markerColors.Fort }]} />
             <Text style={styles.legendText}>Fort</Text>
           </View>
           <View style={styles.legendRow}>
-            <View style={[styles.legendDot, { backgroundColor: markerColors.trading_post }]} />
+            <View style={[styles.legendDot, { backgroundColor: markerColors['Trading Post'] }]} />
             <Text style={styles.legendText}>Trading Post</Text>
           </View>
           <View style={styles.legendRow}>
-            <View style={[styles.legendDot, { backgroundColor: markerColors.portage }]} />
+            <View style={[styles.legendDot, { backgroundColor: markerColors.Portage }]} />
             <Text style={styles.legendText}>Portage</Text>
           </View>
         </View>

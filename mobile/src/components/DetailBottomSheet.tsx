@@ -1,9 +1,9 @@
 // Bottom sheet component for displaying waterway and location details
 import React, { useCallback, useMemo, forwardRef, useImperativeHandle, useRef } from 'react';
-import { View, Text, ScrollView, ActivityIndicator, Image } from 'react-native';
-import BottomSheet, { BottomSheetView, BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import { View, Text, ActivityIndicator, Image } from 'react-native';
+import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { useWaterwayDetail, useLocationDetail } from '@/lib/api/waterways-api';
-import type { MarkerType, WaterwayType, LocationType } from '@/lib/types/waterways';
+import type { MarkerType, WaterwayDetail, LocationDetail } from '@/lib/types/waterways';
 
 // Theme colors
 const colors = {
@@ -42,7 +42,7 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
     );
 
     const isLoading = waterwayLoading || locationLoading;
-    const data = markerType === 'waterway' ? waterwayData : locationData;
+    const data: WaterwayDetail | LocationDetail | undefined = markerType === 'waterway' ? waterwayData : locationData;
 
     useImperativeHandle(ref, () => ({
       expand: () => bottomSheetRef.current?.expand(),
@@ -58,30 +58,8 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
       [onClose]
     );
 
-    const getTypeLabel = (type: WaterwayType | LocationType): string => {
-      const labels: Record<string, string> = {
-        river: 'River',
-        lake: 'Lake',
-        bay: 'Bay',
-        fort: 'Historic Fort',
-        trading_post: 'Fur Trading Post',
-        portage: 'Historic Portage',
-        settlement: 'Settlement',
-      };
-      return labels[type] || type;
-    };
-
-    const getTypeIcon = (type: WaterwayType | LocationType): string => {
-      const icons: Record<string, string> = {
-        river: 'water',
-        lake: 'water',
-        bay: 'water',
-        fort: 'castle',
-        trading_post: 'store',
-        portage: 'route',
-        settlement: 'home',
-      };
-      return icons[type] || 'map-pin';
+    const getTypeLabel = (typeName: string): string => {
+      return typeName || 'Unknown';
     };
 
     if (!markerId || !markerType) return null;
@@ -113,7 +91,11 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                   style={{ backgroundColor: colors.forestGreen }}
                 >
                   <Text className="text-white text-xs font-semibold">
-                    {getTypeLabel(data.type as WaterwayType | LocationType)}
+                    {markerType === 'waterway' && 'type' in data
+                      ? getTypeLabel((data as WaterwayDetail).type?.name || '')
+                      : 'locationType' in data
+                      ? getTypeLabel((data as LocationDetail).locationType)
+                      : 'Location'}
                   </Text>
                 </View>
                 <Text
@@ -157,7 +139,7 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
               ) : null}
 
               {/* Indigenous Heritage Section */}
-              {data.indigenousName || ('indigenousNation' in data && data.indigenousNation) ? (
+              {data.indigenousName || data.indigenousLanguage ? (
                 <View className="mb-4">
                   <Text
                     className="text-lg font-bold mb-2"
@@ -176,13 +158,13 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                         </Text>
                       </View>
                     ) : null}
-                    {'indigenousNation' in data && data.indigenousNation ? (
+                    {data.indigenousLanguage ? (
                       <View>
                         <Text className="text-sm font-semibold" style={{ color: colors.indigenous }}>
-                          Traditional Territory
+                          Language
                         </Text>
                         <Text className="text-base" style={{ color: '#333' }}>
-                          {data.indigenousNation}
+                          {data.indigenousLanguage}
                         </Text>
                       </View>
                     ) : null}
@@ -203,11 +185,11 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                         Explorers Who Visited
                       </Text>
                       <View className="p-4 rounded-xl" style={{ backgroundColor: '#E6F3F8' }}>
-                        {waterwayData.explorers.map((explorer) => (
-                          <View key={explorer.id} className="flex-row items-center mb-3 last:mb-0">
-                            {explorer.imageUrl ? (
+                        {waterwayData.explorers.map((explorerWaterway) => (
+                          <View key={explorerWaterway.id} className="flex-row items-center mb-3 last:mb-0">
+                            {explorerWaterway.explorer?.imageUrl ? (
                               <Image
-                                source={{ uri: explorer.imageUrl }}
+                                source={{ uri: explorerWaterway.explorer.imageUrl }}
                                 className="w-12 h-12 rounded-full mr-3"
                               />
                             ) : (
@@ -216,20 +198,30 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                                 style={{ backgroundColor: colors.waterBlue }}
                               >
                                 <Text className="text-white font-bold text-lg">
-                                  {explorer.name.charAt(0)}
+                                  {explorerWaterway.explorer?.name?.charAt(0) || '?'}
                                 </Text>
                               </View>
                             )}
                             <View className="flex-1">
                               <Text className="font-semibold" style={{ color: '#333' }}>
-                                {explorer.name}
+                                {explorerWaterway.explorer?.name || 'Unknown Explorer'}
                               </Text>
                               <Text className="text-sm text-gray-600">
-                                {explorer.nationality}
-                                {explorer.birthYear && explorer.deathYear
-                                  ? ` (${explorer.birthYear}-${explorer.deathYear})`
-                                  : null}
+                                {explorerWaterway.explorer?.nationality || ''}
+                                {explorerWaterway.explorer?.birthYear && explorerWaterway.explorer?.deathYear
+                                  ? ` (${explorerWaterway.explorer.birthYear}-${explorerWaterway.explorer.deathYear})`
+                                  : ''}
                               </Text>
+                              {explorerWaterway.yearExplored ? (
+                                <Text className="text-xs text-gray-500">
+                                  Explored: {explorerWaterway.yearExplored}
+                                </Text>
+                              ) : null}
+                              {explorerWaterway.expeditionNotes ? (
+                                <Text className="text-xs italic text-gray-500 mt-1">
+                                  {explorerWaterway.expeditionNotes}
+                                </Text>
+                              ) : null}
                             </View>
                           </View>
                         ))}
@@ -247,53 +239,47 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                         Fur Trade History
                       </Text>
                       <View className="p-4 rounded-xl" style={{ backgroundColor: '#F5EBE0' }}>
-                        <View className="mb-2">
-                          <Text className="text-sm font-semibold" style={{ color: colors.earthBrown }}>
-                            Trading Company
-                          </Text>
-                          <Text className="text-base" style={{ color: '#333' }}>
-                            {waterwayData.furTradeInfo.company}
-                          </Text>
-                        </View>
-                        <View className="mb-2">
-                          <Text className="text-sm font-semibold" style={{ color: colors.earthBrown }}>
-                            Trading Period
-                          </Text>
-                          <Text className="text-base" style={{ color: '#333' }}>
-                            {waterwayData.furTradeInfo.tradingPeriod}
-                          </Text>
-                        </View>
-                        {waterwayData.furTradeInfo.primaryGoods.length > 0 ? (
+                        {waterwayData.furTradeInfo.tradingCompany ? (
                           <View className="mb-2">
                             <Text className="text-sm font-semibold" style={{ color: colors.earthBrown }}>
-                              Primary Goods Traded
+                              Trading Company
                             </Text>
                             <Text className="text-base" style={{ color: '#333' }}>
-                              {waterwayData.furTradeInfo.primaryGoods.join(', ')}
+                              {waterwayData.furTradeInfo.tradingCompany}
                             </Text>
                           </View>
                         ) : null}
-                        <View>
-                          <Text className="text-sm font-semibold" style={{ color: colors.earthBrown }}>
-                            Trade Significance
-                          </Text>
-                          <Text className="text-base" style={{ color: '#333' }}>
-                            {waterwayData.furTradeInfo.significance}
-                          </Text>
-                        </View>
+                        {waterwayData.furTradeInfo.peakTradePeriod ? (
+                          <View className="mb-2">
+                            <Text className="text-sm font-semibold" style={{ color: colors.earthBrown }}>
+                              Peak Trading Period
+                            </Text>
+                            <Text className="text-base" style={{ color: '#333' }}>
+                              {waterwayData.furTradeInfo.peakTradePeriod}
+                            </Text>
+                          </View>
+                        ) : null}
+                        {waterwayData.furTradeInfo.primaryFurs ? (
+                          <View className="mb-2">
+                            <Text className="text-sm font-semibold" style={{ color: colors.earthBrown }}>
+                              Primary Furs Traded
+                            </Text>
+                            <Text className="text-base" style={{ color: '#333' }}>
+                              {waterwayData.furTradeInfo.primaryFurs}
+                            </Text>
+                          </View>
+                        ) : null}
+                        {waterwayData.furTradeInfo.tradeRouteNotes ? (
+                          <View>
+                            <Text className="text-sm font-semibold" style={{ color: colors.earthBrown }}>
+                              Trade Route Notes
+                            </Text>
+                            <Text className="text-base" style={{ color: '#333' }}>
+                              {waterwayData.furTradeInfo.tradeRouteNotes}
+                            </Text>
+                          </View>
+                        ) : null}
                       </View>
-                    </View>
-                  ) : null}
-
-                  {/* Waterway Length */}
-                  {waterwayData.length ? (
-                    <View className="mb-4 p-4 rounded-xl flex-row items-center" style={{ backgroundColor: colors.section }}>
-                      <Text className="text-sm font-semibold mr-2" style={{ color: colors.forestGreen }}>
-                        Length:
-                      </Text>
-                      <Text className="text-base" style={{ color: '#333' }}>
-                        {waterwayData.length.toLocaleString()} km
-                      </Text>
                     </View>
                   ) : null}
                 </>
@@ -320,14 +306,31 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                           Mapped by:
                         </Text>
                         <Text className="text-base" style={{ color: '#333' }}>
-                          {locationData.cartographer}
+                          {locationData.cartographer.name}
                         </Text>
                       </View>
                     ) : null}
                   </View>
 
+                  {/* Historical Notes */}
+                  {locationData.historicalNotes ? (
+                    <View className="mb-4">
+                      <Text
+                        className="text-lg font-bold mb-2"
+                        style={{ color: colors.earthBrown }}
+                      >
+                        Historical Notes
+                      </Text>
+                      <View className="p-4 rounded-xl" style={{ backgroundColor: '#FFF8E7' }}>
+                        <Text className="text-base leading-6" style={{ color: '#333' }}>
+                          {locationData.historicalNotes}
+                        </Text>
+                      </View>
+                    </View>
+                  ) : null}
+
                   {/* Related Waterway */}
-                  {locationData.relatedWaterway ? (
+                  {locationData.waterway ? (
                     <View className="mb-4">
                       <Text
                         className="text-lg font-bold mb-2"
@@ -337,15 +340,10 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                       </Text>
                       <View className="p-4 rounded-xl" style={{ backgroundColor: '#E6F3F8' }}>
                         <Text className="font-semibold text-base" style={{ color: '#333' }}>
-                          {locationData.relatedWaterway.name}
+                          {locationData.waterway.name}
                         </Text>
-                        {locationData.relatedWaterway.indigenousName ? (
-                          <Text className="italic text-sm" style={{ color: colors.indigenous }}>
-                            "{locationData.relatedWaterway.indigenousName}"
-                          </Text>
-                        ) : null}
                         <Text className="text-sm mt-1 text-gray-600">
-                          {locationData.relatedWaterway.description}
+                          {locationData.waterway.type?.name || 'Waterway'}
                         </Text>
                       </View>
                     </View>

@@ -2,7 +2,7 @@
 import React from 'react';
 import { View, Text, Image, ScrollView, Pressable, StyleSheet } from 'react-native';
 import { X } from 'lucide-react-native';
-import type { ExplorerDetail } from '@/lib/types/waterways';
+import type { ExplorerDetail, ExplorerWaterwayDetail } from '@/lib/types/waterways';
 
 // Theme colors
 const colors = {
@@ -57,62 +57,55 @@ export default function ExplorerDetailModal({ explorer, onClose }: ExplorerDetai
             </View>
           </View>
 
-          {/* Achievements */}
-          {explorer.achievements && explorer.achievements.length > 0 ? (
+          {/* Notable Achievements */}
+          {explorer.notableAchievements ? (
             <View style={styles.section}>
-              <Text style={[styles.sectionTitle, { color: colors.gold }]}>Achievements</Text>
+              <Text style={[styles.sectionTitle, { color: colors.gold }]}>Notable Achievements</Text>
               <View style={[styles.sectionContent, { backgroundColor: '#FFF8E7' }]}>
-                {explorer.achievements.map((achievement, index) => (
-                  <View key={index} style={styles.achievementItem}>
-                    <View style={styles.achievementBullet} />
-                    <Text style={styles.achievementText}>{achievement}</Text>
-                  </View>
-                ))}
+                <Text style={styles.achievementText}>{explorer.notableAchievements}</Text>
               </View>
             </View>
           ) : null}
 
           {/* Waterways Explored */}
-          {explorer.waterwaysExplored && explorer.waterwaysExplored.length > 0 ? (
+          {explorer.waterways && explorer.waterways.length > 0 ? (
             <View style={styles.section}>
               <Text style={[styles.sectionTitle, { color: colors.waterBlue }]}>
                 Waterways Explored
               </Text>
               <View style={[styles.sectionContent, { backgroundColor: '#E6F3F8' }]}>
-                {explorer.waterwaysExplored.map((waterway) => (
-                  <View key={waterway.id} style={styles.waterwayItem}>
+                {explorer.waterways.map((explorerWaterway: ExplorerWaterwayDetail) => (
+                  <View key={explorerWaterway.id} style={styles.waterwayItem}>
                     <View style={styles.waterwayHeader}>
-                      <Text style={styles.waterwayName}>{waterway.name}</Text>
+                      <Text style={styles.waterwayName}>{explorerWaterway.waterway?.name || 'Unknown'}</Text>
                       <View
                         style={[
                           styles.typeBadge,
                           {
                             backgroundColor:
-                              waterway.type === 'river'
+                              explorerWaterway.waterway?.type?.name === 'River'
                                 ? '#3B82F6'
-                                : waterway.type === 'lake'
+                                : explorerWaterway.waterway?.type?.name === 'Lake'
                                 ? '#06B6D4'
                                 : '#10B981',
                           },
                         ]}
                       >
                         <Text style={styles.typeBadgeText}>
-                          {waterway.type === 'river'
-                            ? 'River'
-                            : waterway.type === 'lake'
-                            ? 'Lake'
-                            : 'Bay'}
+                          {explorerWaterway.waterway?.type?.name || 'Waterway'}
                         </Text>
                       </View>
                     </View>
-                    {waterway.indigenousName ? (
-                      <Text style={styles.waterwayIndigenous}>
-                        "{waterway.indigenousName}"
+                    {explorerWaterway.yearExplored ? (
+                      <Text style={styles.waterwayYear}>
+                        Explored: {explorerWaterway.yearExplored}
                       </Text>
                     ) : null}
-                    <Text style={styles.waterwayDescription} numberOfLines={2}>
-                      {waterway.description}
-                    </Text>
+                    {explorerWaterway.expeditionNotes ? (
+                      <Text style={styles.waterwayDescription}>
+                        {explorerWaterway.expeditionNotes}
+                      </Text>
+                    ) : null}
                   </View>
                 ))}
               </View>
@@ -216,20 +209,7 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     color: '#333',
   },
-  achievementItem: {
-    flexDirection: 'row',
-    marginBottom: 10,
-  },
-  achievementBullet: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: colors.gold,
-    marginTop: 6,
-    marginRight: 12,
-  },
   achievementText: {
-    flex: 1,
     fontSize: 14,
     lineHeight: 22,
     color: '#333',
@@ -251,6 +231,11 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#333',
     flex: 1,
+  },
+  waterwayYear: {
+    fontSize: 13,
+    color: colors.waterBlue,
+    marginBottom: 4,
   },
   typeBadge: {
     paddingHorizontal: 8,

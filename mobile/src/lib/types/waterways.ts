@@ -1,25 +1,81 @@
 // Types for Canadian Waterways Education App
 
 // Waterway types
-export type WaterwayType = 'river' | 'lake' | 'bay';
+export type WaterwayType = 'river' | 'lake' | 'bay' | 'strait';
+
+export interface WaterwayTypeInfo {
+  id: string;
+  name: string;
+}
 
 export interface Waterway {
   id: string;
   name: string;
   indigenousName: string | null;
-  indigenousNation: string | null;
-  type: WaterwayType;
+  latitude: number;
+  longitude: number;
+  regionName: string;
+  type: {
+    name: string;
+  };
+}
+
+export interface ExplorerWaterway {
+  id: string;
+  explorerId: string;
+  waterwayId: string;
+  yearExplored: number | null;
+  expeditionNotes: string | null;
+  explorer: {
+    id: string;
+    name: string;
+    birthYear: number | null;
+    deathYear: number | null;
+    nationality: string | null;
+    biography: string;
+    notableAchievements: string | null;
+    imageUrl: string | null;
+  };
+}
+
+export interface FurTradeInfo {
+  id: string;
+  waterwayId: string;
+  tradingCompany: string | null;
+  peakTradePeriod: string | null;
+  primaryFurs: string | null;
+  tradeRouteNotes: string | null;
+}
+
+export interface WaterwayLocation {
+  id: string;
+  name: string;
+  indigenousName: string | null;
+  indigenousLanguage: string | null;
   description: string;
   latitude: number;
   longitude: number;
+  locationType: string;
+  yearEstablished: number | null;
+  historicalNotes: string | null;
+  cartographer: Cartographer | null;
 }
 
-export interface WaterwayDetail extends Waterway {
-  historicalSignificance: string;
-  length: number | null;
+export interface WaterwayDetail {
+  id: string;
+  name: string;
+  indigenousName: string | null;
+  indigenousLanguage: string | null;
+  description: string;
+  latitude: number;
+  longitude: number;
+  regionName: string;
+  typeId: string;
+  historicalSignificance: string | null;
+  type: WaterwayTypeInfo;
+  explorers: ExplorerWaterway[];
   furTradeInfo: FurTradeInfo | null;
-  explorers: Explorer[];
-  locations: Location[];
+  locations: WaterwayLocation[];
 }
 
 // Location types
@@ -29,52 +85,89 @@ export interface Location {
   id: string;
   name: string;
   indigenousName: string | null;
-  type: LocationType;
+  latitude: number;
+  longitude: number;
+  locationType: string;
+  waterway: {
+    id: string;
+    name: string;
+  };
+}
+
+export interface Cartographer {
+  id: string;
+  name: string;
+  birthYear: number | null;
+  deathYear: number | null;
+  nationality: string | null;
+  biography: string | null;
+  notableMaps: string | null;
+}
+
+export interface LocationDetail {
+  id: string;
+  name: string;
+  indigenousName: string | null;
+  indigenousLanguage: string | null;
   description: string;
   latitude: number;
   longitude: number;
+  locationType: string;
   yearEstablished: number | null;
-}
-
-export interface LocationDetail extends Location {
-  historicalSignificance: string;
-  cartographer: string | null;
-  relatedWaterway: Waterway | null;
+  historicalNotes: string | null;
+  waterwayId: string;
+  cartographerId: string | null;
+  waterway: {
+    id: string;
+    name: string;
+    type: WaterwayTypeInfo;
+  };
+  cartographer: Cartographer | null;
 }
 
 // Explorer types
 export interface Explorer {
   id: string;
   name: string;
-  nationality: string;
   birthYear: number | null;
   deathYear: number | null;
+  nationality: string | null;
   imageUrl: string | null;
-  shortBio: string;
 }
 
-export interface ExplorerDetail extends Explorer {
+export interface ExplorerWaterwayDetail {
+  id: string;
+  explorerId: string;
+  waterwayId: string;
+  yearExplored: number | null;
+  expeditionNotes: string | null;
+  waterway: {
+    id: string;
+    name: string;
+    type: WaterwayTypeInfo;
+  };
+}
+
+export interface ExplorerDetail {
+  id: string;
+  name: string;
+  birthYear: number | null;
+  deathYear: number | null;
+  nationality: string | null;
   biography: string;
-  achievements: string[];
-  waterwaysExplored: Waterway[];
+  notableAchievements: string | null;
+  imageUrl: string | null;
+  waterways: ExplorerWaterwayDetail[];
 }
 
 // Indigenous nation type
 export interface IndigenousNation {
   id: string;
   name: string;
-  territory: string;
-  languages: string[];
-  description: string;
-}
-
-// Fur trade info type
-export interface FurTradeInfo {
-  id: string;
-  company: string;
-  tradingPeriod: string;
-  primaryGoods: string[];
-  significance: string;
+  alternateNames: string | null;
+  languageFamily: string | null;
+  traditionalTerritory: string | null;
+  culturalNotes: string | null;
 }
 
 // Map marker types for UI
