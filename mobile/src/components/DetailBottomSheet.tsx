@@ -2,10 +2,10 @@
 import React, { useCallback, useMemo, forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import { View, Text, ActivityIndicator, Image, Pressable } from 'react-native';
 import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
-import { Plus, MessageSquare, Camera, BookOpen, History } from 'lucide-react-native';
+import { Plus, MessageSquare, Camera, BookOpen, History, Compass } from 'lucide-react-native';
 import { useWaterwayDetail, useLocationDetail, useWaterwayContributions, useLocationContributions } from '@/lib/api/waterways-api';
 import ContributeModal from './ContributeModal';
-import type { MarkerType, WaterwayDetail, LocationDetail, UserContribution } from '@/lib/types/waterways';
+import type { MarkerType, WaterwayDetail, LocationDetail, UserContribution, ArchaeologicalDiscovery } from '@/lib/types/waterways';
 
 // Theme colors
 const colors = {
@@ -204,54 +204,165 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
               {/* Waterway-specific sections */}
               {markerType === 'waterway' && waterwayData ? (
                 <>
-                  {/* Explorers Section */}
+                  {/* Explorers Section with Timeline */}
                   {waterwayData.explorers && waterwayData.explorers.length > 0 ? (
                     <View className="mb-4">
                       <Text
                         className="text-lg font-bold mb-2"
-                        style={{ color: colors.waterBlue }}
+                        style={{ color: colors.forestGreen }}
                       >
                         Explorers Who Visited
                       </Text>
                       <View className="p-4 rounded-xl" style={{ backgroundColor: '#E6F3F8' }}>
-                        {waterwayData.explorers.map((explorerWaterway) => (
-                          <View key={explorerWaterway.id} className="flex-row items-center mb-3 last:mb-0">
-                            {explorerWaterway.explorer?.imageUrl ? (
-                              <Image
-                                source={{ uri: explorerWaterway.explorer.imageUrl }}
-                                className="w-12 h-12 rounded-full mr-3"
-                              />
-                            ) : (
-                              <View
-                                className="w-12 h-12 rounded-full mr-3 items-center justify-center"
-                                style={{ backgroundColor: colors.waterBlue }}
-                              >
-                                <Text className="text-white font-bold text-lg">
-                                  {explorerWaterway.explorer?.name?.charAt(0) || '?'}
-                                </Text>
-                              </View>
-                            )}
-                            <View className="flex-1">
-                              <Text className="font-semibold" style={{ color: '#333' }}>
-                                {explorerWaterway.explorer?.name || 'Unknown Explorer'}
-                              </Text>
-                              <Text className="text-sm text-gray-600">
-                                {explorerWaterway.explorer?.nationality || ''}
-                                {explorerWaterway.explorer?.birthYear && explorerWaterway.explorer?.deathYear
-                                  ? ` (${explorerWaterway.explorer.birthYear}-${explorerWaterway.explorer.deathYear})`
-                                  : ''}
-                              </Text>
+                        {waterwayData.explorers.map((explorerWaterway, index) => (
+                          <View key={explorerWaterway.id} className="flex-row mb-4 last:mb-0">
+                            {/* Timeline indicator */}
+                            <View className="items-center mr-3">
+                              {/* Year badge */}
                               {explorerWaterway.yearExplored ? (
-                                <Text className="text-xs text-gray-500">
-                                  Explored: {explorerWaterway.yearExplored}
-                                </Text>
-                              ) : null}
-                              {explorerWaterway.expeditionNotes ? (
-                                <Text className="text-xs italic text-gray-500 mt-1">
-                                  {explorerWaterway.expeditionNotes}
-                                </Text>
+                                <View
+                                  className="px-2 py-1 rounded-lg mb-2"
+                                  style={{ backgroundColor: colors.gold }}
+                                >
+                                  <Text className="text-white text-xs font-bold">
+                                    {explorerWaterway.yearExplored}
+                                  </Text>
+                                </View>
+                              ) : (
+                                <View
+                                  className="px-2 py-1 rounded-lg mb-2"
+                                  style={{ backgroundColor: colors.earthBrown }}
+                                >
+                                  <Text className="text-white text-xs font-bold">
+                                    N/A
+                                  </Text>
+                                </View>
+                              )}
+                              {/* Timeline line */}
+                              {index < waterwayData.explorers.length - 1 ? (
+                                <View
+                                  className="w-0.5 flex-1"
+                                  style={{ backgroundColor: colors.forestGreen, minHeight: 40 }}
+                                />
                               ) : null}
                             </View>
+                            {/* Explorer info */}
+                            <View className="flex-1 flex-row items-start">
+                              {explorerWaterway.explorer?.imageUrl ? (
+                                <Image
+                                  source={{ uri: explorerWaterway.explorer.imageUrl }}
+                                  className="w-12 h-12 rounded-full mr-3"
+                                />
+                              ) : (
+                                <View
+                                  className="w-12 h-12 rounded-full mr-3 items-center justify-center"
+                                  style={{ backgroundColor: colors.waterBlue }}
+                                >
+                                  <Text className="text-white font-bold text-lg">
+                                    {explorerWaterway.explorer?.name?.charAt(0) || '?'}
+                                  </Text>
+                                </View>
+                              )}
+                              <View className="flex-1">
+                                <Text className="font-semibold" style={{ color: '#333' }}>
+                                  {explorerWaterway.explorer?.name || 'Unknown Explorer'}
+                                </Text>
+                                <Text className="text-sm text-gray-600">
+                                  {explorerWaterway.explorer?.nationality || ''}
+                                  {explorerWaterway.explorer?.birthYear && explorerWaterway.explorer?.deathYear
+                                    ? ` (${explorerWaterway.explorer.birthYear}-${explorerWaterway.explorer.deathYear})`
+                                    : ''}
+                                </Text>
+                                {explorerWaterway.expeditionNotes ? (
+                                  <Text className="text-xs italic text-gray-500 mt-1">
+                                    {explorerWaterway.expeditionNotes}
+                                  </Text>
+                                ) : null}
+                              </View>
+                            </View>
+                          </View>
+                        ))}
+                      </View>
+                    </View>
+                  ) : null}
+
+                  {/* Archaeological Discoveries Section */}
+                  {waterwayData.discoveries && waterwayData.discoveries.length > 0 ? (
+                    <View className="mb-4">
+                      <Text
+                        className="text-lg font-bold mb-2"
+                        style={{ color: colors.forestGreen }}
+                      >
+                        Archaeological Discoveries
+                      </Text>
+                      <View className="p-4 rounded-xl" style={{ backgroundColor: '#FDF8F3' }}>
+                        {waterwayData.discoveries.map((discovery: ArchaeologicalDiscovery) => (
+                          <View key={discovery.id} className="mb-4 last:mb-0 pb-4 border-b border-gray-200 last:border-b-0 last:pb-0">
+                            {/* Discovery header with name and year */}
+                            <View className="flex-row items-center mb-2">
+                              <Compass size={18} color={colors.forestGreen} />
+                              <Text className="ml-2 font-semibold flex-1" style={{ color: '#333' }}>
+                                {discovery.name}
+                              </Text>
+                              <View
+                                className="px-2 py-1 rounded-lg"
+                                style={{ backgroundColor: colors.gold }}
+                              >
+                                <Text className="text-white text-xs font-bold">
+                                  {discovery.discoveryYear}
+                                </Text>
+                              </View>
+                            </View>
+
+                            {/* Description */}
+                            <Text className="text-sm text-gray-700 leading-5 mb-2">
+                              {discovery.description}
+                            </Text>
+
+                            {/* Related expedition and explorer */}
+                            {(discovery.relatedExpedition || discovery.relatedExplorerName) ? (
+                              <View
+                                className="p-2 rounded-lg mb-2"
+                                style={{ backgroundColor: '#FFF8E7' }}
+                              >
+                                <Text className="text-xs font-semibold" style={{ color: colors.earthBrown }}>
+                                  Historical Context
+                                </Text>
+                                {discovery.relatedExpedition ? (
+                                  <Text className="text-sm" style={{ color: '#555' }}>
+                                    Expedition: {discovery.relatedExpedition}
+                                    {discovery.expeditionYear ? ` (${discovery.expeditionYear})` : ''}
+                                  </Text>
+                                ) : null}
+                                {discovery.relatedExplorerName ? (
+                                  <Text className="text-sm" style={{ color: '#555' }}>
+                                    Explorer: {discovery.relatedExplorerName}
+                                  </Text>
+                                ) : null}
+                              </View>
+                            ) : null}
+
+                            {/* Significance */}
+                            <View className="mb-2">
+                              <Text className="text-xs font-semibold" style={{ color: colors.forestGreen }}>
+                                Significance
+                              </Text>
+                              <Text className="text-sm" style={{ color: '#333' }}>
+                                {discovery.significance}
+                              </Text>
+                            </View>
+
+                            {/* Sources */}
+                            {discovery.sources ? (
+                              <View>
+                                <Text className="text-xs font-semibold text-gray-500">
+                                  Sources
+                                </Text>
+                                <Text className="text-xs italic text-gray-500">
+                                  {discovery.sources}
+                                </Text>
+                              </View>
+                            ) : null}
                           </View>
                         ))}
                       </View>

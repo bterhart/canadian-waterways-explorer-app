@@ -9,6 +9,7 @@ import { explorersRouter } from "./routes/explorers";
 import { indigenousRouter } from "./routes/indigenous";
 import { contributionsRouter } from "./routes/contributions";
 import { adminRouter } from "./routes/admin";
+import { discoveriesRouter } from "./routes/discoveries";
 import { logger } from "hono/logger";
 
 const app = new Hono();
@@ -43,6 +44,7 @@ app.route("/api/explorers", explorersRouter);
 app.route("/api/indigenous", indigenousRouter);
 app.route("/api/contributions", contributionsRouter);
 app.route("/api/admin", adminRouter);
+app.route("/api/discoveries", discoveriesRouter);
 
 const port = Number(process.env.PORT) || 3000;
 

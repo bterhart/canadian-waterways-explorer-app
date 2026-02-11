@@ -44,6 +44,7 @@ model Waterway {
   furTradeInfo    FurTradeInfo?
   locations       Location[]
   contributions   UserContribution[]
+  discoveries     ArchaeologicalDiscovery[]
 
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
@@ -203,6 +204,35 @@ model AdminUser {
   role            String    @default("moderator") // "moderator", "admin", "superadmin"
 
   lastLoginAt     DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+// Archaeological discoveries related to historical expeditions
+model ArchaeologicalDiscovery {
+  id              String    @id @default(cuid())
+  name            String    // Name of discovery (e.g., "HMS Erebus Wreck")
+  discoveryYear   Int       // Year discovered
+  description     String    // Detailed description of what was found
+  significance    String    // Historical significance
+
+  // Related expedition/explorer info
+  relatedExpedition String? // Name of the expedition it relates to
+  relatedExplorerName String? // Explorer name if applicable
+  expeditionYear  Int?      // Year of the original expedition
+
+  // Location
+  latitude        Float?
+  longitude       Float?
+  locationDescription String? // Text description of location
+
+  // Related waterway
+  waterwayId      String?
+  waterway        Waterway? @relation(fields: [waterwayId], references: [id], onDelete: SetNull)
+
+  // Sources and further reading
+  sources         String?   // Archaeological sources/references
+
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 }

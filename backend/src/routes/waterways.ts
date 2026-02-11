@@ -93,6 +93,9 @@ waterwaysRouter.get("/:id", async (c) => {
       explorers: {
         include: {
           explorer: true
+        },
+        orderBy: {
+          yearExplored: "asc"
         }
       },
       furTradeInfo: true,
@@ -100,7 +103,8 @@ waterwaysRouter.get("/:id", async (c) => {
         include: {
           cartographer: true
         }
-      }
+      },
+      discoveries: true
     }
   });
 

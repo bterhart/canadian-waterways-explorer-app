@@ -62,6 +62,23 @@ export interface WaterwayLocation {
   cartographer: Cartographer | null;
 }
 
+// Archaeological discovery types
+export interface ArchaeologicalDiscovery {
+  id: string;
+  name: string;
+  discoveryYear: number;
+  description: string;
+  significance: string;
+  relatedExpedition: string | null;
+  relatedExplorerName: string | null;
+  expeditionYear: number | null;
+  latitude: number | null;
+  longitude: number | null;
+  locationDescription: string | null;
+  waterwayId: string | null;
+  sources: string | null;
+}
+
 export interface WaterwayDetail {
   id: string;
   name: string;
@@ -78,6 +95,7 @@ export interface WaterwayDetail {
   explorers: ExplorerWaterway[];
   furTradeInfo: FurTradeInfo | null;
   locations: WaterwayLocation[];
+  discoveries: ArchaeologicalDiscovery[];
 }
 
 // Location types
