@@ -238,3 +238,64 @@ export interface ContributionSubmission {
   waterwayId?: string;
   locationId?: string;
 }
+
+// Quiz types for RCGS Education
+export interface QuizOption {
+  id: string;
+  text: string;
+}
+
+export interface QuizQuestion {
+  id: string;
+  quizId: string;
+  questionText: string;
+  questionType: 'multiple_choice' | 'true_false';
+  options: QuizOption[];
+  correctAnswer?: string; // Only visible in admin or after attempt
+  explanation?: string;   // Only visible after attempt
+  sourceType?: string;
+  sourceId?: string;
+  orderIndex: number;
+  points: number;
+}
+
+export interface Quiz {
+  id: string;
+  title: string;
+  description: string | null;
+  gradeLevel: string | null;
+  difficulty: 'easy' | 'medium' | 'hard';
+  category: string;
+  isPublished: boolean;
+  questionCount?: number;
+  questions?: QuizQuestion[];
+}
+
+export interface QuizAttemptAnswer {
+  questionId: string;
+  selectedAnswer: string;
+}
+
+export interface QuizAttemptSubmission {
+  studentName?: string;
+  studentGrade?: string;
+  schoolName?: string;
+  answers: QuizAttemptAnswer[];
+}
+
+export interface QuizAttemptResult {
+  questionId: string;
+  selectedAnswer: string;
+  correctAnswer: string;
+  isCorrect: boolean;
+  explanation: string | null;
+}
+
+export interface QuizAttemptResponse {
+  score: number;
+  totalQuestions: number;
+  totalPoints: number;
+  maxPoints: number;
+  percentageScore: number;
+  results: QuizAttemptResult[];
+}

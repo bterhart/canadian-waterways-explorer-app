@@ -23,6 +23,10 @@ function RootLayoutNav({ colorScheme }: { colorScheme: 'light' | 'dark' | null |
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="quiz/[id]" options={{ headerShown: false }} />
+        <Stack.Screen name="admin/quizzes" options={{ headerShown: true }} />
+        <Stack.Screen name="admin/quiz-editor/new" options={{ headerShown: true }} />
+        <Stack.Screen name="admin/quiz-editor/[id]" options={{ headerShown: true }} />
       </Stack>
     </ThemeProvider>
   );

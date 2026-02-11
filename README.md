@@ -27,7 +27,16 @@ An interactive educational map app showcasing Canada's major waterways, their In
 ### Admin Panel
 - **Review Submissions**: View all pending user contributions
 - **Approve/Reject**: Admin can approve or reject submissions with notes
+- **Quiz Management**: Create, edit, and publish educational quizzes
 - **Default Admin**: email: admin@waterways.edu, password: admin123
+
+### RCGS Educational Quizzes
+- **Quiz Categories**: Explorers, Fur Trade, Maritime History, Indigenous Heritage, Geography, Archaeological Discoveries
+- **Grade Levels**: K-3, 4-6, 7-9, 10-12, and All
+- **Difficulty Levels**: Easy, Medium, Hard
+- **Multiple Choice**: Questions with 4 options and detailed explanations
+- **Instant Feedback**: Students see their score and correct answers after completing a quiz
+- **6 Sample Quizzes**: Pre-loaded with 36 questions covering Canadian history
 
 ### Map Legend
 - Blue - Rivers
@@ -164,3 +173,15 @@ An interactive educational map app showcasing Canada's major waterways, their In
 - `POST /api/admin/login` - Admin authentication
 - `GET /api/admin/contributions` - List pending contributions
 - `PATCH /api/admin/contributions/:id` - Approve or reject a contribution
+- `GET /api/admin/quizzes` - List all quizzes (including unpublished)
+- `POST /api/admin/quizzes` - Create a new quiz
+- `PATCH /api/admin/quizzes/:id` - Update a quiz
+- `DELETE /api/admin/quizzes/:id` - Delete a quiz
+- `POST /api/admin/quizzes/:id/questions` - Add a question to a quiz
+- `PATCH /api/admin/quizzes/:quizId/questions/:questionId` - Update a question
+- `DELETE /api/admin/quizzes/:quizId/questions/:questionId` - Delete a question
+
+### Quiz Endpoints
+- `GET /api/quizzes` - List published quizzes (supports category, gradeLevel, difficulty filters)
+- `GET /api/quizzes/:id` - Get quiz with questions (answers hidden)
+- `POST /api/quizzes/:id/attempt` - Submit quiz answers and get scored results

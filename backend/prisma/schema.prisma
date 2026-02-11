@@ -236,3 +236,95 @@ model ArchaeologicalDiscovery {
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 }
+
+// ==================== QUIZ SYSTEM FOR RCGS EDUCATION ====================
+
+// Quiz - a collection of questions for K-12 education
+model Quiz {
+  id              String    @id @default(cuid())
+  title           String    // Quiz title (e.g., "Explorers of the West Coast")
+  description     String?   // Description of the quiz
+
+  // Target audience
+  gradeLevel      String?   // e.g., "K-3", "4-6", "7-9", "10-12", "All"
+  difficulty      String    @default("medium") // "easy", "medium", "hard"
+
+  // Category/topic
+  category        String    // e.g., "Explorers", "Fur Trade", "Indigenous Heritage", "Geography", "Maritime History"
+
+  // Status
+  isPublished     Boolean   @default(false)
+
+  // Admin who created
+  createdById     String?
+
+  // Relations
+  questions       QuizQuestion[]
+  attempts        QuizAttempt[]
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+// QuizQuestion - individual multiple choice question
+model QuizQuestion {
+  id              String    @id @default(cuid())
+  quizId          String
+  quiz            Quiz      @relation(fields: [quizId], references: [id], onDelete: Cascade)
+
+  // Question content
+  questionText    String    // The question itself
+  questionType    String    @default("multiple_choice") // "multiple_choice", "true_false"
+
+  // Answer options (stored as JSON array)
+  // Format: [{"id": "a", "text": "Option A"}, {"id": "b", "text": "Option B"}, ...]
+  options         String    // JSON array of options
+
+  // Correct answer
+  correctAnswer   String    // The ID of the correct option (e.g., "a", "b", "c", "d")
+
+  // Explanation shown after answering
+  explanation     String?   // Why this answer is correct (educational context)
+
+  // Optional reference to source data
+  sourceType      String?   // "explorer", "waterway", "location", "discovery", "fur_trade"
+  sourceId        String?   // ID of the referenced entity
+
+  // Order in quiz
+  orderIndex      Int       @default(0)
+
+  // Points for this question
+  points          Int       @default(1)
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+// QuizAttempt - record of a student taking a quiz
+model QuizAttempt {
+  id              String    @id @default(cuid())
+  quizId          String
+  quiz            Quiz      @relation(fields: [quizId], references: [id], onDelete: Cascade)
+
+  // Student info (anonymous - no account required)
+  studentName     String?   // Optional name
+  studentGrade    String?   // Grade level
+  schoolName      String?   // Optional school name
+
+  // Results
+  score           Int       // Number of correct answers
+  totalQuestions  Int       // Total questions in quiz
+  totalPoints     Int       // Total points earned
+  maxPoints       Int       // Maximum possible points
+  percentageScore Float     // Percentage score
+
+  // Answers given (stored as JSON)
+  // Format: [{"questionId": "xxx", "selectedAnswer": "a", "isCorrect": true}, ...]
+  answers         String    // JSON array of answers
+
+  // Timing
+  startedAt       DateTime  @default(now())
+  completedAt     DateTime?
+
+  createdAt       DateTime  @default(now())
+}

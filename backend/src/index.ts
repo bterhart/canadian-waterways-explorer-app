@@ -10,6 +10,8 @@ import { indigenousRouter } from "./routes/indigenous";
 import { contributionsRouter } from "./routes/contributions";
 import { adminRouter } from "./routes/admin";
 import { discoveriesRouter } from "./routes/discoveries";
+import { quizzesRouter } from "./routes/quizzes";
+import { adminQuizzesRouter } from "./routes/admin-quizzes";
 import { logger } from "hono/logger";
 
 const app = new Hono();
@@ -45,6 +47,8 @@ app.route("/api/indigenous", indigenousRouter);
 app.route("/api/contributions", contributionsRouter);
 app.route("/api/admin", adminRouter);
 app.route("/api/discoveries", discoveriesRouter);
+app.route("/api/quizzes", quizzesRouter);
+app.route("/api/admin/quizzes", adminQuizzesRouter);
 
 const port = Number(process.env.PORT) || 3000;
 

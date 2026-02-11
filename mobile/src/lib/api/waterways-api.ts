@@ -11,6 +11,10 @@ import type {
   IndigenousNation,
   UserContribution,
   ContributionSubmission,
+  Quiz,
+  QuizQuestion,
+  QuizAttemptSubmission,
+  QuizAttemptResponse,
 } from '@/lib/types/waterways';
 
 // Query keys for cache management
@@ -191,5 +195,179 @@ export function useReviewContribution() {
   return useMutation({
     mutationFn: ({ id, status, adminNotes }: ReviewContributionPayload) =>
       api.patch<UserContribution>(`/api/admin/contributions/${id}`, { status, adminNotes }),
+  });
+}
+
+// Quiz query keys
+export const quizzesKeys = {
+  all: ['quizzes'] as const,
+  lists: () => [...quizzesKeys.all, 'list'] as const,
+  list: (filters?: QuizFilters) => [...quizzesKeys.lists(), filters] as const,
+  details: () => [...quizzesKeys.all, 'detail'] as const,
+  detail: (id: string) => [...quizzesKeys.details(), id] as const,
+};
+
+export const adminQuizzesKeys = {
+  all: ['admin-quizzes'] as const,
+  lists: () => [...adminQuizzesKeys.all, 'list'] as const,
+  list: () => [...adminQuizzesKeys.lists()] as const,
+  details: () => [...adminQuizzesKeys.all, 'detail'] as const,
+  detail: (id: string) => [...adminQuizzesKeys.details(), id] as const,
+  stats: () => [...adminQuizzesKeys.all, 'stats'] as const,
+};
+
+// Quiz filter types
+export interface QuizFilters {
+  category?: string;
+  gradeLevel?: string;
+  difficulty?: 'easy' | 'medium' | 'hard';
+}
+
+// Quiz stats type
+export interface QuizStats {
+  totalQuizzes: number;
+  publishedQuizzes: number;
+  totalAttempts: number;
+  averageScore: number;
+  byCategory: { category: string; count: number }[];
+  byDifficulty: { difficulty: string; count: number }[];
+}
+
+// Public quiz hooks
+export function useQuizzes(filters?: QuizFilters) {
+  const params = new URLSearchParams();
+  if (filters?.category) params.append('category', filters.category);
+  if (filters?.gradeLevel) params.append('gradeLevel', filters.gradeLevel);
+  if (filters?.difficulty) params.append('difficulty', filters.difficulty);
+  const queryString = params.toString();
+
+  return useQuery({
+    queryKey: [...quizzesKeys.lists(), queryString] as const,
+    queryFn: () => api.get<Quiz[]>(`/api/quizzes${queryString ? `?${queryString}` : ''}`),
+  });
+}
+
+export function useQuiz(id: string | null) {
+  return useQuery({
+    queryKey: quizzesKeys.detail(id ?? ''),
+    queryFn: () => api.get<Quiz>(`/api/quizzes/${id}`),
+    enabled: !!id,
+  });
+}
+
+export function useSubmitQuizAttempt() {
+  return useMutation({
+    mutationFn: ({ quizId, submission }: { quizId: string; submission: QuizAttemptSubmission }) =>
+      api.post<QuizAttemptResponse>(`/api/quizzes/${quizId}/attempt`, submission),
+  });
+}
+
+// Admin quiz hooks
+export function useAdminQuizzes() {
+  return useQuery({
+    queryKey: adminQuizzesKeys.list(),
+    queryFn: () => api.get<Quiz[]>('/api/admin/quizzes'),
+  });
+}
+
+export function useAdminQuiz(id: string | null) {
+  return useQuery({
+    queryKey: adminQuizzesKeys.detail(id ?? ''),
+    queryFn: () => api.get<Quiz>(`/api/admin/quizzes/${id}`),
+    enabled: !!id,
+  });
+}
+
+export interface CreateQuizPayload {
+  title: string;
+  description?: string;
+  gradeLevel?: string;
+  difficulty: 'easy' | 'medium' | 'hard';
+  category: string;
+  isPublished?: boolean;
+}
+
+export function useCreateQuiz() {
+  return useMutation({
+    mutationFn: (payload: CreateQuizPayload) =>
+      api.post<Quiz>('/api/admin/quizzes', payload),
+  });
+}
+
+export interface UpdateQuizPayload {
+  id: string;
+  title?: string;
+  description?: string;
+  gradeLevel?: string;
+  difficulty?: 'easy' | 'medium' | 'hard';
+  category?: string;
+  isPublished?: boolean;
+}
+
+export function useUpdateQuiz() {
+  return useMutation({
+    mutationFn: ({ id, ...payload }: UpdateQuizPayload) =>
+      api.patch<Quiz>(`/api/admin/quizzes/${id}`, payload),
+  });
+}
+
+export function useDeleteQuiz() {
+  return useMutation({
+    mutationFn: (id: string) => api.delete<void>(`/api/admin/quizzes/${id}`),
+  });
+}
+
+export interface AddQuizQuestionPayload {
+  quizId: string;
+  questionText: string;
+  questionType: 'multiple_choice' | 'true_false';
+  options: { id: string; text: string }[];
+  correctAnswer: string;
+  explanation?: string;
+  sourceType?: string;
+  sourceId?: string;
+  orderIndex?: number;
+  points?: number;
+}
+
+export function useAddQuizQuestion() {
+  return useMutation({
+    mutationFn: ({ quizId, ...payload }: AddQuizQuestionPayload) =>
+      api.post<QuizQuestion>(`/api/admin/quizzes/${quizId}/questions`, payload),
+  });
+}
+
+export interface UpdateQuizQuestionPayload {
+  quizId: string;
+  questionId: string;
+  questionText?: string;
+  questionType?: 'multiple_choice' | 'true_false';
+  options?: { id: string; text: string }[];
+  correctAnswer?: string;
+  explanation?: string;
+  sourceType?: string;
+  sourceId?: string;
+  orderIndex?: number;
+  points?: number;
+}
+
+export function useUpdateQuizQuestion() {
+  return useMutation({
+    mutationFn: ({ quizId, questionId, ...payload }: UpdateQuizQuestionPayload) =>
+      api.patch<QuizQuestion>(`/api/admin/quizzes/${quizId}/questions/${questionId}`, payload),
+  });
+}
+
+export function useDeleteQuizQuestion() {
+  return useMutation({
+    mutationFn: ({ quizId, questionId }: { quizId: string; questionId: string }) =>
+      api.delete<void>(`/api/admin/quizzes/${quizId}/questions/${questionId}`),
+  });
+}
+
+export function useQuizStats() {
+  return useQuery({
+    queryKey: adminQuizzesKeys.stats(),
+    queryFn: () => api.get<QuizStats>('/api/admin/quizzes/stats'),
   });
 }
