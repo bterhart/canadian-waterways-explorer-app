@@ -61,6 +61,9 @@ function RootLayoutNav({ colorScheme }: { colorScheme: 'light' | 'dark' | null |
         <Stack.Screen name="nearby-history" options={{ headerShown: true }} />
         {/* Achievements & Progress Screen */}
         <Stack.Screen name="achievements" options={{ headerShown: true }} />
+        {/* Notable Figures Screens */}
+        <Stack.Screen name="notable-figures/index" options={{ headerShown: true }} />
+        <Stack.Screen name="notable-figures/[id]" options={{ headerShown: true }} />
       </Stack>
     </ThemeProvider>
   );

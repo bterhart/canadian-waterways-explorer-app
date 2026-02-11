@@ -70,6 +70,9 @@ import type {
   NearbyWaterwaysResponse,
   NearbyLocationsResponse,
   HistoricalEventDetail,
+  // Notable Figures types
+  NotableFigureSummary,
+  NotableFigureDetail,
 } from '@/lib/types/education';
 
 // ============= Query Keys =============
@@ -1376,5 +1379,83 @@ export function useHistoricalEventDetail(id: string | null) {
     queryKey: nearbyHistoryKeys.detail(id ?? ''),
     queryFn: () => api.get<HistoricalEventDetail>(`/api/nearby-history/${id}`),
     enabled: !!id,
+  });
+}
+
+// ============= Notable Figures Query Keys =============
+
+export const notableFiguresKeys = {
+  all: ['notable-figures'] as const,
+  lists: () => [...notableFiguresKeys.all, 'list'] as const,
+  list: (filters?: { figureType?: string; nation?: string; search?: string }) =>
+    [...notableFiguresKeys.lists(), filters] as const,
+  featured: () => [...notableFiguresKeys.all, 'featured'] as const,
+  types: () => [...notableFiguresKeys.all, 'types'] as const,
+  nations: () => [...notableFiguresKeys.all, 'nations'] as const,
+  details: () => [...notableFiguresKeys.all, 'detail'] as const,
+  detail: (id: string) => [...notableFiguresKeys.details(), id] as const,
+  byExplorer: (explorerName: string) =>
+    [...notableFiguresKeys.all, 'by-explorer', explorerName] as const,
+};
+
+// ============= Notable Figures Hooks =============
+
+export function useNotableFigures(filters?: {
+  figureType?: string;
+  nation?: string;
+  search?: string;
+}) {
+  const params = new URLSearchParams();
+  if (filters?.figureType) params.append('figureType', filters.figureType);
+  if (filters?.nation) params.append('nation', filters.nation);
+  if (filters?.search) params.append('search', filters.search);
+  const queryString = params.toString();
+
+  return useQuery({
+    queryKey: [...notableFiguresKeys.list(filters), queryString] as const,
+    queryFn: () =>
+      api.get<NotableFigureSummary[]>(
+        `/api/notable-figures${queryString ? `?${queryString}` : ''}`
+      ),
+  });
+}
+
+export function useFeaturedNotableFigures() {
+  return useQuery({
+    queryKey: notableFiguresKeys.featured(),
+    queryFn: () => api.get<NotableFigureSummary[]>('/api/notable-figures/featured'),
+  });
+}
+
+export function useNotableFigureTypes() {
+  return useQuery({
+    queryKey: notableFiguresKeys.types(),
+    queryFn: () => api.get<string[]>('/api/notable-figures/types'),
+  });
+}
+
+export function useNotableFigureNations() {
+  return useQuery({
+    queryKey: notableFiguresKeys.nations(),
+    queryFn: () => api.get<string[]>('/api/notable-figures/nations'),
+  });
+}
+
+export function useNotableFigure(id: string | null) {
+  return useQuery({
+    queryKey: notableFiguresKeys.detail(id ?? ''),
+    queryFn: () => api.get<NotableFigureDetail>(`/api/notable-figures/${id}`),
+    enabled: !!id,
+  });
+}
+
+export function useNotableFiguresByExplorer(explorerName: string | null) {
+  return useQuery({
+    queryKey: notableFiguresKeys.byExplorer(explorerName ?? ''),
+    queryFn: () =>
+      api.get<NotableFigureSummary[]>(
+        `/api/notable-figures/by-explorer/${encodeURIComponent(explorerName ?? '')}`
+      ),
+    enabled: !!explorerName,
   });
 }

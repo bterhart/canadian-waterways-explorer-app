@@ -950,3 +950,38 @@ export interface NearbyLocationsResponse {
   radiusKm: number;
   totalFound: number;
 }
+
+// ============= Notable Figures Types =============
+
+export type FigureType = 'woman' | 'indigenous_leader' | 'guide' | 'interpreter' | 'trader';
+
+export interface AssociatedExplorer {
+  name: string;
+  relationship: string;
+}
+
+export interface NotableFigureSummary {
+  id: string;
+  name: string;
+  alternateNames: string | null;
+  birthYear: number | null;
+  deathYear: number | null;
+  nation: string | null;
+  figureType: string;
+  role: string;
+  imageUrl: string | null;
+  isFeatured: boolean;
+  activePeriodStart: number | null;
+  activePeriodEnd: number | null;
+}
+
+export interface NotableFigureDetail extends NotableFigureSummary {
+  birthPlace: string | null;
+  biography: string;
+  significance: string;
+  associatedExplorers: AssociatedExplorer[] | null;
+  achievements: string[] | null;
+  associatedLocations: string[] | null;
+  createdAt: string;
+  updatedAt: string;
+}

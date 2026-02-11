@@ -80,6 +80,14 @@ An interactive educational map app showcasing Canada's major waterways, their In
 - **Language Settings**: Switch languages in Settings
 - **French Immersion Ready**: Perfect for French immersion classrooms
 
+### Notable Figures - Women & Indigenous Leaders (NEW)
+- **Unsung Heroes**: Highlighting women and Indigenous leaders crucial to Canadian exploration
+- **Women in History**: Charlotte Small (David Thompson's wife), Thanadelthur, Marie-Anne Gaboury, Isabel Gunn
+- **Indigenous Leaders**: Matonabbee (guided Samuel Hearne), Saukamappee (hosted Peter Fidler), Akaitcho (guided John Franklin)
+- **Guides & Interpreters**: Tattannoeuck (Augustus), Keskarrah
+- **Detailed Biographies**: Full stories of their contributions and significance
+- **Explorer Connections**: See which explorers they worked with and how
+
 ### Map Legend
 - Blue - Rivers
 - Cyan - Lakes
@@ -266,4 +274,13 @@ An interactive educational map app showcasing Canada's major waterways, their In
 ### Nearby History Endpoints (NEW)
 - `GET /api/nearby-history` - Get historical events near coordinates
 - `GET /api/nearby-history/categories` - List event categories
+
+### Notable Figures Endpoints (NEW)
+- `GET /api/notable-figures` - List all notable figures (filter by figureType, nation)
+- `GET /api/notable-figures/:id` - Get figure details
+- `GET /api/notable-figures/featured` - Get featured figures
+- `GET /api/notable-figures/types` - List figure types
+- `GET /api/notable-figures/nations` - List nations represented
+- `GET /api/notable-figures/by-explorer/:name` - Get figures associated with an explorer
+
 

@@ -26,6 +26,7 @@ import {
   MapPin,
   Trophy,
   Flame,
+  Users,
 } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTranslation } from '@/lib/i18n';
@@ -211,6 +212,21 @@ export default function LearnHubScreen() {
             icon={<MapPin size={28} color="white" />}
             gradientColors={['#DC2626', '#991B1B'] as const}
             onPress={() => router.push('/nearby-history')}
+            isLarge
+          />
+        </View>
+      </View>
+
+      {/* Notable Figures Section */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>People in History</Text>
+        <View style={styles.cardsGrid}>
+          <FeatureCard
+            title="Notable Figures"
+            description="Women and Indigenous leaders who shaped Canadian history"
+            icon={<Users size={28} color="white" />}
+            gradientColors={['#8B5CF6', '#6D28D9'] as const}
+            onPress={() => router.push('/notable-figures')}
             isLarge
           />
         </View>

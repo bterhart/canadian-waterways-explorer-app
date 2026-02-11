@@ -15,6 +15,13 @@ Welcome to the Canadian Interactive Waterways Initiative - an immersive educatio
 6. [RCGS Educational Quizzes](#rcgs-educational-quizzes)
 7. [Admin Panel](#admin-panel)
 8. [Community Contributions](#community-contributions)
+9. [NEW: Gamification & Progress](#gamification--progress)
+10. [NEW: Indigenous Language Learning](#indigenous-language-learning)
+11. [NEW: Voyageur Journey Simulator](#voyageur-journey-simulator)
+12. [NEW: My Maps - Annotation Tools](#my-maps---annotation-tools)
+13. [NEW: What Happened Here?](#what-happened-here)
+14. [NEW: Notable Figures](#notable-figures)
+15. [NEW: Multi-Language Support](#multi-language-support)
 
 ---
 
@@ -427,6 +434,175 @@ Chronologically organized from Leif Erikson (c. 1000 AD) to Vilhjalmur Stefansso
 - Red Bay Basque Whaling Station (1978)
 - Franklin Expedition Graves (1850/1984)
 - HMS Investigator (2010)
+
+---
+
+## Gamification & Progress
+
+Track your learning journey and earn achievements!
+
+### My Progress Screen
+Access from the Learn tab to see:
+- **Explorer Rank**: Progress from "Apprentice Voyageur" to "Master Explorer"
+- **Total Points**: Earn points for all activities
+- **Daily Streak**: Build streaks by using the app daily
+- **Progress Stats**: Track waterways explored, quizzes completed, and more
+
+### Daily Challenges
+- New question every day
+- Earn bonus points for correct answers
+- Build your streak for consecutive days
+
+### Achievement Badges
+Earn badges in categories:
+- **Explorer**: For exploring waterways and locations
+- **Scholar**: For completing quizzes
+- **Voyageur**: For completing journeys
+- **Scribe**: For writing journal entries
+- **Linguist**: For learning Indigenous words
+- **Historian**: For reading documents
+
+---
+
+## Indigenous Language Learning
+
+Learn words from Canada's Indigenous languages.
+
+### Word of the Day
+- Featured Indigenous word with pronunciation
+- Phonetic spelling and meaning
+- Cultural context
+
+### Languages Available
+- **Cree**: missinaibi, maskwa, amisk, kisiskatchewan
+- **Ojibwe**: gichi-gami, mishigami, kitchi-sibi
+- **Inuktitut**: nuna, imiq, tuktu, nanuq
+- **Mi'kmaq**: sipu, samqwan, mu'in
+- **Dene**: dehcho, tu, sahtu
+
+### Vocabulary Quizzes
+Test your knowledge with quizzes for each language.
+
+### Traditional Stories
+Read stories from Indigenous perspectives about waterways and nature.
+
+---
+
+## Voyageur Journey Simulator
+
+Experience life as a voyageur in these interactive adventures!
+
+### Available Journeys
+
+**The Grand Portage Route (Grade 4-6)**
+- Travel from Montreal to Fort William
+- Make decisions about routes, storms, and trading
+- Learn voyageur songs like "En Roulant Ma Boule"
+- Experience 18-hour paddle days
+
+**Race to the Pacific (Grade 7-9)**
+- Follow Alexander Mackenzie's 1793 expedition
+- Navigate dangerous rapids
+- Work with Indigenous guides
+- Reach the Pacific Ocean
+
+### How to Play
+1. Open "Voyageur Adventures" from the Learn tab
+2. Choose a journey
+3. Read the story and make choices
+4. See consequences of your decisions
+5. Learn historical facts along the way
+
+---
+
+## My Maps - Annotation Tools
+
+Create your own annotated maps of Canadian waterways.
+
+### Tools Available
+- **Pin Tool**: Add custom markers with titles and descriptions
+- **Route Tool**: Draw routes tracing explorer paths
+- **Note Tool**: Add text notes anywhere on the map
+- **Eraser Tool**: Remove annotations
+
+### Features
+- **8 Colors**: Customize your annotations
+- **Share Codes**: Share maps with classmates
+- **Export**: Save your map data
+
+### Classroom Ideas
+- Trace a fur trade route from Montreal to the Rockies
+- Mark all the HBC vs NWC posts
+- Create a map of Indigenous territories
+
+---
+
+## What Happened Here?
+
+Discover historical events near your location!
+
+### How to Use
+1. Open "What Happened Here?" from the Learn tab
+2. Allow location access
+3. Choose a search radius (5km to 100km)
+4. Filter by category if desired
+5. See historical events sorted by distance
+
+### Categories
+- Exploration
+- Fur Trade
+- Indigenous History
+- Settlement
+- Battle
+- Treaty
+
+### Perfect For
+- School field trips
+- Family outings
+- Discovering local history
+
+---
+
+## Notable Figures
+
+Meet the women and Indigenous leaders who shaped Canadian history.
+
+### Featured Women
+- **Charlotte Small (c. 1785-1857)**: Métis wife of David Thompson, traveled thousands of miles during expeditions
+- **Thanadelthur (c. 1697-1717)**: Chipewyan peacemaker who helped James Knight and William Stuart
+- **Marie-Anne Gaboury (1780-1875)**: First European woman to travel to the Canadian Northwest
+- **Isabel Gunn (c. 1780-1861)**: Disguised as a man to work for HBC
+
+### Indigenous Leaders & Guides
+- **Matonabbee (c. 1737-1782)**: Led Samuel Hearne to the Arctic Ocean
+- **Saukamappee (c. 1700-c. 1790)**: Hosted David Thompson and Peter Fidler, shared invaluable oral history
+- **Akaitcho (c. 1786-1838)**: Guided John Franklin's first Arctic expedition
+- **Tattannoeuck (Augustus)**: Inuit interpreter for Franklin expeditions
+
+### Why This Matters
+These figures were essential to exploration success but often overlooked in traditional histories. Their knowledge, skills, and relationships made expeditions possible.
+
+---
+
+## Multi-Language Support
+
+The app is available in English and French.
+
+### How to Change Language
+1. Go to the Learn tab
+2. Tap the Settings gear icon
+3. Select "Language"
+4. Choose English or French
+5. The app will update immediately
+
+### French Translations Include
+- All navigation and buttons
+- Map labels and legends
+- Quiz questions and answers
+- Educational content
+- Teacher portal
+
+Perfect for French immersion classrooms!
 
 ---
 

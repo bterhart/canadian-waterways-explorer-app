@@ -1245,3 +1245,51 @@ model MapNote {
 
   createdAt       DateTime  @default(now())
 }
+
+// ==================== NOTABLE FIGURES ====================
+
+// NotableFigure - women, Indigenous leaders, and other important historical figures
+model NotableFigure {
+  id              String    @id @default(cuid())
+  name            String    // e.g., "Charlotte Small", "Thanadelthur", "Matonabbee"
+  alternateNames  String?   // Other spellings or names (e.g., "Saukamappee" for Saukamappe)
+
+  // Demographics
+  birthYear       Int?
+  deathYear       Int?
+  nation          String?   // Indigenous nation if applicable (e.g., "Cree", "Chipewyan", "Piikani")
+  birthPlace      String?
+
+  // Role and significance
+  figureType      String    // "woman", "indigenous_leader", "guide", "interpreter", "trader"
+  role            String    // Brief role description (e.g., "Wife and partner of David Thompson", "Peacemaker and guide")
+  biography       String    // Full biography
+  significance    String    // Historical significance and contributions
+
+  // Connections to explorers
+  associatedExplorers String? // JSON array of explorer names/IDs they worked with
+  // e.g., [{"name": "David Thompson", "relationship": "wife and travel companion"}, ...]
+
+  // Key events/achievements
+  achievements    String?   // JSON array of key achievements
+  // e.g., ["Brokered peace between Cree and Chipewyan", "Guided expedition to Arctic"]
+
+  // Locations associated with this person
+  associatedLocations String? // JSON array of location names
+
+  // Time period active
+  activePeriodStart Int?
+  activePeriodEnd   Int?
+
+  // Media
+  imageUrl        String?
+
+  // Featured status
+  isFeatured      Boolean   @default(false)
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([figureType])
+  @@index([nation])
+}

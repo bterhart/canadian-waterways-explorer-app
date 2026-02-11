@@ -31,6 +31,7 @@ import { gamificationRouter } from "./routes/gamification";
 import { voyageurJourneyRouter } from "./routes/voyageur-journey";
 import { mapAnnotationsRouter } from "./routes/map-annotations";
 import { nearbyHistoryRouter } from "./routes/nearby-history";
+import { notableFiguresRouter } from "./routes/notable-figures";
 import { logger } from "hono/logger";
 
 const app = new Hono();
@@ -89,6 +90,7 @@ app.route("/api/gamification", gamificationRouter);
 app.route("/api/voyageur-journeys", voyageurJourneyRouter);
 app.route("/api/map-annotations", mapAnnotationsRouter);
 app.route("/api/nearby-history", nearbyHistoryRouter);
+app.route("/api/notable-figures", notableFiguresRouter);
 
 const port = Number(process.env.PORT) || 3000;
 
