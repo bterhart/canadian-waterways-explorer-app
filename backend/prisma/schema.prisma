@@ -1,0 +1,152 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Waterway types: river, lake, strait, bay, etc.
+model WaterwayType {
+  id        String     @id @default(cuid())
+  name      String     @unique // "River", "Lake", "Bay", "Strait", etc.
+  waterways Waterway[]
+}
+
+// Main waterway entity (rivers, lakes, etc.)
+model Waterway {
+  id              String        @id @default(cuid())
+  name            String        // English name
+  indigenousName  String?       // Indigenous/Aboriginal name
+  indigenousLanguage String?    // Language of indigenous name (e.g., "Cree", "Ojibwe")
+  description     String        // General description
+
+  // Geographic data
+  latitude        Float         // Center point latitude
+  longitude       Float         // Center point longitude
+  regionName      String        // Province or territory
+
+  // Type relation
+  typeId          String
+  type            WaterwayType  @relation(fields: [typeId], references: [id])
+
+  // Historical significance
+  historicalSignificance String? // Historical importance summary
+
+  // Relations
+  explorers       ExplorerWaterway[]
+  furTradeInfo    FurTradeInfo?
+  locations       Location[]
+
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
+
+// Notable locations on waterways (forts, portages, trading posts, etc.)
+model Location {
+  id              String    @id @default(cuid())
+  name            String
+  indigenousName  String?
+  indigenousLanguage String?
+  description     String
+
+  // Geographic
+  latitude        Float
+  longitude       Float
+
+  // Type: "Fort", "Trading Post", "Portage", "Settlement", "Cultural Site"
+  locationType    String
+
+  // Historical info
+  yearEstablished Int?
+  historicalNotes String?
+
+  // Relation to waterway
+  waterwayId      String
+  waterway        Waterway  @relation(fields: [waterwayId], references: [id], onDelete: Cascade)
+
+  // Cartographer who mapped this
+  cartographerId  String?
+  cartographer    Cartographer? @relation(fields: [cartographerId], references: [id])
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+// Historical explorers
+model Explorer {
+  id              String    @id @default(cuid())
+  name            String
+  birthYear       Int?
+  deathYear       Int?
+  nationality     String?
+  biography       String    // Short biography
+  notableAchievements String? // Key achievements
+  imageUrl        String?   // Portrait image
+
+  // Relations
+  waterways       ExplorerWaterway[]
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+// Many-to-many: Explorer <-> Waterway with exploration details
+model ExplorerWaterway {
+  id              String    @id @default(cuid())
+  explorerId      String
+  explorer        Explorer  @relation(fields: [explorerId], references: [id], onDelete: Cascade)
+  waterwayId      String
+  waterway        Waterway  @relation(fields: [waterwayId], references: [id], onDelete: Cascade)
+
+  yearExplored    Int?      // Year of exploration
+  expeditionNotes String?   // Notes about this specific exploration
+
+  @@unique([explorerId, waterwayId])
+}
+
+// Fur trade information for waterways
+model FurTradeInfo {
+  id              String    @id @default(cuid())
+  waterwayId      String    @unique
+  waterway        Waterway  @relation(fields: [waterwayId], references: [id], onDelete: Cascade)
+
+  tradingCompany  String?   // "Hudson's Bay Company", "North West Company", etc.
+  peakTradePeriod String?   // e.g., "1780-1821"
+  primaryFurs     String?   // "Beaver, Marten, Otter"
+  tradeRouteNotes String?   // Description of trade route significance
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+// Historical cartographers
+model Cartographer {
+  id              String    @id @default(cuid())
+  name            String
+  birthYear       Int?
+  deathYear       Int?
+  nationality     String?
+  biography       String?
+  notableMaps     String?   // Description of notable maps created
+
+  // Locations they mapped
+  locations       Location[]
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+// Indigenous nations and their territories (for cultural significance)
+model IndigenousNation {
+  id              String    @id @default(cuid())
+  name            String    // Nation name
+  alternateNames  String?   // Other names/spellings
+  languageFamily  String?   // e.g., "Algonquian", "Iroquoian", "Athapaskan"
+  traditionalTerritory String? // Description of traditional lands
+  culturalNotes   String?   // Cultural significance of waterways
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
