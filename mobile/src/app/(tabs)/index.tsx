@@ -1,7 +1,7 @@
 // Interactive Map Screen for Canadian Waterways Education
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useMemo, useEffect } from 'react';
 import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
-import MapView, { Marker, Callout, PROVIDER_DEFAULT, Region } from 'react-native-maps';
+import MapView, { Marker, Callout, PROVIDER_DEFAULT, Region, Polyline, Polygon } from 'react-native-maps';
 import { useWaterways, useLocations } from '@/lib/api/waterways-api';
 import DetailBottomSheet, { DetailBottomSheetRef } from '@/components/DetailBottomSheet';
 import type { MarkerType, Waterway, Location } from '@/lib/types/waterways';
@@ -33,6 +33,44 @@ const getMarkerColor = (typeName: string): string => {
   return markerColors[typeName] || '#6B7280';
 };
 
+// Parse boundary coordinates from JSON string
+const parseBoundaryCoordinates = (coordsString: string | null): { latitude: number; longitude: number }[] => {
+  if (!coordsString) return [];
+  try {
+    const coords = JSON.parse(coordsString) as [number, number][];
+    return coords.map(([lat, lng]) => ({ latitude: lat, longitude: lng }));
+  } catch {
+    return [];
+  }
+};
+
+// Calculate region to fit coordinates
+const getRegionForCoordinates = (coordinates: { latitude: number; longitude: number }[]): Region | null => {
+  if (coordinates.length === 0) return null;
+
+  let minLat = coordinates[0].latitude;
+  let maxLat = coordinates[0].latitude;
+  let minLng = coordinates[0].longitude;
+  let maxLng = coordinates[0].longitude;
+
+  coordinates.forEach(coord => {
+    minLat = Math.min(minLat, coord.latitude);
+    maxLat = Math.max(maxLat, coord.latitude);
+    minLng = Math.min(minLng, coord.longitude);
+    maxLng = Math.max(maxLng, coord.longitude);
+  });
+
+  const latDelta = (maxLat - minLat) * 1.5 || 2;
+  const lngDelta = (maxLng - minLng) * 1.5 || 2;
+
+  return {
+    latitude: (minLat + maxLat) / 2,
+    longitude: (minLng + maxLng) / 2,
+    latitudeDelta: Math.max(latDelta, 1),
+    longitudeDelta: Math.max(lngDelta, 1),
+  };
+};
+
 export default function MapScreen() {
   const { data: waterways, isLoading: waterwaysLoading, isError: waterwaysError } = useWaterways();
   const { data: locations, isLoading: locationsLoading, isError: locationsError } = useLocations();
@@ -47,6 +85,38 @@ export default function MapScreen() {
 
   const isLoading = waterwaysLoading || locationsLoading;
   const isError = waterwaysError || locationsError;
+
+  // Find selected waterway for highlighting
+  const selectedWaterway = useMemo(() => {
+    if (!selectedMarker || selectedMarker.type !== 'waterway') return null;
+    return waterways?.find(w => w.id === selectedMarker.id) || null;
+  }, [selectedMarker, waterways]);
+
+  // Parse boundary coordinates for the selected waterway
+  const boundaryCoordinates = useMemo(() => {
+    if (!selectedWaterway?.boundaryCoordinates) return [];
+    return parseBoundaryCoordinates(selectedWaterway.boundaryCoordinates);
+  }, [selectedWaterway]);
+
+  // Animate to waterway when selected
+  useEffect(() => {
+    if (selectedMarker?.type === 'waterway' && boundaryCoordinates.length > 0) {
+      const region = getRegionForCoordinates(boundaryCoordinates);
+      if (region && mapRef.current) {
+        mapRef.current.animateToRegion(region, 500);
+      }
+    } else if (selectedMarker?.type === 'location') {
+      const location = locations?.find(l => l.id === selectedMarker.id);
+      if (location && mapRef.current) {
+        mapRef.current.animateToRegion({
+          latitude: location.latitude,
+          longitude: location.longitude,
+          latitudeDelta: 2,
+          longitudeDelta: 2,
+        }, 500);
+      }
+    }
+  }, [selectedMarker, boundaryCoordinates, locations]);
 
   const handleCalloutPress = useCallback((id: string, type: MarkerType) => {
     setSelectedMarker({ id, type });
@@ -158,6 +228,28 @@ export default function MapScreen() {
 
         {/* Location markers */}
         {locations?.map(renderLocationMarker)}
+
+        {/* Boundary highlight for selected waterway */}
+        {boundaryCoordinates.length > 0 && selectedWaterway ? (
+          selectedWaterway.type?.name === 'Lake' || selectedWaterway.type?.name === 'Bay' ? (
+            // Lakes and bays use polygon (closed shape with fill)
+            <Polygon
+              coordinates={boundaryCoordinates}
+              strokeColor={getMarkerColor(selectedWaterway.type?.name || 'Lake')}
+              strokeWidth={3}
+              fillColor={`${getMarkerColor(selectedWaterway.type?.name || 'Lake')}40`}
+            />
+          ) : (
+            // Rivers use polyline (path without fill)
+            <Polyline
+              coordinates={boundaryCoordinates}
+              strokeColor={getMarkerColor(selectedWaterway.type?.name || 'River')}
+              strokeWidth={5}
+              lineCap="round"
+              lineJoin="round"
+            />
+          )
+        ) : null}
       </MapView>
 
       {/* Legend */}

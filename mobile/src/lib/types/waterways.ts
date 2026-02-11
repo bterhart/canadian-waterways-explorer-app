@@ -15,6 +15,7 @@ export interface Waterway {
   latitude: number;
   longitude: number;
   regionName: string;
+  boundaryCoordinates: string | null;
   type: {
     name: string;
   };
@@ -72,6 +73,7 @@ export interface WaterwayDetail {
   regionName: string;
   typeId: string;
   historicalSignificance: string | null;
+  boundaryCoordinates: string | null;
   type: WaterwayTypeInfo;
   explorers: ExplorerWaterway[];
   furTradeInfo: FurTradeInfo | null;
@@ -181,4 +183,40 @@ export interface MapMarker {
   indigenousName: string | null;
   latitude: number;
   longitude: number;
+}
+
+// User contribution types
+export type ContributionType = 'photo' | 'description' | 'historical_fact' | 'story';
+export type ContributionStatus = 'pending' | 'approved' | 'rejected';
+
+export interface UserContribution {
+  id: string;
+  contributionType: ContributionType;
+  title: string;
+  content: string;
+  imageUrl: string | null;
+  contributorName: string | null;
+  waterwayId: string | null;
+  locationId: string | null;
+  status: ContributionStatus;
+  createdAt: string;
+  waterway?: {
+    id: string;
+    name: string;
+  };
+  location?: {
+    id: string;
+    name: string;
+  };
+}
+
+export interface ContributionSubmission {
+  contributionType: ContributionType;
+  title: string;
+  content: string;
+  imageUrl?: string;
+  contributorName?: string;
+  contributorEmail?: string;
+  waterwayId?: string;
+  locationId?: string;
 }

@@ -27,6 +27,11 @@ model Waterway {
   longitude       Float         // Center point longitude
   regionName      String        // Province or territory
 
+  // Boundary coordinates stored as JSON string [[lat, lng], [lat, lng], ...]
+  // For rivers: polyline following the river path
+  // For lakes: polygon outline of the lake
+  boundaryCoordinates String?   // JSON array of coordinate pairs
+
   // Type relation
   typeId          String
   type            WaterwayType  @relation(fields: [typeId], references: [id])
@@ -38,6 +43,7 @@ model Waterway {
   explorers       ExplorerWaterway[]
   furTradeInfo    FurTradeInfo?
   locations       Location[]
+  contributions   UserContribution[]
 
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
@@ -69,6 +75,9 @@ model Location {
   // Cartographer who mapped this
   cartographerId  String?
   cartographer    Cartographer? @relation(fields: [cartographerId], references: [id])
+
+  // User contributions
+  contributions   UserContribution[]
 
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
@@ -147,6 +156,53 @@ model IndigenousNation {
   traditionalTerritory String? // Description of traditional lands
   culturalNotes   String?   // Cultural significance of waterways
 
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+// ==================== USER CONTRIBUTION SYSTEM ====================
+
+// User contributions - photos, descriptions, historical info
+model UserContribution {
+  id              String    @id @default(cuid())
+
+  // What type of contribution
+  contributionType String   // "photo", "description", "historical_fact", "story"
+
+  // Content
+  title           String
+  content         String    // Description or text content
+  imageUrl        String?   // URL to uploaded image (if photo)
+
+  // Contributor info (anonymous allowed)
+  contributorName String?   // Optional name
+  contributorEmail String?  // For follow-up (not displayed)
+
+  // Related to waterway or location
+  waterwayId      String?
+  waterway        Waterway? @relation(fields: [waterwayId], references: [id], onDelete: Cascade)
+  locationId      String?
+  location        Location? @relation(fields: [locationId], references: [id], onDelete: Cascade)
+
+  // Moderation
+  status          String    @default("pending") // "pending", "approved", "rejected"
+  adminNotes      String?   // Notes from admin about rejection reason, etc.
+  reviewedAt      DateTime?
+  reviewedBy      String?   // Admin who reviewed
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+// Admin users for content moderation
+model AdminUser {
+  id              String    @id @default(cuid())
+  email           String    @unique
+  name            String
+  passwordHash    String    // Hashed password
+  role            String    @default("moderator") // "moderator", "admin", "superadmin"
+
+  lastLoginAt     DateTime?
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 }

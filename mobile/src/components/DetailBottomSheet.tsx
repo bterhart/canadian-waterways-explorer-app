@@ -1,9 +1,11 @@
 // Bottom sheet component for displaying waterway and location details
-import React, { useCallback, useMemo, forwardRef, useImperativeHandle, useRef } from 'react';
-import { View, Text, ActivityIndicator, Image } from 'react-native';
+import React, { useCallback, useMemo, forwardRef, useImperativeHandle, useRef, useState } from 'react';
+import { View, Text, ActivityIndicator, Image, Pressable } from 'react-native';
 import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
-import { useWaterwayDetail, useLocationDetail } from '@/lib/api/waterways-api';
-import type { MarkerType, WaterwayDetail, LocationDetail } from '@/lib/types/waterways';
+import { Plus, MessageSquare, Camera, BookOpen, History } from 'lucide-react-native';
+import { useWaterwayDetail, useLocationDetail, useWaterwayContributions, useLocationContributions } from '@/lib/api/waterways-api';
+import ContributeModal from './ContributeModal';
+import type { MarkerType, WaterwayDetail, LocationDetail, UserContribution } from '@/lib/types/waterways';
 
 // Theme colors
 const colors = {
@@ -32,6 +34,7 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
   ({ markerId, markerType, onClose }, ref) => {
     const bottomSheetRef = useRef<BottomSheet>(null);
     const snapPoints = useMemo(() => ['50%', '85%'], []);
+    const [showContributeModal, setShowContributeModal] = useState(false);
 
     // Fetch data based on marker type
     const { data: waterwayData, isLoading: waterwayLoading } = useWaterwayDetail(
@@ -41,8 +44,34 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
       markerType === 'location' ? markerId : null
     );
 
+    // Fetch contributions
+    const { data: waterwayContributions } = useWaterwayContributions(
+      markerType === 'waterway' ? markerId : null
+    );
+    const { data: locationContributions } = useLocationContributions(
+      markerType === 'location' ? markerId : null
+    );
+
+    const contributions = markerType === 'waterway' ? waterwayContributions : locationContributions;
+
     const isLoading = waterwayLoading || locationLoading;
     const data: WaterwayDetail | LocationDetail | undefined = markerType === 'waterway' ? waterwayData : locationData;
+
+    // Get icon for contribution type
+    const getContributionIcon = (type: string) => {
+      switch (type) {
+        case 'photo':
+          return <Camera size={16} color={colors.waterBlue} />;
+        case 'description':
+          return <MessageSquare size={16} color={colors.waterBlue} />;
+        case 'historical_fact':
+          return <History size={16} color={colors.waterBlue} />;
+        case 'story':
+          return <BookOpen size={16} color={colors.waterBlue} />;
+        default:
+          return <MessageSquare size={16} color={colors.waterBlue} />;
+      }
+    };
 
     useImperativeHandle(ref, () => ({
       expand: () => bottomSheetRef.current?.expand(),
@@ -350,6 +379,50 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                   ) : null}
                 </>
               ) : null}
+
+              {/* Community Contributions Section */}
+              {contributions && contributions.length > 0 ? (
+                <View className="mb-4">
+                  <Text
+                    className="text-lg font-bold mb-2"
+                    style={{ color: colors.forestGreen }}
+                  >
+                    Community Contributions
+                  </Text>
+                  <View className="p-4 rounded-xl" style={{ backgroundColor: '#F0FDF4' }}>
+                    {contributions.map((contribution: UserContribution) => (
+                      <View key={contribution.id} className="mb-4 last:mb-0 pb-4 border-b border-gray-200 last:border-b-0 last:pb-0">
+                        <View className="flex-row items-center mb-2">
+                          {getContributionIcon(contribution.contributionType)}
+                          <Text className="ml-2 font-semibold" style={{ color: '#333' }}>
+                            {contribution.title}
+                          </Text>
+                        </View>
+                        <Text className="text-sm text-gray-700 leading-5">
+                          {contribution.content}
+                        </Text>
+                        {contribution.contributorName ? (
+                          <Text className="text-xs text-gray-500 mt-2 italic">
+                            — {contribution.contributorName}
+                          </Text>
+                        ) : null}
+                      </View>
+                    ))}
+                  </View>
+                </View>
+              ) : null}
+
+              {/* Contribute Button */}
+              <Pressable
+                className="flex-row items-center justify-center py-4 rounded-xl mt-2"
+                style={{ backgroundColor: colors.forestGreen }}
+                onPress={() => setShowContributeModal(true)}
+              >
+                <Plus size={20} color="white" />
+                <Text className="text-white font-semibold ml-2">
+                  Add Your Contribution
+                </Text>
+              </Pressable>
             </>
           ) : (
             <View className="py-20 items-center">
@@ -357,6 +430,16 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
             </View>
           )}
         </BottomSheetScrollView>
+
+        {/* Contribute Modal */}
+        <ContributeModal
+          visible={showContributeModal}
+          onClose={() => setShowContributeModal(false)}
+          waterwayId={markerType === 'waterway' ? markerId || undefined : undefined}
+          locationId={markerType === 'location' ? markerId || undefined : undefined}
+          waterwayName={markerType === 'waterway' ? data?.name : undefined}
+          locationName={markerType === 'location' ? data?.name : undefined}
+        />
       </BottomSheet>
     );
   }

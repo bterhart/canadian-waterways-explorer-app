@@ -1,6 +1,6 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
-import { Map, Compass } from 'lucide-react-native';
+import { Map, Compass, Shield } from 'lucide-react-native';
 import { useColorScheme } from '@/lib/useColorScheme';
 import { useClientOnlyValue } from '@/lib/useClientOnlyValue';
 
@@ -65,6 +65,20 @@ export default function TabLayout() {
           headerTitle: 'Explorers',
           tabBarIcon: ({ color, focused }) => (
             <Compass
+              size={focused ? 26 : 24}
+              color={color}
+              strokeWidth={focused ? 2.5 : 2}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="admin"
+        options={{
+          title: 'Admin',
+          headerTitle: 'Admin Panel',
+          tabBarIcon: ({ color, focused }) => (
+            <Shield
               size={focused ? 26 : 24}
               color={color}
               strokeWidth={focused ? 2.5 : 2}
