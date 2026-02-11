@@ -27,6 +27,27 @@ function RootLayoutNav({ colorScheme }: { colorScheme: 'light' | 'dark' | null |
         <Stack.Screen name="admin/quizzes" options={{ headerShown: true }} />
         <Stack.Screen name="admin/quiz-editor/new" options={{ headerShown: true }} />
         <Stack.Screen name="admin/quiz-editor/[id]" options={{ headerShown: true }} />
+        {/* Educational Feature Screens */}
+        <Stack.Screen name="lessons/index" options={{ headerShown: true }} />
+        <Stack.Screen name="lessons/[id]" options={{ headerShown: true }} />
+        <Stack.Screen name="timeline" options={{ headerShown: true }} />
+        <Stack.Screen name="field-trips/index" options={{ headerShown: true }} />
+        <Stack.Screen name="field-trips/[id]" options={{ headerShown: true }} />
+        <Stack.Screen name="documents/index" options={{ headerShown: true }} />
+        <Stack.Screen name="documents/[id]" options={{ headerShown: true }} />
+        <Stack.Screen name="comparisons/index" options={{ headerShown: true }} />
+        <Stack.Screen name="comparisons/[id]" options={{ headerShown: true }} />
+        <Stack.Screen name="pronunciations" options={{ headerShown: true }} />
+        <Stack.Screen name="journal/index" options={{ headerShown: true }} />
+        <Stack.Screen name="journal/entry/[id]" options={{ headerShown: true }} />
+        <Stack.Screen name="printables" options={{ headerShown: true }} />
+        {/* Teacher Portal Screens */}
+        <Stack.Screen name="teacher/login" options={{ headerShown: true }} />
+        <Stack.Screen name="teacher/register" options={{ headerShown: true }} />
+        <Stack.Screen name="teacher/dashboard" options={{ headerShown: true }} />
+        <Stack.Screen name="teacher/class/new" options={{ headerShown: true }} />
+        <Stack.Screen name="teacher/class/[id]" options={{ headerShown: true }} />
+        <Stack.Screen name="teacher/assignment/new" options={{ headerShown: true }} />
       </Stack>
     </ThemeProvider>
   );

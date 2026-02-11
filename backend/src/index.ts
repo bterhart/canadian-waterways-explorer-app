@@ -12,6 +12,20 @@ import { adminRouter } from "./routes/admin";
 import { discoveriesRouter } from "./routes/discoveries";
 import { quizzesRouter } from "./routes/quizzes";
 import { adminQuizzesRouter } from "./routes/admin-quizzes";
+import { lessonPlansRouter } from "./routes/lesson-plans";
+import { adminLessonPlansRouter } from "./routes/admin-lesson-plans";
+import { timelineRouter } from "./routes/timeline";
+import { fieldTripsRouter } from "./routes/field-trips";
+import { adminFieldTripsRouter } from "./routes/admin-field-trips";
+import { documentsRouter } from "./routes/documents";
+import { adminDocumentsRouter } from "./routes/admin-documents";
+import { comparisonsRouter } from "./routes/comparisons";
+import { journalsRouter } from "./routes/journals";
+import { teachersRouter } from "./routes/teachers";
+import { classesRouter } from "./routes/classes";
+import { printablesRouter } from "./routes/printables";
+import { adminPrintablesRouter } from "./routes/admin-printables";
+import { pronunciationsRouter } from "./routes/pronunciations";
 import { logger } from "hono/logger";
 
 const app = new Hono();
@@ -49,6 +63,22 @@ app.route("/api/admin", adminRouter);
 app.route("/api/discoveries", discoveriesRouter);
 app.route("/api/quizzes", quizzesRouter);
 app.route("/api/admin/quizzes", adminQuizzesRouter);
+
+// Educational features routes
+app.route("/api/lesson-plans", lessonPlansRouter);
+app.route("/api/admin/lesson-plans", adminLessonPlansRouter);
+app.route("/api/timeline", timelineRouter);
+app.route("/api/field-trips", fieldTripsRouter);
+app.route("/api/admin/field-trips", adminFieldTripsRouter);
+app.route("/api/documents", documentsRouter);
+app.route("/api/admin/documents", adminDocumentsRouter);
+app.route("/api/comparisons", comparisonsRouter);
+app.route("/api/journals", journalsRouter);
+app.route("/api/teachers", teachersRouter);
+app.route("/api/classes", classesRouter);
+app.route("/api/printables", printablesRouter);
+app.route("/api/admin/printables", adminPrintablesRouter);
+app.route("/api/pronunciations", pronunciationsRouter);
 
 const port = Number(process.env.PORT) || 3000;
 

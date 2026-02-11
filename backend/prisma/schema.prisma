@@ -328,3 +328,494 @@ model QuizAttempt {
 
   createdAt       DateTime  @default(now())
 }
+
+// ==================== LESSON PLANS FOR RCGS EDUCATION ====================
+
+// Lesson Plan - comprehensive teaching resources for K-12
+model LessonPlan {
+  id              String    @id @default(cuid())
+  title           String    // e.g., "The Voyageur Era: Life on the Fur Trade Routes"
+  description     String    // Overview of the lesson
+
+  // Target audience
+  gradeLevel      String    // "K-3", "4-6", "7-9", "10-12"
+
+  // Topic/theme
+  topic           String    // "Early Explorers", "Fur Trade", "Indigenous Routes", "Maritime Discovery", "Archaeology", "Cartography"
+
+  // Curriculum connections (stored as JSON array)
+  // Format: [{"subject": "Social Studies", "strand": "Heritage and Identity", "expectation": "..."}]
+  curriculumConnections String?
+
+  // Learning objectives (JSON array)
+  // Format: ["Describe the role of...", "Identify key explorers...", "Analyze the impact of..."]
+  objectives      String
+
+  // Duration
+  estimatedMinutes Int      @default(60)
+
+  // Materials needed (JSON array)
+  materials       String?
+
+  // Lesson content sections
+  introduction    String?   // Hook/introduction text
+  mainContent     String    // Core lesson content (can include markdown)
+  activities      String?   // Suggested activities (JSON array)
+  discussionQuestions String? // Discussion questions (JSON array)
+  assessment      String?   // Assessment suggestions
+  extensions      String?   // Extension activities for advanced learners
+
+  // Related content
+  relatedQuizIds  String?   // JSON array of related quiz IDs
+  relatedWaterwayIds String? // JSON array of related waterway IDs
+  relatedLocationIds String? // JSON array of related location IDs
+  relatedExplorerIds String? // JSON array of related explorer IDs
+
+  // Status
+  isPublished     Boolean   @default(false)
+
+  // Admin who created
+  createdById     String?
+
+  // Relations
+  assignments     ClassAssignment[]
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+// ==================== INTERACTIVE TIMELINE ====================
+
+// Timeline Event - chronological events for interactive timeline
+model TimelineEvent {
+  id              String    @id @default(cuid())
+  title           String    // Event title
+  description     String    // Event description
+
+  // Date info
+  year            Int       // Year of event
+  month           Int?      // Optional month (1-12)
+  day             Int?      // Optional day
+  endYear         Int?      // End year for spanning events
+  isApproximate   Boolean   @default(false) // "circa" dates
+
+  // Theme/category for filtering
+  theme           String    // "exploration", "fur_trade", "indigenous", "maritime", "archaeology", "settlement"
+
+  // Visual
+  imageUrl        String?   // Image for the event
+  iconType        String?   // Icon type for timeline display
+
+  // Related entities (optional)
+  explorerId      String?   // Related explorer if applicable
+  waterwayId      String?   // Related waterway if applicable
+  locationId      String?   // Related location if applicable
+
+  // Importance level for filtering
+  importance      String    @default("normal") // "major", "normal", "minor"
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+// ==================== VIRTUAL FIELD TRIPS ====================
+
+// Virtual Field Trip - guided tours following explorer routes
+model VirtualFieldTrip {
+  id              String    @id @default(cuid())
+  title           String    // e.g., "Paddle the Voyageur Highway"
+  description     String    // Trip overview
+
+  // Target audience
+  gradeLevel      String    // "K-3", "4-6", "7-9", "10-12", "All"
+
+  // Duration
+  estimatedMinutes Int      @default(30)
+
+  // Theme
+  theme           String    // "voyageur", "explorer", "indigenous", "maritime", "fur_trade"
+
+  // Cover image
+  coverImageUrl   String?
+
+  // Status
+  isPublished     Boolean   @default(false)
+
+  // Stops on the trip
+  stops           FieldTripStop[]
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+// Field Trip Stop - individual location on a virtual field trip
+model FieldTripStop {
+  id              String    @id @default(cuid())
+  tripId          String
+  trip            VirtualFieldTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+  // Order in trip
+  orderIndex      Int
+
+  // Stop info
+  title           String    // Stop title
+  description     String    // Narrative description (storytelling)
+
+  // Location (can link to existing location or be custom)
+  locationId      String?   // Link to existing Location if applicable
+  waterwayId      String?   // Link to existing Waterway if applicable
+
+  // Custom coordinates if not linked to existing location
+  latitude        Float
+  longitude       Float
+
+  // Media
+  imageUrl        String?
+  audioUrl        String?   // Narration audio
+
+  // Interactive elements
+  funFact         String?   // Fun fact for kids
+  thinkQuestion   String?   // Question to ponder
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+// ==================== PRIMARY SOURCE DOCUMENTS ====================
+
+// Primary Source Document - historical documents with annotations
+model PrimarySourceDocument {
+  id              String    @id @default(cuid())
+  title           String    // e.g., "Samuel Hearne's Journal Entry, July 1771"
+
+  // Document type
+  documentType    String    // "journal", "map", "treaty", "letter", "report", "illustration"
+
+  // Source info
+  author          String?   // Original author
+  originalDate    String?   // Date of original document
+  originalYear    Int?      // Year for sorting
+
+  // Content
+  originalText    String?   // Original text (if text document)
+  transcription   String?   // Modern transcription
+  imageUrl        String?   // Image of document (maps, illustrations)
+
+  // Age-appropriate annotations (JSON array)
+  // Format: [{"gradeLevel": "K-3", "annotation": "simplified explanation"}, ...]
+  annotations     String?
+
+  // Context
+  historicalContext String? // Background context
+
+  // Vocabulary (JSON array of difficult words with definitions)
+  vocabulary      String?
+
+  // Discussion questions (JSON array)
+  discussionQuestions String?
+
+  // Related entities
+  explorerId      String?
+  waterwayId      String?
+  locationId      String?
+
+  // Target audience
+  gradeLevel      String?   // Minimum grade level recommended
+
+  isPublished     Boolean   @default(false)
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+// ==================== COMPARISON TOOLS ====================
+
+// Comparison Template - predefined comparisons
+model ComparisonTemplate {
+  id              String    @id @default(cuid())
+  title           String    // e.g., "East Coast vs West Coast Exploration"
+  description     String    // What this comparison explores
+
+  // Comparison type
+  comparisonType  String    // "explorers", "forts", "perspectives", "time_periods", "trade_companies"
+
+  // Items to compare (JSON)
+  // Format depends on type:
+  // explorers: [{"id": "xxx", "name": "..."}, {"id": "yyy", "name": "..."}]
+  // perspectives: [{"perspective": "Indigenous", "content": "..."}, {"perspective": "European", "content": "..."}]
+  items           String
+
+  // Comparison criteria (JSON array)
+  // Format: [{"criterion": "Time Period", "description": "When did they explore?"}, ...]
+  criteria        String
+
+  // Analysis prompts for students
+  analysisPrompts String?   // JSON array of discussion questions
+
+  // Target audience
+  gradeLevel      String    // "K-3", "4-6", "7-9", "10-12"
+
+  isPublished     Boolean   @default(false)
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+// ==================== STUDENT JOURNALS ====================
+
+// Student Journal - digital notebook for students
+model StudentJournal {
+  id              String    @id @default(cuid())
+
+  // Student identifier (anonymous - device-based or simple name)
+  studentIdentifier String  // Could be device ID or chosen username
+  studentName     String?   // Optional display name
+  schoolName      String?   // Optional school
+  gradeLevel      String?   // Student's grade
+
+  // Journal entries
+  entries         JournalEntry[]
+
+  // Saved locations (bookmarks)
+  savedLocations  SavedLocation[]
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+// Journal Entry - individual note in student journal
+model JournalEntry {
+  id              String    @id @default(cuid())
+  journalId       String
+  journal         StudentJournal @relation(fields: [journalId], references: [id], onDelete: Cascade)
+
+  // Entry content
+  title           String?
+  content         String    // Student's notes/thoughts
+
+  // What they're writing about (optional links)
+  waterwayId      String?
+  locationId      String?
+  explorerId      String?
+  quizId          String?
+  lessonPlanId    String?
+  fieldTripId     String?
+
+  // Tags (JSON array)
+  tags            String?   // e.g., ["fur trade", "explorer"]
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+// Saved Location - bookmarked locations in student journal
+model SavedLocation {
+  id              String    @id @default(cuid())
+  journalId       String
+  journal         StudentJournal @relation(fields: [journalId], references: [id], onDelete: Cascade)
+
+  // What they saved
+  waterwayId      String?
+  locationId      String?
+  explorerId      String?
+
+  // Notes about why they saved it
+  notes           String?
+
+  createdAt       DateTime  @default(now())
+}
+
+// ==================== CLASS MANAGEMENT ====================
+
+// Teacher - teacher account for class management
+model Teacher {
+  id              String    @id @default(cuid())
+
+  // Account info
+  email           String    @unique
+  name            String
+  passwordHash    String
+
+  // School info
+  schoolName      String?
+  schoolDistrict  String?
+  province        String?
+
+  // Classes they manage
+  classes         Class[]
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+// Class - a group of students managed by a teacher
+model Class {
+  id              String    @id @default(cuid())
+
+  // Class info
+  name            String    // e.g., "Grade 7 Social Studies - Period 2"
+  gradeLevel      String    // "K-3", "4-6", "7-9", "10-12"
+  schoolYear      String?   // e.g., "2025-2026"
+
+  // Join code for students
+  joinCode        String    @unique // Simple code for students to join
+
+  // Teacher
+  teacherId       String
+  teacher         Teacher   @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+
+  // Students
+  students        ClassStudent[]
+
+  // Assignments
+  assignments     ClassAssignment[]
+
+  isActive        Boolean   @default(true)
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+// Class Student - student enrolled in a class
+model ClassStudent {
+  id              String    @id @default(cuid())
+  classId         String
+  class           Class     @relation(fields: [classId], references: [id], onDelete: Cascade)
+
+  // Student identifier
+  displayName     String    // Student's display name
+  studentCode     String?   // Optional student ID
+
+  // Progress tracking
+  progress        StudentProgress[]
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@unique([classId, displayName])
+}
+
+// Class Assignment - assigned quizzes or lesson plans
+model ClassAssignment {
+  id              String    @id @default(cuid())
+  classId         String
+  class           Class     @relation(fields: [classId], references: [id], onDelete: Cascade)
+
+  // What's assigned
+  assignmentType  String    // "quiz", "lesson_plan", "field_trip"
+  quizId          String?
+  lessonPlanId    String?
+  lessonPlan      LessonPlan? @relation(fields: [lessonPlanId], references: [id])
+  fieldTripId     String?
+
+  // Assignment details
+  title           String    // Assignment title/description
+  instructions    String?   // Teacher's instructions
+
+  // Due date
+  dueDate         DateTime?
+
+  // Student progress
+  progress        StudentProgress[]
+
+  isActive        Boolean   @default(true)
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+// Student Progress - tracks student completion of assignments
+model StudentProgress {
+  id              String    @id @default(cuid())
+  studentId       String
+  student         ClassStudent @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  assignmentId    String
+  assignment      ClassAssignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+
+  // Status
+  status          String    @default("not_started") // "not_started", "in_progress", "completed"
+
+  // Score (for quizzes)
+  score           Int?
+  maxScore        Int?
+
+  // Timestamps
+  startedAt       DateTime?
+  completedAt     DateTime?
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@unique([studentId, assignmentId])
+}
+
+// ==================== PRINTABLE RESOURCES ====================
+
+// Printable Resource - worksheets, maps, activities for offline use
+model PrintableResource {
+  id              String    @id @default(cuid())
+  title           String    // e.g., "Blank Map of Canadian Fur Trade Routes"
+  description     String    // What this resource is
+
+  // Type
+  resourceType    String    // "worksheet", "map", "activity_sheet", "coloring_page", "timeline", "quiz_printable"
+
+  // Target audience
+  gradeLevel      String    // "K-3", "4-6", "7-9", "10-12", "All"
+
+  // Topic
+  topic           String    // "explorers", "fur_trade", "indigenous", "geography", "maritime"
+
+  // File info
+  fileUrl         String?   // URL to PDF or printable file
+  previewImageUrl String?   // Preview thumbnail
+
+  // If it's a worksheet, include content (for dynamic generation)
+  content         String?   // HTML/Markdown content for dynamic worksheets
+
+  // Instructions for teachers
+  teacherNotes    String?
+
+  // Answer key (for worksheets)
+  answerKey       String?   // JSON or text answer key
+
+  isPublished     Boolean   @default(false)
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+// ==================== PRONUNCIATION GUIDE ====================
+
+// Pronunciation Guide - audio pronunciations for names
+model PronunciationGuide {
+  id              String    @id @default(cuid())
+
+  // The word/name
+  term            String    // The word to pronounce
+
+  // Type of term
+  termType        String    // "indigenous_place", "indigenous_nation", "explorer", "french", "location"
+
+  // Language info
+  language        String?   // e.g., "Cree", "Ojibwe", "French", "Inuktitut"
+
+  // Pronunciation
+  phonetic        String    // Phonetic spelling (e.g., "miss-sin-AY-bee")
+  audioUrl        String?   // URL to audio file
+
+  // Additional info
+  meaning         String?   // What the word means
+  notes           String?   // Pronunciation notes/tips
+
+  // Related entities
+  waterwayId      String?
+  locationId      String?
+  indigenousNationId String?
+  explorerId      String?
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@unique([term, termType])
+}

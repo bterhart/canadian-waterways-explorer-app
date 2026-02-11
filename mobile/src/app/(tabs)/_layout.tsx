@@ -1,6 +1,6 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
-import { Map, Compass, Shield, GraduationCap } from 'lucide-react-native';
+import { Map, Compass, Shield, GraduationCap, BookOpen } from 'lucide-react-native';
 import { useColorScheme } from '@/lib/useColorScheme';
 import { useClientOnlyValue } from '@/lib/useClientOnlyValue';
 
@@ -79,6 +79,20 @@ export default function TabLayout() {
           headerTitle: 'Quizzes',
           tabBarIcon: ({ color, focused }) => (
             <GraduationCap
+              size={focused ? 26 : 24}
+              color={color}
+              strokeWidth={focused ? 2.5 : 2}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="learn"
+        options={{
+          title: 'Learn',
+          headerTitle: 'Learn',
+          tabBarIcon: ({ color, focused }) => (
+            <BookOpen
               size={focused ? 26 : 24}
               color={color}
               strokeWidth={focused ? 2.5 : 2}
