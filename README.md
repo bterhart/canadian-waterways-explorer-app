@@ -48,8 +48,41 @@ An interactive educational map app showcasing Canada's major waterways, their In
 
 **Straits & Inlets**: Strait of Belle Isle, Juan de Fuca Strait, Georgia Strait, Burrard Inlet
 
-### Historic Locations (33)
-Including Fort Chipewyan, York Factory, Fort William, Fort Garry, Moose Factory, Norway House, Tadoussac, Cape Bonavista (Cabot's landing), Cartier's Cross at Gaspé, Spanish Banks Beach, Cook's Landing at Friendly Cove, Fort San Miguel, Bligh Island, and many more
+### Historic Locations (82)
+
+**Hudson's Bay Company Posts:**
+- Prince of Wales Fort (1717) - Massive stone fortress on Churchill River; Samuel Hearne, James Knight, Moses Norton as factors
+- York Factory (1684) - Main HBC depot for nearly 200 years; Henry Kelsey served here
+- Fort Churchill (1783) - Successor to Prince of Wales Fort
+- Moose Factory (1673) - Oldest English settlement in Ontario
+- Fort Albany (1679) - One of original Bay posts
+- Norway House (1814) - HBC Northern Department headquarters
+- Cumberland House (1774) - First HBC inland post, founded by Samuel Hearne
+- Fort Edmonton (1795) - Gateway to Rockies; John Rowand as Chief Factor
+- Fort Garry (1822) - Center of Red River Settlement
+- Fort Vancouver (1825) - Columbia District HQ; John McLoughlin as Chief Factor
+- Fort Victoria (1843) - Pacific headquarters; became BC's capital
+- Fort Chipewyan (1788) - Gateway to Mackenzie River system
+- Fort Simpson (1804) - Mackenzie District headquarters
+- And many more...
+
+**North West Company Posts:**
+- Fort William (1803) - Grand inland headquarters; annual rendezvous site
+- Grand Portage (1731) - Original NWC depot before US boundary
+- Fort Augustus (1795) - Competed with Fort Edmonton
+- Fort Gibraltar (1809) - Competed with HBC at The Forks
+- Fort George BC (1807) - Simon Fraser's base; now Prince George
+- Fort Astoria/Fort George (1811) - First American settlement on Pacific
+- Rocky Mountain House (1799) - David Thompson's base for crossing Rockies
+- Kootenay House (1807) - First post in Columbia Basin
+- And many more...
+
+**Maritime Landing Sites:**
+- Cape Bonavista (Cabot's 1497 landfall)
+- Cartier's Cross at Gaspé (1534)
+- Cook's Landing at Friendly Cove (1778)
+- Spanish Banks Beach (Vancouver-Galiano meeting, 1792)
+- Fort San Miguel (Spanish fort at Nootka, 1789)
 
 ### Explorers (38) - Chronological
 
