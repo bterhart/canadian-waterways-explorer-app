@@ -1,8 +1,10 @@
 import React, { useState, useMemo } from 'react';
 import { View, Text, ScrollView, Pressable, ActivityIndicator } from 'react-native';
 import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
-import { ArrowLeft, Check, X, Trophy, ChevronRight, RotateCcw } from 'lucide-react-native';
+import { ArrowLeft, Check, X, Trophy, ChevronRight, RotateCcw, AlertCircle } from 'lucide-react-native';
 import { cn } from '@/lib/cn';
+import { useQuiz, useSubmitQuizAttempt } from '@/lib/api/education-api';
+import type { QuizQuestion, QuizOption, QuizAttemptResult } from '@/lib/types/education';
 
 // Theme colors
 const colors = {
@@ -13,334 +15,11 @@ const colors = {
   gold: '#C9A227',
 };
 
-// Question type
-interface Question {
-  id: string;
-  questionText: string;
-  options: string[];
-  correctAnswerIndex: number;
-  explanation: string;
-}
-
-// Quiz type
-interface QuizData {
-  id: string;
-  title: string;
-  description: string;
-  questions: Question[];
-}
-
-// Mock quiz data with questions
-const quizDatabase: Record<string, QuizData> = {
-  '1': {
-    id: '1',
-    title: 'Great Explorers of Canada',
-    description: 'Test your knowledge about famous explorers who mapped the Canadian wilderness.',
-    questions: [
-      {
-        id: 'q1',
-        questionText: 'Who is known as the "Father of New France"?',
-        options: ['Jacques Cartier', 'Samuel de Champlain', 'John Cabot', 'Henry Hudson'],
-        correctAnswerIndex: 1,
-        explanation: 'Samuel de Champlain founded Quebec City in 1608 and is considered the Father of New France for his extensive exploration and colonization efforts.',
-      },
-      {
-        id: 'q2',
-        questionText: 'Which explorer first reached the Pacific Ocean overland through Canada?',
-        options: ['David Thompson', 'Alexander Mackenzie', 'Simon Fraser', 'Peter Pond'],
-        correctAnswerIndex: 1,
-        explanation: 'Alexander Mackenzie completed the first transcontinental crossing of North America north of Mexico in 1793, reaching the Pacific Ocean.',
-      },
-      {
-        id: 'q3',
-        questionText: 'What river did Simon Fraser explore in 1808?',
-        options: ['Columbia River', 'Fraser River', 'Mackenzie River', 'Peace River'],
-        correctAnswerIndex: 1,
-        explanation: 'Simon Fraser explored the river that now bears his name, the Fraser River, from its source to the Pacific Ocean in 1808.',
-      },
-      {
-        id: 'q4',
-        questionText: 'Who was the first European to see the Rocky Mountains from the Canadian prairies?',
-        options: ['Anthony Henday', 'Samuel Hearne', 'Peter Fidler', 'Matthew Cocking'],
-        correctAnswerIndex: 0,
-        explanation: 'Anthony Henday was the first European to see the Rocky Mountains from the prairies in 1754 during his journey to meet the Blackfoot peoples.',
-      },
-      {
-        id: 'q5',
-        questionText: 'Which explorer mapped more of North America than any other person in history?',
-        options: ['Alexander Mackenzie', 'Simon Fraser', 'David Thompson', 'Peter Pond'],
-        correctAnswerIndex: 2,
-        explanation: 'David Thompson surveyed and mapped nearly 4 million square kilometers of North America, more than any other explorer in history.',
-      },
-    ],
-  },
-  '2': {
-    id: '2',
-    title: 'The Fur Trade Era',
-    description: 'Learn about the history of fur trading companies and their impact on Canada.',
-    questions: [
-      {
-        id: 'q1',
-        questionText: 'When was the Hudson\'s Bay Company founded?',
-        options: ['1570', '1670', '1770', '1870'],
-        correctAnswerIndex: 1,
-        explanation: 'The Hudson\'s Bay Company was founded on May 2, 1670, making it one of the oldest corporations in the world still in existence.',
-      },
-      {
-        id: 'q2',
-        questionText: 'Which animal\'s fur was most sought after in the Canadian fur trade?',
-        options: ['Fox', 'Bear', 'Beaver', 'Mink'],
-        correctAnswerIndex: 2,
-        explanation: 'Beaver pelts were the most valuable fur in the trade, used primarily to make fashionable felt hats in Europe.',
-      },
-      {
-        id: 'q3',
-        questionText: 'What was the main rival of the Hudson\'s Bay Company?',
-        options: ['American Fur Company', 'North West Company', 'Russian-American Company', 'Pacific Fur Company'],
-        correctAnswerIndex: 1,
-        explanation: 'The North West Company, based in Montreal, was the main rival of the Hudson\'s Bay Company until the two merged in 1821.',
-      },
-      {
-        id: 'q4',
-        questionText: 'What were the famous fur trade canoes called?',
-        options: ['Voyageur canoes', 'Birchbark canoes', 'Canots du maitre', 'All of the above'],
-        correctAnswerIndex: 3,
-        explanation: 'Various types of canoes were used, including birchbark canoes and the large "canots du maitre" (Montreal canoes) paddled by voyageurs.',
-      },
-      {
-        id: 'q5',
-        questionText: 'What was the currency often used in fur trade transactions?',
-        options: ['Gold coins', 'Beaver pelts', 'Trade beads', 'Silver dollars'],
-        correctAnswerIndex: 1,
-        explanation: 'Beaver pelts became a form of currency, with the term "Made Beaver" used as a standard unit of trade value.',
-      },
-    ],
-  },
-  '3': {
-    id: '3',
-    title: 'First Nations Waterways',
-    description: 'Explore the traditional knowledge of Indigenous peoples about Canadian waterways.',
-    questions: [
-      {
-        id: 'q1',
-        questionText: 'What material did First Nations peoples traditionally use to make canoes?',
-        options: ['Oak wood', 'Birch bark', 'Animal skins', 'Pine logs'],
-        correctAnswerIndex: 1,
-        explanation: 'Birch bark was the preferred material for canoe building because it was lightweight, waterproof, and flexible.',
-      },
-      {
-        id: 'q2',
-        questionText: 'What is a "portage"?',
-        options: ['A type of fish', 'Carrying boats overland between waterways', 'A fishing technique', 'A type of paddle'],
-        correctAnswerIndex: 1,
-        explanation: 'A portage is carrying boats and goods overland between navigable waters, a technique perfected by Indigenous peoples.',
-      },
-      {
-        id: 'q3',
-        questionText: 'Which First Nation is known for their ocean-going canoes on the Pacific coast?',
-        options: ['Cree', 'Haida', 'Ojibwe', 'Mi\'kmaq'],
-        correctAnswerIndex: 1,
-        explanation: 'The Haida were master canoe builders, creating large cedar canoes capable of ocean voyages.',
-      },
-      {
-        id: 'q4',
-        questionText: 'What did Indigenous peoples use to waterproof their canoes?',
-        options: ['Beeswax', 'Animal fat', 'Spruce gum and animal fat', 'Clay'],
-        correctAnswerIndex: 2,
-        explanation: 'Spruce gum mixed with animal fat was applied to the seams of birch bark canoes to make them waterproof.',
-      },
-    ],
-  },
-  '4': {
-    id: '4',
-    title: 'Canadian Rivers and Lakes',
-    description: 'A comprehensive quiz about the geography of Canadian water systems.',
-    questions: [
-      {
-        id: 'q1',
-        questionText: 'What is the longest river in Canada?',
-        options: ['St. Lawrence River', 'Mackenzie River', 'Fraser River', 'Churchill River'],
-        correctAnswerIndex: 1,
-        explanation: 'The Mackenzie River is the longest river in Canada at 4,241 km, flowing from Great Slave Lake to the Arctic Ocean.',
-      },
-      {
-        id: 'q2',
-        questionText: 'Which Great Lake is entirely within Canada?',
-        options: ['Lake Superior', 'Lake Huron', 'Lake Ontario', 'None of them'],
-        correctAnswerIndex: 3,
-        explanation: 'None of the Great Lakes are entirely within Canada. All five Great Lakes are shared between Canada and the United States.',
-      },
-      {
-        id: 'q3',
-        questionText: 'What percentage of the world\'s fresh surface water is found in Canada?',
-        options: ['5%', '10%', '20%', '7%'],
-        correctAnswerIndex: 2,
-        explanation: 'Canada contains approximately 20% of the world\'s fresh surface water and 7% of the world\'s renewable freshwater.',
-      },
-      {
-        id: 'q4',
-        questionText: 'Which bay is the largest in the world?',
-        options: ['Georgian Bay', 'Hudson Bay', 'Bay of Fundy', 'James Bay'],
-        correctAnswerIndex: 1,
-        explanation: 'Hudson Bay is the largest bay in the world, covering approximately 1.23 million square kilometers.',
-      },
-      {
-        id: 'q5',
-        questionText: 'Where does the St. Lawrence River empty?',
-        options: ['Hudson Bay', 'Atlantic Ocean', 'Pacific Ocean', 'Gulf of Mexico'],
-        correctAnswerIndex: 1,
-        explanation: 'The St. Lawrence River empties into the Gulf of St. Lawrence and then into the Atlantic Ocean.',
-      },
-    ],
-  },
-  '5': {
-    id: '5',
-    title: 'Maritime Discovery',
-    description: 'Journey through the history of maritime exploration on Canadian coasts.',
-    questions: [
-      {
-        id: 'q1',
-        questionText: 'Who was the first European to reach Canada\'s Atlantic coast?',
-        options: ['Christopher Columbus', 'John Cabot', 'Jacques Cartier', 'Leif Erikson'],
-        correctAnswerIndex: 3,
-        explanation: 'Leif Erikson and the Norse Vikings reached the Atlantic coast around 1000 CE, nearly 500 years before other European explorers.',
-      },
-      {
-        id: 'q2',
-        questionText: 'What was John Cabot looking for when he reached Newfoundland in 1497?',
-        options: ['Gold', 'A route to Asia', 'Fish', 'Furs'],
-        correctAnswerIndex: 1,
-        explanation: 'John Cabot was searching for a westward route to Asia when he landed on Newfoundland in 1497.',
-      },
-      {
-        id: 'q3',
-        questionText: 'Which explorer sailed into Vancouver\'s harbor before George Vancouver?',
-        options: ['James Cook', 'Juan Francisco de la Bodega y Quadra', 'Jose Maria Narvaez', 'Bruno de Hezeta'],
-        correctAnswerIndex: 2,
-        explanation: 'Jose Maria Narvaez was the first European to enter the waters of present-day Vancouver harbor in 1791.',
-      },
-      {
-        id: 'q4',
-        questionText: 'What was the main purpose of the Franklin Expedition?',
-        options: ['To map the Pacific coast', 'To find the Northwest Passage', 'To establish trading posts', 'To explore Hudson Bay'],
-        correctAnswerIndex: 1,
-        explanation: 'The Franklin Expedition of 1845 attempted to chart and navigate the Northwest Passage through the Canadian Arctic.',
-      },
-    ],
-  },
-  '6': {
-    id: '6',
-    title: 'Hudson Bay Company',
-    description: 'Discover the fascinating history of one of the oldest companies in North America.',
-    questions: [
-      {
-        id: 'q1',
-        questionText: 'Who was the first governor of the Hudson\'s Bay Company?',
-        options: ['Prince Rupert', 'King Charles II', 'Pierre-Esprit Radisson', 'Medard Chouart des Groseilliers'],
-        correctAnswerIndex: 0,
-        explanation: 'Prince Rupert of the Rhine was the first governor of the Hudson\'s Bay Company, which is why the company\'s territory was called Rupert\'s Land.',
-      },
-      {
-        id: 'q2',
-        questionText: 'What territory did the HBC originally control?',
-        options: ['Lower Canada', 'Upper Canada', 'Rupert\'s Land', 'British Columbia'],
-        correctAnswerIndex: 2,
-        explanation: 'The HBC controlled Rupert\'s Land, which comprised the entire Hudson Bay drainage basin - about 40% of modern Canada.',
-      },
-      {
-        id: 'q3',
-        questionText: 'What year did the HBC merge with the North West Company?',
-        options: ['1801', '1811', '1821', '1831'],
-        correctAnswerIndex: 2,
-        explanation: 'The Hudson\'s Bay Company and North West Company merged in 1821 after years of fierce competition.',
-      },
-      {
-        id: 'q4',
-        questionText: 'What did the HBC sell to Canada in 1870?',
-        options: ['Their furs', 'Their trading posts', 'Rupert\'s Land', 'Their ships'],
-        correctAnswerIndex: 2,
-        explanation: 'In 1870, the HBC sold Rupert\'s Land to Canada for 300,000 pounds, transferring vast territories to the new Dominion.',
-      },
-    ],
-  },
-  '7': {
-    id: '7',
-    title: 'Samuel de Champlain',
-    description: 'Learn about the Father of New France and his explorations.',
-    questions: [
-      {
-        id: 'q1',
-        questionText: 'In what year did Champlain found Quebec City?',
-        options: ['1598', '1608', '1618', '1628'],
-        correctAnswerIndex: 1,
-        explanation: 'Samuel de Champlain founded Quebec City on July 3, 1608, establishing the first permanent French settlement in North America.',
-      },
-      {
-        id: 'q2',
-        questionText: 'What Indigenous nation became allies of Champlain against the Iroquois?',
-        options: ['The Blackfoot', 'The Huron-Wendat', 'The Haida', 'The Inuit'],
-        correctAnswerIndex: 1,
-        explanation: 'Champlain formed an alliance with the Huron-Wendat (also known as the Wyandot) and other Algonquian nations.',
-      },
-      {
-        id: 'q3',
-        questionText: 'What large body of water did Champlain "discover" that now bears his name?',
-        options: ['Lake Ontario', 'Lake Erie', 'Lake Champlain', 'Lake Huron'],
-        correctAnswerIndex: 2,
-        explanation: 'Lake Champlain, located between New York and Vermont, was named after Samuel de Champlain who explored it in 1609.',
-      },
-      {
-        id: 'q4',
-        questionText: 'What was Champlain\'s profession before becoming an explorer?',
-        options: ['Priest', 'Soldier and navigator', 'Fur trader', 'Farmer'],
-        correctAnswerIndex: 1,
-        explanation: 'Champlain served as a soldier during the French Wars of Religion and was an experienced navigator before his explorations.',
-      },
-    ],
-  },
-  '8': {
-    id: '8',
-    title: 'Pacific Coast Explorers',
-    description: 'Explore the adventures of those who mapped Canada\'s west coast.',
-    questions: [
-      {
-        id: 'q1',
-        questionText: 'Who led the first European expedition to explore the BC coast extensively?',
-        options: ['George Vancouver', 'James Cook', 'Juan de Fuca', 'Francis Drake'],
-        correctAnswerIndex: 1,
-        explanation: 'Captain James Cook led the first major European expedition to explore the British Columbia coast in 1778.',
-      },
-      {
-        id: 'q2',
-        questionText: 'What was George Vancouver\'s ship called?',
-        options: ['HMS Endeavour', 'HMS Discovery', 'HMS Bounty', 'HMS Resolution'],
-        correctAnswerIndex: 1,
-        explanation: 'George Vancouver commanded HMS Discovery during his famous expedition to chart the Pacific Northwest coast (1791-1795).',
-      },
-      {
-        id: 'q3',
-        questionText: 'Which Spanish explorer has a major BC port named after him?',
-        options: ['Juan Francisco de la Bodega y Quadra', 'Dionisio Alcala Galiano', 'Cayetano Valdes', 'Jose Maria Narvaez'],
-        correctAnswerIndex: 0,
-        explanation: 'Quadra Island is named after Juan Francisco de la Bodega y Quadra, who worked cooperatively with George Vancouver.',
-      },
-      {
-        id: 'q4',
-        questionText: 'What were the Spanish looking for on the Pacific coast?',
-        options: ['Gold', 'The Northwest Passage', 'Furs', 'All of the above'],
-        correctAnswerIndex: 3,
-        explanation: 'The Spanish were interested in finding the Northwest Passage, claiming territory, and trading for sea otter furs.',
-      },
-    ],
-  },
-};
-
-type QuizState = 'taking' | 'results';
+type QuizState = 'taking' | 'submitting' | 'results';
 
 interface UserAnswer {
   questionId: string;
-  selectedIndex: number;
-  isCorrect: boolean;
+  selectedOptionId: string;
 }
 
 function ProgressBar({ current, total }: { current: number; total: number }) {
@@ -362,13 +41,13 @@ function OptionCard({
   onSelect,
   disabled,
 }: {
-  option: string;
+  option: QuizOption;
   index: number;
   isSelected: boolean;
   onSelect: () => void;
   disabled: boolean;
 }) {
-  const letters = ['A', 'B', 'C', 'D'];
+  const letters = ['A', 'B', 'C', 'D', 'E', 'F'];
   return (
     <Pressable
       onPress={onSelect}
@@ -392,7 +71,7 @@ function OptionCard({
             isSelected ? 'text-white' : 'text-gray-600'
           )}
         >
-          {letters[index]}
+          {letters[index] || (index + 1).toString()}
         </Text>
       </View>
       <Text
@@ -401,7 +80,7 @@ function OptionCard({
           isSelected ? 'text-[#2D5A3D] font-semibold' : 'text-gray-700'
         )}
       >
-        {option}
+        {option.text}
       </Text>
       {isSelected ? (
         <View className="w-6 h-6 rounded-full bg-[#2D5A3D] items-center justify-center">
@@ -413,16 +92,22 @@ function OptionCard({
 }
 
 function ResultCard({
+  result,
   question,
-  userAnswer,
   index,
 }: {
-  question: Question;
-  userAnswer: UserAnswer;
+  result: QuizAttemptResult;
+  question: QuizQuestion;
   index: number;
 }) {
-  const letters = ['A', 'B', 'C', 'D'];
-  const isCorrect = userAnswer.isCorrect;
+  const letters = ['A', 'B', 'C', 'D', 'E', 'F'];
+  const isCorrect = result.isCorrect;
+
+  // Find option texts for display
+  const selectedOption = question.options.find(o => o.id === result.selectedAnswer);
+  const correctOption = question.options.find(o => o.id === result.correctAnswer);
+  const selectedIndex = question.options.findIndex(o => o.id === result.selectedAnswer);
+  const correctIndex = question.options.findIndex(o => o.id === result.correctAnswer);
 
   return (
     <View className="bg-white rounded-xl mb-4 p-4 shadow-sm">
@@ -453,33 +138,35 @@ function ResultCard({
         <Text className="text-sm text-gray-600 mb-1">
           Your answer:{' '}
           <Text className={isCorrect ? 'text-green-600 font-semibold' : 'text-red-600 font-semibold'}>
-            {letters[userAnswer.selectedIndex]}. {question.options[userAnswer.selectedIndex]}
+            {selectedIndex >= 0 ? `${letters[selectedIndex]}. ` : null}{selectedOption?.text ?? 'No answer'}
           </Text>
         </Text>
-        {!isCorrect ? (
+        {!isCorrect && correctOption ? (
           <Text className="text-sm text-gray-600">
             Correct answer:{' '}
             <Text className="text-green-600 font-semibold">
-              {letters[question.correctAnswerIndex]}. {question.options[question.correctAnswerIndex]}
+              {correctIndex >= 0 ? `${letters[correctIndex]}. ` : null}{correctOption.text}
             </Text>
           </Text>
         ) : null}
       </View>
 
       {/* Explanation */}
-      <View className="ml-11 bg-blue-50 rounded-lg p-3">
-        <Text className="text-sm text-blue-800">{question.explanation}</Text>
-      </View>
+      {result.explanation ? (
+        <View className="ml-11 bg-blue-50 rounded-lg p-3">
+          <Text className="text-sm text-blue-800">{result.explanation}</Text>
+        </View>
+      ) : null}
     </View>
   );
 }
 
-function getScoreMessage(percentage: number): { message: string; emoji: string } {
-  if (percentage === 100) return { message: 'Perfect Score! Outstanding!', emoji: '' };
-  if (percentage >= 80) return { message: 'Excellent Work! Great job!', emoji: '' };
-  if (percentage >= 60) return { message: 'Good Effort! Keep learning!', emoji: '' };
-  if (percentage >= 40) return { message: 'Nice Try! Review and try again!', emoji: '' };
-  return { message: 'Keep Practicing! You can do it!', emoji: '' };
+function getScoreMessage(percentage: number): { message: string } {
+  if (percentage === 100) return { message: 'Perfect Score! Outstanding!' };
+  if (percentage >= 80) return { message: 'Excellent Work! Great job!' };
+  if (percentage >= 60) return { message: 'Good Effort! Keep learning!' };
+  if (percentage >= 40) return { message: 'Nice Try! Review and try again!' };
+  return { message: 'Keep Practicing! You can do it!' };
 }
 
 export default function QuizScreen() {
@@ -488,22 +175,54 @@ export default function QuizScreen() {
 
   const [quizState, setQuizState] = useState<QuizState>('taking');
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [selectedAnswerIndex, setSelectedAnswerIndex] = useState<number | null>(null);
+  const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
   const [userAnswers, setUserAnswers] = useState<UserAnswer[]>([]);
+  const [attemptResults, setAttemptResults] = useState<QuizAttemptResult[]>([]);
+  const [totalScore, setTotalScore] = useState({ correct: 0, total: 0, percentage: 0 });
 
-  // Get quiz data
-  const quiz = id ? quizDatabase[id] : null;
+  // Fetch quiz from backend
+  const { data: quiz, isLoading, isError, error } = useQuiz(id ?? null);
+  const submitAttemptMutation = useSubmitQuizAttempt();
 
-  // Calculate results
-  const results = useMemo(() => {
-    if (userAnswers.length === 0) return { correct: 0, total: 0, percentage: 0 };
-    const correct = userAnswers.filter(a => a.isCorrect).length;
-    const total = userAnswers.length;
-    const percentage = Math.round((correct / total) * 100);
-    return { correct, total, percentage };
-  }, [userAnswers]);
+  // Handle quiz submission
+  const handleSubmitQuiz = async () => {
+    if (!quiz || !id) return;
 
-  if (!quiz) {
+    setQuizState('submitting');
+
+    try {
+      const response = await submitAttemptMutation.mutateAsync({
+        quizId: id,
+        payload: {
+          answers: userAnswers.map(a => ({
+            questionId: a.questionId,
+            selectedAnswer: a.selectedOptionId,
+          })),
+        },
+      });
+
+      setAttemptResults(response.results);
+      setTotalScore({
+        correct: response.score,
+        total: response.totalQuestions,
+        percentage: response.percentageScore,
+      });
+      setQuizState('results');
+    } catch (err) {
+      console.error('Failed to submit quiz:', err);
+      // Still show results locally even if submission failed
+      const correctCount = userAnswers.filter((a, i) => {
+        const question = quiz.questions[i];
+        // Find the correct answer - we don't have it client-side, so we'll just show what was selected
+        return false; // Can't determine without server
+      }).length;
+
+      setQuizState('results');
+    }
+  };
+
+  // Loading state
+  if (isLoading) {
     return (
       <View className="flex-1 items-center justify-center bg-[#FFFEF7]">
         <Stack.Screen options={{ headerShown: false }} />
@@ -513,48 +232,160 @@ export default function QuizScreen() {
     );
   }
 
+  // Error state
+  if (isError || !quiz) {
+    return (
+      <View className="flex-1 items-center justify-center bg-[#FFFEF7] px-6">
+        <Stack.Screen
+          options={{
+            headerShown: true,
+            title: 'Quiz',
+            headerStyle: { backgroundColor: colors.forestGreen },
+            headerTintColor: 'white',
+          }}
+        />
+        <AlertCircle size={48} color="#EF4444" />
+        <Text className="mt-4 text-lg font-semibold text-gray-900 text-center">
+          Quiz Not Found
+        </Text>
+        <Text className="mt-2 text-base text-gray-600 text-center">
+          {error instanceof Error ? error.message : 'This quiz may no longer be available.'}
+        </Text>
+        <Pressable
+          onPress={() => router.back()}
+          className="mt-6 px-6 py-3 rounded-xl"
+          style={{ backgroundColor: colors.forestGreen }}
+        >
+          <Text className="text-white font-semibold">Back to Quizzes</Text>
+        </Pressable>
+      </View>
+    );
+  }
+
+  // No questions
+  if (quiz.questions.length === 0) {
+    return (
+      <View className="flex-1 items-center justify-center bg-[#FFFEF7] px-6">
+        <Stack.Screen
+          options={{
+            headerShown: true,
+            title: quiz.title,
+            headerStyle: { backgroundColor: colors.forestGreen },
+            headerTintColor: 'white',
+          }}
+        />
+        <AlertCircle size={48} color={colors.gold} />
+        <Text className="mt-4 text-lg font-semibold text-gray-900 text-center">
+          No Questions Available
+        </Text>
+        <Text className="mt-2 text-base text-gray-600 text-center">
+          This quiz does not have any questions yet.
+        </Text>
+        <Pressable
+          onPress={() => router.back()}
+          className="mt-6 px-6 py-3 rounded-xl"
+          style={{ backgroundColor: colors.forestGreen }}
+        >
+          <Text className="text-white font-semibold">Back to Quizzes</Text>
+        </Pressable>
+      </View>
+    );
+  }
+
   const currentQuestion = quiz.questions[currentQuestionIndex];
   const isLastQuestion = currentQuestionIndex === quiz.questions.length - 1;
-  const canProceed = selectedAnswerIndex !== null;
+  const canProceed = selectedOptionId !== null;
 
-  const handleSelectAnswer = (index: number) => {
-    setSelectedAnswerIndex(index);
+  const handleSelectOption = (optionId: string) => {
+    setSelectedOptionId(optionId);
   };
 
   const handleNext = () => {
-    if (selectedAnswerIndex === null) return;
+    if (selectedOptionId === null || !currentQuestion) return;
 
-    const isCorrect = selectedAnswerIndex === currentQuestion.correctAnswerIndex;
     const newAnswer: UserAnswer = {
       questionId: currentQuestion.id,
-      selectedIndex: selectedAnswerIndex,
-      isCorrect,
+      selectedOptionId,
     };
 
-    setUserAnswers(prev => [...prev, newAnswer]);
+    const updatedAnswers = [...userAnswers, newAnswer];
+    setUserAnswers(updatedAnswers);
 
     if (isLastQuestion) {
-      setQuizState('results');
+      // Submit the quiz
+      setUserAnswers(updatedAnswers);
+      // Need to use the updated answers directly since state won't update in time
+      handleSubmitWithAnswers(updatedAnswers);
     } else {
       setCurrentQuestionIndex(prev => prev + 1);
-      setSelectedAnswerIndex(null);
+      setSelectedOptionId(null);
+    }
+  };
+
+  const handleSubmitWithAnswers = async (answers: UserAnswer[]) => {
+    if (!quiz || !id) return;
+
+    setQuizState('submitting');
+
+    try {
+      const response = await submitAttemptMutation.mutateAsync({
+        quizId: id,
+        payload: {
+          answers: answers.map(a => ({
+            questionId: a.questionId,
+            selectedAnswer: a.selectedOptionId,
+          })),
+        },
+      });
+
+      setAttemptResults(response.results);
+      setTotalScore({
+        correct: response.score,
+        total: response.totalQuestions,
+        percentage: response.percentageScore,
+      });
+      setQuizState('results');
+    } catch (err) {
+      console.error('Failed to submit quiz:', err);
+      setQuizState('results');
     }
   };
 
   const handleRetakeQuiz = () => {
     setQuizState('taking');
     setCurrentQuestionIndex(0);
-    setSelectedAnswerIndex(null);
+    setSelectedOptionId(null);
     setUserAnswers([]);
+    setAttemptResults([]);
+    setTotalScore({ correct: 0, total: 0, percentage: 0 });
   };
 
   const handleBackToQuizzes = () => {
     router.back();
   };
 
+  // Submitting state
+  if (quizState === 'submitting') {
+    return (
+      <View className="flex-1 items-center justify-center bg-[#FFFEF7]">
+        <Stack.Screen
+          options={{
+            headerShown: true,
+            title: quiz.title,
+            headerStyle: { backgroundColor: colors.forestGreen },
+            headerTintColor: 'white',
+            headerTitleStyle: { fontWeight: 'bold', fontSize: 16 },
+          }}
+        />
+        <ActivityIndicator size="large" color={colors.forestGreen} />
+        <Text className="mt-4 text-base text-gray-600">Submitting your answers...</Text>
+      </View>
+    );
+  }
+
   // Results Screen
   if (quizState === 'results') {
-    const scoreInfo = getScoreMessage(results.percentage);
+    const scoreInfo = getScoreMessage(totalScore.percentage);
 
     return (
       <View className="flex-1 bg-[#FFFEF7]">
@@ -578,16 +409,16 @@ export default function QuizScreen() {
           <View className="mx-4 mt-4 bg-white rounded-2xl p-6 shadow-sm items-center">
             <View
               className="w-20 h-20 rounded-full items-center justify-center mb-4"
-              style={{ backgroundColor: results.percentage >= 60 ? '#22C55E' : colors.gold }}
+              style={{ backgroundColor: totalScore.percentage >= 60 ? '#22C55E' : colors.gold }}
             >
               <Trophy size={40} color="white" />
             </View>
 
             <Text className="text-4xl font-bold text-gray-900 mb-2">
-              {results.correct}/{results.total}
+              {totalScore.correct}/{totalScore.total}
             </Text>
             <Text className="text-xl text-gray-600 mb-2">
-              {results.percentage}% Correct
+              {Math.round(totalScore.percentage)}% Correct
             </Text>
             <Text className="text-lg font-semibold text-center" style={{ color: colors.forestGreen }}>
               {scoreInfo.message}
@@ -616,23 +447,31 @@ export default function QuizScreen() {
           </View>
 
           {/* Review section */}
-          <View className="px-4 mb-2">
-            <Text className="text-lg font-bold text-gray-900 mb-3">
-              Review Your Answers
-            </Text>
-          </View>
+          {attemptResults.length > 0 ? (
+            <>
+              <View className="px-4 mb-2">
+                <Text className="text-lg font-bold text-gray-900 mb-3">
+                  Review Your Answers
+                </Text>
+              </View>
 
-          {/* Question results */}
-          <View className="px-4">
-            {quiz.questions.map((question, index) => (
-              <ResultCard
-                key={question.id}
-                question={question}
-                userAnswer={userAnswers[index]}
-                index={index}
-              />
-            ))}
-          </View>
+              {/* Question results */}
+              <View className="px-4">
+                {quiz.questions.map((question, index) => {
+                  const result = attemptResults.find(r => r.questionId === question.id);
+                  if (!result) return null;
+                  return (
+                    <ResultCard
+                      key={question.id}
+                      result={result}
+                      question={question}
+                      index={index}
+                    />
+                  );
+                })}
+              </View>
+            </>
+          ) : null}
 
           <View className="h-8" />
         </ScrollView>
@@ -694,11 +533,11 @@ export default function QuizScreen() {
           </Text>
           {currentQuestion.options.map((option, index) => (
             <OptionCard
-              key={index}
+              key={option.id}
               option={option}
               index={index}
-              isSelected={selectedAnswerIndex === index}
-              onSelect={() => handleSelectAnswer(index)}
+              isSelected={selectedOptionId === option.id}
+              onSelect={() => handleSelectOption(option.id)}
               disabled={false}
             />
           ))}

@@ -1459,3 +1459,60 @@ export function useNotableFiguresByExplorer(explorerName: string | null) {
     enabled: !!explorerName,
   });
 }
+
+// ============= Quiz Query Keys =============
+
+export const quizKeys = {
+  all: ['quizzes'] as const,
+  lists: () => [...quizKeys.all, 'list'] as const,
+  list: (filters?: { category?: string; gradeLevel?: string; difficulty?: string }) =>
+    [...quizKeys.lists(), filters] as const,
+  details: () => [...quizKeys.all, 'detail'] as const,
+  detail: (id: string) => [...quizKeys.details(), id] as const,
+};
+
+// ============= Quiz Hooks =============
+
+export function useQuizzes(filters?: {
+  category?: string;
+  gradeLevel?: string;
+  difficulty?: string;
+}) {
+  const params = new URLSearchParams();
+  if (filters?.category) params.append('category', filters.category);
+  if (filters?.gradeLevel) params.append('gradeLevel', filters.gradeLevel);
+  if (filters?.difficulty) params.append('difficulty', filters.difficulty);
+  const queryString = params.toString();
+
+  return useQuery({
+    queryKey: [...quizKeys.list(filters), queryString] as const,
+    queryFn: () =>
+      api.get<import('@/lib/types/education').QuizSummary[]>(
+        `/api/quizzes${queryString ? `?${queryString}` : ''}`
+      ),
+  });
+}
+
+export function useQuiz(id: string | null) {
+  return useQuery({
+    queryKey: quizKeys.detail(id ?? ''),
+    queryFn: () => api.get<import('@/lib/types/education').QuizDetail>(`/api/quizzes/${id}`),
+    enabled: !!id,
+  });
+}
+
+export function useSubmitQuizAttempt() {
+  return useMutation({
+    mutationFn: ({
+      quizId,
+      payload,
+    }: {
+      quizId: string;
+      payload: import('@/lib/types/education').QuizAttemptPayload;
+    }) =>
+      api.post<import('@/lib/types/education').QuizAttemptResponse>(
+        `/api/quizzes/${quizId}/attempt`,
+        payload
+      ),
+  });
+}

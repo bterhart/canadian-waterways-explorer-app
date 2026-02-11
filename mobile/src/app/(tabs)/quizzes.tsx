@@ -1,8 +1,10 @@
-import React, { useState, useMemo } from 'react';
-import { View, Text, ScrollView, Pressable, ActivityIndicator } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, ScrollView, Pressable, ActivityIndicator, FlatList } from 'react-native';
 import { useRouter } from 'expo-router';
-import { BookOpen, Clock, HelpCircle, ChevronRight } from 'lucide-react-native';
+import { BookOpen, Clock, HelpCircle, ChevronRight, AlertCircle } from 'lucide-react-native';
 import { cn } from '@/lib/cn';
+import { useQuizzes } from '@/lib/api/education-api';
+import type { QuizSummary } from '@/lib/types/education';
 
 // Theme colors
 const colors = {
@@ -13,7 +15,7 @@ const colors = {
   gold: '#C9A227',
 };
 
-// Quiz categories
+// Quiz categories - these may come from backend in future
 const categories = ['All', 'Explorers', 'Fur Trade', 'Indigenous Heritage', 'Geography', 'Maritime History'] as const;
 type Category = typeof categories[number];
 
@@ -24,111 +26,6 @@ type GradeLevel = typeof gradeLevels[number];
 // Difficulty types
 type Difficulty = 'easy' | 'medium' | 'hard';
 
-// Quiz type
-interface Quiz {
-  id: string;
-  title: string;
-  description: string;
-  category: Exclude<Category, 'All'>;
-  gradeLevel: Exclude<GradeLevel, 'All'>;
-  difficulty: Difficulty;
-  questionCount: number;
-  estimatedMinutes: number;
-  isPublished: boolean;
-}
-
-// Mock quiz data
-const mockQuizzes: Quiz[] = [
-  {
-    id: '1',
-    title: 'Great Explorers of Canada',
-    description: 'Test your knowledge about famous explorers who mapped the Canadian wilderness.',
-    category: 'Explorers',
-    gradeLevel: '4-6',
-    difficulty: 'easy',
-    questionCount: 10,
-    estimatedMinutes: 8,
-    isPublished: true,
-  },
-  {
-    id: '2',
-    title: 'The Fur Trade Era',
-    description: 'Learn about the history of fur trading companies and their impact on Canada.',
-    category: 'Fur Trade',
-    gradeLevel: '7-9',
-    difficulty: 'medium',
-    questionCount: 15,
-    estimatedMinutes: 12,
-    isPublished: true,
-  },
-  {
-    id: '3',
-    title: 'First Nations Waterways',
-    description: 'Explore the traditional knowledge of Indigenous peoples about Canadian waterways.',
-    category: 'Indigenous Heritage',
-    gradeLevel: 'K-3',
-    difficulty: 'easy',
-    questionCount: 8,
-    estimatedMinutes: 6,
-    isPublished: true,
-  },
-  {
-    id: '4',
-    title: 'Canadian Rivers and Lakes',
-    description: 'A comprehensive quiz about the geography of Canadian water systems.',
-    category: 'Geography',
-    gradeLevel: '10-12',
-    difficulty: 'hard',
-    questionCount: 20,
-    estimatedMinutes: 15,
-    isPublished: true,
-  },
-  {
-    id: '5',
-    title: 'Maritime Discovery',
-    description: 'Journey through the history of maritime exploration on Canadian coasts.',
-    category: 'Maritime History',
-    gradeLevel: '7-9',
-    difficulty: 'medium',
-    questionCount: 12,
-    estimatedMinutes: 10,
-    isPublished: true,
-  },
-  {
-    id: '6',
-    title: 'Hudson Bay Company',
-    description: 'Discover the fascinating history of one of the oldest companies in North America.',
-    category: 'Fur Trade',
-    gradeLevel: '4-6',
-    difficulty: 'medium',
-    questionCount: 10,
-    estimatedMinutes: 8,
-    isPublished: true,
-  },
-  {
-    id: '7',
-    title: 'Samuel de Champlain',
-    description: 'Learn about the Father of New France and his explorations.',
-    category: 'Explorers',
-    gradeLevel: '7-9',
-    difficulty: 'medium',
-    questionCount: 12,
-    estimatedMinutes: 10,
-    isPublished: true,
-  },
-  {
-    id: '8',
-    title: 'Pacific Coast Explorers',
-    description: 'Explore the adventures of those who mapped Canada\'s west coast.',
-    category: 'Maritime History',
-    gradeLevel: '10-12',
-    difficulty: 'hard',
-    questionCount: 15,
-    estimatedMinutes: 12,
-    isPublished: true,
-  },
-];
-
 // Difficulty badge colors
 const difficultyColors: Record<Difficulty, { bg: string; text: string }> = {
   easy: { bg: '#22C55E', text: '#FFFFFF' },
@@ -137,7 +34,7 @@ const difficultyColors: Record<Difficulty, { bg: string; text: string }> = {
 };
 
 // Category colors for badges
-const categoryColors: Record<Exclude<Category, 'All'>, string> = {
+const categoryColors: Record<string, string> = {
   'Explorers': colors.waterBlue,
   'Fur Trade': colors.earthBrown,
   'Indigenous Heritage': '#8B5CF6',
@@ -174,9 +71,14 @@ function FilterChip({
   );
 }
 
-function QuizCard({ quiz, onPress }: { quiz: Quiz; onPress: () => void }) {
-  const difficultyStyle = difficultyColors[quiz.difficulty];
-  const categoryColor = categoryColors[quiz.category];
+function QuizCard({ quiz, onPress }: { quiz: QuizSummary; onPress: () => void }) {
+  const difficulty = (quiz.difficulty?.toLowerCase() || 'medium') as Difficulty;
+  const difficultyStyle = difficultyColors[difficulty] || difficultyColors.medium;
+  const category = quiz.category || 'General';
+  const categoryColor = categoryColors[category] || colors.forestGreen;
+
+  // Estimate time based on question count (roughly 1 min per question)
+  const estimatedMinutes = quiz.questionCount || 5;
 
   return (
     <Pressable
@@ -197,40 +99,48 @@ function QuizCard({ quiz, onPress }: { quiz: Quiz; onPress: () => void }) {
         {/* Badges row */}
         <View className="flex-row flex-wrap items-center mb-3">
           {/* Category badge */}
-          <View
-            className="px-3 py-1 rounded-full mr-2 mb-1"
-            style={{ backgroundColor: `${categoryColor}20` }}
-          >
-            <Text style={{ color: categoryColor }} className="text-xs font-semibold">
-              {quiz.category}
-            </Text>
-          </View>
+          {category ? (
+            <View
+              className="px-3 py-1 rounded-full mr-2 mb-1"
+              style={{ backgroundColor: `${categoryColor}20` }}
+            >
+              <Text style={{ color: categoryColor }} className="text-xs font-semibold">
+                {category}
+              </Text>
+            </View>
+          ) : null}
 
           {/* Difficulty badge */}
-          <View
-            className="px-3 py-1 rounded-full mr-2 mb-1"
-            style={{ backgroundColor: difficultyStyle.bg }}
-          >
-            <Text style={{ color: difficultyStyle.text }} className="text-xs font-semibold capitalize">
-              {quiz.difficulty}
-            </Text>
-          </View>
+          {quiz.difficulty ? (
+            <View
+              className="px-3 py-1 rounded-full mr-2 mb-1"
+              style={{ backgroundColor: difficultyStyle.bg }}
+            >
+              <Text style={{ color: difficultyStyle.text }} className="text-xs font-semibold capitalize">
+                {quiz.difficulty}
+              </Text>
+            </View>
+          ) : null}
 
           {/* Grade level badge */}
-          <View className="px-3 py-1 rounded-full bg-gray-100 mb-1">
-            <Text className="text-xs font-semibold text-gray-600">
-              Grade {quiz.gradeLevel}
-            </Text>
-          </View>
+          {quiz.gradeLevel ? (
+            <View className="px-3 py-1 rounded-full bg-gray-100 mb-1">
+              <Text className="text-xs font-semibold text-gray-600">
+                Grade {quiz.gradeLevel}
+              </Text>
+            </View>
+          ) : null}
         </View>
 
         {/* Title and description */}
         <Text className="text-lg font-bold text-gray-900 mb-2">
           {quiz.title}
         </Text>
-        <Text className="text-sm text-gray-600 mb-3 leading-5">
-          {quiz.description}
-        </Text>
+        {quiz.description ? (
+          <Text className="text-sm text-gray-600 mb-3 leading-5" numberOfLines={2}>
+            {quiz.description}
+          </Text>
+        ) : null}
 
         {/* Footer with stats */}
         <View className="flex-row items-center justify-between pt-3 border-t border-gray-100">
@@ -238,13 +148,13 @@ function QuizCard({ quiz, onPress }: { quiz: Quiz; onPress: () => void }) {
             <View className="flex-row items-center mr-4">
               <HelpCircle size={16} color="#6B7280" />
               <Text className="text-sm text-gray-500 ml-1">
-                {quiz.questionCount} questions
+                {quiz.questionCount} question{quiz.questionCount !== 1 ? 's' : ''}
               </Text>
             </View>
             <View className="flex-row items-center">
               <Clock size={16} color="#6B7280" />
               <Text className="text-sm text-gray-500 ml-1">
-                ~{quiz.estimatedMinutes} min
+                ~{estimatedMinutes} min
               </Text>
             </View>
           </View>
@@ -264,22 +174,59 @@ export default function QuizzesScreen() {
   const router = useRouter();
   const [selectedCategory, setSelectedCategory] = useState<Category>('All');
   const [selectedGradeLevel, setSelectedGradeLevel] = useState<GradeLevel>('All');
-  const [isLoading, setIsLoading] = useState(false);
 
-  // Filter quizzes based on selections
-  const filteredQuizzes = useMemo(() => {
-    return mockQuizzes.filter(quiz => {
-      if (!quiz.isPublished) return false;
-      if (selectedCategory !== 'All' && quiz.category !== selectedCategory) return false;
-      if (selectedGradeLevel !== 'All' && quiz.gradeLevel !== selectedGradeLevel) return false;
+  // Build filter params for API
+  const filterParams: { category?: string; gradeLevel?: string } = {};
+  if (selectedCategory !== 'All') {
+    filterParams.category = selectedCategory;
+  }
+  if (selectedGradeLevel !== 'All') {
+    filterParams.gradeLevel = selectedGradeLevel;
+  }
+
+  // Fetch quizzes from backend
+  const { data: quizzes, isLoading, isError, error, refetch } = useQuizzes(
+    Object.keys(filterParams).length > 0 ? filterParams : undefined
+  );
+
+  // Filter quizzes client-side for category if backend doesn't support it fully
+  const filteredQuizzes = React.useMemo(() => {
+    if (!quizzes) return [];
+
+    return quizzes.filter(quiz => {
+      // Filter by category if selected
+      if (selectedCategory !== 'All') {
+        const quizCategory = quiz.category || '';
+        if (!quizCategory.toLowerCase().includes(selectedCategory.toLowerCase())) {
+          return false;
+        }
+      }
+      // Filter by grade level if selected
+      if (selectedGradeLevel !== 'All') {
+        const gradeLevel = quiz.gradeLevel || '';
+        // Simple grade range matching
+        if (selectedGradeLevel === 'K-3' && !['K', '1', '2', '3'].includes(gradeLevel)) {
+          return false;
+        }
+        if (selectedGradeLevel === '4-6' && !['4', '5', '6'].includes(gradeLevel)) {
+          return false;
+        }
+        if (selectedGradeLevel === '7-9' && !['7', '8', '9'].includes(gradeLevel)) {
+          return false;
+        }
+        if (selectedGradeLevel === '10-12' && !['10', '11', '12'].includes(gradeLevel)) {
+          return false;
+        }
+      }
       return true;
     });
-  }, [selectedCategory, selectedGradeLevel]);
+  }, [quizzes, selectedCategory, selectedGradeLevel]);
 
   const handleQuizPress = (quizId: string) => {
     router.push(`/quiz/${quizId}`);
   };
 
+  // Loading state
   if (isLoading) {
     return (
       <View className="flex-1 items-center justify-center bg-[#FFFEF7]">
@@ -287,6 +234,28 @@ export default function QuizzesScreen() {
         <Text className="mt-4 text-base font-medium" style={{ color: colors.forestGreen }}>
           Loading quizzes...
         </Text>
+      </View>
+    );
+  }
+
+  // Error state
+  if (isError) {
+    return (
+      <View className="flex-1 items-center justify-center bg-[#FFFEF7] px-6">
+        <AlertCircle size={48} color="#EF4444" />
+        <Text className="mt-4 text-lg font-semibold text-gray-900 text-center">
+          Unable to Load Quizzes
+        </Text>
+        <Text className="mt-2 text-base text-gray-600 text-center">
+          {error instanceof Error ? error.message : 'Please check your connection and try again.'}
+        </Text>
+        <Pressable
+          onPress={() => refetch()}
+          className="mt-6 px-6 py-3 rounded-xl"
+          style={{ backgroundColor: colors.forestGreen }}
+        >
+          <Text className="text-white font-semibold">Try Again</Text>
+        </Pressable>
       </View>
     );
   }

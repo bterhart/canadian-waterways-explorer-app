@@ -88,6 +88,35 @@ An interactive educational map app showcasing Canada's major waterways, their In
 - **Detailed Biographies**: Full stories of their contributions and significance
 - **Explorer Connections**: See which explorers they worked with and how
 
+### Métis Leaders (NEW)
+- **Louis Riel** - Most famous Métis leader, founder of Manitoba, led Red River and Northwest Resistances
+- **Gabriel Dumont** - Military leader during Northwest Resistance, legendary buffalo hunt captain
+- **Cuthbert Grant** - Warden of the Plains, led Battle of Seven Oaks (1816)
+- **Jean-Baptiste Lagimodière** - Legendary voyageur, grandfather of Louis Riel
+
+### Pronunciation Guide (33 entries - NEW)
+- **Indigenous Place Names**: Kisiskatchewan, Athabasca, Winnipeg, Manitoba, Assiniboine, Qu'Appelle, etc.
+- **Indigenous Nations**: Cree, Ojibwe, Anishinaabe, Dene, Métis, Haudenosaunee, Mi'kmaq, Stó:lō
+- **Explorer Names**: La Vérendrye, Radisson, Des Groseilliers
+- **Fur Trade Terms**: Voyageur, Pemmican, Coureur des bois, Portage, Canot du maitre, etc.
+
+### Lesson Plans (6 complete plans - NEW)
+- **"The Voyageur Life"** (Grade 4-6) - Daily life of voyageurs, canoe routes, pemmican
+- **"Louis Riel and the Métis Nation"** (Grade 7-9) - Métis identity, Red River Resistance, Riel's legacy
+- **"Women of the Fur Trade"** (Grade 7-9) - Crucial roles of Indigenous and Métis women
+- **"Mapping Canada: The Work of David Thompson"** (Grade 10-12) - Surveying techniques
+- **"The Hudson's Bay Company"** (Grade 4-6) - HBC history, trading post life
+- Plus 1 additional curriculum-aligned lesson plan
+
+### Comparison Templates (4 templates - NEW)
+- Hudson's Bay Company vs North West Company
+- European vs Indigenous Perspectives on Land
+- River Routes: St. Lawrence vs Hudson Bay
+- David Thompson vs Alexander Mackenzie
+
+### Timeline Events (16 major events - NEW)
+From HBC Charter (1670) to Louis Riel's execution (1885)
+
 ### Map Legend
 - Blue - Rivers
 - Cyan - Lakes
@@ -98,8 +127,8 @@ An interactive educational map app showcasing Canada's major waterways, their In
 
 ## Data Included
 
-### Waterways (44)
-**Rivers**: St. Lawrence, Mackenzie, Fraser, Ottawa, Saskatchewan, Churchill, Columbia, Nelson, Athabasca, Peace, Red, Assiniboine, Yukon, Coppermine, Thelon, Saguenay, Saint John
+### Waterways (48)
+**Rivers**: St. Lawrence, Mackenzie, Fraser, Ottawa, Saskatchewan, Churchill, Columbia, Nelson, Hayes, Moose, Albany, Abitibi, Red, Assiniboine, Athabasca, Peace, Yukon, Coppermine, Thelon, Saguenay, Saint John
 
 **Lakes**: Superior, Huron, Ontario, Erie, Michigan, Winnipeg, Athabasca, Great Slave, Great Bear, Reindeer, Nipigon, Lesser Slave
 
@@ -107,7 +136,16 @@ An interactive educational map app showcasing Canada's major waterways, their In
 
 **Straits & Inlets**: Strait of Belle Isle, Juan de Fuca Strait, Georgia Strait, Burrard Inlet
 
-### Historic Locations (82)
+**NEW Rivers Added:**
+- **Nelson River** (Sipiwesk in Cree) - Major HBC route to York Factory from Lake Winnipeg
+- **Hayes River** (Ethenneldeli in Dene) - Primary route for HBC brigades to Hudson Bay
+- **Moose River** - Flows into James Bay at Moose Factory
+- **Albany River** - Major route into James Bay, Fort Albany at mouth
+- **Abitibi River** ("middle waters" in Algonquin) - Important route from Great Lakes to James Bay
+- **Red River** (Miskosipi in Cree) - Critical for Métis history and Red River Settlement
+- **Assiniboine River** - Tributary at The Forks (Winnipeg)
+
+### Historic Locations (84)
 
 **Hudson's Bay Company Posts:**
 - Prince of Wales Fort (1717) - Massive stone fortress on Churchill River; Samuel Hearne, James Knight, Moses Norton as factors

@@ -985,3 +985,72 @@ export interface NotableFigureDetail extends NotableFigureSummary {
   createdAt: string;
   updatedAt: string;
 }
+
+// ============= Quiz Types =============
+
+export interface QuizSummary {
+  id: string;
+  title: string;
+  description: string | null;
+  gradeLevel: string | null;
+  difficulty: string | null;
+  category: string | null;
+  createdAt: string;
+  questionCount: number;
+}
+
+export interface QuizOption {
+  id: string;
+  text: string;
+}
+
+export interface QuizQuestion {
+  id: string;
+  questionText: string;
+  questionType: string;
+  options: QuizOption[];
+  orderIndex: number;
+  points: number;
+}
+
+export interface QuizDetail {
+  id: string;
+  title: string;
+  description: string | null;
+  gradeLevel: string | null;
+  difficulty: string | null;
+  category: string | null;
+  questions: QuizQuestion[];
+}
+
+export interface QuizAttemptAnswer {
+  questionId: string;
+  selectedAnswer: string;
+}
+
+export interface QuizAttemptPayload {
+  studentName?: string;
+  studentGrade?: string;
+  schoolName?: string;
+  answers: QuizAttemptAnswer[];
+}
+
+export interface QuizAttemptResult {
+  questionId: string;
+  selectedAnswer: string;
+  correctAnswer: string;
+  isCorrect: boolean;
+  explanation: string | null;
+  pointsEarned: number;
+  pointsPossible: number;
+}
+
+export interface QuizAttemptResponse {
+  attemptId: string;
+  score: number;
+  totalQuestions: number;
+  totalPoints: number;
+  maxPoints: number;
+  percentageScore: number;
+  results: QuizAttemptResult[];
+}
