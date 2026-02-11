@@ -1,4 +1,4 @@
-# Canada Waterways Explorer
+# Canadian Interactive Waterways Initiative
 
 An interactive educational map app showcasing Canada's major waterways, their Indigenous heritage, historical explorers, and the fur trade era. Designed for K-12 students.
 
