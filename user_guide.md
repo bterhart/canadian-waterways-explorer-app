@@ -36,6 +36,34 @@ When you open the app, you'll see two main tabs at the bottom:
 
 Simply tap on either tab to begin exploring.
 
+### First Launch Tutorial
+
+On your first launch, you'll be greeted with an interactive onboarding tutorial featuring 5 slides:
+1. **Welcome** - Introduction to the app and map exploration
+2. **Learn & Discover** - Overview of educational resources
+3. **Earn Achievements** - Introduction to gamification system
+4. **Indigenous Languages** - Language learning features
+5. **Notable Figures** - Women and Indigenous leaders section
+
+You can skip the tutorial or complete all slides. To replay the tutorial later, go to Settings > Help & Support > Tutorial.
+
+### Getting Help
+
+Access help and documentation from multiple places in the app:
+
+**From Settings:**
+- Settings > Help & Support > User Guide (this comprehensive guide)
+- Settings > Help & Support > FAQ (frequently asked questions)
+- Settings > Help & Support > Tutorial (replay onboarding)
+- Settings > About (credits, acknowledgments, contact information)
+
+**From Learn Tab:**
+- Quick Access section has links to User Guide, FAQ, and About
+
+**Search Functionality:**
+- Both User Guide and FAQ have built-in search to quickly find topics
+- Just type keywords to filter relevant sections
+
 ---
 
 ## Interactive Map
@@ -451,10 +479,74 @@ The app comes with 6 pre-loaded quizzes containing 36 questions:
 
 For administrators managing educational content.
 
-### Access
-- Email: admin@waterways.edu
-- Password: admin123
-- *Note: Change these credentials in production settings*
+### Admin Registration & Approval Process
+
+**New Admin Registration:**
+1. Navigate to admin registration page
+2. Provide: name, email, password (min 12 chars, must include upper, lower, number, special character), organization
+3. Account created with "pending" status
+4. Super-admin receives notification of new admin request
+
+**Super-Admin Approval:**
+- Only super-admins can approve new admin accounts
+- Super-admin reviews: name, email, organization, registration date
+- Options:
+  - **Approve** - Grant admin access with specified permissions
+  - **Approve with Super-Admin privileges** - Grant super-admin role (use sparingly)
+  - **Reject** - Deny access with reason
+- Approved admins receive email confirmation and can login
+
+**Initial Super-Admin Access:**
+- Email: superadmin@waterways.edu
+- Password: SecurePassword123!
+- **CRITICAL**: Change password immediately after first login
+- Super-admin can grant super-admin privilege to other admins
+
+### Admin Roles & Permissions
+
+**Super-Admin:**
+- Approve/reject admin registration requests
+- Grant super-admin privileges to other admins
+- Suspend or reactivate admin accounts
+- Review and approve user-created content for global visibility
+- Manage all content types
+- Access all admin features
+
+**Admin:**
+- Create and manage own content (lesson plans, field trips, documents, printables)
+- Review and approve user contributions
+- Create and manage quizzes
+- View core content (cannot edit or delete)
+- Request global approval for their own content
+
+**Moderator:**
+- Review and moderate user contributions
+- Limited content creation abilities
+- Cannot approve global content
+
+### Content Permission System
+
+**Core Content** (Protected):
+- Original 26 lesson plans, 14 primary source documents, 4 virtual field trips, 8 printables
+- Marked with "Core Content" badge
+- Cannot be edited or deleted by any admin
+- Visible to all users globally
+
+**User-Created Content**:
+- Admins create their own lesson plans, field trips, documents, printables
+- Initially set to "Private" (visible only to creator)
+- Creator can edit, delete, or request global approval
+- **Request Global Approval**:
+  - Creator clicks "Request Global Approval" button
+  - Content status changes to "Pending Approval"
+  - Super-admin reviews content
+  - If approved: status changes to "Global" (visible to all users)
+  - If rejected: status returns to "Private" with feedback
+
+**Content Visibility States:**
+- **Private**: Only visible to creator
+- **Pending Approval**: Awaiting super-admin review
+- **Global**: Visible to all users (after super-admin approval)
 
 ### Admin Features
 

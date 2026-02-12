@@ -24,11 +24,16 @@ An interactive educational map app showcasing Canada's major waterways, their In
 - **Community Input**: Approved contributions appear in the detail view for each waterway/location
 - **Admin Review**: All submissions go through admin vetting before being published
 
-### Admin Panel
-- **Review Submissions**: View all pending user contributions
-- **Approve/Reject**: Admin can approve or reject submissions with notes
-- **Quiz Management**: Create, edit, and publish educational quizzes
-- **Default Admin**: email: admin@waterways.edu, password: admin123
+### Admin Panel & Security (UPDATED)
+- **Super-Admin Approval System**: New admins must be approved by super-admin before gaining access
+- **Role Hierarchy**: Super-Admin > Admin > Moderator
+- **Content Management**:
+  - Admins can create lesson plans, field trips, documents, printables
+  - Core content (original 26 lessons, 14 documents, etc.) is protected and cannot be edited
+  - User-created content starts as private, can request global approval from super-admin
+- **JWT Authentication**: Persistent sessions with 15-minute access tokens and 7-day refresh tokens
+- **Security Features**: Brute force protection, account lockout, password complexity requirements
+- **Initial Super-Admin**: email: superadmin@waterways.edu, password: SecurePassword123! (CHANGE IN PRODUCTION)
 
 ### RCGS Educational Quizzes
 - **Quiz Categories**: Explorers, Fur Trade, Maritime History, Indigenous Heritage, Geography, Archaeological Discoveries
