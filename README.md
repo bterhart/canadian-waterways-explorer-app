@@ -380,4 +380,33 @@ All displayed **chronologically by birth year** to show the progression of Canad
 - `GET /api/notable-figures/nations` - List nations represented
 - `GET /api/notable-figures/by-explorer/:name` - Get figures associated with an explorer
 
+### Historical Imagery (NEW)
 
+The app now features extensive Creative Commons imagery from Wikimedia Commons throughout:
+
+**Explorer Portraits:**
+- Samuel Hearne, La Vérendrye, Henry Kelsey, Étienne Brûlé, Jacques Marquette, Louis Jolliet, La Salle, Simon Fraser, George Vancouver, Captain James Cook, Martin Frobisher, Roald Amundsen
+
+**Indigenous Leaders:**
+- Matonabbee (Samuel Hearne's guide), Crowfoot, Poundmaker, Big Bear
+
+**Historical Events with Imagery:**
+- Bloody Falls Massacre (1771) - Samuel Hearne's traumatic account
+- Lake of the Woods Massacre (1736) - La Vérendrye's son and Father Aulneau
+- Battle of the Plains of Abraham, Battle of Seven Oaks, Siege of Louisbourg
+- Franklin Expedition, Hearne's Arctic expeditions, and more
+
+**Historic Locations:**
+- Bloody Falls / Kugluk Territorial Park (Coppermine River)
+- Massacre Island and Fort St. Charles (Lake of the Woods)
+- Prince of Wales Fort, York Factory, Fort William
+
+**New Historical Events Added:**
+- Bloody Falls Massacre (July 17, 1771) - With full account and 1996 reconciliation ceremony
+- Lake of the Woods Massacre (June 6, 1736) - Father Aulneau and Jean-Baptiste de La Vérendrye
+- Hearne's three Arctic expeditions (1769, 1770, 1770-1772)
+- Surrender of Prince of Wales Fort (1782)
+- La Vérendrye Reaches Lake Winnipeg (1733)
+- Rediscovery of Fort St. Charles (1908)
+
+All images are Public Domain or Creative Commons licensed from Wikimedia Commons.
