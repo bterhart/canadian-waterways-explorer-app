@@ -1400,12 +1400,14 @@ Including:
 
 Spanning from 1497 (Cabot's landing) to the late 1800s
 
-### Explorers (38 Total)
+### Explorers (78 Total)
 
 Chronologically organized from Leif Erikson (c. 1000 AD) to Vilhjalmur Stefansson (1906-1918):
 
+The database includes **78 explorers** spanning 1,000 years, providing comprehensive coverage of Canadian exploration history.
+
 **Maritime Explorers:**
-John Cabot, Jacques Cartier, Martin Frobisher, Henry Hudson, Captain James Cook, Captain George Vancouver, Samuel de Champlain (also inland)
+John Cabot, Jacques Cartier, Martin Frobisher, Henry Hudson, Captain James Cook, Captain George Vancouver, Samuel de Champlain (also inland), Vitus Bering, Aleksei Chirikov, Juan Pérez, Spanish explorers (Bodega y Quadra, Bruno de Heceta, Galiano, Valdés)
 
 **Inland Explorers:**
 Samuel de Champlain, Pierre-Esprit Radisson, Médard des Groseilliers, Pierre Gaultier de La Vérendrye, Alexander Mackenzie, David Thompson, Simon Fraser, Samuel Hearne, Peter Pond

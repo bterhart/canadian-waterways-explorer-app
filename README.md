@@ -217,7 +217,25 @@ From HBC Charter (1670) to Louis Riel's execution (1885)
 - Spanish Banks Beach (Vancouver-Galiano meeting, 1792)
 - Fort San Miguel (Spanish fort at Nootka, 1789)
 
-### Explorers (38) - Chronological
+### Explorers (78 Total) - Chronological
+
+**Comprehensive coverage spanning 1,000 years of Canadian exploration:**
+
+The database includes 78 explorers from c. 1000 AD to 1918, including:
+- Norse explorers (Leif Erikson, c. 1000 AD)
+- Early maritime explorers (Cabot 1497, Cartier 1534, Hudson 1610)
+- French coureurs des bois and voyageurs (Radisson, Des Groseilliers, Brûlé)
+- HBC explorers (Kelsey, Knight, Henday, Hearne)
+- Fur trade pioneers (Peter Pond, La Vérendrye family, Simon McTavish)
+- Pacific coast explorers (Cook, Vancouver, Spanish expeditions)
+- Overland to Pacific (Mackenzie, Fraser, Thompson)
+- Arctic explorers (Franklin, Rae, McClure, Amundsen)
+- Modern era (Tyrrell 1893, Stefansson 1918)
+- Indigenous guides recognized as explorers (Thanadelthur, Matonabbee)
+
+All displayed **chronologically by birth year** to show the progression of Canadian exploration.
+
+**Notable examples below:**
 
 **East Coast Maritime:**
 - **1497**: John Cabot (First English claim to North America)
