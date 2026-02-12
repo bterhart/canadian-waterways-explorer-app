@@ -17,6 +17,8 @@ For educators, twenty-six curriculum-aligned lesson plans, four virtual field tr
 
 This is Canadian history made accessible, interactive, and engaging. Students don't just read about the canoe routes that built this nation—they explore them.
 
+The app also invites students to become contributors themselves. Personal learning journals let students document their discoveries and reflections, while a community contribution system allows them to submit photos, stories, and historical facts about waterways and locations they visit—building a living archive of Canadian waterway heritage shaped by the next generation of explorers.
+
 The Canadian Interactive Waterways Initiative is available now, designed for K-12 classrooms, and ready to bring Canada's waterway heritage into the hands of the next generation.
 
 ---
@@ -64,6 +66,12 @@ Twenty-six lesson plans align with provincial curriculum expectations across gra
 Eight printable worksheets—from blank fur trade route maps to vocabulary builders to perspective-comparison activities—provide offline reinforcement. Four structured comparison templates help students analyze the Hudson's Bay Company versus the North West Company, European versus Indigenous perspectives on land, and other essential contrasts.
 
 Thirteen quizzes spanning multiple categories and difficulty levels allow students to test their knowledge, while a gamification system with achievement badges and explorer ranks maintains engagement over time.
+
+### Student Voices: A Living Archive
+
+Beyond consuming content, students contribute to it. Each student can maintain a personal learning journal, documenting discoveries, reflections, and connections made throughout their studies. These private journals become portfolios of growth, tracking a student's journey through Canadian waterway heritage.
+
+The community contribution system goes further, inviting students to submit photographs, stories, descriptions, and historical facts about the waterways and locations they encounter—whether on school field trips or family outings. All submissions undergo review before publication, ensuring quality while honouring student voices. Over time, this creates a living archive: Canadian waterway heritage documented not just by historians, but by the young Canadians who are discovering it anew.
 
 ### Research-Grade Content, Student-Friendly Delivery
 
