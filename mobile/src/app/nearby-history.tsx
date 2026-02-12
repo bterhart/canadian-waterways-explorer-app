@@ -13,6 +13,7 @@ import {
   Alert,
   Linking,
   Platform,
+  Modal,
 } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
 import * as Location from 'expo-location';
@@ -32,6 +33,7 @@ import {
   Tent,
   RefreshCw,
   Info,
+  X,
 } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import {
@@ -40,7 +42,7 @@ import {
 } from '@/lib/api/education-api';
 import type { HistoricalEvent, NearbyHistoryCategory } from '@/lib/types/education';
 
-const { width } = Dimensions.get('window');
+const { width, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 // Theme colors
 const colors = {
@@ -327,6 +329,9 @@ export default function NearbyHistoryScreen() {
   const [selectedCategory, setSelectedCategory] = useState<string | undefined>(undefined);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
+  // Selected event for modal
+  const [selectedEvent, setSelectedEvent] = useState<HistoricalEvent | null>(null);
+
   // Fetch categories
   const { data: categories } = useNearbyHistoryCategories();
 
@@ -387,9 +392,14 @@ export default function NearbyHistoryScreen() {
     setIsRefreshing(false);
   }, [requestLocation, refetchEvents, userLocation]);
 
-  // Handle event press
+  // Handle event press - show details modal
   const handleEventPress = (event: HistoricalEvent) => {
-    // Navigate to map with the event location
+    setSelectedEvent(event);
+  };
+
+  // Handle view on map press
+  const handleViewOnMap = (event: HistoricalEvent) => {
+    setSelectedEvent(null);
     router.push(`/?lat=${event.latitude}&lng=${event.longitude}&eventId=${event.id}`);
   };
 
@@ -649,6 +659,108 @@ export default function NearbyHistoryScreen() {
           <View style={styles.bottomSpacer} />
         </ScrollView>
       )}
+
+      {/* Event Detail Modal */}
+      <Modal
+        visible={selectedEvent !== null}
+        animationType="slide"
+        transparent
+        onRequestClose={() => setSelectedEvent(null)}
+      >
+        <View style={styles.modalOverlay}>
+          <Pressable
+            style={{ flex: 1 }}
+            onPress={() => setSelectedEvent(null)}
+          />
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle} numberOfLines={2}>
+                {selectedEvent?.title}
+              </Text>
+              <Pressable
+                style={styles.modalCloseButton}
+                onPress={() => setSelectedEvent(null)}
+              >
+                <X size={20} color="#6B7280" />
+              </Pressable>
+            </View>
+            <ScrollView
+              style={styles.modalScrollContent}
+              showsVerticalScrollIndicator={false}
+            >
+              {selectedEvent ? (
+                <>
+                  {/* Category and Distance */}
+                  <View style={styles.modalMetaRow}>
+                    <View
+                      style={[
+                        styles.categoryBadge,
+                        {
+                          backgroundColor:
+                            categoryConfig[selectedEvent.category]?.color || '#6B7280',
+                        },
+                      ]}
+                    >
+                      {categoryConfig[selectedEvent.category]?.icon || (
+                        <MapPin size={16} color="white" />
+                      )}
+                      <Text style={styles.categoryText}>
+                        {categoryConfig[selectedEvent.category]?.label ||
+                          selectedEvent.category}
+                      </Text>
+                    </View>
+                    {selectedEvent.distance !== undefined ? (
+                      <View style={styles.distanceBadge}>
+                        <Navigation size={12} color={colors.forestGreen} />
+                        <Text style={styles.distanceText}>
+                          {formatDistance(selectedEvent.distance)}
+                        </Text>
+                      </View>
+                    ) : null}
+                  </View>
+
+                  {/* Date */}
+                  <View style={styles.modalDateRow}>
+                    <Clock size={16} color="#6B7280" />
+                    <Text style={styles.modalDateText}>
+                      {formatHistoricalDate(
+                        selectedEvent.year,
+                        selectedEvent.month,
+                        selectedEvent.day
+                      )}
+                    </Text>
+                  </View>
+
+                  {/* Description */}
+                  {selectedEvent.description ? (
+                    <Text style={styles.modalDescription}>
+                      {selectedEvent.description}
+                    </Text>
+                  ) : (
+                    <Text
+                      style={[
+                        styles.modalDescription,
+                        { color: '#9CA3AF', fontStyle: 'italic' },
+                      ]}
+                    >
+                      No additional details available for this event.
+                    </Text>
+                  )}
+
+                  {/* View on Map Button */}
+                  <Pressable
+                    style={styles.viewOnMapButton}
+                    onPress={() => handleViewOnMap(selectedEvent)}
+                  >
+                    <Map size={20} color="white" />
+                    <Text style={styles.viewOnMapButtonText}>View on Map</Text>
+                  </Pressable>
+                </>
+              ) : null}
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -1065,5 +1177,83 @@ const styles = StyleSheet.create({
 
   bottomSpacer: {
     height: 32,
+  },
+
+  // Modal styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    maxHeight: SCREEN_HEIGHT * 0.85,
+    paddingBottom: 32,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E7EB',
+  },
+  modalCloseButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#F3F4F6',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: colors.darkGreen,
+    flex: 1,
+    marginRight: 12,
+  },
+  modalScrollContent: {
+    padding: 16,
+  },
+  modalMetaRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    marginBottom: 16,
+  },
+  modalDateRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 16,
+  },
+  modalDateText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#374151',
+  },
+  modalDescription: {
+    fontSize: 16,
+    color: '#374151',
+    lineHeight: 24,
+    marginBottom: 24,
+  },
+  viewOnMapButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    backgroundColor: colors.forestGreen,
+    paddingVertical: 14,
+    paddingHorizontal: 24,
+    borderRadius: 12,
+  },
+  viewOnMapButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: 'white',
   },
 });

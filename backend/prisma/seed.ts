@@ -45,17 +45,24 @@ async function main() {
     }
   });
 
-  const mackenzie = await prisma.explorer.create({
-    data: {
-      name: "Alexander Mackenzie",
-      birthYear: 1764,
-      deathYear: 1820,
-      nationality: "Scottish-Canadian",
-      biography: "First European to complete a transcontinental crossing of North America north of Mexico. Explored the river that now bears his name to the Arctic Ocean in 1789.",
-      notableAchievements: "First transcontinental crossing (1793), explored Mackenzie River to Arctic Ocean (1789), knighted in 1802",
-      imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/AlexanderMackenzie.jpg/220px-AlexanderMackenzie.jpg"
-    }
+  // Alexander Mackenzie - find existing or create
+  // The comprehensive seed file may have already created this explorer
+  let mackenzie = await prisma.explorer.findFirst({
+    where: { name: "Alexander Mackenzie" }
   });
+  if (!mackenzie) {
+    mackenzie = await prisma.explorer.create({
+      data: {
+        name: "Alexander Mackenzie",
+        birthYear: 1764,
+        deathYear: 1820,
+        nationality: "Scottish",
+        biography: "First European to complete a transcontinental crossing of North America north of Mexico. Explored the river that now bears his name to the Arctic Ocean in 1789.",
+        notableAchievements: "First transcontinental crossing (1793), explored Mackenzie River to Arctic Ocean (1789), knighted in 1802",
+        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/AlexanderMackenzie.jpg/220px-AlexanderMackenzie.jpg"
+      }
+    });
+  }
 
   const thompson = await prisma.explorer.create({
     data: {

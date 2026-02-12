@@ -104,7 +104,7 @@ export default function AdminScreen() {
   const { data: documents } = useAdminDocuments();
   const { data: printables } = useAdminPrintables();
   const { data: quizzes } = useAdminQuizzes();
-  const { data: pendingAdmins } = usePendingAdmins();
+  const { data: pendingAdmins } = usePendingAdmins(isLoggedIn && adminRole === 'super_admin');
   const { data: pendingContributions } = usePendingContributions(isLoggedIn);
 
   const showFeedback = (type: 'success' | 'error', message: string) => {

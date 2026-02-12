@@ -306,10 +306,11 @@ export function useRegisterAdmin() {
   });
 }
 
-export function usePendingAdmins() {
+export function usePendingAdmins(enabled: boolean = false) {
   return useQuery({
     queryKey: adminApprovalKeys.pending(),
     queryFn: () => api.get<AdminUser[]>('/api/admin-approval/pending'),
+    enabled,
   });
 }
 

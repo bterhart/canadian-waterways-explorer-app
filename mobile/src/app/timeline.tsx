@@ -8,11 +8,15 @@ import {
   StyleSheet,
   ActivityIndicator,
   ScrollView,
+  Modal,
+  Dimensions,
 } from 'react-native';
 import { Stack } from 'expo-router';
-import { Calendar, Filter, MapPin, User, Droplets } from 'lucide-react-native';
+import { Calendar, Filter, MapPin, User, Droplets, X } from 'lucide-react-native';
 import { useTimelineEvents, useTimelineThemes } from '@/lib/api/education-api';
 import type { TimelineEvent } from '@/lib/types/education';
+
+const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 const colors = {
   forestGreen: '#2D5A3D',
@@ -66,6 +70,7 @@ function formatDate(event: TimelineEvent): string {
 export default function TimelineScreen() {
   const [selectedTheme, setSelectedTheme] = useState<string | undefined>();
   const [selectedImportance, setSelectedImportance] = useState<string | undefined>();
+  const [selectedEvent, setSelectedEvent] = useState<TimelineEvent | null>(null);
 
   const { data: events, isLoading, isError } = useTimelineEvents({
     theme: selectedTheme,
@@ -107,8 +112,14 @@ export default function TimelineScreen() {
         {!isLast ? <View style={styles.timelineLine} /> : null}
       </View>
 
-      {/* Event card */}
-      <View style={styles.eventCard}>
+      {/* Event card - now tappable */}
+      <Pressable
+        style={({ pressed }) => [
+          styles.eventCard,
+          pressed && styles.eventCardPressed,
+        ]}
+        onPress={() => setSelectedEvent(event)}
+      >
         <View style={styles.eventHeader}>
           <Text style={styles.eventDate}>{formatDate(event)}</Text>
           <View
@@ -179,7 +190,7 @@ export default function TimelineScreen() {
             </View>
           ) : null}
         </View>
-      </View>
+      </Pressable>
     </View>
   );
 
@@ -338,6 +349,119 @@ export default function TimelineScreen() {
           <Text style={styles.emptyText}>No events found</Text>
         </View>
       )}
+
+      {/* Event Detail Modal */}
+      <Modal
+        visible={selectedEvent !== null}
+        animationType="slide"
+        transparent
+        onRequestClose={() => setSelectedEvent(null)}
+      >
+        <View style={styles.modalOverlay}>
+          <Pressable
+            style={{ flex: 1 }}
+            onPress={() => setSelectedEvent(null)}
+          />
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle} numberOfLines={2}>
+                {selectedEvent?.title}
+              </Text>
+              <Pressable
+                style={styles.modalCloseButton}
+                onPress={() => setSelectedEvent(null)}
+              >
+                <X size={20} color="#6B7280" />
+              </Pressable>
+            </View>
+            <ScrollView
+              style={styles.modalScrollContent}
+              showsVerticalScrollIndicator={false}
+            >
+              {selectedEvent ? (
+                <>
+                  <Text style={styles.modalDate}>
+                    {formatDate(selectedEvent)}
+                  </Text>
+
+                  <View style={styles.eventMeta}>
+                    <View
+                      style={[
+                        styles.themeBadge,
+                        { backgroundColor: getThemeColor(selectedEvent.theme) + '20' },
+                      ]}
+                    >
+                      <Text
+                        style={[
+                          styles.themeText,
+                          { color: getThemeColor(selectedEvent.theme) },
+                        ]}
+                      >
+                        {selectedEvent.theme.replace('_', ' ')}
+                      </Text>
+                    </View>
+                    <View
+                      style={[
+                        styles.importanceBadge,
+                        {
+                          backgroundColor:
+                            importanceColors[selectedEvent.importance] + '20',
+                        },
+                      ]}
+                    >
+                      <View
+                        style={[
+                          styles.importanceDot,
+                          { backgroundColor: importanceColors[selectedEvent.importance] },
+                        ]}
+                      />
+                      <Text
+                        style={[
+                          styles.importanceText,
+                          { color: importanceColors[selectedEvent.importance] },
+                        ]}
+                      >
+                        {selectedEvent.importance}
+                      </Text>
+                    </View>
+                  </View>
+
+                  {selectedEvent.description ? (
+                    <Text style={styles.modalDescription}>
+                      {selectedEvent.description}
+                    </Text>
+                  ) : (
+                    <Text style={[styles.modalDescription, { color: '#9CA3AF', fontStyle: 'italic' }]}>
+                      No additional details available for this event.
+                    </Text>
+                  )}
+
+                  <View style={styles.modalMetaSection}>
+                    {selectedEvent.explorerId ? (
+                      <View style={styles.metaItem}>
+                        <User size={14} color="#6B7280" />
+                        <Text style={styles.metaText}>Related Explorer</Text>
+                      </View>
+                    ) : null}
+                    {selectedEvent.waterwayId ? (
+                      <View style={styles.metaItem}>
+                        <Droplets size={14} color="#6B7280" />
+                        <Text style={styles.metaText}>Related Waterway</Text>
+                      </View>
+                    ) : null}
+                    {selectedEvent.locationId ? (
+                      <View style={styles.metaItem}>
+                        <MapPin size={14} color="#6B7280" />
+                        <Text style={styles.metaText}>Related Location</Text>
+                      </View>
+                    ) : null}
+                  </View>
+                </>
+              ) : null}
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -444,6 +568,10 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
   },
+  eventCardPressed: {
+    opacity: 0.9,
+    transform: [{ scale: 0.98 }],
+  },
   eventHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -530,5 +658,62 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#6B7280',
     marginTop: 12,
+  },
+  // Modal styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    maxHeight: SCREEN_HEIGHT * 0.85,
+    paddingBottom: 32,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E7EB',
+  },
+  modalCloseButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#F3F4F6',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: colors.darkGreen,
+    flex: 1,
+    marginRight: 12,
+  },
+  modalScrollContent: {
+    padding: 16,
+  },
+  modalDate: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: colors.forestGreen,
+    marginBottom: 12,
+  },
+  modalDescription: {
+    fontSize: 16,
+    color: '#374151',
+    lineHeight: 24,
+    marginBottom: 16,
+  },
+  modalMetaSection: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+    marginTop: 8,
   },
 });
