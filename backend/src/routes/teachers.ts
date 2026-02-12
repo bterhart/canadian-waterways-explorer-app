@@ -2,6 +2,8 @@ import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { prisma } from "../prisma";
+import { generateAccessToken, generateRefreshToken } from "../lib/jwt-utils";
+import bcrypt from "bcryptjs";
 
 const teachersRouter = new Hono();
 
@@ -78,7 +80,7 @@ teachersRouter.post(
   }
 );
 
-// POST /login - Teacher login
+// POST /login - Teacher login with JWT tokens
 teachersRouter.post(
   "/login",
   zValidator("json", loginSchema),
@@ -96,14 +98,81 @@ teachersRouter.post(
       );
     }
 
-    const isValid = await Bun.password.verify(password, teacher.passwordHash);
+    // Check if account is locked
+    if (teacher.lockedUntil && teacher.lockedUntil > new Date()) {
+      const minutesLeft = Math.ceil(
+        (teacher.lockedUntil.getTime() - Date.now()) / 1000 / 60
+      );
+      return c.json(
+        {
+          error: {
+            message: `Account is locked due to too many failed login attempts. Please try again in ${minutesLeft} minutes.`,
+            code: "ACCOUNT_LOCKED",
+          },
+        },
+        403
+      );
+    }
+
+    // Verify password
+    const isValid = await bcrypt.compare(password, teacher.passwordHash);
 
     if (!isValid) {
+      // Increment failed login attempts
+      const failedAttempts = teacher.failedLoginAttempts + 1;
+      const shouldLock = failedAttempts >= 5;
+
+      await prisma.teacher.update({
+        where: { id: teacher.id },
+        data: {
+          failedLoginAttempts: failedAttempts,
+          lockedUntil: shouldLock
+            ? new Date(Date.now() + 15 * 60 * 1000) // Lock for 15 minutes
+            : null,
+        },
+      });
+
       return c.json(
-        { error: { message: "Invalid email or password", code: "UNAUTHORIZED" } },
+        {
+          error: {
+            message: shouldLock
+              ? "Too many failed login attempts. Account locked for 15 minutes."
+              : "Invalid email or password",
+            code: "UNAUTHORIZED",
+          },
+        },
         401
       );
     }
+
+    // Reset failed login attempts
+    await prisma.teacher.update({
+      where: { id: teacher.id },
+      data: {
+        failedLoginAttempts: 0,
+        lockedUntil: null,
+      },
+    });
+
+    // Generate JWT tokens
+    const accessToken = generateAccessToken({
+      userId: teacher.id,
+      email: teacher.email,
+      role: "teacher",
+      type: "teacher",
+      status: "approved",
+    });
+
+    const refreshToken = generateRefreshToken({
+      userId: teacher.id,
+      email: teacher.email,
+      role: "teacher",
+      type: "teacher",
+      status: "approved",
+    });
+
+    // Log successful login
+    console.log(`[TEACHER LOGIN] ${teacher.email} logged in at ${new Date().toISOString()}`);
 
     return c.json({
       data: {
@@ -116,6 +185,8 @@ teachersRouter.post(
           schoolDistrict: teacher.schoolDistrict,
           province: teacher.province,
         },
+        accessToken,
+        refreshToken,
       },
     });
   }

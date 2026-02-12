@@ -2,6 +2,8 @@ import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { prisma } from "../prisma";
+import { generateAccessToken, generateRefreshToken } from "../lib/jwt-utils";
+import bcrypt from "bcryptjs";
 
 const adminRouter = new Hono();
 
@@ -18,7 +20,7 @@ const updateContributionSchema = z.object({
   reviewedBy: z.string().min(1, "Reviewer name is required"),
 });
 
-// POST /login - Simple admin login
+// POST /login - Admin login with JWT tokens
 adminRouter.post(
   "/login",
   zValidator("json", loginSchema),
@@ -36,21 +38,97 @@ adminRouter.post(
       );
     }
 
-    // Simple password comparison using Bun's built-in password verification
-    const isValid = await Bun.password.verify(password, admin.passwordHash);
+    // Check if account is locked
+    if (admin.lockedUntil && admin.lockedUntil > new Date()) {
+      const minutesLeft = Math.ceil(
+        (admin.lockedUntil.getTime() - Date.now()) / 1000 / 60
+      );
+      return c.json(
+        {
+          error: {
+            message: `Account is locked due to too many failed login attempts. Please try again in ${minutesLeft} minutes.`,
+            code: "ACCOUNT_LOCKED",
+          },
+        },
+        403
+      );
+    }
+
+    // Verify password
+    const isValid = await bcrypt.compare(password, admin.passwordHash);
 
     if (!isValid) {
+      // Increment failed login attempts
+      const failedAttempts = admin.failedLoginAttempts + 1;
+      const shouldLock = failedAttempts >= 5;
+
+      await prisma.adminUser.update({
+        where: { id: admin.id },
+        data: {
+          failedLoginAttempts: failedAttempts,
+          lockedUntil: shouldLock
+            ? new Date(Date.now() + 15 * 60 * 1000) // Lock for 15 minutes
+            : null,
+        },
+      });
+
       return c.json(
-        { error: { message: "Invalid email or password", code: "UNAUTHORIZED" } },
+        {
+          error: {
+            message: shouldLock
+              ? "Too many failed login attempts. Account locked for 15 minutes."
+              : "Invalid email or password",
+            code: "UNAUTHORIZED",
+          },
+        },
         401
       );
     }
 
-    // Update last login time
+    // Check if admin is approved
+    if (admin.status !== "approved") {
+      return c.json(
+        {
+          error: {
+            message: "Admin account is not approved",
+            code: "FORBIDDEN",
+          },
+        },
+        403
+      );
+    }
+
+    // Reset failed login attempts and update last login
     await prisma.adminUser.update({
       where: { id: admin.id },
-      data: { lastLoginAt: new Date() },
+      data: {
+        lastLoginAt: new Date(),
+        failedLoginAttempts: 0,
+        lockedUntil: null,
+      },
     });
+
+    // Generate JWT tokens
+    const accessToken = generateAccessToken({
+      userId: admin.id,
+      email: admin.email,
+      role: admin.role as "admin" | "super_admin" | "moderator",
+      type: "admin",
+      status: admin.status,
+      permissions: admin.permissions ? JSON.parse(admin.permissions) : undefined,
+    });
+
+    const refreshToken = generateRefreshToken({
+      userId: admin.id,
+      email: admin.email,
+      role: admin.role as "admin" | "super_admin" | "moderator",
+      type: "admin",
+      status: admin.status,
+      permissions: admin.permissions ? JSON.parse(admin.permissions) : undefined,
+    });
+
+    // Log successful login
+    console.log(`[ADMIN LOGIN] ${admin.email} logged in at ${new Date().toISOString()}`);
 
     return c.json({
       data: {
@@ -61,6 +139,8 @@ adminRouter.post(
           name: admin.name,
           role: admin.role,
         },
+        accessToken,
+        refreshToken,
       },
     });
   }

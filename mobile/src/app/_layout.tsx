@@ -64,6 +64,14 @@ function RootLayoutNav({ colorScheme }: { colorScheme: 'light' | 'dark' | null |
         {/* Notable Figures Screens */}
         <Stack.Screen name="notable-figures/index" options={{ headerShown: true }} />
         <Stack.Screen name="notable-figures/[id]" options={{ headerShown: true }} />
+        {/* Voyageur Journey Screens */}
+        <Stack.Screen name="voyageur-journey/index" options={{ headerShown: true }} />
+        <Stack.Screen name="voyageur-journey/[id]" options={{ headerShown: true }} />
+        {/* Help & Support Screens */}
+        <Stack.Screen name="user-guide" options={{ headerShown: true }} />
+        <Stack.Screen name="faq" options={{ headerShown: true }} />
+        <Stack.Screen name="about" options={{ headerShown: true }} />
+        <Stack.Screen name="onboarding" options={{ headerShown: false, presentation: 'fullScreenModal' }} />
       </Stack>
     </ThemeProvider>
   );

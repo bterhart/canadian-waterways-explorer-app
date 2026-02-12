@@ -138,14 +138,23 @@ model UserContribution {
 }
 
 model AdminUser {
-  id           String    @id @default(cuid())
-  email        String    @unique
-  name         String
-  passwordHash String
-  role         String    @default("moderator")
-  lastLoginAt  DateTime?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  id                    String    @id @default(cuid())
+  email                 String    @unique
+  name                  String
+  organization          String?
+  passwordHash          String
+  role                  String    @default("moderator")
+  status                String    @default("pending")
+  approvedBy            String?
+  approvedAt            DateTime?
+  rejectionReason       String?
+  canCreateGlobalContent Boolean   @default(false)
+  permissions           String?
+  lastLoginAt           DateTime?
+  failedLoginAttempts   Int       @default(0)
+  lockedUntil           DateTime?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
 }
 
 model ArchaeologicalDiscovery {
@@ -238,6 +247,8 @@ model LessonPlan {
   relatedLocationIds    String?
   relatedExplorerIds    String?
   isPublished           Boolean           @default(false)
+  isCore                Boolean           @default(false)
+  visibility            String            @default("private")
   createdById           String?
   createdAt             DateTime          @default(now())
   updatedAt             DateTime          @updatedAt
@@ -273,6 +284,9 @@ model VirtualFieldTrip {
   theme            String
   coverImageUrl    String?
   isPublished      Boolean         @default(false)
+  isCore           Boolean         @default(false)
+  visibility       String          @default("private")
+  createdById      String?
   createdAt        DateTime        @default(now())
   updatedAt        DateTime        @updatedAt
   stops            FieldTripStop[]
@@ -316,6 +330,9 @@ model PrimarySourceDocument {
   locationId          String?
   gradeLevel          String?
   isPublished         Boolean  @default(false)
+  isCore              Boolean  @default(false)
+  visibility          String   @default("private")
+  createdById         String?
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 }
@@ -375,16 +392,18 @@ model SavedLocation {
 }
 
 model Teacher {
-  id             String   @id @default(cuid())
-  email          String   @unique
-  name           String
-  passwordHash   String
-  schoolName     String?
-  schoolDistrict String?
-  province       String?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  classes        Class[]
+  id                  String   @id @default(cuid())
+  email               String   @unique
+  name                String
+  passwordHash        String
+  schoolName          String?
+  schoolDistrict      String?
+  province            String?
+  failedLoginAttempts Int      @default(0)
+  lockedUntil         DateTime?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  classes             Class[]
 }
 
 model Class {
@@ -463,6 +482,9 @@ model PrintableResource {
   teacherNotes    String?
   answerKey       String?
   isPublished     Boolean  @default(false)
+  isCore          Boolean  @default(false)
+  visibility      String   @default("private")
+  createdById     String?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 }

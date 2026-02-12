@@ -2,7 +2,7 @@
 import React from 'react';
 import { View, Text, Pressable, StyleSheet, ScrollView } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
-import { Globe, Info, ChevronRight, Settings as SettingsIcon } from 'lucide-react-native';
+import { Globe, Info, ChevronRight, Settings as SettingsIcon, BookOpen, HelpCircle, Play } from 'lucide-react-native';
 import { useTranslation } from '@/lib/i18n';
 
 const colors = {
@@ -68,6 +68,33 @@ export default function SettingsScreen() {
 
         {/* Settings Sections */}
         <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Help & Support</Text>
+          <View style={styles.sectionContent}>
+            <SettingsItem
+              icon={<BookOpen size={22} color="white" />}
+              title="User Guide"
+              subtitle="Complete guide to using the app"
+              onPress={() => router.push('/user-guide')}
+              iconBgColor="#2D5A3D"
+            />
+            <SettingsItem
+              icon={<HelpCircle size={22} color="white" />}
+              title="FAQ"
+              subtitle="Frequently asked questions"
+              onPress={() => router.push('/faq')}
+              iconBgColor="#8B5CF6"
+            />
+            <SettingsItem
+              icon={<Play size={22} color="white" />}
+              title="Tutorial"
+              subtitle="Replay the onboarding tutorial"
+              onPress={() => router.push('/onboarding')}
+              iconBgColor="#10B981"
+            />
+          </View>
+        </View>
+
+        <View style={styles.section}>
           <Text style={styles.sectionTitle}>{t('language')}</Text>
           <View style={styles.sectionContent}>
             <SettingsItem
@@ -83,20 +110,13 @@ export default function SettingsScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>{t('about')}</Text>
           <View style={styles.sectionContent}>
-            <View style={styles.aboutCard}>
-              <View style={styles.aboutHeader}>
-                <View style={[styles.iconContainer, { backgroundColor: colors.forestGreen + '20' }]}>
-                  <Info size={22} color={colors.forestGreen} />
-                </View>
-                <View style={styles.aboutInfo}>
-                  <Text style={styles.aboutTitle}>{t('aboutApp')}</Text>
-                  <Text style={styles.versionText}>{t('version')} 1.0.0</Text>
-                </View>
-              </View>
-              <Text style={styles.aboutDescription}>
-                {t('appDescription')}
-              </Text>
-            </View>
+            <SettingsItem
+              icon={<Info size={22} color="white" />}
+              title={t('aboutApp')}
+              subtitle="Credits, acknowledgments, and contact"
+              onPress={() => router.push('/about')}
+              iconBgColor="#F97316"
+            />
           </View>
         </View>
 

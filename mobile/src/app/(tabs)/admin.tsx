@@ -7,11 +7,22 @@ import {
   ScrollView,
   StyleSheet,
   ActivityIndicator,
-  Alert,
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
+import { useRouter } from 'expo-router';
 import { useQueryClient } from '@tanstack/react-query';
+import {
+  BookOpen,
+  Map,
+  FileText,
+  FileStack,
+  GraduationCap,
+  Shield,
+  Users,
+  CheckCircle,
+  ChevronRight,
+} from 'lucide-react-native';
 import {
   useAdminLogin,
   usePendingContributions,
@@ -19,6 +30,14 @@ import {
   adminKeys,
   type PendingContribution,
 } from '@/lib/api/waterways-api';
+import {
+  useAdminLessonPlans,
+  useAdminFieldTrips,
+  useAdminDocuments,
+  useAdminPrintables,
+  usePendingAdmins,
+} from '@/lib/api/admin-api';
+import { useAdminQuizzes } from '@/lib/api/waterways-api';
 
 // Theme colors
 const colors = {
@@ -35,36 +54,58 @@ const colors = {
   red600: '#DC2626',
   green500: '#22C55E',
   green600: '#16A34A',
+  gold: '#C9A227',
 };
 
-// Contribution type badge colors
-const typeBadgeColors: Record<string, { bg: string; text: string }> = {
-  photo: { bg: '#DBEAFE', text: '#1E40AF' },
-  description: { bg: '#D1FAE5', text: '#065F46' },
-  historical_fact: { bg: '#FEF3C7', text: '#92400E' },
-  story: { bg: '#EDE9FE', text: '#5B21B6' },
-};
+interface MenuItemProps {
+  icon: React.ReactNode;
+  label: string;
+  count?: number;
+  onPress: () => void;
+  color?: string;
+}
+
+function MenuItem({ icon, label, count, onPress, color = colors.forestGreen }: MenuItemProps) {
+  return (
+    <Pressable style={styles.menuItem} onPress={onPress}>
+      <View style={[styles.menuIconContainer, { backgroundColor: `${color}15` }]}>
+        {icon}
+      </View>
+      <View style={styles.menuContent}>
+        <Text style={styles.menuLabel}>{label}</Text>
+        {count !== undefined ? (
+          <Text style={styles.menuCount}>{count} items</Text>
+        ) : null}
+      </View>
+      <ChevronRight size={20} color={colors.gray500} />
+    </Pressable>
+  );
+}
 
 export default function AdminScreen() {
+  const router = useRouter();
   const queryClient = useQueryClient();
 
   // Admin auth state (local component state)
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-
-  // Review modal state
-  const [reviewingContribution, setReviewingContribution] = useState<PendingContribution | null>(null);
-  const [adminNotes, setAdminNotes] = useState<string>('');
-  const [reviewAction, setReviewAction] = useState<'approved' | 'rejected' | null>(null);
+  const [adminRole, setAdminRole] = useState<'super_admin' | 'moderator'>('moderator');
 
   // Feedback state
   const [feedbackMessage, setFeedbackMessage] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
   // API hooks
   const loginMutation = useAdminLogin();
-  const { data: pendingContributions, isLoading: isLoadingContributions, refetch } = usePendingContributions(isLoggedIn);
-  const reviewMutation = useReviewContribution();
+
+  // Content counts
+  const { data: lessonPlans } = useAdminLessonPlans();
+  const { data: fieldTrips } = useAdminFieldTrips();
+  const { data: documents } = useAdminDocuments();
+  const { data: printables } = useAdminPrintables();
+  const { data: quizzes } = useAdminQuizzes();
+  const { data: pendingAdmins } = usePendingAdmins();
+  const { data: pendingContributions } = usePendingContributions(isLoggedIn);
 
   const showFeedback = (type: 'success' | 'error', message: string) => {
     setFeedbackMessage({ type, message });
@@ -82,6 +123,8 @@ export default function AdminScreen() {
       if (result?.success) {
         setIsLoggedIn(true);
         setPassword('');
+        // In a real app, you'd get the role from the API response
+        setAdminRole('super_admin'); // Temporary - should come from API
         showFeedback('success', 'Login successful');
       } else {
         showFeedback('error', result?.message || 'Login failed');
@@ -97,42 +140,6 @@ export default function AdminScreen() {
     setPassword('');
   };
 
-  const handleReviewAction = (contribution: PendingContribution, action: 'approved' | 'rejected') => {
-    setReviewingContribution(contribution);
-    setReviewAction(action);
-    setAdminNotes('');
-  };
-
-  const confirmReview = async () => {
-    if (!reviewingContribution || !reviewAction) return;
-
-    try {
-      await reviewMutation.mutateAsync({
-        id: reviewingContribution.id,
-        status: reviewAction,
-        adminNotes: adminNotes.trim() || undefined,
-      });
-
-      showFeedback('success', `Contribution ${reviewAction} successfully`);
-      queryClient.invalidateQueries({ queryKey: adminKeys.pendingContributions() });
-      setReviewingContribution(null);
-      setReviewAction(null);
-      setAdminNotes('');
-    } catch (error) {
-      showFeedback('error', `Failed to ${reviewAction} contribution`);
-    }
-  };
-
-  const cancelReview = () => {
-    setReviewingContribution(null);
-    setReviewAction(null);
-    setAdminNotes('');
-  };
-
-  const formatContributionType = (type: string) => {
-    return type.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-  };
-
   // Login form
   if (!isLoggedIn) {
     return (
@@ -146,7 +153,7 @@ export default function AdminScreen() {
         >
           <View style={styles.loginCard}>
             <Text style={styles.loginTitle}>Admin Login</Text>
-            <Text style={styles.loginSubtitle}>Sign in to review contributions</Text>
+            <Text style={styles.loginSubtitle}>Sign in to manage content</Text>
 
             <View style={styles.inputContainer}>
               <Text style={styles.inputLabel}>Email</Text>
@@ -203,152 +210,165 @@ export default function AdminScreen() {
   // Admin panel
   return (
     <View style={styles.container}>
-      {/* Header with logout */}
+      {/* Header with role badge and logout */}
       <View style={styles.header}>
         <View>
-          <Text style={styles.headerTitle}>Pending Contributions</Text>
-          <Text style={styles.headerSubtitle}>
-            {pendingContributions?.length ?? 0} items to review
-          </Text>
+          <Text style={styles.headerTitle}>Admin Dashboard</Text>
+          <View style={styles.roleBadge}>
+            <Shield size={14} color={adminRole === 'super_admin' ? colors.gold : colors.forestGreen} />
+            <Text style={[
+              styles.roleBadgeText,
+              { color: adminRole === 'super_admin' ? colors.gold : colors.forestGreen }
+            ]}>
+              {adminRole === 'super_admin' ? 'Super Admin' : 'Admin'}
+            </Text>
+          </View>
         </View>
         <Pressable style={styles.logoutButton} onPress={handleLogout}>
           <Text style={styles.logoutButtonText}>Logout</Text>
         </Pressable>
       </View>
 
-      {/* Feedback banner */}
-      {feedbackMessage ? (
-        <View style={[
-          styles.feedbackBanner,
-          feedbackMessage.type === 'success' ? styles.feedbackSuccess : styles.feedbackError
-        ]}>
-          <Text style={styles.feedbackText}>{feedbackMessage.message}</Text>
-        </View>
-      ) : null}
-
-      {/* Review confirmation modal */}
-      {reviewingContribution && reviewAction ? (
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>
-              {reviewAction === 'approved' ? 'Approve' : 'Reject'} Contribution
-            </Text>
-            <Text style={styles.modalSubtitle}>
-              {reviewingContribution.title}
-            </Text>
-
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>Admin Notes (Optional)</Text>
-              <TextInput
-                style={[styles.input, styles.textArea]}
-                value={adminNotes}
-                onChangeText={setAdminNotes}
-                placeholder="Add notes about this decision..."
-                placeholderTextColor={colors.gray500}
-                multiline
-                numberOfLines={3}
+      <ScrollView style={styles.listContainer} contentContainerStyle={styles.listContent}>
+        {/* Super Admin Only Section */}
+        {adminRole === 'super_admin' ? (
+          <>
+            <Text style={styles.sectionTitle}>Super Admin</Text>
+            <View style={styles.section}>
+              <MenuItem
+                icon={<Users size={24} color={colors.gold} />}
+                label="Pending Admin Approvals"
+                count={pendingAdmins?.length ?? 0}
+                onPress={() => {
+                  // TODO: Create /admin/approvals route
+                  console.log('Navigate to admin approvals');
+                }}
+                color={colors.gold}
+              />
+              <View style={styles.divider} />
+              <MenuItem
+                icon={<CheckCircle size={24} color={colors.waterBlue} />}
+                label="All Admin Users"
+                onPress={() => {
+                  // TODO: Create /admin/users route
+                  console.log('Navigate to admin users');
+                }}
+                color={colors.waterBlue}
               />
             </View>
+          </>
+        ) : null}
 
-            <View style={styles.modalButtons}>
-              <Pressable style={styles.cancelButton} onPress={cancelReview}>
-                <Text style={styles.cancelButtonText}>Cancel</Text>
-              </Pressable>
-              <Pressable
-                style={[
-                  styles.confirmButton,
-                  reviewAction === 'approved' ? styles.approveButton : styles.rejectButton
-                ]}
-                onPress={confirmReview}
-                disabled={reviewMutation.isPending}
-              >
-                {reviewMutation.isPending ? (
-                  <ActivityIndicator color={colors.white} size="small" />
-                ) : (
-                  <Text style={styles.confirmButtonText}>
-                    {reviewAction === 'approved' ? 'Approve' : 'Reject'}
-                  </Text>
-                )}
-              </Pressable>
-            </View>
+        {/* Content Management */}
+        <Text style={styles.sectionTitle}>Content Management</Text>
+        <View style={styles.section}>
+          <MenuItem
+            icon={<BookOpen size={24} color={colors.forestGreen} />}
+            label="Lesson Plans"
+            count={lessonPlans?.length ?? 0}
+            onPress={() => {
+              // TODO: Create /admin/lesson-plans route
+              console.log('Navigate to lesson plans');
+            }}
+          />
+          <View style={styles.divider} />
+          <MenuItem
+            icon={<Map size={24} color={colors.waterBlue} />}
+            label="Virtual Field Trips"
+            count={fieldTrips?.length ?? 0}
+            onPress={() => {
+              // TODO: Create /admin/field-trips route
+              console.log('Navigate to field trips');
+            }}
+          />
+          <View style={styles.divider} />
+          <MenuItem
+            icon={<FileText size={24} color={colors.earthBrown} />}
+            label="Primary Source Documents"
+            count={documents?.length ?? 0}
+            onPress={() => {
+              // TODO: Create /admin/documents route
+              console.log('Navigate to documents');
+            }}
+          />
+          <View style={styles.divider} />
+          <MenuItem
+            icon={<FileStack size={24} color={colors.green600} />}
+            label="Printable Resources"
+            count={printables?.length ?? 0}
+            onPress={() => {
+              // TODO: Create /admin/printables route
+              console.log('Navigate to printables');
+            }}
+          />
+          <View style={styles.divider} />
+          <MenuItem
+            icon={<GraduationCap size={24} color={colors.forestGreen} />}
+            label="Quizzes"
+            count={quizzes?.length ?? 0}
+            onPress={() => router.push('/admin/quizzes')}
+          />
+        </View>
+
+        {/* User Contributions */}
+        <Text style={styles.sectionTitle}>User Contributions</Text>
+        <View style={styles.section}>
+          <MenuItem
+            icon={<CheckCircle size={24} color={colors.waterBlue} />}
+            label="Pending Reviews"
+            count={pendingContributions?.length ?? 0}
+            onPress={() => {
+              // TODO: Create /admin/contributions route
+              console.log('Navigate to contributions');
+            }}
+            color={colors.waterBlue}
+          />
+        </View>
+
+        {/* My Content */}
+        <Text style={styles.sectionTitle}>My Content</Text>
+        <View style={styles.section}>
+          <MenuItem
+            icon={<FileText size={24} color={colors.forestGreen} />}
+            label="My Created Content"
+            onPress={() => {
+              // TODO: Create /admin/my-content route
+              console.log('Navigate to my content');
+            }}
+          />
+        </View>
+
+        {/* Statistics */}
+        <Text style={styles.sectionTitle}>Statistics</Text>
+        <View style={styles.statsGrid}>
+          <View style={styles.statCard}>
+            <Text style={styles.statValue}>{lessonPlans?.length ?? 0}</Text>
+            <Text style={styles.statLabel}>Lesson Plans</Text>
+          </View>
+          <View style={styles.statCard}>
+            <Text style={styles.statValue}>{fieldTrips?.length ?? 0}</Text>
+            <Text style={styles.statLabel}>Field Trips</Text>
+          </View>
+          <View style={styles.statCard}>
+            <Text style={styles.statValue}>{documents?.length ?? 0}</Text>
+            <Text style={styles.statLabel}>Documents</Text>
+          </View>
+          <View style={styles.statCard}>
+            <Text style={styles.statValue}>{printables?.length ?? 0}</Text>
+            <Text style={styles.statLabel}>Printables</Text>
+          </View>
+          <View style={styles.statCard}>
+            <Text style={styles.statValue}>{quizzes?.length ?? 0}</Text>
+            <Text style={styles.statLabel}>Quizzes</Text>
+          </View>
+          <View style={styles.statCard}>
+            <Text style={[styles.statValue, { color: colors.waterBlue }]}>
+              {pendingContributions?.length ?? 0}
+            </Text>
+            <Text style={styles.statLabel}>Pending</Text>
           </View>
         </View>
-      ) : null}
-
-      {/* Contributions list */}
-      {isLoadingContributions ? (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={colors.forestGreen} />
-          <Text style={styles.loadingText}>Loading contributions...</Text>
-        </View>
-      ) : (
-        <ScrollView style={styles.listContainer} contentContainerStyle={styles.listContent}>
-          {pendingContributions && pendingContributions.length > 0 ? (
-            pendingContributions.map((contribution) => (
-              <View key={contribution.id} style={styles.contributionCard}>
-                {/* Type badge */}
-                <View style={[
-                  styles.typeBadge,
-                  { backgroundColor: typeBadgeColors[contribution.contributionType]?.bg ?? colors.gray200 }
-                ]}>
-                  <Text style={[
-                    styles.typeBadgeText,
-                    { color: typeBadgeColors[contribution.contributionType]?.text ?? colors.gray700 }
-                  ]}>
-                    {formatContributionType(contribution.contributionType)}
-                  </Text>
-                </View>
-
-                {/* Title */}
-                <Text style={styles.contributionTitle}>{contribution.title}</Text>
-
-                {/* Content preview */}
-                <Text style={styles.contentPreview} numberOfLines={3}>
-                  {contribution.content}
-                </Text>
-
-                {/* Contributor info */}
-                <View style={styles.infoRow}>
-                  <Text style={styles.infoLabel}>Contributor:</Text>
-                  <Text style={styles.infoValue}>
-                    {contribution.contributorName ?? 'Anonymous'}
-                    {contribution.contributorEmail ? ` (${contribution.contributorEmail})` : null}
-                  </Text>
-                </View>
-
-                {/* Location info */}
-                <View style={styles.infoRow}>
-                  <Text style={styles.infoLabel}>Location:</Text>
-                  <Text style={styles.infoValue}>
-                    {contribution.waterway?.name ?? contribution.location?.name ?? 'Not specified'}
-                  </Text>
-                </View>
-
-                {/* Action buttons */}
-                <View style={styles.actionButtons}>
-                  <Pressable
-                    style={[styles.actionButton, styles.approveButton]}
-                    onPress={() => handleReviewAction(contribution, 'approved')}
-                  >
-                    <Text style={styles.actionButtonText}>Approve</Text>
-                  </Pressable>
-                  <Pressable
-                    style={[styles.actionButton, styles.rejectButton]}
-                    onPress={() => handleReviewAction(contribution, 'rejected')}
-                  >
-                    <Text style={styles.actionButtonText}>Reject</Text>
-                  </Pressable>
-                </View>
-              </View>
-            ))
-          ) : (
-            <View style={styles.emptyContainer}>
-              <Text style={styles.emptyTitle}>No Pending Contributions</Text>
-              <Text style={styles.emptySubtitle}>All contributions have been reviewed</Text>
-            </View>
-          )}
-        </ScrollView>
-      )}
+      </ScrollView>
     </View>
   );
 }
@@ -406,10 +426,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.gray200,
   },
-  textArea: {
-    minHeight: 80,
-    textAlignVertical: 'top',
-  },
   loginButton: {
     backgroundColor: colors.forestGreen,
     borderRadius: 10,
@@ -441,10 +457,15 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: colors.forestGreen,
   },
-  headerSubtitle: {
-    fontSize: 13,
-    color: colors.gray500,
-    marginTop: 2,
+  roleBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    marginTop: 4,
+  },
+  roleBadgeText: {
+    fontSize: 12,
+    fontWeight: '600',
   },
   logoutButton: {
     paddingHorizontal: 16,
@@ -461,8 +482,7 @@ const styles = StyleSheet.create({
   // Feedback styles
   feedbackBanner: {
     padding: 12,
-    marginHorizontal: 16,
-    marginTop: 12,
+    marginBottom: 16,
     borderRadius: 8,
   },
   feedbackSuccess: {
@@ -477,18 +497,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 
-  // Loading styles
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loadingText: {
-    fontSize: 14,
-    color: colors.gray500,
-    marginTop: 12,
-  },
-
   // List styles
   listContainer: {
     flex: 1,
@@ -498,11 +506,18 @@ const styles = StyleSheet.create({
     paddingBottom: 32,
   },
 
-  // Card styles
-  contributionCard: {
+  // Section styles
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: colors.gray700,
+    marginTop: 16,
+    marginBottom: 8,
+    marginLeft: 4,
+  },
+  section: {
     backgroundColor: colors.white,
     borderRadius: 12,
-    padding: 16,
     marginBottom: 16,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
@@ -510,142 +525,69 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
   },
-  typeBadge: {
-    alignSelf: 'flex-start',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 6,
-    marginBottom: 10,
-  },
-  typeBadgeText: {
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  contributionTitle: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: colors.gray700,
-    marginBottom: 8,
-  },
-  contentPreview: {
-    fontSize: 14,
-    color: colors.gray500,
-    lineHeight: 20,
-    marginBottom: 12,
-  },
-  infoRow: {
+
+  // Menu item styles
+  menuItem: {
     flexDirection: 'row',
-    marginBottom: 6,
-  },
-  infoLabel: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: colors.gray700,
-    width: 90,
-  },
-  infoValue: {
-    fontSize: 13,
-    color: colors.gray500,
-    flex: 1,
-  },
-  actionButtons: {
-    flexDirection: 'row',
-    marginTop: 16,
+    alignItems: 'center',
+    padding: 16,
     gap: 12,
   },
-  actionButton: {
-    flex: 1,
-    paddingVertical: 12,
-    borderRadius: 8,
+  menuIconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: 12,
     alignItems: 'center',
-  },
-  approveButton: {
-    backgroundColor: colors.green600,
-  },
-  rejectButton: {
-    backgroundColor: colors.red600,
-  },
-  actionButtonText: {
-    color: colors.white,
-    fontSize: 14,
-    fontWeight: '600',
-  },
-
-  // Empty state
-  emptyContainer: {
-    flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
-    paddingVertical: 60,
   },
-  emptyTitle: {
-    fontSize: 18,
+  menuContent: {
+    flex: 1,
+  },
+  menuLabel: {
+    fontSize: 16,
     fontWeight: '600',
     color: colors.gray700,
-    marginBottom: 8,
+    marginBottom: 2,
   },
-  emptySubtitle: {
-    fontSize: 14,
+  menuCount: {
+    fontSize: 13,
     color: colors.gray500,
   },
+  divider: {
+    height: 1,
+    backgroundColor: colors.gray100,
+    marginLeft: 76,
+  },
 
-  // Modal styles
-  modalOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 100,
-    padding: 24,
+  // Stats grid
+  statsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+    marginBottom: 16,
   },
-  modalContent: {
+  statCard: {
     backgroundColor: colors.white,
-    borderRadius: 16,
-    padding: 24,
-    width: '100%',
-    maxWidth: 400,
+    borderRadius: 12,
+    padding: 16,
+    flex: 1,
+    minWidth: '30%',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
-  modalTitle: {
-    fontSize: 20,
+  statValue: {
+    fontSize: 24,
     fontWeight: '700',
-    color: colors.gray700,
+    color: colors.forestGreen,
     marginBottom: 4,
   },
-  modalSubtitle: {
-    fontSize: 14,
+  statLabel: {
+    fontSize: 12,
     color: colors.gray500,
-    marginBottom: 20,
-  },
-  modalButtons: {
-    flexDirection: 'row',
-    gap: 12,
-    marginTop: 8,
-  },
-  cancelButton: {
-    flex: 1,
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-    backgroundColor: colors.gray100,
-  },
-  cancelButtonText: {
-    color: colors.gray700,
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  confirmButton: {
-    flex: 1,
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  confirmButtonText: {
-    color: colors.white,
-    fontSize: 14,
-    fontWeight: '600',
+    textAlign: 'center',
   },
 });

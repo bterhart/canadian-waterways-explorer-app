@@ -27,6 +27,8 @@ import {
   Trophy,
   Flame,
   Users,
+  HelpCircle,
+  Info,
 } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTranslation } from '@/lib/i18n';
@@ -288,6 +290,24 @@ export default function LearnHubScreen() {
             icon={<Printer size={20} color="#8B5CF6" />}
             color="#8B5CF6"
             onPress={() => router.push('/printables')}
+          />
+          <QuickLink
+            title="User Guide"
+            icon={<BookOpen size={20} color="#10B981" />}
+            color="#10B981"
+            onPress={() => router.push('/user-guide')}
+          />
+          <QuickLink
+            title="FAQ"
+            icon={<HelpCircle size={20} color="#F97316" />}
+            color="#F97316"
+            onPress={() => router.push('/faq')}
+          />
+          <QuickLink
+            title="About"
+            icon={<Info size={20} color="#EC4899" />}
+            color="#EC4899"
+            onPress={() => router.push('/about')}
           />
           <QuickLink
             title={t('settings')}

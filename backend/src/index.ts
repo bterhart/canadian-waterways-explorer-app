@@ -9,6 +9,7 @@ import { explorersRouter } from "./routes/explorers";
 import { indigenousRouter } from "./routes/indigenous";
 import { contributionsRouter } from "./routes/contributions";
 import { adminRouter } from "./routes/admin";
+import { adminApprovalRouter } from "./routes/admin-approval";
 import { discoveriesRouter } from "./routes/discoveries";
 import { quizzesRouter } from "./routes/quizzes";
 import { adminQuizzesRouter } from "./routes/admin-quizzes";
@@ -32,6 +33,7 @@ import { voyageurJourneyRouter } from "./routes/voyageur-journey";
 import { mapAnnotationsRouter } from "./routes/map-annotations";
 import { nearbyHistoryRouter } from "./routes/nearby-history";
 import { notableFiguresRouter } from "./routes/notable-figures";
+import { authRouter } from "./routes/auth";
 import { logger } from "hono/logger";
 
 const app = new Hono();
@@ -60,12 +62,14 @@ app.get("/health", (c) => c.json({ status: "ok" }));
 
 // Routes
 app.route("/api/sample", sampleRouter);
+app.route("/api/auth", authRouter);
 app.route("/api/waterways", waterwaysRouter);
 app.route("/api/locations", locationsRouter);
 app.route("/api/explorers", explorersRouter);
 app.route("/api/indigenous", indigenousRouter);
 app.route("/api/contributions", contributionsRouter);
 app.route("/api/admin", adminRouter);
+app.route("/api/admin-approval", adminApprovalRouter);
 app.route("/api/discoveries", discoveriesRouter);
 app.route("/api/quizzes", quizzesRouter);
 app.route("/api/admin/quizzes", adminQuizzesRouter);
