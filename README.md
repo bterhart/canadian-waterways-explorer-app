@@ -46,10 +46,12 @@ An interactive educational map app showcasing Canada's major waterways, their In
 - **Progress Stats**: Track waterways explored, quizzes completed, documents read, and more
 
 ### Indigenous Language Learning Module (NEW)
+- **298 Indigenous Words**: Comprehensive vocabulary across multiple First Nations languages
+- **8 Languages**: Cree (83 words), Ojibwe (58), Inuktitut (45), Dene (34), Blackfoot (30), Mohawk (22), Mi'kmaq (19), Iroquois/Seneca (7)
 - **Word of the Day**: Featured Indigenous word with pronunciation and meaning
-- **Vocabulary by Language**: Browse words in Cree, Ojibwe, Inuktitut, Mi'kmaq, and Dene
+- **Phrases & Greetings**: Simple phrases like "My name is..." and common greetings
 - **Pronunciation Guides**: Phonetic spellings and cultural context
-- **Vocabulary Quizzes**: Test your knowledge of Indigenous words
+- **Vocabulary Quizzes**: Test your knowledge of Indigenous words and phrases
 - **Traditional Stories**: Stories from Indigenous perspectives about waterways
 
 ### Voyageur Journey Simulator (NEW)
@@ -80,33 +82,30 @@ An interactive educational map app showcasing Canada's major waterways, their In
 - **Language Settings**: Switch languages in Settings
 - **French Immersion Ready**: Perfect for French immersion classrooms
 
-### Notable Figures - Women & Indigenous Leaders (NEW)
+### Notable Figures - Women & Indigenous Leaders (14 profiles - NEW)
 - **Unsung Heroes**: Highlighting women and Indigenous leaders crucial to Canadian exploration
 - **Women in History**: Charlotte Small (David Thompson's wife), Thanadelthur, Marie-Anne Gaboury, Isabel Gunn
 - **Indigenous Leaders**: Matonabbee (guided Samuel Hearne), Saukamappee (hosted Peter Fidler), Akaitcho (guided John Franklin)
-- **Guides & Interpreters**: Tattannoeuck (Augustus), Keskarrah
+- **Guides & Interpreters**: Tattannoeuck (Augustus), Keskarrah, Nattoway
+- **Métis Leaders**: Louis Riel, Gabriel Dumont, Cuthbert Grant, Jean-Baptiste Lagimodière
 - **Detailed Biographies**: Full stories of their contributions and significance
-- **Explorer Connections**: See which explorers they worked with and how
+- **Explorer Connections**: See which explorers they worked with and how they shaped Canadian history
 
-### Métis Leaders (NEW)
-- **Louis Riel** - Most famous Métis leader, founder of Manitoba, led Red River and Northwest Resistances
-- **Gabriel Dumont** - Military leader during Northwest Resistance, legendary buffalo hunt captain
-- **Cuthbert Grant** - Warden of the Plains, led Battle of Seven Oaks (1816)
-- **Jean-Baptiste Lagimodière** - Legendary voyageur, grandfather of Louis Riel
-
-### Pronunciation Guide (33 entries - NEW)
+### Pronunciation Guide (33+ entries - NEW)
 - **Indigenous Place Names**: Kisiskatchewan, Athabasca, Winnipeg, Manitoba, Assiniboine, Qu'Appelle, etc.
 - **Indigenous Nations**: Cree, Ojibwe, Anishinaabe, Dene, Métis, Haudenosaunee, Mi'kmaq, Stó:lō
 - **Explorer Names**: La Vérendrye, Radisson, Des Groseilliers
 - **Fur Trade Terms**: Voyageur, Pemmican, Coureur des bois, Portage, Canot du maitre, etc.
+- **Phonetic Guidance**: Clear pronunciation guides for difficult or unfamiliar terms
 
-### Lesson Plans (6 complete plans - NEW)
+### Lesson Plans (26 complete plans - NEW)
+- **Grade-Specific Content**: Lesson plans for all grade levels (K-3, 4-6, 7-9, 10-12)
 - **"The Voyageur Life"** (Grade 4-6) - Daily life of voyageurs, canoe routes, pemmican
 - **"Louis Riel and the Métis Nation"** (Grade 7-9) - Métis identity, Red River Resistance, Riel's legacy
 - **"Women of the Fur Trade"** (Grade 7-9) - Crucial roles of Indigenous and Métis women
 - **"Mapping Canada: The Work of David Thompson"** (Grade 10-12) - Surveying techniques
 - **"The Hudson's Bay Company"** (Grade 4-6) - HBC history, trading post life
-- Plus 1 additional curriculum-aligned lesson plan
+- **Curriculum-Aligned**: Connected to provincial curriculum expectations with learning objectives, activities, and assessments
 
 ### Comparison Templates (4 templates - NEW)
 - Hudson's Bay Company vs North West Company
