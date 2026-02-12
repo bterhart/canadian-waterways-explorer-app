@@ -107,6 +107,43 @@ An interactive educational map app showcasing Canada's major waterways, their In
 - **"The Hudson's Bay Company"** (Grade 4-6) - HBC history, trading post life
 - **Curriculum-Aligned**: Connected to provincial curriculum expectations with learning objectives, activities, and assessments
 
+### Primary Source Documents (14 documents - NEW)
+Access historical documents with age-appropriate annotations:
+- **Alexander Mackenzie's Rock Inscription** (1793) - "from Canada, by land" at Bella Coola
+- **Mackenzie Crossing the Rockies** (June 1793) - Near-mutiny and Indigenous guidance
+- **Peter Fidler Recording Saukamappee's Oral Histories** (1792-1793) - Pre-contact Plains life
+- **James Knight on Thanadelthur** (1715) - Chipewyan peacemaker and diplomat
+- **David Thompson on Charlotte Small** (1799-1811) - His Métis wife and travel companion
+- **Samuel Hearne on Matonabbee's Leadership** (1770-1772) - Arctic expedition guide
+- **Simon Fraser Navigating Fraser River Canyon** (1808) - Dangerous rapids and Indigenous trails
+- **Dr. John Rae's Report on Franklin Expedition** (1854) - Inuit testimony and Victorian rejection
+- **David Thompson's Field Notes** (1811) - Surveying and mapping expeditions
+- **Samuel Hearne's Journey to Arctic Ocean** (1771) - First European overland to Arctic
+- **York Factory Trade Record** (1780) - Fur trade economics
+- **Letter from Matonabbee** (1772) - Indigenous leader perspective
+- **Alexander Mackenzie Speech at Fort Fork** (1793) - Pacific expedition preparations
+- **Peter Pond's Map of the Northwest** (1785) - Historical cartography
+
+Each document includes original text, transcription, vocabulary, grade-specific annotations (K-3, 4-6, 7-9, 10-12), and discussion questions.
+
+### Virtual Field Trips (4 complete tours - NEW)
+- **York Factory** - Walk through the HBC's main depot on Hudson Bay (6 stops)
+- **Fort William** - Attend a North West Company rendezvous (6 stops)
+- **L'Anse aux Meadows** - Explore the Norse settlement from 1000 AD (6 stops)
+- **Prince of Wales Fort** - Tour the massive stone fortress (6 stops)
+
+### Printable Resources (8 worksheets - NEW)
+- **Blank Map of Canadian Fur Trade Routes** - Students trace routes
+- **Timeline Activity** - Place events from 1000 AD to present
+- **Vocabulary Builder** - Fur trade terms with definitions
+- **Explorer Research Template** - Structured research guide
+- **Geography Quiz** - Test knowledge of waterways (with answer key)
+- **Indigenous Place Names Worksheet** - Learn meanings and pronunciation
+- **Comparing Perspectives** - European vs Indigenous viewpoints
+- **Voyageur Songs Activity** - Cross-curricular music and history
+
+All resources include teacher notes and answer keys.
+
 ### Comparison Templates (4 templates - NEW)
 - Hudson's Bay Company vs North West Company
 - European vs Indigenous Perspectives on Land

@@ -7,1288 +7,782 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Waterway types: river, lake, strait, bay, etc.
 model WaterwayType {
   id        String     @id @default(cuid())
-  name      String     @unique // "River", "Lake", "Bay", "Strait", etc.
+  name      String     @unique
   waterways Waterway[]
 }
 
-// Main waterway entity (rivers, lakes, etc.)
 model Waterway {
-  id              String        @id @default(cuid())
-  name            String        // English name
-  indigenousName  String?       // Indigenous/Aboriginal name
-  indigenousLanguage String?    // Language of indigenous name (e.g., "Cree", "Ojibwe")
-  description     String        // General description
-
-  // Geographic data
-  latitude        Float         // Center point latitude
-  longitude       Float         // Center point longitude
-  regionName      String        // Province or territory
-
-  // Boundary coordinates stored as JSON string [[lat, lng], [lat, lng], ...]
-  // For rivers: polyline following the river path
-  // For lakes: polygon outline of the lake
-  boundaryCoordinates String?   // JSON array of coordinate pairs
-
-  // Type relation
-  typeId          String
-  type            WaterwayType  @relation(fields: [typeId], references: [id])
-
-  // Historical significance
-  historicalSignificance String? // Historical importance summary
-
-  // Relations
-  explorers       ExplorerWaterway[]
-  furTradeInfo    FurTradeInfo?
-  locations       Location[]
-  contributions   UserContribution[]
-  discoveries     ArchaeologicalDiscovery[]
-
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+  id                     String                    @id @default(cuid())
+  name                   String
+  indigenousName         String?
+  indigenousLanguage     String?
+  description            String
+  latitude               Float
+  longitude              Float
+  regionName             String
+  typeId                 String
+  historicalSignificance String?
+  createdAt              DateTime                  @default(now())
+  updatedAt              DateTime                  @updatedAt
+  boundaryCoordinates    String?
+  discoveries            ArchaeologicalDiscovery[]
+  explorers              ExplorerWaterway[]
+  furTradeInfo           FurTradeInfo?
+  locations              Location[]
+  contributions          UserContribution[]
+  type                   WaterwayType              @relation(fields: [typeId], references: [id])
 }
 
-// Notable locations on waterways (forts, portages, trading posts, etc.)
 model Location {
-  id              String    @id @default(cuid())
-  name            String
-  indigenousName  String?
+  id                 String             @id @default(cuid())
+  name               String
+  indigenousName     String?
   indigenousLanguage String?
-  description     String
-
-  // Geographic
-  latitude        Float
-  longitude       Float
-
-  // Type: "Fort", "Trading Post", "Portage", "Settlement", "Cultural Site"
-  locationType    String
-
-  // Historical info
-  yearEstablished Int?
-  historicalNotes String?
-
-  // Relation to waterway
-  waterwayId      String
-  waterway        Waterway  @relation(fields: [waterwayId], references: [id], onDelete: Cascade)
-
-  // Cartographer who mapped this
-  cartographerId  String?
-  cartographer    Cartographer? @relation(fields: [cartographerId], references: [id])
-
-  // User contributions
-  contributions   UserContribution[]
-
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  description        String
+  latitude           Float
+  longitude          Float
+  locationType       String
+  yearEstablished    Int?
+  historicalNotes    String?
+  waterwayId         String
+  cartographerId     String?
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+  cartographer       Cartographer?      @relation(fields: [cartographerId], references: [id])
+  waterway           Waterway           @relation(fields: [waterwayId], references: [id], onDelete: Cascade)
+  contributions      UserContribution[]
 }
 
-// Historical explorers
 model Explorer {
-  id              String    @id @default(cuid())
-  name            String
-  birthYear       Int?
-  deathYear       Int?
-  nationality     String?
-  biography       String    // Short biography
-  notableAchievements String? // Key achievements
-  imageUrl        String?   // Portrait image
-
-  // Relations
-  waterways       ExplorerWaterway[]
-
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id                  String             @id @default(cuid())
+  name                String
+  birthYear           Int?
+  deathYear           Int?
+  nationality         String?
+  biography           String
+  notableAchievements String?
+  imageUrl            String?
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+  waterways           ExplorerWaterway[]
 }
 
-// Many-to-many: Explorer <-> Waterway with exploration details
 model ExplorerWaterway {
-  id              String    @id @default(cuid())
+  id              String   @id @default(cuid())
   explorerId      String
-  explorer        Explorer  @relation(fields: [explorerId], references: [id], onDelete: Cascade)
   waterwayId      String
-  waterway        Waterway  @relation(fields: [waterwayId], references: [id], onDelete: Cascade)
-
-  yearExplored    Int?      // Year of exploration
-  expeditionNotes String?   // Notes about this specific exploration
+  yearExplored    Int?
+  expeditionNotes String?
+  waterway        Waterway @relation(fields: [waterwayId], references: [id], onDelete: Cascade)
+  explorer        Explorer @relation(fields: [explorerId], references: [id], onDelete: Cascade)
 
   @@unique([explorerId, waterwayId])
 }
 
-// Fur trade information for waterways
 model FurTradeInfo {
-  id              String    @id @default(cuid())
-  waterwayId      String    @unique
-  waterway        Waterway  @relation(fields: [waterwayId], references: [id], onDelete: Cascade)
-
-  tradingCompany  String?   // "Hudson's Bay Company", "North West Company", etc.
-  peakTradePeriod String?   // e.g., "1780-1821"
-  primaryFurs     String?   // "Beaver, Marten, Otter"
-  tradeRouteNotes String?   // Description of trade route significance
-
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id              String   @id @default(cuid())
+  waterwayId      String   @unique
+  tradingCompany  String?
+  peakTradePeriod String?
+  primaryFurs     String?
+  tradeRouteNotes String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  waterway        Waterway @relation(fields: [waterwayId], references: [id], onDelete: Cascade)
 }
 
-// Historical cartographers
 model Cartographer {
-  id              String    @id @default(cuid())
-  name            String
-  birthYear       Int?
-  deathYear       Int?
-  nationality     String?
-  biography       String?
-  notableMaps     String?   // Description of notable maps created
-
-  // Locations they mapped
-  locations       Location[]
-
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id          String     @id @default(cuid())
+  name        String
+  birthYear   Int?
+  deathYear   Int?
+  nationality String?
+  biography   String?
+  notableMaps String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  locations   Location[]
 }
 
-// Indigenous nations and their territories (for cultural significance)
 model IndigenousNation {
-  id              String    @id @default(cuid())
-  name            String    // Nation name
-  alternateNames  String?   // Other names/spellings
-  languageFamily  String?   // e.g., "Algonquian", "Iroquoian", "Athapaskan"
-  traditionalTerritory String? // Description of traditional lands
-  culturalNotes   String?   // Cultural significance of waterways
-
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id                   String   @id @default(cuid())
+  name                 String
+  alternateNames       String?
+  languageFamily       String?
+  traditionalTerritory String?
+  culturalNotes        String?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
 }
 
-// ==================== USER CONTRIBUTION SYSTEM ====================
-
-// User contributions - photos, descriptions, historical info
 model UserContribution {
-  id              String    @id @default(cuid())
-
-  // What type of contribution
-  contributionType String   // "photo", "description", "historical_fact", "story"
-
-  // Content
-  title           String
-  content         String    // Description or text content
-  imageUrl        String?   // URL to uploaded image (if photo)
-
-  // Contributor info (anonymous allowed)
-  contributorName String?   // Optional name
-  contributorEmail String?  // For follow-up (not displayed)
-
-  // Related to waterway or location
-  waterwayId      String?
-  waterway        Waterway? @relation(fields: [waterwayId], references: [id], onDelete: Cascade)
-  locationId      String?
-  location        Location? @relation(fields: [locationId], references: [id], onDelete: Cascade)
-
-  // Moderation
-  status          String    @default("pending") // "pending", "approved", "rejected"
-  adminNotes      String?   // Notes from admin about rejection reason, etc.
-  reviewedAt      DateTime?
-  reviewedBy      String?   // Admin who reviewed
-
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id               String    @id @default(cuid())
+  contributionType String
+  title            String
+  content          String
+  imageUrl         String?
+  contributorName  String?
+  contributorEmail String?
+  waterwayId       String?
+  locationId       String?
+  status           String    @default("pending")
+  adminNotes       String?
+  reviewedAt       DateTime?
+  reviewedBy       String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  location         Location? @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  waterway         Waterway? @relation(fields: [waterwayId], references: [id], onDelete: Cascade)
 }
 
-// Admin users for content moderation
 model AdminUser {
-  id              String    @id @default(cuid())
-  email           String    @unique
-  name            String
-  passwordHash    String    // Hashed password
-  role            String    @default("moderator") // "moderator", "admin", "superadmin"
-
-  lastLoginAt     DateTime?
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id           String    @id @default(cuid())
+  email        String    @unique
+  name         String
+  passwordHash String
+  role         String    @default("moderator")
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 }
 
-// Archaeological discoveries related to historical expeditions
 model ArchaeologicalDiscovery {
-  id              String    @id @default(cuid())
-  name            String    // Name of discovery (e.g., "HMS Erebus Wreck")
-  discoveryYear   Int       // Year discovered
-  description     String    // Detailed description of what was found
-  significance    String    // Historical significance
-
-  // Related expedition/explorer info
-  relatedExpedition String? // Name of the expedition it relates to
-  relatedExplorerName String? // Explorer name if applicable
-  expeditionYear  Int?      // Year of the original expedition
-
-  // Location
-  latitude        Float?
-  longitude       Float?
-  locationDescription String? // Text description of location
-
-  // Related waterway
-  waterwayId      String?
-  waterway        Waterway? @relation(fields: [waterwayId], references: [id], onDelete: SetNull)
-
-  // Sources and further reading
-  sources         String?   // Archaeological sources/references
-
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id                  String    @id @default(cuid())
+  name                String
+  discoveryYear       Int
+  description         String
+  significance        String
+  relatedExpedition   String?
+  relatedExplorerName String?
+  expeditionYear      Int?
+  latitude            Float?
+  longitude           Float?
+  locationDescription String?
+  waterwayId          String?
+  sources             String?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  waterway            Waterway? @relation(fields: [waterwayId], references: [id])
 }
 
-// ==================== QUIZ SYSTEM FOR RCGS EDUCATION ====================
-
-// Quiz - a collection of questions for K-12 education
 model Quiz {
-  id              String    @id @default(cuid())
-  title           String    // Quiz title (e.g., "Explorers of the West Coast")
-  description     String?   // Description of the quiz
-
-  // Target audience
-  gradeLevel      String?   // e.g., "K-3", "4-6", "7-9", "10-12", "All"
-  difficulty      String    @default("medium") // "easy", "medium", "hard"
-
-  // Category/topic
-  category        String    // e.g., "Explorers", "Fur Trade", "Indigenous Heritage", "Geography", "Maritime History"
-
-  // Status
-  isPublished     Boolean   @default(false)
-
-  // Admin who created
-  createdById     String?
-
-  // Relations
-  questions       QuizQuestion[]
-  attempts        QuizAttempt[]
-
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id          String         @id @default(cuid())
+  title       String
+  description String?
+  gradeLevel  String?
+  difficulty  String         @default("medium")
+  category    String
+  isPublished Boolean        @default(false)
+  createdById String?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  attempts    QuizAttempt[]
+  questions   QuizQuestion[]
 }
 
-// QuizQuestion - individual multiple choice question
 model QuizQuestion {
-  id              String    @id @default(cuid())
-  quizId          String
-  quiz            Quiz      @relation(fields: [quizId], references: [id], onDelete: Cascade)
-
-  // Question content
-  questionText    String    // The question itself
-  questionType    String    @default("multiple_choice") // "multiple_choice", "true_false"
-
-  // Answer options (stored as JSON array)
-  // Format: [{"id": "a", "text": "Option A"}, {"id": "b", "text": "Option B"}, ...]
-  options         String    // JSON array of options
-
-  // Correct answer
-  correctAnswer   String    // The ID of the correct option (e.g., "a", "b", "c", "d")
-
-  // Explanation shown after answering
-  explanation     String?   // Why this answer is correct (educational context)
-
-  // Optional reference to source data
-  sourceType      String?   // "explorer", "waterway", "location", "discovery", "fur_trade"
-  sourceId        String?   // ID of the referenced entity
-
-  // Order in quiz
-  orderIndex      Int       @default(0)
-
-  // Points for this question
-  points          Int       @default(1)
-
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id            String   @id @default(cuid())
+  quizId        String
+  questionText  String
+  questionType  String   @default("multiple_choice")
+  options       String
+  correctAnswer String
+  explanation   String?
+  sourceType    String?
+  sourceId      String?
+  orderIndex    Int      @default(0)
+  points        Int      @default(1)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  quiz          Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
 }
 
-// QuizAttempt - record of a student taking a quiz
 model QuizAttempt {
   id              String    @id @default(cuid())
   quizId          String
-  quiz            Quiz      @relation(fields: [quizId], references: [id], onDelete: Cascade)
-
-  // Student info (anonymous - no account required)
-  studentName     String?   // Optional name
-  studentGrade    String?   // Grade level
-  schoolName      String?   // Optional school name
-
-  // Results
-  score           Int       // Number of correct answers
-  totalQuestions  Int       // Total questions in quiz
-  totalPoints     Int       // Total points earned
-  maxPoints       Int       // Maximum possible points
-  percentageScore Float     // Percentage score
-
-  // Answers given (stored as JSON)
-  // Format: [{"questionId": "xxx", "selectedAnswer": "a", "isCorrect": true}, ...]
-  answers         String    // JSON array of answers
-
-  // Timing
+  studentName     String?
+  studentGrade    String?
+  schoolName      String?
+  score           Int
+  totalQuestions  Int
+  totalPoints     Int
+  maxPoints       Int
+  percentageScore Float
+  answers         String
   startedAt       DateTime  @default(now())
   completedAt     DateTime?
-
   createdAt       DateTime  @default(now())
+  quiz            Quiz      @relation(fields: [quizId], references: [id], onDelete: Cascade)
 }
 
-// ==================== LESSON PLANS FOR RCGS EDUCATION ====================
-
-// Lesson Plan - comprehensive teaching resources for K-12
 model LessonPlan {
-  id              String    @id @default(cuid())
-  title           String    // e.g., "The Voyageur Era: Life on the Fur Trade Routes"
-  description     String    // Overview of the lesson
-
-  // Target audience
-  gradeLevel      String    // "K-3", "4-6", "7-9", "10-12"
-
-  // Topic/theme
-  topic           String    // "Early Explorers", "Fur Trade", "Indigenous Routes", "Maritime Discovery", "Archaeology", "Cartography"
-
-  // Curriculum connections (stored as JSON array)
-  // Format: [{"subject": "Social Studies", "strand": "Heritage and Identity", "expectation": "..."}]
+  id                    String            @id @default(cuid())
+  title                 String
+  description           String
+  gradeLevel            String
+  topic                 String
   curriculumConnections String?
-
-  // Learning objectives (JSON array)
-  // Format: ["Describe the role of...", "Identify key explorers...", "Analyze the impact of..."]
-  objectives      String
-
-  // Duration
-  estimatedMinutes Int      @default(60)
-
-  // Materials needed (JSON array)
-  materials       String?
-
-  // Lesson content sections
-  introduction    String?   // Hook/introduction text
-  mainContent     String    // Core lesson content (can include markdown)
-  activities      String?   // Suggested activities (JSON array)
-  discussionQuestions String? // Discussion questions (JSON array)
-  assessment      String?   // Assessment suggestions
-  extensions      String?   // Extension activities for advanced learners
-
-  // Related content
-  relatedQuizIds  String?   // JSON array of related quiz IDs
-  relatedWaterwayIds String? // JSON array of related waterway IDs
-  relatedLocationIds String? // JSON array of related location IDs
-  relatedExplorerIds String? // JSON array of related explorer IDs
-
-  // Status
-  isPublished     Boolean   @default(false)
-
-  // Admin who created
-  createdById     String?
-
-  // Relations
-  assignments     ClassAssignment[]
-
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  objectives            String
+  estimatedMinutes      Int               @default(60)
+  materials             String?
+  introduction          String?
+  mainContent           String
+  activities            String?
+  discussionQuestions   String?
+  assessment            String?
+  extensions            String?
+  relatedQuizIds        String?
+  relatedWaterwayIds    String?
+  relatedLocationIds    String?
+  relatedExplorerIds    String?
+  isPublished           Boolean           @default(false)
+  createdById           String?
+  createdAt             DateTime          @default(now())
+  updatedAt             DateTime          @updatedAt
+  assignments           ClassAssignment[]
 }
 
-// ==================== INTERACTIVE TIMELINE ====================
-
-// Timeline Event - chronological events for interactive timeline
 model TimelineEvent {
-  id              String    @id @default(cuid())
-  title           String    // Event title
-  description     String    // Event description
-
-  // Date info
-  year            Int       // Year of event
-  month           Int?      // Optional month (1-12)
-  day             Int?      // Optional day
-  endYear         Int?      // End year for spanning events
-  isApproximate   Boolean   @default(false) // "circa" dates
-
-  // Theme/category for filtering
-  theme           String    // "exploration", "fur_trade", "indigenous", "maritime", "archaeology", "settlement"
-
-  // Visual
-  imageUrl        String?   // Image for the event
-  iconType        String?   // Icon type for timeline display
-
-  // Related entities (optional)
-  explorerId      String?   // Related explorer if applicable
-  waterwayId      String?   // Related waterway if applicable
-  locationId      String?   // Related location if applicable
-
-  // Importance level for filtering
-  importance      String    @default("normal") // "major", "normal", "minor"
-
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id            String   @id @default(cuid())
+  title         String
+  description   String
+  year          Int
+  month         Int?
+  day           Int?
+  endYear       Int?
+  isApproximate Boolean  @default(false)
+  theme         String
+  imageUrl      String?
+  iconType      String?
+  explorerId    String?
+  waterwayId    String?
+  locationId    String?
+  importance    String   @default("normal")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
-// ==================== VIRTUAL FIELD TRIPS ====================
-
-// Virtual Field Trip - guided tours following explorer routes
 model VirtualFieldTrip {
-  id              String    @id @default(cuid())
-  title           String    // e.g., "Paddle the Voyageur Highway"
-  description     String    // Trip overview
-
-  // Target audience
-  gradeLevel      String    // "K-3", "4-6", "7-9", "10-12", "All"
-
-  // Duration
-  estimatedMinutes Int      @default(30)
-
-  // Theme
-  theme           String    // "voyageur", "explorer", "indigenous", "maritime", "fur_trade"
-
-  // Cover image
-  coverImageUrl   String?
-
-  // Status
-  isPublished     Boolean   @default(false)
-
-  // Stops on the trip
-  stops           FieldTripStop[]
-
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id               String          @id @default(cuid())
+  title            String
+  description      String
+  gradeLevel       String
+  estimatedMinutes Int             @default(30)
+  theme            String
+  coverImageUrl    String?
+  isPublished      Boolean         @default(false)
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  stops            FieldTripStop[]
 }
 
-// Field Trip Stop - individual location on a virtual field trip
 model FieldTripStop {
-  id              String    @id @default(cuid())
-  tripId          String
-  trip            VirtualFieldTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
-
-  // Order in trip
-  orderIndex      Int
-
-  // Stop info
-  title           String    // Stop title
-  description     String    // Narrative description (storytelling)
-
-  // Location (can link to existing location or be custom)
-  locationId      String?   // Link to existing Location if applicable
-  waterwayId      String?   // Link to existing Waterway if applicable
-
-  // Custom coordinates if not linked to existing location
-  latitude        Float
-  longitude       Float
-
-  // Media
-  imageUrl        String?
-  audioUrl        String?   // Narration audio
-
-  // Interactive elements
-  funFact         String?   // Fun fact for kids
-  thinkQuestion   String?   // Question to ponder
-
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id            String           @id @default(cuid())
+  tripId        String
+  orderIndex    Int
+  title         String
+  description   String
+  locationId    String?
+  waterwayId    String?
+  latitude      Float
+  longitude     Float
+  imageUrl      String?
+  audioUrl      String?
+  funFact       String?
+  thinkQuestion String?
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  trip          VirtualFieldTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
 }
 
-// ==================== PRIMARY SOURCE DOCUMENTS ====================
-
-// Primary Source Document - historical documents with annotations
 model PrimarySourceDocument {
-  id              String    @id @default(cuid())
-  title           String    // e.g., "Samuel Hearne's Journal Entry, July 1771"
-
-  // Document type
-  documentType    String    // "journal", "map", "treaty", "letter", "report", "illustration"
-
-  // Source info
-  author          String?   // Original author
-  originalDate    String?   // Date of original document
-  originalYear    Int?      // Year for sorting
-
-  // Content
-  originalText    String?   // Original text (if text document)
-  transcription   String?   // Modern transcription
-  imageUrl        String?   // Image of document (maps, illustrations)
-
-  // Age-appropriate annotations (JSON array)
-  // Format: [{"gradeLevel": "K-3", "annotation": "simplified explanation"}, ...]
-  annotations     String?
-
-  // Context
-  historicalContext String? // Background context
-
-  // Vocabulary (JSON array of difficult words with definitions)
-  vocabulary      String?
-
-  // Discussion questions (JSON array)
+  id                  String   @id @default(cuid())
+  title               String
+  documentType        String
+  author              String?
+  originalDate        String?
+  originalYear        Int?
+  originalText        String?
+  transcription       String?
+  imageUrl            String?
+  annotations         String?
+  historicalContext   String?
+  vocabulary          String?
   discussionQuestions String?
-
-  // Related entities
-  explorerId      String?
-  waterwayId      String?
-  locationId      String?
-
-  // Target audience
-  gradeLevel      String?   // Minimum grade level recommended
-
-  isPublished     Boolean   @default(false)
-
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  explorerId          String?
+  waterwayId          String?
+  locationId          String?
+  gradeLevel          String?
+  isPublished         Boolean  @default(false)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
 }
 
-// ==================== COMPARISON TOOLS ====================
-
-// Comparison Template - predefined comparisons
 model ComparisonTemplate {
-  id              String    @id @default(cuid())
-  title           String    // e.g., "East Coast vs West Coast Exploration"
-  description     String    // What this comparison explores
-
-  // Comparison type
-  comparisonType  String    // "explorers", "forts", "perspectives", "time_periods", "trade_companies"
-
-  // Items to compare (JSON)
-  // Format depends on type:
-  // explorers: [{"id": "xxx", "name": "..."}, {"id": "yyy", "name": "..."}]
-  // perspectives: [{"perspective": "Indigenous", "content": "..."}, {"perspective": "European", "content": "..."}]
+  id              String   @id @default(cuid())
+  title           String
+  description     String
+  comparisonType  String
   items           String
-
-  // Comparison criteria (JSON array)
-  // Format: [{"criterion": "Time Period", "description": "When did they explore?"}, ...]
   criteria        String
-
-  // Analysis prompts for students
-  analysisPrompts String?   // JSON array of discussion questions
-
-  // Target audience
-  gradeLevel      String    // "K-3", "4-6", "7-9", "10-12"
-
-  isPublished     Boolean   @default(false)
-
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  analysisPrompts String?
+  gradeLevel      String
+  isPublished     Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
 
-// ==================== STUDENT JOURNALS ====================
-
-// Student Journal - digital notebook for students
 model StudentJournal {
-  id              String    @id @default(cuid())
-
-  // Student identifier (anonymous - device-based or simple name)
-  studentIdentifier String  // Could be device ID or chosen username
-  studentName     String?   // Optional display name
-  schoolName      String?   // Optional school
-  gradeLevel      String?   // Student's grade
-
-  // Journal entries
-  entries         JournalEntry[]
-
-  // Saved locations (bookmarks)
-  savedLocations  SavedLocation[]
-
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id                String          @id @default(cuid())
+  studentIdentifier String
+  studentName       String?
+  schoolName        String?
+  gradeLevel        String?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  entries           JournalEntry[]
+  savedLocations    SavedLocation[]
 }
 
-// Journal Entry - individual note in student journal
 model JournalEntry {
-  id              String    @id @default(cuid())
-  journalId       String
-  journal         StudentJournal @relation(fields: [journalId], references: [id], onDelete: Cascade)
-
-  // Entry content
-  title           String?
-  content         String    // Student's notes/thoughts
-
-  // What they're writing about (optional links)
-  waterwayId      String?
-  locationId      String?
-  explorerId      String?
-  quizId          String?
-  lessonPlanId    String?
-  fieldTripId     String?
-
-  // Tags (JSON array)
-  tags            String?   // e.g., ["fur trade", "explorer"]
-
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id           String         @id @default(cuid())
+  journalId    String
+  title        String?
+  content      String
+  waterwayId   String?
+  locationId   String?
+  explorerId   String?
+  quizId       String?
+  lessonPlanId String?
+  fieldTripId  String?
+  tags         String?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  journal      StudentJournal @relation(fields: [journalId], references: [id], onDelete: Cascade)
 }
 
-// Saved Location - bookmarked locations in student journal
 model SavedLocation {
-  id              String    @id @default(cuid())
-  journalId       String
-  journal         StudentJournal @relation(fields: [journalId], references: [id], onDelete: Cascade)
-
-  // What they saved
-  waterwayId      String?
-  locationId      String?
-  explorerId      String?
-
-  // Notes about why they saved it
-  notes           String?
-
-  createdAt       DateTime  @default(now())
+  id         String         @id @default(cuid())
+  journalId  String
+  waterwayId String?
+  locationId String?
+  explorerId String?
+  notes      String?
+  createdAt  DateTime       @default(now())
+  journal    StudentJournal @relation(fields: [journalId], references: [id], onDelete: Cascade)
 }
 
-// ==================== CLASS MANAGEMENT ====================
-
-// Teacher - teacher account for class management
 model Teacher {
-  id              String    @id @default(cuid())
-
-  // Account info
-  email           String    @unique
-  name            String
-  passwordHash    String
-
-  // School info
-  schoolName      String?
-  schoolDistrict  String?
-  province        String?
-
-  // Classes they manage
-  classes         Class[]
-
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id             String   @id @default(cuid())
+  email          String   @unique
+  name           String
+  passwordHash   String
+  schoolName     String?
+  schoolDistrict String?
+  province       String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  classes        Class[]
 }
 
-// Class - a group of students managed by a teacher
 model Class {
-  id              String    @id @default(cuid())
-
-  // Class info
-  name            String    // e.g., "Grade 7 Social Studies - Period 2"
-  gradeLevel      String    // "K-3", "4-6", "7-9", "10-12"
-  schoolYear      String?   // e.g., "2025-2026"
-
-  // Join code for students
-  joinCode        String    @unique // Simple code for students to join
-
-  // Teacher
-  teacherId       String
-  teacher         Teacher   @relation(fields: [teacherId], references: [id], onDelete: Cascade)
-
-  // Students
-  students        ClassStudent[]
-
-  // Assignments
-  assignments     ClassAssignment[]
-
-  isActive        Boolean   @default(true)
-
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id          String            @id @default(cuid())
+  name        String
+  gradeLevel  String
+  schoolYear  String?
+  joinCode    String            @unique
+  teacherId   String
+  isActive    Boolean           @default(true)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  teacher     Teacher           @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  assignments ClassAssignment[]
+  students    ClassStudent[]
 }
 
-// Class Student - student enrolled in a class
 model ClassStudent {
-  id              String    @id @default(cuid())
-  classId         String
-  class           Class     @relation(fields: [classId], references: [id], onDelete: Cascade)
-
-  // Student identifier
-  displayName     String    // Student's display name
-  studentCode     String?   // Optional student ID
-
-  // Progress tracking
-  progress        StudentProgress[]
-
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id          String            @id @default(cuid())
+  classId     String
+  displayName String
+  studentCode String?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  class       Class             @relation(fields: [classId], references: [id], onDelete: Cascade)
+  progress    StudentProgress[]
 
   @@unique([classId, displayName])
 }
 
-// Class Assignment - assigned quizzes or lesson plans
 model ClassAssignment {
-  id              String    @id @default(cuid())
-  classId         String
-  class           Class     @relation(fields: [classId], references: [id], onDelete: Cascade)
-
-  // What's assigned
-  assignmentType  String    // "quiz", "lesson_plan", "field_trip"
-  quizId          String?
-  lessonPlanId    String?
-  lessonPlan      LessonPlan? @relation(fields: [lessonPlanId], references: [id])
-  fieldTripId     String?
-
-  // Assignment details
-  title           String    // Assignment title/description
-  instructions    String?   // Teacher's instructions
-
-  // Due date
-  dueDate         DateTime?
-
-  // Student progress
-  progress        StudentProgress[]
-
-  isActive        Boolean   @default(true)
-
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id             String            @id @default(cuid())
+  classId        String
+  assignmentType String
+  quizId         String?
+  lessonPlanId   String?
+  fieldTripId    String?
+  title          String
+  instructions   String?
+  dueDate        DateTime?
+  isActive       Boolean           @default(true)
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+  lessonPlan     LessonPlan?       @relation(fields: [lessonPlanId], references: [id])
+  class          Class             @relation(fields: [classId], references: [id], onDelete: Cascade)
+  progress       StudentProgress[]
 }
 
-// Student Progress - tracks student completion of assignments
 model StudentProgress {
-  id              String    @id @default(cuid())
-  studentId       String
-  student         ClassStudent @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  assignmentId    String
-  assignment      ClassAssignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
-
-  // Status
-  status          String    @default("not_started") // "not_started", "in_progress", "completed"
-
-  // Score (for quizzes)
-  score           Int?
-  maxScore        Int?
-
-  // Timestamps
-  startedAt       DateTime?
-  completedAt     DateTime?
-
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id           String          @id @default(cuid())
+  studentId    String
+  assignmentId String
+  status       String          @default("not_started")
+  score        Int?
+  maxScore     Int?
+  startedAt    DateTime?
+  completedAt  DateTime?
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  assignment   ClassAssignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  student      ClassStudent    @relation(fields: [studentId], references: [id], onDelete: Cascade)
 
   @@unique([studentId, assignmentId])
 }
 
-// ==================== PRINTABLE RESOURCES ====================
-
-// Printable Resource - worksheets, maps, activities for offline use
 model PrintableResource {
-  id              String    @id @default(cuid())
-  title           String    // e.g., "Blank Map of Canadian Fur Trade Routes"
-  description     String    // What this resource is
-
-  // Type
-  resourceType    String    // "worksheet", "map", "activity_sheet", "coloring_page", "timeline", "quiz_printable"
-
-  // Target audience
-  gradeLevel      String    // "K-3", "4-6", "7-9", "10-12", "All"
-
-  // Topic
-  topic           String    // "explorers", "fur_trade", "indigenous", "geography", "maritime"
-
-  // File info
-  fileUrl         String?   // URL to PDF or printable file
-  previewImageUrl String?   // Preview thumbnail
-
-  // If it's a worksheet, include content (for dynamic generation)
-  content         String?   // HTML/Markdown content for dynamic worksheets
-
-  // Instructions for teachers
+  id              String   @id @default(cuid())
+  title           String
+  description     String
+  resourceType    String
+  gradeLevel      String
+  topic           String
+  fileUrl         String?
+  previewImageUrl String?
+  content         String?
   teacherNotes    String?
-
-  // Answer key (for worksheets)
-  answerKey       String?   // JSON or text answer key
-
-  isPublished     Boolean   @default(false)
-
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  answerKey       String?
+  isPublished     Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
 
-// ==================== PRONUNCIATION GUIDE ====================
-
-// Pronunciation Guide - audio pronunciations for names
 model PronunciationGuide {
-  id              String    @id @default(cuid())
-
-  // The word/name
-  term            String    // The word to pronounce
-
-  // Type of term
-  termType        String    // "indigenous_place", "indigenous_nation", "explorer", "french", "location"
-
-  // Language info
-  language        String?   // e.g., "Cree", "Ojibwe", "French", "Inuktitut"
-
-  // Pronunciation
-  phonetic        String    // Phonetic spelling (e.g., "miss-sin-AY-bee")
-  audioUrl        String?   // URL to audio file
-
-  // Additional info
-  meaning         String?   // What the word means
-  notes           String?   // Pronunciation notes/tips
-
-  // Related entities
-  waterwayId      String?
-  locationId      String?
+  id                 String   @id @default(cuid())
+  term               String
+  termType           String
+  language           String?
+  phonetic           String
+  audioUrl           String?
+  meaning            String?
+  notes              String?
+  waterwayId         String?
+  locationId         String?
   indigenousNationId String?
-  explorerId      String?
-
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  explorerId         String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
 
   @@unique([term, termType])
 }
 
-// ==================== INDIGENOUS LANGUAGE LEARNING ====================
-
-// IndigenousWord - vocabulary words from Indigenous languages
 model IndigenousWord {
-  id              String    @id @default(cuid())
-  word            String    // The word in Indigenous language
-  translation     String    // English translation
-  language        String    // "Cree", "Ojibwe", "Inuktitut", "Mi'kmaq", "Dene", etc.
-  phonetic        String?   // Phonetic pronunciation guide (e.g., "miss-sin-AY-bee")
-  audioUrl        String?   // URL to audio pronunciation
-  meaning         String?   // Extended meaning and usage
-  culturalContext String?   // Cultural significance and context
-  category        String?   // "waterway", "animal", "nature", "place", "action", etc.
-
-  // Relations to waterways/locations
+  id                String         @id @default(cuid())
+  word              String
+  translation       String
+  language          String
+  phonetic          String?
+  audioUrl          String?
+  meaning           String?
+  culturalContext   String?
+  category          String?
   relatedWaterwayId String?
   relatedLocationId String?
-
-  // Word of the day relations
-  wordOfDays      WordOfTheDay[]
-
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  wordOfDays        WordOfTheDay[]
 
   @@index([language])
   @@index([category])
 }
 
-// WordOfTheDay - featured word for each day
 model WordOfTheDay {
-  id              String    @id @default(cuid())
-  date            DateTime  @unique // The date for this word
-  wordId          String
-  word            IndigenousWord @relation(fields: [wordId], references: [id], onDelete: Cascade)
-
-  createdAt       DateTime  @default(now())
+  id        String         @id @default(cuid())
+  date      DateTime       @unique
+  wordId    String
+  createdAt DateTime       @default(now())
+  word      IndigenousWord @relation(fields: [wordId], references: [id], onDelete: Cascade)
 }
 
-// VocabularyQuiz - quizzes for Indigenous language learning
 model VocabularyQuiz {
-  id              String    @id @default(cuid())
-  title           String    // Quiz title
-  language        String    // Target language
-  difficulty      String    @default("beginner") // "beginner", "intermediate", "advanced"
-  description     String?   // Quiz description
-
-  // Questions stored as JSON array
-  // Format: [{"id": "1", "word": "maskwa", "correctAnswer": "bear", "options": ["bear", "beaver", "moose", "wolf"]}]
-  questions       String    // JSON array of quiz questions
-
-  isPublished     Boolean   @default(true)
-
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id          String   @id @default(cuid())
+  title       String
+  language    String
+  difficulty  String   @default("beginner")
+  description String?
+  questions   String
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   @@index([language])
   @@index([difficulty])
 }
 
-// IndigenousStory - traditional stories and narratives about waterways
 model IndigenousStory {
-  id              String    @id @default(cuid())
-  title           String    // Story title
-  nation          String    // Indigenous nation (e.g., "Cree", "Ojibwe")
-  language        String?   // Language the story is from
-  content         String    // Story content (full text, can include markdown)
-  audioUrl        String?   // URL to audio narration
-  theme           String?   // "creation", "water", "animals", "teaching", etc.
-  gradeLevel      String?   // Appropriate grade level
-  summary         String?   // Brief summary of the story
-
-  // Related waterway
+  id                String   @id @default(cuid())
+  title             String
+  nation            String
+  language          String?
+  content           String
+  audioUrl          String?
+  theme             String?
+  gradeLevel        String?
+  summary           String?
   relatedWaterwayId String?
-
-  isPublished     Boolean   @default(true)
-
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  isPublished       Boolean  @default(true)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
   @@index([nation])
   @@index([theme])
 }
 
-// ==================== GAMIFICATION SYSTEM ====================
-
-// Achievement - badges that users can earn
 model Achievement {
-  id              String    @id @default(cuid())
-  name            String    @unique // e.g., "First Steps Explorer"
-  description     String    // What the user did to earn this
-  iconName        String    // Icon identifier (e.g., "compass", "map", "book")
-
-  // Category for grouping achievements
-  category        String    // "explorer", "scholar", "voyageur", "scribe", "linguist", "historian"
-
-  // Requirements
-  pointsRequired  Int       @default(0) // Points threshold to unlock (0 = activity-based)
-  criteria        String    // JSON describing unlock criteria
-                            // e.g., {"type": "waterways_visited", "count": 5}
-                            // or {"type": "quizzes_completed", "count": 3}
-
-  // Sorting/display
-  sortOrder       Int       @default(0)
-
-  // User achievements
+  id               String            @id @default(cuid())
+  name             String            @unique
+  description      String
+  iconName         String
+  category         String
+  pointsRequired   Int               @default(0)
+  criteria         String
+  sortOrder        Int               @default(0)
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
   userAchievements UserAchievement[]
-
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
 }
 
-// UserAchievement - tracks which achievements a user has earned
 model UserAchievement {
-  id              String    @id @default(cuid())
-
-  // User identifier (device-based for anonymous use)
-  userId          String    // Device ID or student identifier
-
-  // Achievement earned
-  achievementId   String
-  achievement     Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
-
-  // When earned
-  earnedAt        DateTime  @default(now())
+  id            String      @id @default(cuid())
+  userId        String
+  achievementId String
+  earnedAt      DateTime    @default(now())
+  achievement   Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
 
   @@unique([userId, achievementId])
   @@index([userId])
 }
 
-// UserProgress - tracks overall progress and stats for a user
 model UserProgress {
-  id              String    @id @default(cuid())
-
-  // User identifier
-  userId          String    @unique // Device ID or student identifier
-
-  // Points and rank
-  totalPoints     Int       @default(0)
-  explorerRank    String    @default("Apprentice Voyageur")
-
-  // Activity counters
-  waterwaysExplored    Int  @default(0)
-  locationsVisited     Int  @default(0)
-  quizzesTaken         Int  @default(0)
-  quizPointsEarned     Int  @default(0)
-  fieldTripsCompleted  Int  @default(0)
-  journalEntriesWritten Int @default(0)
-  pronunciationsLearned Int @default(0)
-  documentsRead        Int  @default(0)
-
-  // Streaks
-  dailyStreak          Int  @default(0)
-  longestStreak        Int  @default(0)
-  lastActiveDate       DateTime?
-
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id                    String    @id @default(cuid())
+  userId                String    @unique
+  totalPoints           Int       @default(0)
+  explorerRank          String    @default("Apprentice Voyageur")
+  waterwaysExplored     Int       @default(0)
+  locationsVisited      Int       @default(0)
+  quizzesTaken          Int       @default(0)
+  quizPointsEarned      Int       @default(0)
+  fieldTripsCompleted   Int       @default(0)
+  journalEntriesWritten Int       @default(0)
+  pronunciationsLearned Int       @default(0)
+  documentsRead         Int       @default(0)
+  dailyStreak           Int       @default(0)
+  longestStreak         Int       @default(0)
+  lastActiveDate        DateTime?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
 }
 
-// DailyChallenge - daily questions for engagement
 model DailyChallenge {
-  id              String    @id @default(cuid())
-
-  // When this challenge is active
-  date            DateTime  @unique // The date this challenge is for (time set to midnight)
-
-  // Question content
-  question        String
-
-  // Answer options (JSON array like quiz questions)
-  options         String    // JSON: [{"id": "a", "text": "Option A"}, ...]
-  correctAnswer   String    // The ID of the correct option
-
-  // Explanation shown after answering
-  explanation     String
-
-  // Points reward
-  pointsReward    Int       @default(10)
-
-  // Category/topic for variety
-  category        String?   // "explorer", "waterway", "fur_trade", "indigenous", "maritime"
-
-  // Attempts
-  attempts        DailyChallengeAttempt[]
-
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id            String                  @id @default(cuid())
+  date          DateTime                @unique
+  question      String
+  options       String
+  correctAnswer String
+  explanation   String
+  pointsReward  Int                     @default(10)
+  category      String?
+  createdAt     DateTime                @default(now())
+  updatedAt     DateTime                @updatedAt
+  attempts      DailyChallengeAttempt[]
 }
 
-// DailyChallengeAttempt - tracks user attempts at daily challenges
 model DailyChallengeAttempt {
-  id              String    @id @default(cuid())
-
-  // User who attempted
-  userId          String
-
-  // Challenge attempted
-  challengeId     String
-  challenge       DailyChallenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
-
-  // User's answer
-  answer          String    // The option ID selected
-  isCorrect       Boolean
-
-  // When completed
-  completedAt     DateTime  @default(now())
+  id          String         @id @default(cuid())
+  userId      String
+  challengeId String
+  answer      String
+  isCorrect   Boolean
+  completedAt DateTime       @default(now())
+  challenge   DailyChallenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
 
   @@unique([userId, challengeId])
   @@index([userId])
 }
 
-// ==================== VOYAGEUR JOURNEY SIMULATOR ====================
-
-// VoyageurJourney - a complete journey adventure
 model VoyageurJourney {
-  id              String    @id @default(cuid())
-  title           String    // e.g., "The Grand Portage Route"
-  description     String    // Journey overview
-  gradeLevel      String    // "K-3", "4-6", "7-9", "10-12"
-  difficulty      String    @default("medium")
-  estimatedMinutes Int      @default(20)
-  coverImageUrl   String?
-  startingLocation String   // Where the journey begins
-  endingLocation  String    // Destination
-  historicalYear  Int?      // Year the journey is set in
-  isPublished     Boolean   @default(true)
-
-  // Story nodes
-  nodes           JourneyNode[]
-
-  // User progress
-  userJourneys    UserJourneyProgress[]
-
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id               String                @id @default(cuid())
+  title            String
+  description      String
+  gradeLevel       String
+  difficulty       String                @default("medium")
+  estimatedMinutes Int                   @default(20)
+  coverImageUrl    String?
+  startingLocation String
+  endingLocation   String
+  historicalYear   Int?
+  isPublished      Boolean               @default(true)
+  createdAt        DateTime              @default(now())
+  updatedAt        DateTime              @updatedAt
+  nodes            JourneyNode[]
+  userJourneys     UserJourneyProgress[]
 }
 
-// JourneyNode - a single story point with choices
 model JourneyNode {
-  id              String    @id @default(cuid())
-  journeyId       String
-  journey         VoyageurJourney @relation(fields: [journeyId], references: [id], onDelete: Cascade)
-
-  nodeType        String    // "story", "choice", "challenge", "ending"
-  orderIndex      Int
-
-  // Content
-  title           String?
-  narrative       String    // The story text
-  imageUrl        String?
-
-  // Location on map (optional)
-  latitude        Float?
-  longitude       Float?
-  locationName    String?
-
-  // For choice nodes - choices stored as JSON
-  // Format: [{"id": "a", "text": "Portage around rapids", "nextNodeId": "xxx", "consequence": "Lost 2 hours"}, ...]
-  choices         String?
-
-  // For challenge nodes
+  id                String          @id @default(cuid())
+  journeyId         String
+  nodeType          String
+  orderIndex        Int
+  title             String?
+  narrative         String
+  imageUrl          String?
+  latitude          Float?
+  longitude         Float?
+  locationName      String?
+  choices           String?
   challengeQuestion String?
   challengeAnswer   String?
-
-  // Historical facts shown after this node
-  historicalFact  String?
-
-  // Audio for voyageur songs or narration
-  audioUrl        String?
-  songLyrics      String?   // Voyageur song lyrics
-
-  // Is this an ending node?
-  isEnding        Boolean   @default(false)
-  endingType      String?   // "success", "partial", "retry"
-
-  createdAt       DateTime  @default(now())
+  historicalFact    String?
+  audioUrl          String?
+  songLyrics        String?
+  isEnding          Boolean         @default(false)
+  endingType        String?
+  createdAt         DateTime        @default(now())
+  journey           VoyageurJourney @relation(fields: [journeyId], references: [id], onDelete: Cascade)
 }
 
-// UserJourneyProgress - tracks user progress through a journey
 model UserJourneyProgress {
-  id              String    @id @default(cuid())
-  userId          String
-  journeyId       String
-  journey         VoyageurJourney @relation(fields: [journeyId], references: [id], onDelete: Cascade)
-
-  currentNodeId   String?
-  choicesMade     String    // JSON array of choice IDs made
-  score           Int       @default(0)
-  status          String    @default("in_progress") // "in_progress", "completed", "abandoned"
-
-  startedAt       DateTime  @default(now())
-  completedAt     DateTime?
+  id            String          @id @default(cuid())
+  userId        String
+  journeyId     String
+  currentNodeId String?
+  choicesMade   String
+  score         Int             @default(0)
+  status        String          @default("in_progress")
+  startedAt     DateTime        @default(now())
+  completedAt   DateTime?
+  journey       VoyageurJourney @relation(fields: [journeyId], references: [id], onDelete: Cascade)
 
   @@unique([userId, journeyId])
   @@index([userId])
 }
 
-// ==================== HISTORICAL EVENTS (What Happened Here?) ====================
-
-// HistoricalEvent - events that happened at specific locations for GPS-based discovery
 model HistoricalEvent {
-  id              String    @id @default(cuid())
-  title           String    // e.g., "Samuel Hearne Passes Here"
-  description     String    // What happened
-
-  // Location
-  latitude        Float
-  longitude       Float
-  locationName    String?   // Nearby landmark or area name
-
-  // Date
-  year            Int
-  month           Int?
-  day             Int?
-  isApproximate   Boolean   @default(false)
-
-  // Category
-  category        String    // "exploration", "fur_trade", "indigenous", "settlement", "battle", "treaty"
-
-  // Related entities
-  explorerId      String?
-  waterwayId      String?
-  locationId      String?
-
-  // Historical significance level
-  significance    String    @default("normal") // "major", "normal", "minor"
-
-  // Media
-  imageUrl        String?
-
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id            String   @id @default(cuid())
+  title         String
+  description   String
+  latitude      Float
+  longitude     Float
+  locationName  String?
+  year          Int
+  month         Int?
+  day           Int?
+  isApproximate Boolean  @default(false)
+  category      String
+  explorerId    String?
+  waterwayId    String?
+  locationId    String?
+  significance  String   @default("normal")
+  imageUrl      String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   @@index([latitude, longitude])
   @@index([category])
 }
 
-// ==================== MAP DRAWING & ANNOTATION ====================
-
-// UserMapAnnotation - user's custom map with annotations
 model UserMapAnnotation {
-  id              String    @id @default(cuid())
+  id              String     @id @default(cuid())
   userId          String
-
-  title           String    // e.g., "My Fur Trade Route"
+  title           String
   description     String?
-
-  // Map bounds (to restore view)
   centerLatitude  Float?
   centerLongitude Float?
   zoomLevel       Float?
-
-  // Sharing
-  isPublic        Boolean   @default(false)
-  shareCode       String?   @unique
-
-  // Annotations
+  isPublic        Boolean    @default(false)
+  shareCode       String?    @unique
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+  notes           MapNote[]
   pins            MapPin[]
   routes          MapRoute[]
-  notes           MapNote[]
-
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
 
   @@index([userId])
   @@index([shareCode])
 }
 
-// MapPin - custom pins placed by user
 model MapPin {
-  id              String    @id @default(cuid())
-  annotationId    String
-  annotation      UserMapAnnotation @relation(fields: [annotationId], references: [id], onDelete: Cascade)
-
-  latitude        Float
-  longitude       Float
-  title           String
-  description     String?
-  color           String    @default("#FF6B6B") // Pin color
-  icon            String?   // Optional icon type
-
-  // Link to existing data (optional)
+  id               String            @id @default(cuid())
+  annotationId     String
+  latitude         Float
+  longitude        Float
+  title            String
+  description      String?
+  color            String            @default("#FF6B6B")
+  icon             String?
   linkedWaterwayId String?
   linkedLocationId String?
   linkedExplorerId String?
-
-  createdAt       DateTime  @default(now())
+  createdAt        DateTime          @default(now())
+  annotation       UserMapAnnotation @relation(fields: [annotationId], references: [id], onDelete: Cascade)
 }
 
-// MapRoute - drawn routes/paths
 model MapRoute {
-  id              String    @id @default(cuid())
-  annotationId    String
-  annotation      UserMapAnnotation @relation(fields: [annotationId], references: [id], onDelete: Cascade)
-
-  title           String
-  description     String?
-
-  // Route coordinates as JSON: [[lat, lng], [lat, lng], ...]
-  coordinates     String
-
-  // Style
-  color           String    @default("#4ECDC4")
-  strokeWidth     Int       @default(3)
-  isDashed        Boolean   @default(false)
-
-  // Compare to explorer route (optional)
+  id                  String            @id @default(cuid())
+  annotationId        String
+  title               String
+  description         String?
+  coordinates         String
+  color               String            @default("#4ECDC4")
+  strokeWidth         Int               @default(3)
+  isDashed            Boolean           @default(false)
   compareToExplorerId String?
-
-  createdAt       DateTime  @default(now())
+  createdAt           DateTime          @default(now())
+  annotation          UserMapAnnotation @relation(fields: [annotationId], references: [id], onDelete: Cascade)
 }
 
-// MapNote - text notes on map
 model MapNote {
-  id              String    @id @default(cuid())
+  id              String            @id @default(cuid())
   annotationId    String
-  annotation      UserMapAnnotation @relation(fields: [annotationId], references: [id], onDelete: Cascade)
-
   latitude        Float
   longitude       Float
   content         String
-  backgroundColor String    @default("#FFF3B0")
-
-  createdAt       DateTime  @default(now())
+  backgroundColor String            @default("#FFF3B0")
+  createdAt       DateTime          @default(now())
+  annotation      UserMapAnnotation @relation(fields: [annotationId], references: [id], onDelete: Cascade)
 }
 
-// ==================== NOTABLE FIGURES ====================
-
-// NotableFigure - women, Indigenous leaders, and other important historical figures
 model NotableFigure {
-  id              String    @id @default(cuid())
-  name            String    // e.g., "Charlotte Small", "Thanadelthur", "Matonabbee"
-  alternateNames  String?   // Other spellings or names (e.g., "Saukamappee" for Saukamappe)
-
-  // Demographics
-  birthYear       Int?
-  deathYear       Int?
-  nation          String?   // Indigenous nation if applicable (e.g., "Cree", "Chipewyan", "Piikani")
-  birthPlace      String?
-
-  // Role and significance
-  figureType      String    // "woman", "indigenous_leader", "guide", "interpreter", "trader"
-  role            String    // Brief role description (e.g., "Wife and partner of David Thompson", "Peacemaker and guide")
-  biography       String    // Full biography
-  significance    String    // Historical significance and contributions
-
-  // Connections to explorers
-  associatedExplorers String? // JSON array of explorer names/IDs they worked with
-  // e.g., [{"name": "David Thompson", "relationship": "wife and travel companion"}, ...]
-
-  // Key events/achievements
-  achievements    String?   // JSON array of key achievements
-  // e.g., ["Brokered peace between Cree and Chipewyan", "Guided expedition to Arctic"]
-
-  // Locations associated with this person
-  associatedLocations String? // JSON array of location names
-
-  // Time period active
-  activePeriodStart Int?
-  activePeriodEnd   Int?
-
-  // Media
-  imageUrl        String?
-
-  // Featured status
-  isFeatured      Boolean   @default(false)
-
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id                  String   @id @default(cuid())
+  name                String
+  alternateNames      String?
+  birthYear           Int?
+  deathYear           Int?
+  nation              String?
+  birthPlace          String?
+  figureType          String
+  role                String
+  biography           String
+  significance        String
+  associatedExplorers String?
+  achievements        String?
+  associatedLocations String?
+  activePeriodStart   Int?
+  activePeriodEnd     Int?
+  imageUrl            String?
+  isFeatured          Boolean  @default(false)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
 
   @@index([figureType])
   @@index([nation])

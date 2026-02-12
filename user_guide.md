@@ -145,15 +145,33 @@ Each field trip includes:
 - Stop 5: Indigenous Trading Area (relationship with Cree)
 - Stop 6: Departure by York Boat (brigade system)
 
-#### Document Library (6 Primary Source Documents)
+#### Document Library (14 Primary Source Documents)
 
 Access primary source documents with age-appropriate annotations:
-- **David Thompson's Field Notes (1811)** - Journal entries from surveying expeditions
-- **Samuel Hearne's Journey (1771)** - First European to reach Arctic Ocean overland
-- **York Factory Trade Record (1780)** - Shows fur trade economics
-- **Letter from Matonabbee (1772)** - Indigenous leader perspective
-- **Alexander Mackenzie at Fort Fork (1793)** - Start of Pacific expedition
-- **Peter Pond's Map (1785)** - Historical cartography
+
+**Alexander Mackenzie's Expeditions:**
+- **Alexander Mackenzie's Rock Inscription at Bella Coola (1793)** - The famous "from Canada, by land" inscription marking the first transcontinental crossing
+- **Mackenzie Crossing the Rocky Mountains (June 1793)** - Near-mutiny, dangerous portages, and crucial Indigenous guidance
+- **Alexander Mackenzie at Fort Fork (1793)** - Speech preparing for Pacific expedition
+
+**Indigenous Leaders and Oral Histories:**
+- **Peter Fidler Recording Saukamappee's Oral Histories (1792-1793)** - Pre-contact Plains life, arrival of horses and guns, Blackfoot/Piikani traditions
+- **James Knight on Thanadelthur (1715)** - Chipewyan peacemaker's diplomatic skills and peace expedition
+- **Samuel Hearne on Matonabbee's Leadership (1770-1772)** - Arctic expedition guidance and the essential role of women
+
+**Women in Exploration:**
+- **David Thompson's References to Charlotte Small (1799-1811)** - His Métis wife as travel companion, interpreter, and partner
+
+**Notable Expeditions:**
+- **Samuel Hearne's Journey to Arctic Ocean (1771)** - First European overland journey to Arctic
+- **Simon Fraser Navigating Fraser River Canyon (1808)** - Dangerous rapids, Indigenous trails and engineering
+- **Dr. John Rae's Report on Franklin Expedition (1854)** - Inuit testimony and Victorian rejection of Indigenous knowledge
+
+**Historical Records:**
+- **David Thompson's Field Notes (1811)** - Surveying and mapping techniques
+- **York Factory Trade Record (1780)** - Fur trade economics and made beaver currency
+- **Letter from Matonabbee (1772)** - Indigenous leader perspective on HBC relations
+- **Peter Pond's Map of the Northwest (1785)** - Historical cartography and geographical knowledge
 
 Each document includes:
 - Original text or images
@@ -1436,7 +1454,7 @@ Plus: Blackfoot Confederacy, Mohawk, and many others referenced in content
 - **Lesson Plans**: 26 complete, curriculum-aligned plans
 - **Quizzes**: 6 pre-loaded quizzes with 36 questions total
 - **Virtual Field Trips**: 4 complete tours with 6 stops each
-- **Primary Source Documents**: 6 documents with annotations
+- **Primary Source Documents**: 14 documents with annotations (Mackenzie, Fidler/Saukamappee, Knight/Thanadelthur, Thompson/Charlotte Small, Hearne/Matonabbee, Fraser, Rae, and more)
 - **Printable Resources**: 8 worksheets and activities
 - **Pronunciation Guide**: 33+ entries
 - **Comparison Templates**: 4 structured comparisons
