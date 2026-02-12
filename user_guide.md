@@ -1465,7 +1465,7 @@ The app supports learning outcomes in multiple subjects:
 
 ## Data Included in the App
 
-### Waterways (48 Total)
+### Waterways (65 Total)
 
 **Rivers (21):**
 St. Lawrence, Mackenzie, Fraser, Ottawa, Saskatchewan, Churchill, Columbia, Nelson, Athabasca, Peace, Red, Assiniboine, Yukon, Coppermine, Thelon, Saguenay, Saint John, Hayes, Albany, Moose, Kaministiquia
@@ -1479,7 +1479,7 @@ Hudson Bay, James Bay, Baie des Chaleurs, Gaspé Bay, Bonavista Bay, Placentia B
 **Straits & Inlets (4):**
 Strait of Belle Isle, Juan de Fuca Strait, Georgia Strait, Burrard Inlet
 
-### Historic Locations (84 Total)
+### Historic Locations (97 Total)
 
 Including:
 - **Hudson's Bay Company posts**: York Factory, Fort Edmonton, Norway House, Fort Churchill, Cumberland House, and many more
@@ -1492,11 +1492,11 @@ Including:
 
 Spanning from 1497 (Cabot's landing) to the late 1800s
 
-### Explorers (78 Total)
+### Explorers (91 Total)
 
 Chronologically organized from Leif Erikson (c. 1000 AD) to Vilhjalmur Stefansson (1906-1918):
 
-The database includes **78 explorers** spanning 1,000 years, providing comprehensive coverage of Canadian exploration history.
+The database includes **91 explorers** spanning 1,000 years, providing comprehensive coverage of Canadian exploration history including the complete La Vérendrye family (father and four sons).
 
 **Maritime Explorers:**
 John Cabot, Jacques Cartier, Martin Frobisher, Henry Hudson, Captain James Cook, Captain George Vancouver, Samuel de Champlain (also inland), Vitus Bering, Aleksei Chirikov, Juan Pérez, Spanish explorers (Bodega y Quadra, Bruno de Heceta, Galiano, Valdés)
@@ -1552,7 +1552,7 @@ Plus: Blackfoot Confederacy, Mohawk, and many others referenced in content
 - **Printable Resources**: 8 worksheets and activities
 - **Pronunciation Guide**: 33+ entries
 - **Comparison Templates**: 4 structured comparisons
-- **Timeline Events**: 16 major events from 1000 AD to 1885
+- **Timeline Events**: 18 major events from 1000 AD to 1885
 - **Historical Events** (GPS): 38 events across Canada
 - **Voyageur Journeys**: 2 complete interactive adventures
 - **Indigenous Words**: 298 words across 8 languages

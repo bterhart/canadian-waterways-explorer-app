@@ -13,10 +13,10 @@ An interactive educational map app showcasing Canada's major waterways, their In
 - **Zoom to Fit**: Map automatically zooms to show the full extent of a selected waterway
 
 ### Educational Content
-- **Chronological Timeline**: Explorer information is displayed chronologically, from earliest (Leif Erikson, c. 1000 AD) to latest (Joseph Tyrrell, 1893)
-- **Explorer Profiles**: Detailed biographies of 24 explorers spanning 1,000 years of exploration
+- **Chronological Timeline**: Explorer information is displayed chronologically, from earliest (Leif Erikson, c. 1000 AD) to latest (Vilhjalmur Stefansson, 1918)
+- **Explorer Profiles**: Detailed biographies of **91 explorers** spanning 1,000 years of exploration, including the complete La Vérendrye family (father and four sons) who opened the western interior
 - **Indigenous Heritage**: Learn about the First Nations peoples who have lived along these waterways for thousands of years
-- **Fur Trade History**: Discover how waterways shaped the fur trade era
+- **Fur Trade History**: Discover how waterways shaped the fur trade era, including famous portages like the Great Dog Portage
 - **Archaeological Discoveries**: Learn about famous finds like the Franklin expedition ships (HMS Erebus & Terror), Champlain's astrolabe, and the L'Anse aux Meadows Norse settlement
 
 ### User Contributions
@@ -155,7 +155,7 @@ All resources include teacher notes and answer keys.
 - River Routes: St. Lawrence vs Hudson Bay
 - David Thompson vs Alexander Mackenzie
 
-### Timeline Events (16 major events - NEW)
+### Timeline Events (18 major events - NEW)
 From HBC Charter (1670) to Louis Riel's execution (1885)
 
 ### Map Legend
@@ -168,7 +168,7 @@ From HBC Charter (1670) to Louis Riel's execution (1885)
 
 ## Data Included
 
-### Waterways (48)
+### Waterways (65)
 **Rivers**: St. Lawrence, Mackenzie, Fraser, Ottawa, Saskatchewan, Churchill, Columbia, Nelson, Hayes, Moose, Albany, Abitibi, Red, Assiniboine, Athabasca, Peace, Yukon, Coppermine, Thelon, Saguenay, Saint John
 
 **Lakes**: Superior, Huron, Ontario, Erie, Michigan, Winnipeg, Athabasca, Great Slave, Great Bear, Reindeer, Nipigon, Lesser Slave
@@ -186,7 +186,7 @@ From HBC Charter (1670) to Louis Riel's execution (1885)
 - **Red River** (Miskosipi in Cree) - Critical for Métis history and Red River Settlement
 - **Assiniboine River** - Tributary at The Forks (Winnipeg)
 
-### Historic Locations (84)
+### Historic Locations (97)
 
 **Hudson's Bay Company Posts:**
 - Prince of Wales Fort (1717) - Massive stone fortress on Churchill River; Samuel Hearne, James Knight, Moses Norton as factors
@@ -222,16 +222,16 @@ From HBC Charter (1670) to Louis Riel's execution (1885)
 - Spanish Banks Beach (Vancouver-Galiano meeting, 1792)
 - Fort San Miguel (Spanish fort at Nootka, 1789)
 
-### Explorers (78 Total) - Chronological
+### Explorers (91 Total) - Chronological
 
 **Comprehensive coverage spanning 1,000 years of Canadian exploration:**
 
-The database includes 78 explorers from c. 1000 AD to 1918, including:
+The database includes 91 explorers from c. 1000 AD to 1918, including:
 - Norse explorers (Leif Erikson, c. 1000 AD)
 - Early maritime explorers (Cabot 1497, Cartier 1534, Hudson 1610)
 - French coureurs des bois and voyageurs (Radisson, Des Groseilliers, Brûlé)
 - HBC explorers (Kelsey, Knight, Henday, Hearne)
-- Fur trade pioneers (Peter Pond, La Vérendrye family, Simon McTavish)
+- Fur trade pioneers (Peter Pond, La Vérendrye family including all four sons, Simon McTavish)
 - Pacific coast explorers (Cook, Vancouver, Spanish expeditions)
 - Overland to Pacific (Mackenzie, Fraser, Thompson)
 - Arctic explorers (Franklin, Rae, McClure, Amundsen)
