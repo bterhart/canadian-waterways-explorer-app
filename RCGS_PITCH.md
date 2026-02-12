@@ -13,7 +13,7 @@ What sets this apart is the depth. Students can read excerpts from Alexander Mac
 
 The app meets students where they are. Interactive maps highlight waterway boundaries when tapped. A GPS-enabled "What Happened Here?" feature reveals nearby historical events during field trips. Voyageur journey simulators let students make the same decisions faced by fur traders two centuries ago. And an Indigenous language module introduces 298 words across eight First Nations languages.
 
-For educators, twenty-six curriculum-aligned lesson plans, four virtual field trips, and eight printable resources provide ready-to-use classroom materials. Quiz categories span geography, fur trade history, Indigenous heritage, and archaeological discoveries—including the recent Franklin expedition finds.
+For educators, twenty-six curriculum-aligned lesson plans, four virtual field trips, and eight printable resources provide ready-to-use classroom materials. Quiz categories span geography, fur trade history, Indigenous heritage, and archaeological discoveries—including the recent Franklin expedition finds. A gamification system with explorer ranks, achievement badges, daily challenges, and streak tracking keeps students motivated and engaged over time.
 
 This is Canadian history made accessible, interactive, and engaging. Students don't just read about the canoe routes that built this nation—they explore them.
 
@@ -65,7 +65,13 @@ Twenty-six lesson plans align with provincial curriculum expectations across gra
 
 Eight printable worksheets—from blank fur trade route maps to vocabulary builders to perspective-comparison activities—provide offline reinforcement. Four structured comparison templates help students analyze the Hudson's Bay Company versus the North West Company, European versus Indigenous perspectives on land, and other essential contrasts.
 
-Thirteen quizzes spanning multiple categories and difficulty levels allow students to test their knowledge, while a gamification system with achievement badges and explorer ranks maintains engagement over time.
+Thirteen quizzes spanning multiple categories and difficulty levels allow students to test their knowledge and receive immediate feedback with detailed explanations.
+
+### Keeping Students Engaged: Gamification and Progress Tracking
+
+The application incorporates thoughtful gamification elements that sustain student motivation without trivializing the content. Students progress through explorer ranks—from "Apprentice Voyageur" to "Master Explorer"—by earning points for exploring waterways, completing quizzes, reading documents, and engaging with primary sources. Achievement badges recognize specific accomplishments: discovering all lakes, learning Indigenous words, completing virtual field trips.
+
+A daily challenge presents a new question each day, encouraging regular engagement and building historical knowledge incrementally. Streak tracking rewards consistent use, while a progress dashboard shows students exactly what they've explored and accomplished. These features transform the application from a reference tool into an ongoing learning journey, where students see tangible evidence of their growing expertise in Canadian waterway heritage.
 
 ### Student Voices: A Living Archive
 
