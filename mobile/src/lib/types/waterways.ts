@@ -59,6 +59,7 @@ export interface WaterwayLocation {
   locationType: string;
   yearEstablished: number | null;
   historicalNotes: string | null;
+  imageUrl: string | null;
   cartographer: Cartographer | null;
 }
 
@@ -108,6 +109,7 @@ export interface Location {
   latitude: number;
   longitude: number;
   locationType: string;
+  imageUrl: string | null;
   waterway: {
     id: string;
     name: string;
@@ -135,6 +137,7 @@ export interface LocationDetail {
   locationType: string;
   yearEstablished: number | null;
   historicalNotes: string | null;
+  imageUrl: string | null;
   waterwayId: string;
   cartographerId: string | null;
   waterway: {

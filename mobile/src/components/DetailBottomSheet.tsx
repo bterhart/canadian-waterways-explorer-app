@@ -115,6 +115,14 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
             <>
               {/* Header */}
               <View className="mb-4">
+                {/* Image for location */}
+                {markerType === 'location' && locationData?.imageUrl ? (
+                  <Image
+                    source={{ uri: locationData.imageUrl }}
+                    className="w-full h-48 rounded-xl mb-4"
+                    resizeMode="cover"
+                  />
+                ) : null}
                 <View
                   className="px-3 py-1 rounded-full self-start mb-2"
                   style={{ backgroundColor: colors.forestGreen }}
