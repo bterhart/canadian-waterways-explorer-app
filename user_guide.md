@@ -123,7 +123,7 @@ The Learn tab is your gateway to structured educational content.
 
 ### Available Resources
 
-#### Lesson Plans (26 Complete Plans)
+#### Lesson Plans (25 Complete Plans)
 
 Browse curriculum-aligned lesson plans organized by:
 - **Grade Level**: K-3, 4-6, 7-9, 10-12
@@ -527,7 +527,7 @@ For administrators managing educational content.
 ### Content Permission System
 
 **Core Content** (Protected):
-- Original 26 lesson plans, 14 primary source documents, 4 virtual field trips, 8 printables
+- Original 25 lesson plans, 14 primary source documents, 4 virtual field trips, 8 printables
 - Marked with "Core Content" badge
 - Cannot be edited or deleted by any admin
 - Visible to all users globally
@@ -1124,7 +1124,7 @@ The app includes 38 historical events across Canada:
 
 ## Notable Figures
 
-Meet the 14 women and Indigenous leaders who shaped Canadian history but are often overlooked in traditional histories.
+Meet the 18 women and Indigenous leaders who shaped Canadian history but are often overlooked in traditional histories.
 
 ### Why This Section Matters
 
@@ -1479,7 +1479,7 @@ Hudson Bay, James Bay, Baie des Chaleurs, Gaspé Bay, Bonavista Bay, Placentia B
 **Straits & Inlets (4):**
 Strait of Belle Isle, Juan de Fuca Strait, Georgia Strait, Burrard Inlet
 
-### Historic Locations (97 Total)
+### Historic Locations (99 Total)
 
 Including:
 - **Hudson's Bay Company posts**: York Factory, Fort Edmonton, Norway House, Fort Churchill, Cumberland House, and many more
@@ -1512,7 +1512,7 @@ Henry Kelsey, Anthony Henday, Samuel Hearne, Peter Pond, Joseph Burr Tyrrell
 
 All explorers include detailed biographies, years active, achievements, and connections to waterways.
 
-### Notable Figures (14 Total)
+### Notable Figures (18 Total)
 
 **Women**: Charlotte Small, Thanadelthur, Marie-Anne Gaboury, Isabel Gunn
 

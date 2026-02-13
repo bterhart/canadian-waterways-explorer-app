@@ -29,7 +29,7 @@ An interactive educational map app showcasing Canada's major waterways, their In
 - **Role Hierarchy**: Super-Admin > Admin > Moderator
 - **Content Management**:
   - Admins can create lesson plans, field trips, documents, printables
-  - Core content (original 26 lessons, 14 documents, etc.) is protected and cannot be edited
+  - Core content (original 25 lessons, 14 documents, etc.) is protected and cannot be edited
   - User-created content starts as private, can request global approval from super-admin
 - **JWT Authentication**: Persistent sessions with 15-minute access tokens and 7-day refresh tokens
 - **Security Features**: Brute force protection, account lockout, password complexity requirements
@@ -87,7 +87,7 @@ An interactive educational map app showcasing Canada's major waterways, their In
 - **Language Settings**: Switch languages in Settings
 - **French Immersion Ready**: Perfect for French immersion classrooms
 
-### Notable Figures - Women & Indigenous Leaders (14 profiles - NEW)
+### Notable Figures - Women & Indigenous Leaders (18 profiles - NEW)
 - **Unsung Heroes**: Highlighting women and Indigenous leaders crucial to Canadian exploration
 - **Women in History**: Charlotte Small (David Thompson's wife), Thanadelthur, Marie-Anne Gaboury, Isabel Gunn
 - **Indigenous Leaders**: Matonabbee (guided Samuel Hearne), Saukamappee (hosted Peter Fidler), Akaitcho (guided John Franklin)
@@ -103,7 +103,7 @@ An interactive educational map app showcasing Canada's major waterways, their In
 - **Fur Trade Terms**: Voyageur, Pemmican, Coureur des bois, Portage, Canot du maitre, etc.
 - **Phonetic Guidance**: Clear pronunciation guides for difficult or unfamiliar terms
 
-### Lesson Plans (26 complete plans - NEW)
+### Lesson Plans (25 complete plans - NEW)
 - **Grade-Specific Content**: Lesson plans for all grade levels (K-3, 4-6, 7-9, 10-12)
 - **"The Voyageur Life"** (Grade 4-6) - Daily life of voyageurs, canoe routes, pemmican
 - **"Louis Riel and the Métis Nation"** (Grade 7-9) - Métis identity, Red River Resistance, Riel's legacy
@@ -169,24 +169,25 @@ From HBC Charter (1670) to Louis Riel's execution (1885)
 ## Data Included
 
 ### Waterways (65)
-**Rivers**: St. Lawrence, Mackenzie, Fraser, Ottawa, Saskatchewan, Churchill, Columbia, Nelson, Hayes, Moose, Albany, Abitibi, Red, Assiniboine, Athabasca, Peace, Yukon, Coppermine, Thelon, Saguenay, Saint John
+**Rivers (23)**: St. Lawrence, Mackenzie, Fraser, Ottawa, Saskatchewan, Churchill, Columbia, Nelson, Hayes, Moose, Albany, Abitibi, Red, Assiniboine, Athabasca, Peace, Yukon, Coppermine, Thelon, Saguenay, Saint John, Kaministiquia, Back River
 
-**Lakes**: Superior, Huron, Ontario, Erie, Michigan, Winnipeg, Athabasca, Great Slave, Great Bear, Reindeer, Nipigon, Lesser Slave
+**Lakes (13)**: Superior, Huron, Ontario, Erie, Michigan, Winnipeg, Athabasca, Great Slave, Great Bear, Reindeer, Nipigon, Lesser Slave, Lake of the Woods
 
-**Bays & Sounds**: Hudson Bay, James Bay, Baie des Chaleurs, Gaspé Bay, Bonavista Bay, Placentia Bay, Nootka Sound, English Bay, Friendly Cove (Yuquot), Queen Charlotte Sound, Lituya Bay
+**Bays & Sounds (18)**: Hudson Bay, James Bay, Baie des Chaleurs, Gaspé Bay, Bonavista Bay, Placentia Bay, Nootka Sound, English Bay, Friendly Cove (Yuquot), Queen Charlotte Sound, Lituya Bay, Terror Bay, Mercy Bay, Queen Maud Gulf, Foxe Basin, Baffin Bay, Frobisher Bay, Cumberland Sound, Lancaster Sound, Marble Island
 
-**Straits & Inlets**: Strait of Belle Isle, Juan de Fuca Strait, Georgia Strait, Burrard Inlet
+**Straits & Inlets (11)**: Strait of Belle Isle, Juan de Fuca Strait, Georgia Strait, Burrard Inlet, Dean Channel, Davis Strait, Parry Channel, Bellot Strait, Chesterfield Inlet
 
-**NEW Rivers Added:**
-- **Nelson River** (Sipiwesk in Cree) - Major HBC route to York Factory from Lake Winnipeg
-- **Hayes River** (Ethenneldeli in Dene) - Primary route for HBC brigades to Hudson Bay
-- **Moose River** - Flows into James Bay at Moose Factory
-- **Albany River** - Major route into James Bay, Fort Albany at mouth
-- **Abitibi River** ("middle waters" in Algonquin) - Important route from Great Lakes to James Bay
-- **Red River** (Miskosipi in Cree) - Critical for Métis history and Red River Settlement
-- **Assiniboine River** - Tributary at The Forks (Winnipeg)
+**Arctic Waterways Added:**
+- **Terror Bay** - Where HMS Terror was found (2016)
+- **Mercy Bay** - Where HMS Investigator was found on Banks Island
+- **Queen Maud Gulf** - Where HMS Erebus was found (2014)
+- **Foxe Basin** - Named after Luke Foxe (1631)
+- **Davis Strait** - Named after John Davis (1585)
+- **Baffin Bay** - Mapped by William Baffin (1616)
+- **Lancaster Sound** - Key Northwest Passage entry point
+- **Back River** - Named after George Back (1834)
 
-### Historic Locations (97)
+### Historic Locations (99)
 
 **Hudson's Bay Company Posts:**
 - Prince of Wales Fort (1717) - Massive stone fortress on Churchill River; Samuel Hearne, James Knight, Moses Norton as factors

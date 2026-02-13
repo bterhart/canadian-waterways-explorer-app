@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import { prisma } from "../prisma";
 
+// Location router with imageUrl support
 const locationsRouter = new Hono();
 
 // Get all locations for map markers

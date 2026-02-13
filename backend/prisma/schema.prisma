@@ -50,6 +50,7 @@ model Location {
   locationType       String
   yearEstablished    Int?
   historicalNotes    String?
+  imageUrl           String?
   waterwayId         String
   cartographerId     String?
   createdAt          DateTime           @default(now())
