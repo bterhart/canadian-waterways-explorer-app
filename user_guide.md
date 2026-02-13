@@ -1465,7 +1465,7 @@ The app supports learning outcomes in multiple subjects:
 
 ## Data Included in the App
 
-### Waterways (65 Total)
+### Waterways (70 Total)
 
 **Rivers (21):**
 St. Lawrence, Mackenzie, Fraser, Ottawa, Saskatchewan, Churchill, Columbia, Nelson, Athabasca, Peace, Red, Assiniboine, Yukon, Coppermine, Thelon, Saguenay, Saint John, Hayes, Albany, Moose, Kaministiquia

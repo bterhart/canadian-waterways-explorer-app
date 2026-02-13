@@ -14,6 +14,7 @@ locationsRouter.get("/", async (c) => {
       latitude: true,
       longitude: true,
       locationType: true,
+      imageUrl: true,
       waterway: {
         select: { id: true, name: true }
       }
@@ -41,6 +42,7 @@ locationsRouter.get("/type/:locationType", async (c) => {
       latitude: true,
       longitude: true,
       locationType: true,
+      imageUrl: true,
       waterway: {
         select: { id: true, name: true }
       }

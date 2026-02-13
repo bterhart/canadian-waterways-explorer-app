@@ -168,8 +168,8 @@ From HBC Charter (1670) to Louis Riel's execution (1885)
 
 ## Data Included
 
-### Waterways (65)
-**Rivers (23)**: St. Lawrence, Mackenzie, Fraser, Ottawa, Saskatchewan, Churchill, Columbia, Nelson, Hayes, Moose, Albany, Abitibi, Red, Assiniboine, Athabasca, Peace, Yukon, Coppermine, Thelon, Saguenay, Saint John, Kaministiquia, Back River
+### Waterways (70)
+**Rivers (28)**: St. Lawrence, Mackenzie, Fraser, Ottawa, Saskatchewan, Churchill, Columbia, Nelson, Hayes, Moose, Albany, Abitibi, Red, Assiniboine, Athabasca, Peace, Yukon, Coppermine, Thelon, Saguenay, Saint John, Kaministiquia, Back River, French River, Seine River, Atikokan River, Souris River, Red Deer River
 
 **Lakes (13)**: Superior, Huron, Ontario, Erie, Michigan, Winnipeg, Athabasca, Great Slave, Great Bear, Reindeer, Nipigon, Lesser Slave, Lake of the Woods
 
