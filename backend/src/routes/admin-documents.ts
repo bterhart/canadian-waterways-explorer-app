@@ -2,8 +2,12 @@ import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { prisma } from "../prisma";
+import { requireAdmin } from "../lib/admin-middleware";
 
 const adminDocumentsRouter = new Hono();
+
+// Require admin authentication for all routes
+adminDocumentsRouter.use("*", requireAdmin);
 
 // Validation schemas
 const annotationSchema = z.object({

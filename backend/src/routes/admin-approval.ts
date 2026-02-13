@@ -56,12 +56,13 @@ adminApprovalRouter.post(
     // Rate limiting check (max 3 attempts per IP per hour)
     const clientIp = c.req.header("x-forwarded-for") || c.req.header("x-real-ip") || "unknown";
     const rateLimitKey = `register:${clientIp}`;
+    const rateLimit = await registrationRateLimiter.check(rateLimitKey, 3, 60 * 60 * 1000);
 
-    if (!registrationRateLimiter.check(rateLimitKey, 3, 60 * 60 * 1000)) {
+    if (!rateLimit.success) {
       return c.json(
         {
           error: {
-            message: "Too many registration attempts. Please try again later.",
+            message: `Too many registration attempts. Please try again in ${Math.ceil(rateLimit.remaining / 1000 / 60)} minutes.`,
             code: "RATE_LIMIT_EXCEEDED",
           },
         },

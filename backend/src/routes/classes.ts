@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { prisma } from "../prisma";
+import { requireTeacher } from "../lib/teacher-middleware";
 
 const classesRouter = new Hono();
 
@@ -64,52 +65,7 @@ const updateProgressSchema = z.object({
   maxScore: z.number().int().optional(),
 });
 
-// POST / - Create a new class
-classesRouter.post(
-  "/",
-  zValidator("json", createClassSchema),
-  async (c) => {
-    const data = c.req.valid("json");
-
-    // Verify teacher exists
-    const teacher = await prisma.teacher.findUnique({
-      where: { id: data.teacherId },
-    });
-
-    if (!teacher) {
-      return c.json(
-        { error: { message: "Teacher not found", code: "NOT_FOUND" } },
-        404
-      );
-    }
-
-    // Generate unique join code
-    let joinCode = generateJoinCode();
-    let attempts = 0;
-    while (attempts < 10) {
-      const existing = await prisma.class.findUnique({
-        where: { joinCode },
-      });
-      if (!existing) break;
-      joinCode = generateJoinCode();
-      attempts++;
-    }
-
-    const newClass = await prisma.class.create({
-      data: {
-        name: data.name,
-        gradeLevel: data.gradeLevel,
-        schoolYear: data.schoolYear,
-        joinCode,
-        teacherId: data.teacherId,
-      },
-    });
-
-    return c.json({ data: newClass }, 201);
-  }
-);
-
-// POST /join - Student joins a class with join code
+// POST /join - Student joins a class with join code (PUBLIC - no auth required)
 classesRouter.post(
   "/join",
   zValidator("json", joinClassSchema),
@@ -164,6 +120,54 @@ classesRouter.post(
         },
       },
     }, 201);
+  }
+);
+
+// Require teacher authentication for all routes below this point
+classesRouter.use("*", requireTeacher);
+
+// POST / - Create a new class
+classesRouter.post(
+  "/",
+  zValidator("json", createClassSchema),
+  async (c) => {
+    const data = c.req.valid("json");
+
+    // Verify teacher exists
+    const teacher = await prisma.teacher.findUnique({
+      where: { id: data.teacherId },
+    });
+
+    if (!teacher) {
+      return c.json(
+        { error: { message: "Teacher not found", code: "NOT_FOUND" } },
+        404
+      );
+    }
+
+    // Generate unique join code
+    let joinCode = generateJoinCode();
+    let attempts = 0;
+    while (attempts < 10) {
+      const existing = await prisma.class.findUnique({
+        where: { joinCode },
+      });
+      if (!existing) break;
+      joinCode = generateJoinCode();
+      attempts++;
+    }
+
+    const newClass = await prisma.class.create({
+      data: {
+        name: data.name,
+        gradeLevel: data.gradeLevel,
+        schoolYear: data.schoolYear,
+        joinCode,
+        teacherId: data.teacherId,
+      },
+    });
+
+    return c.json({ data: newClass }, 201);
   }
 );
 

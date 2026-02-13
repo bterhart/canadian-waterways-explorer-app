@@ -36,13 +36,16 @@ export async function verifyPassword(
 }
 
 /**
- * Simple in-memory rate limiter for registration attempts
+ * Simple in-memory rate limiter for authentication attempts
  * In production, use Redis or a proper rate limiting service
  */
 class RateLimiter {
   private attempts: Map<string, { count: number; resetAt: number }> = new Map();
 
-  check(identifier: string, maxAttempts: number, windowMs: number): boolean {
+  check(identifier: string, maxAttempts: number, windowMs: number): {
+    success: boolean;
+    remaining: number
+  } {
     const now = Date.now();
     const record = this.attempts.get(identifier);
 
@@ -51,15 +54,18 @@ class RateLimiter {
         count: 1,
         resetAt: now + windowMs,
       });
-      return true;
+      return { success: true, remaining: 0 };
     }
 
     if (record.count >= maxAttempts) {
-      return false;
+      return {
+        success: false,
+        remaining: record.resetAt - now
+      };
     }
 
     record.count++;
-    return true;
+    return { success: true, remaining: 0 };
   }
 
   reset(identifier: string): void {
@@ -77,10 +83,12 @@ class RateLimiter {
 }
 
 export const registrationRateLimiter = new RateLimiter();
+export const loginRateLimiter = new RateLimiter();
 
 // Cleanup old entries every 5 minutes
 setInterval(() => {
   registrationRateLimiter.cleanup();
+  loginRateLimiter.cleanup();
 }, 5 * 60 * 1000);
 
 /**

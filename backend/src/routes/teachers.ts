@@ -3,7 +3,9 @@ import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { prisma } from "../prisma";
 import { generateAccessToken, generateRefreshToken } from "../lib/jwt-utils";
-import bcrypt from "bcryptjs";
+import { loginRateLimiter } from "../lib/auth-utils";
+import { requireTeacher } from "../lib/teacher-middleware";
+import type { Teacher } from "@prisma/client";
 
 const teachersRouter = new Hono();
 
@@ -87,6 +89,22 @@ teachersRouter.post(
   async (c) => {
     const { email, password } = c.req.valid("json");
 
+    // Rate limiting check (5 attempts per 15 minutes)
+    const rateLimitKey = `teacher-login:${email}`;
+    const rateLimit = loginRateLimiter.check(rateLimitKey, 5, 15 * 60 * 1000);
+
+    if (!rateLimit.success) {
+      return c.json(
+        {
+          error: {
+            message: `Too many login attempts. Please try again in ${Math.ceil(rateLimit.remaining / 1000 / 60)} minutes.`,
+            code: "RATE_LIMIT_EXCEEDED",
+          },
+        },
+        429
+      );
+    }
+
     const teacher = await prisma.teacher.findUnique({
       where: { email },
     });
@@ -114,8 +132,8 @@ teachersRouter.post(
       );
     }
 
-    // Verify password
-    const isValid = await bcrypt.compare(password, teacher.passwordHash);
+    // Verify password using Bun's password verification (matches Bun.password.hash used during registration)
+    const isValid = await Bun.password.verify(password, teacher.passwordHash);
 
     if (!isValid) {
       // Increment failed login attempts
@@ -192,6 +210,9 @@ teachersRouter.post(
   }
 );
 
+// Require teacher authentication for all routes below this point
+teachersRouter.use("*", requireTeacher);
+
 // GET /:id - Get teacher profile
 teachersRouter.get("/:id", async (c) => {
   const id = c.req.param("id");
@@ -241,6 +262,17 @@ teachersRouter.patch(
     const id = c.req.param("id");
     const data = c.req.valid("json");
 
+    // Get authenticated teacher from middleware
+    const authenticatedTeacher = (c as any).get("teacher") as Teacher;
+
+    // Verify the authenticated teacher owns this profile
+    if (authenticatedTeacher?.id !== id) {
+      return c.json(
+        { error: { message: "You can only update your own profile", code: "FORBIDDEN" } },
+        403
+      );
+    }
+
     const existingTeacher = await prisma.teacher.findUnique({
       where: { id },
     });
@@ -282,6 +314,17 @@ teachersRouter.post(
   async (c) => {
     const id = c.req.param("id");
     const { currentPassword, newPassword } = c.req.valid("json");
+
+    // Get authenticated teacher from middleware
+    const authenticatedTeacher = (c as any).get("teacher") as Teacher;
+
+    // Verify the authenticated teacher owns this account
+    if (authenticatedTeacher?.id !== id) {
+      return c.json(
+        { error: { message: "You can only change your own password", code: "FORBIDDEN" } },
+        403
+      );
+    }
 
     const teacher = await prisma.teacher.findUnique({
       where: { id },

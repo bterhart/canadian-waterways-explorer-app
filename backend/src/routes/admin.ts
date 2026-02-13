@@ -3,6 +3,7 @@ import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { prisma } from "../prisma";
 import { generateAccessToken, generateRefreshToken } from "../lib/jwt-utils";
+import { loginRateLimiter } from "../lib/auth-utils";
 import bcrypt from "bcryptjs";
 
 const adminRouter = new Hono();
@@ -26,6 +27,22 @@ adminRouter.post(
   zValidator("json", loginSchema),
   async (c) => {
     const { email, password } = c.req.valid("json");
+
+    // Rate limiting check (5 attempts per 15 minutes)
+    const rateLimitKey = `admin-login:${email}`;
+    const rateLimit = loginRateLimiter.check(rateLimitKey, 5, 15 * 60 * 1000);
+
+    if (!rateLimit.success) {
+      return c.json(
+        {
+          error: {
+            message: `Too many login attempts. Please try again in ${Math.ceil(rateLimit.remaining / 1000 / 60)} minutes.`,
+            code: "RATE_LIMIT_EXCEEDED",
+          },
+        },
+        429
+      );
+    }
 
     const admin = await prisma.adminUser.findUnique({
       where: { email },
