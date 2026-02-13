@@ -131,11 +131,13 @@ Access historical documents with age-appropriate annotations:
 
 Each document includes original text, transcription, vocabulary, grade-specific annotations (K-3, 4-6, 7-9, 10-12), and discussion questions.
 
-### Virtual Field Trips (4 complete tours - NEW)
+### Virtual Field Trips (6 complete tours - NEW)
 - **York Factory** - Walk through the HBC's main depot on Hudson Bay (6 stops)
 - **Fort William** - Attend a North West Company rendezvous (6 stops)
 - **L'Anse aux Meadows** - Explore the Norse settlement from 1000 AD (6 stops)
 - **Prince of Wales Fort** - Tour the massive stone fortress (6 stops)
+- **Fort Carlton** - Experience the prairie fur trade and Treaty 6 signing site (6 stops)
+- **Rocky Mountain House** - Discover David Thompson's base at the gateway to the Rockies (6 stops)
 
 ### Printable Resources (8 worksheets - NEW)
 - **Blank Map of Canadian Fur Trade Routes** - Students trace routes

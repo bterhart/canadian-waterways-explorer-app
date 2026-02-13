@@ -150,13 +150,15 @@ Each lesson plan includes:
 - Activity: Using the app's map, students identify 5 trading posts and the waterways connecting them
 - Assessment: Students create their own illustrated map showing one complete trade route
 
-#### Virtual Field Trips (4 Complete Tours)
+#### Virtual Field Trips (6 Complete Tours)
 
 Experience historic locations without leaving the classroom:
 - **York Factory** - Walk through the HBC's main depot on Hudson Bay
 - **Fort William** - Attend a North West Company rendezvous
 - **L'Anse aux Meadows** - Explore the Norse settlement from 1000 AD
 - **Prince of Wales Fort** - Tour the massive stone fortress
+- **Fort Carlton** - Experience the prairie fur trade and Treaty 6 signing site (1876)
+- **Rocky Mountain House** - Discover David Thompson's base at the gateway to the Rockies
 
 Each field trip includes:
 - 6 detailed stops with coordinates
@@ -1547,7 +1549,7 @@ Plus: Blackfoot Confederacy, Mohawk, and many others referenced in content
 
 - **Lesson Plans**: 26 complete, curriculum-aligned plans
 - **Quizzes**: 6 pre-loaded quizzes with 36 questions total
-- **Virtual Field Trips**: 4 complete tours with 6 stops each
+- **Virtual Field Trips**: 6 complete tours with 6 stops each
 - **Primary Source Documents**: 14 documents with annotations (Mackenzie, Fidler/Saukamappee, Knight/Thanadelthur, Thompson/Charlotte Small, Hearne/Matonabbee, Fraser, Rae, and more)
 - **Printable Resources**: 8 worksheets and activities
 - **Pronunciation Guide**: 33+ entries
