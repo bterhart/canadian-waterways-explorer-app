@@ -253,8 +253,11 @@ classesRouter.delete("/:id", async (c) => {
     );
   }
 
-  await prisma.class.delete({
-    where: { id },
+  // Delete class within a transaction to ensure atomicity with cascading deletes
+  await prisma.$transaction(async (tx) => {
+    await tx.class.delete({
+      where: { id },
+    });
   });
 
   return c.json({ data: { success: true, message: "Class deleted successfully" } });
@@ -389,8 +392,11 @@ classesRouter.delete("/:id/students/:studentId", async (c) => {
     );
   }
 
-  await prisma.classStudent.delete({
-    where: { id: studentId },
+  // Delete student within a transaction to ensure atomicity with cascading deletes
+  await prisma.$transaction(async (tx) => {
+    await tx.classStudent.delete({
+      where: { id: studentId },
+    });
   });
 
   return c.json({ data: { success: true, message: "Student removed successfully" } });
@@ -553,8 +559,11 @@ classesRouter.delete("/:id/assignments/:assignmentId", async (c) => {
     );
   }
 
-  await prisma.classAssignment.delete({
-    where: { id: assignmentId },
+  // Delete assignment within a transaction to ensure atomicity with cascading deletes
+  await prisma.$transaction(async (tx) => {
+    await tx.classAssignment.delete({
+      where: { id: assignmentId },
+    });
   });
 
   return c.json({ data: { success: true, message: "Assignment deleted successfully" } });
@@ -634,30 +643,32 @@ classesRouter.put(
       );
     }
 
-    // Upsert progress
-    const progress = await prisma.studentProgress.upsert({
-      where: {
-        studentId_assignmentId: {
+    // Upsert progress within a transaction to ensure atomicity
+    const progress = await prisma.$transaction(async (tx) => {
+      return await tx.studentProgress.upsert({
+        where: {
+          studentId_assignmentId: {
+            studentId,
+            assignmentId,
+          },
+        },
+        update: {
+          status: data.status,
+          ...(data.score !== undefined && { score: data.score }),
+          ...(data.maxScore !== undefined && { maxScore: data.maxScore }),
+          ...(data.status === "in_progress" && { startedAt: new Date() }),
+          ...(data.status === "completed" && { completedAt: new Date() }),
+        },
+        create: {
           studentId,
           assignmentId,
+          status: data.status,
+          score: data.score,
+          maxScore: data.maxScore,
+          startedAt: data.status !== "not_started" ? new Date() : null,
+          completedAt: data.status === "completed" ? new Date() : null,
         },
-      },
-      update: {
-        status: data.status,
-        ...(data.score !== undefined && { score: data.score }),
-        ...(data.maxScore !== undefined && { maxScore: data.maxScore }),
-        ...(data.status === "in_progress" && { startedAt: new Date() }),
-        ...(data.status === "completed" && { completedAt: new Date() }),
-      },
-      create: {
-        studentId,
-        assignmentId,
-        status: data.status,
-        score: data.score,
-        maxScore: data.maxScore,
-        startedAt: data.status !== "not_started" ? new Date() : null,
-        completedAt: data.status === "completed" ? new Date() : null,
-      },
+      });
     });
 
     return c.json({ data: progress });

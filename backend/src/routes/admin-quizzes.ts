@@ -315,8 +315,11 @@ adminQuizzesRouter.delete("/:id", async (c) => {
     );
   }
 
-  await prisma.quiz.delete({
-    where: { id },
+  // Delete quiz within a transaction to ensure atomicity with cascading deletes
+  await prisma.$transaction(async (tx) => {
+    await tx.quiz.delete({
+      where: { id },
+    });
   });
 
   return c.json({ data: { success: true, message: "Quiz deleted successfully" } });

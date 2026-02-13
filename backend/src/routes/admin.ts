@@ -226,43 +226,46 @@ adminRouter.patch(
       );
     }
 
-    const contribution = await prisma.userContribution.update({
-      where: { id },
-      data: {
-        status,
-        adminNotes,
-        reviewedBy,
-        reviewedAt: new Date(),
-      },
-      select: {
-        id: true,
-        title: true,
-        content: true,
-        contributionType: true,
-        contributorName: true,
-        contributorEmail: true,
-        imageUrl: true,
-        waterwayId: true,
-        locationId: true,
-        status: true,
-        adminNotes: true,
-        reviewedAt: true,
-        reviewedBy: true,
-        createdAt: true,
-        updatedAt: true,
-        waterway: {
-          select: {
-            id: true,
-            name: true,
+    // Update contribution status within a transaction to ensure atomicity
+    const contribution = await prisma.$transaction(async (tx) => {
+      return await tx.userContribution.update({
+        where: { id },
+        data: {
+          status,
+          adminNotes,
+          reviewedBy,
+          reviewedAt: new Date(),
+        },
+        select: {
+          id: true,
+          title: true,
+          content: true,
+          contributionType: true,
+          contributorName: true,
+          contributorEmail: true,
+          imageUrl: true,
+          waterwayId: true,
+          locationId: true,
+          status: true,
+          adminNotes: true,
+          reviewedAt: true,
+          reviewedBy: true,
+          createdAt: true,
+          updatedAt: true,
+          waterway: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          location: {
+            select: {
+              id: true,
+              name: true,
+            },
           },
         },
-        location: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-      },
+      });
     });
 
     return c.json({ data: contribution });

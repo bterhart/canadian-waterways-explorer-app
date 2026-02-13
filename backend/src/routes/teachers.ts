@@ -346,11 +346,14 @@ teachersRouter.post(
       );
     }
 
+    // Hash new password and update within a transaction to ensure atomicity
     const newPasswordHash = await Bun.password.hash(newPassword);
 
-    await prisma.teacher.update({
-      where: { id },
-      data: { passwordHash: newPasswordHash },
+    await prisma.$transaction(async (tx) => {
+      await tx.teacher.update({
+        where: { id },
+        data: { passwordHash: newPasswordHash },
+      });
     });
 
     return c.json({ data: { success: true, message: "Password changed successfully" } });

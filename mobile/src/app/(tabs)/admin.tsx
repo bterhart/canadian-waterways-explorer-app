@@ -239,20 +239,14 @@ export default function AdminScreen() {
                 icon={<Users size={24} color={colors.gold} />}
                 label="Pending Admin Approvals"
                 count={pendingAdmins?.length ?? 0}
-                onPress={() => {
-                  // TODO: Create /admin/approvals route
-                  console.log('Navigate to admin approvals');
-                }}
+                onPress={() => router.push('/admin/approvals')}
                 color={colors.gold}
               />
               <View style={styles.divider} />
               <MenuItem
                 icon={<CheckCircle size={24} color={colors.waterBlue} />}
                 label="All Admin Users"
-                onPress={() => {
-                  // TODO: Create /admin/users route
-                  console.log('Navigate to admin users');
-                }}
+                onPress={() => router.push('/admin/users')}
                 color={colors.waterBlue}
               />
             </View>
@@ -266,40 +260,28 @@ export default function AdminScreen() {
             icon={<BookOpen size={24} color={colors.forestGreen} />}
             label="Lesson Plans"
             count={lessonPlans?.length ?? 0}
-            onPress={() => {
-              // TODO: Create /admin/lesson-plans route
-              console.log('Navigate to lesson plans');
-            }}
+            onPress={() => router.push('/admin/lesson-plans')}
           />
           <View style={styles.divider} />
           <MenuItem
             icon={<Map size={24} color={colors.waterBlue} />}
             label="Virtual Field Trips"
             count={fieldTrips?.length ?? 0}
-            onPress={() => {
-              // TODO: Create /admin/field-trips route
-              console.log('Navigate to field trips');
-            }}
+            onPress={() => router.push('/admin/field-trips')}
           />
           <View style={styles.divider} />
           <MenuItem
             icon={<FileText size={24} color={colors.earthBrown} />}
             label="Primary Source Documents"
             count={documents?.length ?? 0}
-            onPress={() => {
-              // TODO: Create /admin/documents route
-              console.log('Navigate to documents');
-            }}
+            onPress={() => router.push('/admin/documents')}
           />
           <View style={styles.divider} />
           <MenuItem
             icon={<FileStack size={24} color={colors.green600} />}
             label="Printable Resources"
             count={printables?.length ?? 0}
-            onPress={() => {
-              // TODO: Create /admin/printables route
-              console.log('Navigate to printables');
-            }}
+            onPress={() => router.push('/admin/printables')}
           />
           <View style={styles.divider} />
           <MenuItem
@@ -317,10 +299,7 @@ export default function AdminScreen() {
             icon={<CheckCircle size={24} color={colors.waterBlue} />}
             label="Pending Reviews"
             count={pendingContributions?.length ?? 0}
-            onPress={() => {
-              // TODO: Create /admin/contributions route
-              console.log('Navigate to contributions');
-            }}
+            onPress={() => router.push('/admin/contributions')}
             color={colors.waterBlue}
           />
         </View>
@@ -331,10 +310,7 @@ export default function AdminScreen() {
           <MenuItem
             icon={<FileText size={24} color={colors.forestGreen} />}
             label="My Created Content"
-            onPress={() => {
-              // TODO: Create /admin/my-content route
-              console.log('Navigate to my content');
-            }}
+            onPress={() => router.push('/admin/my-content')}
           />
         </View>
 

@@ -33,6 +33,10 @@ model Waterway {
   locations              Location[]
   contributions          UserContribution[]
   type                   WaterwayType              @relation(fields: [typeId], references: [id])
+
+  @@index([regionName])
+  @@index([typeId])
+  @@index([name])
 }
 
 model Location {
@@ -53,6 +57,10 @@ model Location {
   cartographer       Cartographer?      @relation(fields: [cartographerId], references: [id])
   waterway           Waterway           @relation(fields: [waterwayId], references: [id], onDelete: Cascade)
   contributions      UserContribution[]
+
+  @@index([waterwayId])
+  @@index([locationType])
+  @@index([name])
 }
 
 model Explorer {
@@ -67,6 +75,9 @@ model Explorer {
   createdAt           DateTime           @default(now())
   updatedAt           DateTime           @updatedAt
   waterways           ExplorerWaterway[]
+
+  @@index([name])
+  @@index([nationality])
 }
 
 model ExplorerWaterway {
@@ -135,6 +146,10 @@ model UserContribution {
   updatedAt        DateTime  @updatedAt
   location         Location? @relation(fields: [locationId], references: [id], onDelete: Cascade)
   waterway         Waterway? @relation(fields: [waterwayId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+  @@index([contributionType])
+  @@index([createdAt])
 }
 
 model AdminUser {
@@ -155,6 +170,10 @@ model AdminUser {
   lockedUntil           DateTime?
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
+
+  @@index([status, role])
+  @@index([createdAt])
+  @@index([email])
 }
 
 model ArchaeologicalDiscovery {
@@ -189,6 +208,11 @@ model Quiz {
   updatedAt   DateTime       @updatedAt
   attempts    QuizAttempt[]
   questions   QuizQuestion[]
+
+  @@index([category])
+  @@index([gradeLevel])
+  @@index([isPublished])
+  @@index([createdById])
 }
 
 model QuizQuestion {
@@ -253,6 +277,13 @@ model LessonPlan {
   createdAt             DateTime          @default(now())
   updatedAt             DateTime          @updatedAt
   assignments           ClassAssignment[]
+
+  @@index([gradeLevel])
+  @@index([isPublished])
+  @@index([visibility])
+  @@index([isCore])
+  @@index([createdById])
+  @@index([isPublished, visibility])
 }
 
 model TimelineEvent {
@@ -290,6 +321,12 @@ model VirtualFieldTrip {
   createdAt        DateTime        @default(now())
   updatedAt        DateTime        @updatedAt
   stops            FieldTripStop[]
+
+  @@index([gradeLevel])
+  @@index([isPublished])
+  @@index([visibility])
+  @@index([isCore])
+  @@index([createdById])
 }
 
 model FieldTripStop {
@@ -335,6 +372,13 @@ model PrimarySourceDocument {
   createdById         String?
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
+
+  @@index([gradeLevel])
+  @@index([isPublished])
+  @@index([visibility])
+  @@index([isCore])
+  @@index([createdById])
+  @@index([documentType])
 }
 
 model ComparisonTemplate {
@@ -487,6 +531,13 @@ model PrintableResource {
   createdById     String?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+
+  @@index([gradeLevel])
+  @@index([isPublished])
+  @@index([visibility])
+  @@index([isCore])
+  @@index([createdById])
+  @@index([resourceType])
 }
 
 model PronunciationGuide {

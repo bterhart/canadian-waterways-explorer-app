@@ -240,27 +240,29 @@ adminApprovalRouter.post(
       );
     }
 
-    // Approve admin
-    const approvedAdmin = await prisma.adminUser.update({
-      where: { id },
-      data: {
-        status: "approved",
-        approvedBy: superAdmin.id,
-        approvedAt: new Date(),
-        canCreateGlobalContent,
-        permissions: permissions ? JSON.stringify(permissions) : null,
-      },
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        organization: true,
-        role: true,
-        status: true,
-        approvedBy: true,
-        approvedAt: true,
-        canCreateGlobalContent: true,
-      },
+    // Approve admin within a transaction to ensure atomicity
+    const approvedAdmin = await prisma.$transaction(async (tx) => {
+      return await tx.adminUser.update({
+        where: { id },
+        data: {
+          status: "approved",
+          approvedBy: superAdmin.id,
+          approvedAt: new Date(),
+          canCreateGlobalContent,
+          permissions: permissions ? JSON.stringify(permissions) : null,
+        },
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          organization: true,
+          role: true,
+          status: true,
+          approvedBy: true,
+          approvedAt: true,
+          canCreateGlobalContent: true,
+        },
+      });
     });
 
     // Log action
@@ -341,20 +343,22 @@ adminApprovalRouter.post(
       );
     }
 
-    // Reject admin
-    const rejectedAdmin = await prisma.adminUser.update({
-      where: { id },
-      data: {
-        status: "rejected",
-        rejectionReason,
-      },
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        status: true,
-        rejectionReason: true,
-      },
+    // Reject admin within a transaction to ensure atomicity
+    const rejectedAdmin = await prisma.$transaction(async (tx) => {
+      return await tx.adminUser.update({
+        where: { id },
+        data: {
+          status: "rejected",
+          rejectionReason,
+        },
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          status: true,
+          rejectionReason: true,
+        },
+      });
     });
 
     // Log action
@@ -444,20 +448,22 @@ adminApprovalRouter.post(
       );
     }
 
-    // Grant super-admin role
-    const updatedAdmin = await prisma.adminUser.update({
-      where: { id },
-      data: {
-        role: "super_admin",
-        canCreateGlobalContent: true,
-      },
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        role: true,
-        canCreateGlobalContent: true,
-      },
+    // Grant super-admin role within a transaction to ensure atomicity
+    const updatedAdmin = await prisma.$transaction(async (tx) => {
+      return await tx.adminUser.update({
+        where: { id },
+        data: {
+          role: "super_admin",
+          canCreateGlobalContent: true,
+        },
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          role: true,
+          canCreateGlobalContent: true,
+        },
+      });
     });
 
     // Log action
@@ -564,20 +570,22 @@ adminApprovalRouter.post(
       );
     }
 
-    // Suspend admin
-    const suspendedAdmin = await prisma.adminUser.update({
-      where: { id },
-      data: {
-        status: "suspended",
-        rejectionReason: reason, // Reuse this field for suspension reason
-      },
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        status: true,
-        rejectionReason: true,
-      },
+    // Suspend admin within a transaction to ensure atomicity
+    const suspendedAdmin = await prisma.$transaction(async (tx) => {
+      return await tx.adminUser.update({
+        where: { id },
+        data: {
+          status: "suspended",
+          rejectionReason: reason, // Reuse this field for suspension reason
+        },
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          status: true,
+          rejectionReason: true,
+        },
+      });
     });
 
     // Log action
@@ -638,19 +646,21 @@ adminApprovalRouter.post(
       );
     }
 
-    // Reactivate admin
-    const reactivatedAdmin = await prisma.adminUser.update({
-      where: { id },
-      data: {
-        status: "approved",
-        rejectionReason: null,
-      },
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        status: true,
-      },
+    // Reactivate admin within a transaction to ensure atomicity
+    const reactivatedAdmin = await prisma.$transaction(async (tx) => {
+      return await tx.adminUser.update({
+        where: { id },
+        data: {
+          status: "approved",
+          rejectionReason: null,
+        },
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          status: true,
+        },
+      });
     });
 
     // Log action
