@@ -1,21 +1,30 @@
 {
   "expo": {
-    "name": "Canadian Interactive Waterways Initiative",
-    "slug": "vibecode",
+    "name": "Canada Waterways Explorer",
+    "slug": "canada-waterways-explorer",
     "scheme": "vibecode",
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.canadawaterwaysexplorer",
+      "buildNumber": "1",
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "Canada Waterways Explorer uses the microphone to record audio tracks that the app attaches to your creations.",
+        "NSLocationWhenInUseUsageDescription": "Canada Waterways Explorer uses your location to display your position on in-app maps and surface nearby points of interest."
+      }
     },
     "android": {
       "edgeToEdgeEnabled": true
     },
-    "plugins": ["expo-router"],
+    "plugins": [
+      "expo-router"
+    ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "icon": "./icon.png"
   }
 }
