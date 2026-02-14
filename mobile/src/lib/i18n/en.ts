@@ -56,6 +56,8 @@ export const en = {
   learningResources: 'Learning Resources',
   lessonPlans: 'Lesson Plans',
   lessonPlansDesc: 'Curriculum-aligned lessons for K-12',
+  deepDives: 'Deep Dives',
+  deepDivesDesc: 'Plunge into the Past',
   timeline: 'Timeline',
   timelineDesc: 'Interactive Canadian history timeline',
   fieldTrips: 'Field Trips',

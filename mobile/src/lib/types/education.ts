@@ -434,6 +434,43 @@ export const getGradeLevelLabel = (grade: string | null): string => {
   return `Grade ${grade}`;
 };
 
+// Grade level ranges used in the database (K-3, 4-6, 7-9, 10-12)
+export const GRADE_LEVEL_RANGES = ['K-3', '4-6', '7-9', '10-12'] as const;
+export type GradeLevelRange = (typeof GRADE_LEVEL_RANGES)[number];
+
+// Grade level range color coding
+export const getGradeLevelRangeColor = (grade: string | null): string => {
+  if (!grade) return '#6B7280';
+  switch (grade) {
+    case 'K-3':
+      return '#10B981'; // Green for K-3
+    case '4-6':
+      return '#3B82F6'; // Blue for 4-6
+    case '7-9':
+      return '#8B5CF6'; // Purple for 7-9
+    case '10-12':
+      return '#F97316'; // Orange for 10-12
+    default:
+      return '#6B7280';
+  }
+};
+
+export const getGradeLevelRangeLabel = (grade: string | null): string => {
+  if (!grade) return 'All Grades';
+  switch (grade) {
+    case 'K-3':
+      return 'Grades K-3';
+    case '4-6':
+      return 'Grades 4-6';
+    case '7-9':
+      return 'Grades 7-9';
+    case '10-12':
+      return 'Grades 10-12';
+    default:
+      return grade;
+  }
+};
+
 // ============= Indigenous Language Learning Types =============
 
 export interface IndigenousWord {

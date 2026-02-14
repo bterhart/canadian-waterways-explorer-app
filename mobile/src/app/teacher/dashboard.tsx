@@ -18,6 +18,7 @@ import {
   ChevronRight,
   LogOut,
   Settings,
+  BookOpen,
 } from 'lucide-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTeacherClasses } from '@/lib/api/education-api';
@@ -177,6 +178,23 @@ export default function TeacherDashboardScreen() {
           <Text style={styles.overviewLabel}>Assignments</Text>
         </View>
       </View>
+
+      {/* Lesson Plans Card */}
+      <Pressable
+        style={({ pressed }) => [styles.lessonPlansCard, pressed && styles.cardPressed]}
+        onPress={() => router.push('/teacher/lesson-plans')}
+      >
+        <View style={styles.lessonPlansIcon}>
+          <BookOpen size={24} color={colors.forestGreen} />
+        </View>
+        <View style={styles.lessonPlansInfo}>
+          <Text style={styles.lessonPlansTitle}>Lesson Plans</Text>
+          <Text style={styles.lessonPlansSubtitle}>
+            Curriculum-aligned lessons for K-12
+          </Text>
+        </View>
+        <ChevronRight size={20} color="#9CA3AF" />
+      </Pressable>
 
       {/* Classes Section */}
       <View style={styles.sectionHeader}>
@@ -434,5 +452,41 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#9CA3AF',
     marginTop: 4,
+  },
+  lessonPlansCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    marginHorizontal: 16,
+    marginBottom: 16,
+    padding: 16,
+    borderRadius: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  lessonPlansIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 12,
+    backgroundColor: colors.forestGreen + '15',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 14,
+  },
+  lessonPlansInfo: {
+    flex: 1,
+  },
+  lessonPlansTitle: {
+    fontSize: 17,
+    fontWeight: '700',
+    color: colors.darkGreen,
+  },
+  lessonPlansSubtitle: {
+    fontSize: 14,
+    color: '#6B7280',
+    marginTop: 2,
   },
 });

@@ -59,6 +59,8 @@ export const fr: Record<TranslationKey, string> = {
   learningResources: 'Ressources educatives',
   lessonPlans: 'Plans de cours',
   lessonPlansDesc: 'Lecons alignees sur le curriculum pour K-12',
+  deepDives: 'Plongees profondes',
+  deepDivesDesc: 'Plongez dans le passe',
   timeline: 'Chronologie',
   timelineDesc: 'Chronologie interactive de l\'histoire canadienne',
   fieldTrips: 'Sorties',

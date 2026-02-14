@@ -1,4 +1,4 @@
-// Deep Dives Screen - Educational content for general users
+// Teacher Portal - Lesson Plans List Screen
 import React, { useState } from 'react';
 import {
   View,
@@ -21,7 +21,7 @@ const colors = {
   darkGreen: '#1A3A24',
 };
 
-// Topics that exist in the database
+// Topics that match actual database values
 const TOPICS = [
   'Fur Trade',
   'Geography',
@@ -33,7 +33,7 @@ const TOPICS = [
   'Early Explorers',
 ];
 
-export default function DeepDivesScreen() {
+export default function TeacherLessonPlansScreen() {
   const router = useRouter();
   const [selectedGrade, setSelectedGrade] = useState<string | undefined>();
   const [selectedTopic, setSelectedTopic] = useState<string | undefined>();
@@ -46,7 +46,7 @@ export default function DeepDivesScreen() {
   const renderLessonCard = ({ item }: { item: LessonPlanSummary }) => (
     <Pressable
       style={({ pressed }) => [styles.lessonCard, pressed && styles.cardPressed]}
-      onPress={() => router.push(`/lessons/${item.id}`)}
+      onPress={() => router.push(`/teacher/lesson-plan/${item.id}`)}
     >
       <View style={styles.cardHeader}>
         <View
@@ -87,7 +87,7 @@ export default function DeepDivesScreen() {
     <View style={styles.container}>
       <Stack.Screen
         options={{
-          title: 'Deep Dives',
+          title: 'Lesson Plans',
           headerStyle: { backgroundColor: colors.forestGreen },
           headerTintColor: 'white',
         }}
@@ -198,11 +198,11 @@ export default function DeepDivesScreen() {
       {isLoading ? (
         <View style={styles.centerContainer}>
           <ActivityIndicator size="large" color={colors.forestGreen} />
-          <Text style={styles.loadingText}>Loading deep dives...</Text>
+          <Text style={styles.loadingText}>Loading lesson plans...</Text>
         </View>
       ) : isError ? (
         <View style={styles.centerContainer}>
-          <Text style={styles.errorText}>Unable to load deep dives</Text>
+          <Text style={styles.errorText}>Unable to load lesson plans</Text>
         </View>
       ) : lessonPlans && lessonPlans.length > 0 ? (
         <FlatList
@@ -215,7 +215,7 @@ export default function DeepDivesScreen() {
       ) : (
         <View style={styles.centerContainer}>
           <BookOpen size={48} color="#D1D5DB" />
-          <Text style={styles.emptyText}>No deep dives found</Text>
+          <Text style={styles.emptyText}>No lesson plans found</Text>
           <Text style={styles.emptySubtext}>
             Try adjusting your filters
           </Text>

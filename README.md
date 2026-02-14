@@ -33,7 +33,10 @@ An interactive educational map app showcasing Canada's major waterways, their In
   - User-created content starts as private, can request global approval from super-admin
 - **JWT Authentication**: Persistent sessions with 15-minute access tokens and 7-day refresh tokens
 - **Security Features**: Brute force protection, account lockout, password complexity requirements
-- **Initial Super-Admin**: email: superadmin@waterways.edu, password: SecurePassword123! (CHANGE IN PRODUCTION)
+- **Test Accounts Available**:
+  - Teacher: teacher@waterways.edu / Teacher123!
+  - Admin: admin@waterways.edu / Admin123!
+  - Super-Admin: superadmin@waterways.edu / SuperAdmin123!
 
 ### RCGS Educational Quizzes
 - **Quiz Categories**: Explorers, Fur Trade, Maritime History, Indigenous Heritage, Geography, Archaeological Discoveries
@@ -103,8 +106,10 @@ An interactive educational map app showcasing Canada's major waterways, their In
 - **Fur Trade Terms**: Voyageur, Pemmican, Coureur des bois, Portage, Canot du maitre, etc.
 - **Phonetic Guidance**: Clear pronunciation guides for difficult or unfamiliar terms
 
-### Lesson Plans (25 complete plans - NEW)
-- **Grade-Specific Content**: Lesson plans for all grade levels (K-3, 4-6, 7-9, 10-12)
+### Deep Dives (General Users) / Lesson Plans (Teacher Portal)
+- **Deep Dives**: General users see curriculum-aligned content branded as "Deep Dives" with the tagline "Plunge into the Past"
+- **Teacher Portal**: Teachers access the same content as "Lesson Plans" with full filtering and classroom assignment features
+- **Grade-Specific Content**: Content for all grade levels (K-3, 4-6, 7-9, 10-12)
 - **"The Voyageur Life"** (Grade 4-6) - Daily life of voyageurs, canoe routes, pemmican
 - **"Louis Riel and the Métis Nation"** (Grade 7-9) - Métis identity, Red River Resistance, Riel's legacy
 - **"Women of the Fur Trade"** (Grade 7-9) - Crucial roles of Indigenous and Métis women

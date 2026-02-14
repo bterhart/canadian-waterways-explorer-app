@@ -174,8 +174,8 @@ export default function LearnHubScreen() {
         <Text style={styles.sectionTitle}>{t('learningResources')}</Text>
         <View style={styles.cardsGrid}>
           <FeatureCard
-            title={t('lessonPlans')}
-            description={t('lessonPlansDesc')}
+            title={t('deepDives')}
+            description={t('deepDivesDesc')}
             icon={<BookOpen size={28} color="white" />}
             gradientColors={['#2D5A3D', '#1A3A24'] as const}
             onPress={() => router.push('/lessons')}
