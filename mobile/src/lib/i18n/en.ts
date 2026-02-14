@@ -82,7 +82,7 @@ export const en = {
   voyageurJourney: 'Voyageur Journey',
   myMaps: 'My Maps',
   rcgsAttribution: "Part of the Royal Canadian Geographic Society's educational initiative",
-  supportingEducators: 'Supporting 25,000+ educators across Canada',
+  supportingEducators: 'Supporting educators across Canada and abroad',
 
   // Gamification
   achievements: 'Achievements',

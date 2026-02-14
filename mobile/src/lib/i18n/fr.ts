@@ -85,7 +85,7 @@ export const fr: Record<TranslationKey, string> = {
   voyageurJourney: 'Voyage du voyageur',
   myMaps: 'Mes cartes',
   rcgsAttribution: "Initiative educative de la Societe geographique royale du Canada",
-  supportingEducators: 'Soutenant plus de 25 000 educateurs a travers le Canada',
+  supportingEducators: 'Soutenant les éducateurs à travers le Canada et à l\'étranger',
 
   // Gamification
   achievements: 'Realisations',
