@@ -1,4 +1,4 @@
-// About Screen - App information, credits, and land acknowledgment
+// About Screen - App information and credits
 import React from 'react';
 import {
   View,
@@ -16,7 +16,7 @@ import {
   Globe,
   ExternalLink,
   Users,
-  Award,
+  Anchor,
   Leaf,
 } from 'lucide-react-native';
 import { useTranslation } from '@/lib/i18n';
@@ -68,10 +68,10 @@ function ContactItem({ label, email, icon }: ContactItemProps) {
 }
 
 export default function AboutScreen() {
-  const { t, language } = useTranslation();
+  const { language } = useTranslation();
 
   const handleWebsitePress = () => {
-    Linking.openURL('https://www.canadianwaterways.edu');
+    Linking.openURL('https://www.canadianwaterways.ca');
   };
 
   return (
@@ -109,8 +109,8 @@ export default function AboutScreen() {
         {/* Description */}
         <View style={styles.descriptionCard}>
           <Text style={styles.descriptionText}>
-            An immersive educational app that brings Canada's waterways, Indigenous
-            heritage, and exploration history to life. Designed for students, teachers,
+            An immersive educational app that brings Canada's waterways and
+            exploration history to life. Designed for students, teachers,
             and educational professionals from coast to coast to coast.
           </Text>
         </View>
@@ -124,64 +124,68 @@ export default function AboutScreen() {
             <Text style={styles.landAcknowledgmentText}>
               We acknowledge that the waterways featured in this app flow through the
               traditional territories of diverse Indigenous peoples across what is now
-              called Canada. These waterways have been traveled, named, and stewarded by
-              Indigenous peoples for thousands of years before European contact.
+              called Canada.
               {'\n\n'}
               We are grateful to be able to share these stories and histories, and we
-              commit to ongoing learning, consultation, and respectful representation of
+              commit to ongoing learning and respectful representation of
               Indigenous peoples, cultures, and knowledge.
             </Text>
           </View>
         </Section>
 
-        {/* Partners */}
+        {/* Development Team */}
         <Section
-          title={language === 'fr' ? 'Partenaires' : 'Partners & Credits'}
+          title={language === 'fr' ? 'Équipe de Développement' : 'Development Team'}
           icon={<Users size={22} color={colors.forestGreen} />}
         >
-          <View style={styles.partnerCard}>
-            <View style={styles.partnerHeader}>
-              <Award size={20} color={colors.forestGreen} />
-              <Text style={styles.partnerName}>
-                Royal Canadian Geographical Society
+          <View style={styles.teamCard}>
+            <View style={styles.teamHeader}>
+              <Anchor size={20} color={colors.forestGreen} />
+              <Text style={styles.teamName}>
+                Kainani Across Alone Team
               </Text>
             </View>
-            <Text style={styles.partnerDescription}>
-              Educational content, quizzes, and curriculum resources
+            <Text style={styles.teamDescription}>
+              This project was entirely self-financed and developed by the Kainani Across Alone Team.
             </Text>
           </View>
 
           <View style={styles.creditsList}>
-            <Text style={styles.creditItem}>
-              • Indigenous Education Consultants - Cultural accuracy and Indigenous
-              perspectives
-            </Text>
-            <Text style={styles.creditItem}>
-              • Historians and Archaeologists - Historical accuracy and content
-              verification
-            </Text>
-            <Text style={styles.creditItem}>
-              • Teachers and Educators - Lesson plans and classroom testing
-            </Text>
-            <Text style={styles.creditItem}>
-              • Students - Feedback and user testing
-            </Text>
-            <Text style={styles.creditItem}>
-              • Indigenous Communities - Language verification, traditional knowledge, and
-              ongoing consultation
-            </Text>
+            <View style={styles.creditItem}>
+              <Text style={styles.creditName}>Bert terHart</Text>
+              <Text style={styles.creditRole}>Developer</Text>
+            </View>
+            <View style={styles.creditItem}>
+              <Text style={styles.creditName}>Jan terHart</Text>
+              <Text style={styles.creditRole}>Research</Text>
+            </View>
+            <View style={styles.creditItem}>
+              <Text style={styles.creditName}>Leah terHart</Text>
+              <Text style={styles.creditRole}>Outreach</Text>
+            </View>
           </View>
         </Section>
 
-        {/* Funding */}
+        {/* Research Sources */}
         <Section
-          title={language === 'fr' ? 'Financement' : 'Funding'}
+          title={language === 'fr' ? 'Sources de Recherche' : 'Research Sources'}
+          icon={<Info size={22} color={colors.forestGreen} />}
+        >
+          <Text style={styles.researchText}>
+            All research was derived from original sources publicly available, including
+            historical archives, academic publications, and public domain materials.
+          </Text>
+        </Section>
+
+        {/* RCGS Partnership */}
+        <Section
+          title={language === 'fr' ? 'Partenariat' : 'Partnership'}
           icon={<Heart size={22} color={colors.forestGreen} />}
         >
-          <Text style={styles.fundingText}>
-            This project is made possible through grants from educational foundations and
-            partnerships with museums, heritage organizations, and educational
-            institutions across Canada.
+          <Text style={styles.partnershipText}>
+            We plan to partner with the Royal Canadian Geographical Society (RCGS) to
+            provide this app free of charge to teachers and educators directly
+            affiliated with the RCGS.
           </Text>
         </Section>
 
@@ -192,22 +196,17 @@ export default function AboutScreen() {
         >
           <ContactItem
             label="Technical Support"
-            email="support@waterways.edu"
+            email="support@canadianwaterways.ca"
             icon={<Info size={18} color={colors.forestGreen} />}
           />
           <ContactItem
             label="Educational Questions"
-            email="education@waterways.edu"
-            icon={<Award size={18} color={colors.forestGreen} />}
-          />
-          <ContactItem
-            label="Indigenous Content"
-            email="indigenous@waterways.edu"
+            email="education@canadianwaterways.ca"
             icon={<Users size={18} color={colors.forestGreen} />}
           />
           <ContactItem
             label="General Inquiries"
-            email="info@waterways.edu"
+            email="info@canadianwaterways.ca"
             icon={<Mail size={18} color={colors.forestGreen} />}
           />
         </Section>
@@ -219,7 +218,7 @@ export default function AboutScreen() {
           </View>
           <View style={styles.websiteContent}>
             <Text style={styles.websiteLabel}>Visit Our Website</Text>
-            <Text style={styles.websiteUrl}>www.canadianwaterways.edu</Text>
+            <Text style={styles.websiteUrl}>www.canadianwaterways.ca</Text>
           </View>
           <ExternalLink size={20} color={colors.forestGreen} />
         </Pressable>
@@ -240,6 +239,9 @@ export default function AboutScreen() {
           </Text>
           <Text style={styles.footerCopyright}>
             © 2026 Canadian Interactive Waterways Initiative
+          </Text>
+          <Text style={styles.footerTeam}>
+            A Kainani Across Alone Project
           </Text>
         </View>
 
@@ -353,24 +355,24 @@ const styles = StyleSheet.create({
     color: '#374151',
     lineHeight: 24,
   },
-  partnerCard: {
+  teamCard: {
     backgroundColor: '#F9FAFB',
     padding: 16,
     borderRadius: 12,
     marginBottom: 16,
   },
-  partnerHeader: {
+  teamHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
     marginBottom: 8,
   },
-  partnerName: {
+  teamName: {
     fontSize: 16,
     fontWeight: '700',
     color: colors.darkGreen,
   },
-  partnerDescription: {
+  teamDescription: {
     fontSize: 14,
     color: '#6B7280',
     lineHeight: 20,
@@ -379,11 +381,29 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   creditItem: {
-    fontSize: 14,
-    color: '#374151',
-    lineHeight: 22,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    backgroundColor: '#F9FAFB',
+    borderRadius: 10,
   },
-  fundingText: {
+  creditName: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: colors.darkGreen,
+  },
+  creditRole: {
+    fontSize: 14,
+    color: '#6B7280',
+  },
+  researchText: {
+    fontSize: 15,
+    color: '#374151',
+    lineHeight: 24,
+  },
+  partnershipText: {
     fontSize: 15,
     color: '#374151',
     lineHeight: 24,
@@ -487,6 +507,13 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#9CA3AF',
     textAlign: 'center',
+  },
+  footerTeam: {
+    fontSize: 12,
+    color: '#9CA3AF',
+    textAlign: 'center',
+    marginTop: 4,
+    fontStyle: 'italic',
   },
   bottomSpacer: {
     height: 32,
