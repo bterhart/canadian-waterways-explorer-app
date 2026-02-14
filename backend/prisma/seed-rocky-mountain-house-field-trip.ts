@@ -45,7 +45,7 @@ const rockyMountainHouseFieldTrip: VirtualFieldTripData = {
   estimatedMinutes: 45,
   theme: "explorer",
   coverImageUrl:
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Rocky_Mountain_House_NHS_14.jpg/1280px-Rocky_Mountain_House_NHS_14.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Snow_Dome%2C_Forbes%2C_Lyells%2C_Et_al_from_Mt._Kitchener.jpg/1280px-Snow_Dome%2C_Forbes%2C_Lyells%2C_Et_al_from_Mt._Kitchener.jpg",
   isPublished: true,
   isCore: true,
   stops: [
@@ -60,7 +60,7 @@ The setting is spectacular but challenging. The mountains create their own weath
       latitude: 52.3756,
       longitude: -114.9217,
       imageUrl:
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Rocky_Mountain_House_NHS_14.jpg/1280px-Rocky_Mountain_House_NHS_14.jpg",
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Snow_Dome%2C_Forbes%2C_Lyells%2C_Et_al_from_Mt._Kitchener.jpg/1280px-Snow_Dome%2C_Forbes%2C_Lyells%2C_Et_al_from_Mt._Kitchener.jpg",
       funFact:
         "Rocky Mountain House was actually a series of posts built and rebuilt over nearly 80 years. At least five different NWC and HBC posts were constructed at various locations along this stretch of the North Saskatchewan River between 1799 and 1875.",
       thinkQuestion:
@@ -77,7 +77,7 @@ From this post, Thompson made repeated attempts to cross the Rockies. He explore
       latitude: 52.3760,
       longitude: -114.9210,
       imageUrl:
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/David_Thompson_%28explorer%29.jpg/800px-David_Thompson_%28explorer%29.jpg",
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/David_Thompson_%281770-1857%29.jpg/500px-David_Thompson_%281770-1857%29.jpg",
       funFact:
         "David Thompson's eyesight was severely damaged when he was 18 years old from a winter accident. Despite this, he became the most prolific land geographer in history, using his one good eye to take precise astronomical observations and create maps of astonishing accuracy.",
       thinkQuestion:
@@ -94,7 +94,7 @@ This tension shaped everything at Rocky Mountain House. The traders had to maint
       latitude: 52.3752,
       longitude: -114.9225,
       imageUrl:
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Blackfoot_Indians_tipis_-_Edward_S._Curtis.jpg/1280px-Blackfoot_Indians_tipis_-_Edward_S._Curtis.jpg",
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Six_Blackfeet_Chiefs_-_Paul_Kane.jpg/640px-Six_Blackfeet_Chiefs_-_Paul_Kane.jpg",
       funFact:
         "The Blackfoot Confederacy was one of the most powerful military forces on the northern plains. Their control of the horse trade and their skilled horsemanship made them formidable warriors that even the largest fur trading companies had to treat with respect and diplomacy.",
       thinkQuestion:
@@ -111,7 +111,7 @@ Thompson had to find an alternative. Working with his Iroquois and Metis voyageu
       latitude: 52.3765,
       longitude: -114.9200,
       imageUrl:
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Athabasca_Pass_BC.jpg/1280px-Athabasca_Pass_BC.jpg",
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Athabasca_Pass_sign.jpg/607px-Athabasca_Pass_sign.jpg",
       funFact:
         "The crossing of Athabasca Pass in January 1811 was incredibly dangerous. Thompson's party traveled through deep snow in temperatures of -30 degrees Celsius, with some men suffering severe frostbite. Yet they succeeded in opening a route that changed the history of western North America.",
       thinkQuestion:
@@ -128,7 +128,7 @@ The people who lived here formed a diverse community. French-Canadian voyageurs,
       latitude: 52.3748,
       longitude: -114.9230,
       imageUrl:
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/York_boat_on_Hayes_River.jpg/1280px-York_boat_on_Hayes_River.jpg",
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/YorkBoat_FEP.jpg/1280px-YorkBoat_FEP.jpg",
       funFact:
         "Getting a letter from Rocky Mountain House to Montreal could take six months to a year. News from Europe might be two years old by the time it reached this remote post. Workers often had no contact with the outside world for years at a time.",
       thinkQuestion:
@@ -145,7 +145,7 @@ Parks Canada has worked with the Blackfoot Confederacy, Cree, and Metis communit
       latitude: 52.3750,
       longitude: -114.9220,
       imageUrl:
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Rocky_Mountain_House_National_Historic_Site.jpg/1280px-Rocky_Mountain_House_National_Historic_Site.jpg",
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/1814ThompsonMap.jpg/500px-1814ThompsonMap.jpg",
       funFact:
         "Archaeological excavations at Rocky Mountain House have uncovered thousands of artifacts including trade beads, gun parts, clay pipes, buttons, and animal bones. These objects help historians understand what life was really like at this remote frontier post.",
       thinkQuestion:
