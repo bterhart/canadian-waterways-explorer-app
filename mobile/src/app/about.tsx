@@ -182,10 +182,19 @@ export default function AboutScreen() {
           title={language === 'fr' ? 'Partenariat' : 'Partnership'}
           icon={<Heart size={22} color={colors.forestGreen} />}
         >
+          <Text style={styles.partnershipTitle}>
+            Royal Canadian Geographical Society
+          </Text>
           <Text style={styles.partnershipText}>
-            We plan to partner with the Royal Canadian Geographical Society (RCGS) to
-            provide this app free of charge to teachers and educators directly
-            affiliated with the RCGS.
+            The Royal Canadian Geographical Society (RCGS) is dedicated to making Canada
+            better known to Canadians and to the world. Through their educational initiatives,
+            the RCGS partners with K-12 educators across Canada and abroad to bring geography,
+            history, and environmental education into classrooms.
+            {'\n\n'}
+            The RCGS supports teachers with curriculum-aligned resources, professional
+            development opportunities, and programs that inspire students to explore and
+            understand Canada's landscapes, peoples, and stories. Their commitment to
+            geographic literacy helps foster the next generation of informed and engaged citizens.
           </Text>
         </Section>
 
@@ -402,6 +411,12 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: '#374151',
     lineHeight: 24,
+  },
+  partnershipTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: colors.darkGreen,
+    marginBottom: 8,
   },
   partnershipText: {
     fontSize: 15,
