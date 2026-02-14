@@ -1,14 +1,13 @@
 import { PrismaClient } from "@prisma/client";
+import { PrismaLibSql } from "@prisma/adapter-libsql";
 
-const prisma = new PrismaClient();
+// Create Prisma adapter with Turso configuration
+const adapter = new PrismaLibSql({
+  url: process.env.TURSO_DATABASE_URL!,
+  authToken: process.env.TURSO_AUTH_TOKEN,
+});
 
-// IMPORTANT: SQLite optimizations for better performance
-async function initSqlitePragmas(prisma: PrismaClient) {
-  await prisma.$queryRawUnsafe("PRAGMA journal_mode = WAL;");
-  await prisma.$queryRawUnsafe("PRAGMA foreign_keys = ON;");
-  await prisma.$queryRawUnsafe("PRAGMA busy_timeout = 10000;");
-  await prisma.$queryRawUnsafe("PRAGMA synchronous = NORMAL;");
-}
-initSqlitePragmas(prisma);
+// Create Prisma client with Turso adapter
+const prisma = new PrismaClient({ adapter });
 
 export { prisma };

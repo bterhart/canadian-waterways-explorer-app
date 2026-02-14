@@ -11,6 +11,10 @@ const envSchema = z.object({
   BACKEND_URL: z.url("BACKEND_URL must be a valid URL").default("http://localhost:3000"), // Set via the Vibecode enviroment at run-time
   DATABASE_URL: z.string().default("file:./dev.db"),
 
+  // Turso Database Configuration
+  TURSO_DATABASE_URL: z.string().min(1, "TURSO_DATABASE_URL is required"),
+  TURSO_AUTH_TOKEN: z.string().min(1, "TURSO_AUTH_TOKEN is required"),
+
   // JWT Configuration
   JWT_ACCESS_SECRET: z.string().min(32, "JWT_ACCESS_SECRET must be at least 32 characters").default("dev-access-secret-change-in-production-min32chars"),
   JWT_REFRESH_SECRET: z.string().min(32, "JWT_REFRESH_SECRET must be at least 32 characters").default("dev-refresh-secret-change-in-production-min32chars"),
