@@ -44,7 +44,7 @@ const fortCarltonFieldTrip: VirtualFieldTripData = {
   estimatedMinutes: 40,
   theme: "fur_trade",
   coverImageUrl:
-    "https://commons.wikimedia.org/wiki/Special:FilePath/Fort_Carlton_Provincial_Historic_Park.jpg?width=800",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Fort_Carlton_Provincial_Historic_Park.jpg/1280px-Fort_Carlton_Provincial_Historic_Park.jpg",
   isPublished: true,
   isCore: true,
   stops: [
@@ -59,7 +59,7 @@ Looking around, you can see why Fort Carlton became the HBC's most important pra
       latitude: 52.8667,
       longitude: -106.2,
       imageUrl:
-        "https://commons.wikimedia.org/wiki/Special:FilePath/Fort_Carlton_Provincial_Historic_Park.jpg?width=800",
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Fort_Carlton_Provincial_Historic_Park.jpg/1280px-Fort_Carlton_Provincial_Historic_Park.jpg",
       funFact:
         "Fort Carlton was rebuilt three times between 1810 and 1885, each time in a slightly different location along the river to find better ground for construction and trade.",
       thinkQuestion:
@@ -76,7 +76,7 @@ The pemmican trade created a unique economy on the prairies. Metis families foll
       latitude: 52.8670,
       longitude: -106.1995,
       imageUrl:
-        "https://commons.wikimedia.org/wiki/Special:FilePath/Pemmican_plate.jpg?width=800",
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Pemmican_plate.jpg/1280px-Pemmican_plate.jpg",
       funFact:
         "A single 90-pound bag of pemmican could feed a voyageur for over a month! The HBC bought over 200,000 pounds of pemmican from Fort Carlton some years.",
       thinkQuestion:
@@ -93,7 +93,7 @@ For Indigenous peoples, the trade brought valuable new technologies. Metal tools
       latitude: 52.8665,
       longitude: -106.2005,
       imageUrl:
-        "https://commons.wikimedia.org/wiki/Special:FilePath/HBC_point_blanket_postcard.jpg?width=800",
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/HBC_point_blanket_postcard.jpg/1280px-HBC_point_blanket_postcard.jpg",
       funFact:
         "The 'Made Beaver' was the standard currency at Fort Carlton. One prime beaver pelt equaled one Made Beaver. A gun cost about 14 Made Beaver, while a steel knife was just 1.",
       thinkQuestion:
@@ -110,7 +110,7 @@ The people of Fort Carlton form a diverse community. The Chief Factor and his of
       latitude: 52.8668,
       longitude: -106.2010,
       imageUrl:
-        "https://commons.wikimedia.org/wiki/Special:FilePath/Fur_trade_canoe.jpg?width=800",
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Fort_Carlton_interior.jpg/1280px-Fort_Carlton_interior.jpg",
       funFact:
         "Fort Carlton was one of the few prairie posts large enough to have a blacksmith shop. Indigenous peoples would travel great distances to have their guns repaired here.",
       thinkQuestion:
@@ -127,7 +127,7 @@ On August 23, 1876, many Cree chiefs touch the pen to sign Treaty 6 at Fort Carl
       latitude: 52.8660,
       longitude: -106.1990,
       imageUrl:
-        "https://commons.wikimedia.org/wiki/Special:FilePath/Chief_Poundmaker.jpg?width=800",
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Chief_Poundmaker.jpg/800px-Chief_Poundmaker.jpg",
       funFact:
         "The 'medicine chest' clause in Treaty 6 is still important today. Courts have interpreted it to mean that the government must provide healthcare to Indigenous peoples covered by the treaty.",
       thinkQuestion:
@@ -144,7 +144,7 @@ Today, Fort Carlton has been reconstructed as a Provincial Historic Park. Walkin
       latitude: 52.8663,
       longitude: -106.2015,
       imageUrl:
-        "https://commons.wikimedia.org/wiki/Special:FilePath/Batoche_church.JPG?width=800",
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Church_at_Batoche_National_Historic_Site.jpg/1280px-Church_at_Batoche_National_Historic_Site.jpg",
       funFact:
         "The original Fort Carlton was completely destroyed in 1885. The fort you can visit today is a careful reconstruction based on historical records, photographs, and archaeological research.",
       thinkQuestion:
