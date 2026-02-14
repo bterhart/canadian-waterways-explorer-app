@@ -175,50 +175,53 @@ Each field trip includes:
 - Stop 5: Indigenous Trading Area (relationship with Cree)
 - Stop 6: Departure by York Boat (brigade system)
 
-#### Document Library (14 Primary Source Documents)
+#### Document Library (48 Primary Source Documents)
 
-Access primary source documents with age-appropriate annotations:
+Access primary source documents with age-appropriate annotations spanning 500+ years of Canadian exploration history:
 
-**Alexander Mackenzie's Expeditions:**
-- **Alexander Mackenzie's Rock Inscription at Bella Coola (1793)** - The famous "from Canada, by land" inscription marking the first transcontinental crossing
-- **Mackenzie Crossing the Rocky Mountains (June 1793)** - Near-mutiny, dangerous portages, and crucial Indigenous guidance
-- **Alexander Mackenzie at Fort Fork (1793)** - Speech preparing for Pacific expedition
+**Early Explorers (1534-1687):**
+- **Jacques Cartier** (3 documents): First Contact at Gaspé (1534), Stadacona & Hochelaga (1535), Scurvy & Indigenous Medicine (1536)
+- **Samuel de Champlain** (3 documents): Founding of Quebec (1608), St. Lawrence Description (1611), Letter to King of France (1618)
+- **René-Robert Cavelier de La Salle** (3 documents): Louisiana Claim (1682), Letter to Frontenac (1681), Joutel's Account of Final Expedition (1687)
 
-**Indigenous Leaders and Oral Histories:**
-- **Peter Fidler Recording Saukamappee's Oral Histories (1792-1793)** - Pre-contact Plains life, arrival of horses and guns, Blackfoot/Piikani traditions
-- **James Knight on Thanadelthur (1715)** - Chipewyan peacemaker's diplomatic skills and peace expedition
-- **Samuel Hearne on Matonabbee's Leadership (1770-1772)** - Arctic expedition guidance and the essential role of women
+**Hudson's Bay Company Era (1715-1814):**
+- **William Stuart & Richard Stuart** (6 documents): Journey Inland with Thanadelthur (1715-1716), Peace Mission reports, Trade customs observations
+- **Moses Norton** (3 documents): Prince of Wales Fort Journal (1762), Instructions to Hearne (1770), Trade Report (1768)
+- **Philip Turnor** (3 documents): Instructions to HBC (1778), Lake Athabasca Survey (1790), Churchill River Report (1792)
+- **Peter Fidler** (3 documents): Athabasca Survey (1791), Living with the Peigan (1792-1793), Red River Settlement Survey (1814)
+- **Samuel Hearne** (2 documents): Journey to Arctic Ocean (1771), Matonabbee's Leadership account
 
-**Women in Exploration:**
-- **David Thompson's References to Charlotte Small (1799-1811)** - His Métis wife as travel companion, interpreter, and partner
+**Pacific & Overland Explorers (1789-1854):**
+- **Alexander Mackenzie** (3 documents): Rock Inscription (1793), Crossing the Rockies (1793), Fort Fork Speech (1793)
+- **Simon Fraser** (1 document): Fraser River Canyon (1808)
+- **David Thompson** (2 documents): Field Notes (1811), Charlotte Small references
+- **Dr. John Rae** (1 document): Franklin Expedition Report (1854)
 
-**Notable Expeditions:**
-- **Samuel Hearne's Journey to Arctic Ocean (1771)** - First European overland journey to Arctic
-- **Simon Fraser Navigating Fraser River Canyon (1808)** - Dangerous rapids, Indigenous trails and engineering
-- **Dr. John Rae's Report on Franklin Expedition (1854)** - Inuit testimony and Victorian rejection of Indigenous knowledge
+**Military & Naval (1782):**
+- **Comte de La Pérouse** (4 documents): Attack on Prince of Wales Fort (1782), Destruction of York Factory (1782), Letter to French Minister (1782), plus Hearne's account of the French capture
 
-**Historical Records:**
-- **David Thompson's Field Notes (1811)** - Surveying and mapping techniques
-- **York Factory Trade Record (1780)** - Fur trade economics and made beaver currency
-- **Letter from Matonabbee (1772)** - Indigenous leader perspective on HBC relations
-- **Peter Pond's Map of the Northwest (1785)** - Historical cartography and geographical knowledge
+**Scientific Exploration (1834-1898):**
+- **Sir George Back** (3 documents): Great Fish River Expedition (1834), Fort Reliance Winter (1833-1834), Letter to Admiralty (1836)
+- **Joseph Burr Tyrrell** (3 documents): Barren Lands Expedition (1893), Dinosaur Bone Beds Discovery (1884), Klondike Survey (1898)
+
+**Additional Documents:**
+- York Factory Trade Record (1780), Letter from Matonabbee (1772), Peter Pond's Map (1785), James Knight on Thanadelthur (1715)
 
 Each document includes:
 - Original text or images
 - Modern transcription (for older documents)
 - Vocabulary definitions
-- Grade-specific annotations (K-3, 4-6, 7-9, 10-12)
-- Discussion questions for classroom use
 - Historical context
+- Discussion questions for classroom use
 
-**Example Document: "David Thompson's Field Notes"**
-- Original journal entries from 1811
-- Annotations explaining surveying techniques
-- Vocabulary: "theodolite," "latitude," "longitude," "traverse"
+**Example Document: "La Pérouse's Account of the Attack on Prince of Wales Fort (1782)"**
+- Original journal entries from the French naval commander
+- Historical context about the American Revolutionary War's impact on Hudson Bay
+- Vocabulary: "squadron," "embrasures," "capitulation," "garrison"
 - Discussion questions:
-  - How did Thompson's maps help future explorers?
-  - What challenges did Thompson face in his work?
-  - Why were accurate maps important to the fur trade?
+  - Why did La Pérouse attack Hudson Bay during the American Revolution?
+  - What does Hearne's surrender tell us about the fort's defenses?
+  - How did European wars affect the fur trade?
 
 #### Printable Worksheets (8 Resources)
 
@@ -1550,7 +1553,7 @@ Plus: Blackfoot Confederacy, Mohawk, and many others referenced in content
 - **Lesson Plans**: 26 complete, curriculum-aligned plans
 - **Quizzes**: 6 pre-loaded quizzes with 36 questions total
 - **Virtual Field Trips**: 6 complete tours with 6 stops each
-- **Primary Source Documents**: 14 documents with annotations (Mackenzie, Fidler/Saukamappee, Knight/Thanadelthur, Thompson/Charlotte Small, Hearne/Matonabbee, Fraser, Rae, and more)
+- **Primary Source Documents**: 48 documents with annotations spanning 500+ years (Cartier, Champlain, La Salle, Stuart brothers, Norton, Turnor, Fidler, Hearne, Mackenzie, Fraser, Thompson, Rae, La Pérouse, Back, Tyrrell, and more)
 - **Printable Resources**: 8 worksheets and activities
 - **Pronunciation Guide**: 33+ entries
 - **Comparison Templates**: 4 structured comparisons

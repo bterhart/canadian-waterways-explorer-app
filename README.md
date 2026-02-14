@@ -117,24 +117,38 @@ An interactive educational map app showcasing Canada's major waterways, their In
 - **"The Hudson's Bay Company"** (Grade 4-6) - HBC history, trading post life
 - **Curriculum-Aligned**: Connected to provincial curriculum expectations with learning objectives, activities, and assessments
 
-### Primary Source Documents (14 documents - NEW)
-Access historical documents with age-appropriate annotations:
-- **Alexander Mackenzie's Rock Inscription** (1793) - "from Canada, by land" at Bella Coola
-- **Mackenzie Crossing the Rockies** (June 1793) - Near-mutiny and Indigenous guidance
-- **Peter Fidler Recording Saukamappee's Oral Histories** (1792-1793) - Pre-contact Plains life
-- **James Knight on Thanadelthur** (1715) - Chipewyan peacemaker and diplomat
-- **David Thompson on Charlotte Small** (1799-1811) - His Métis wife and travel companion
-- **Samuel Hearne on Matonabbee's Leadership** (1770-1772) - Arctic expedition guide
-- **Simon Fraser Navigating Fraser River Canyon** (1808) - Dangerous rapids and Indigenous trails
-- **Dr. John Rae's Report on Franklin Expedition** (1854) - Inuit testimony and Victorian rejection
-- **David Thompson's Field Notes** (1811) - Surveying and mapping expeditions
-- **Samuel Hearne's Journey to Arctic Ocean** (1771) - First European overland to Arctic
-- **York Factory Trade Record** (1780) - Fur trade economics
-- **Letter from Matonabbee** (1772) - Indigenous leader perspective
-- **Alexander Mackenzie Speech at Fort Fork** (1793) - Pacific expedition preparations
-- **Peter Pond's Map of the Northwest** (1785) - Historical cartography
+### Primary Source Documents (48 documents)
+Access historical documents with age-appropriate annotations spanning 500+ years of Canadian exploration:
 
-Each document includes original text, transcription, vocabulary, grade-specific annotations (K-3, 4-6, 7-9, 10-12), and discussion questions.
+**Early Explorers (1534-1687)**
+- **Jacques Cartier** (3 documents): First Contact at Gaspé (1534), Stadacona & Hochelaga (1535), Scurvy & Indigenous Medicine (1536)
+- **Samuel de Champlain** (3 documents): Founding of Quebec (1608), St. Lawrence Description (1611), Letter to King of France (1618)
+- **René-Robert Cavelier de La Salle** (3 documents): Louisiana Claim (1682), Letter to Frontenac (1681), Joutel's Account of Final Expedition (1687)
+
+**Hudson's Bay Company Era (1715-1814)**
+- **William Stuart & Richard Stuart** (6 documents): Journey Inland with Thanadelthur (1715-1716), Peace Mission reports, Trade customs observations
+- **Moses Norton** (3 documents): Prince of Wales Fort Journal (1762), Instructions to Hearne (1770), Trade Report (1768)
+- **Philip Turnor** (3 documents): Instructions to HBC (1778), Lake Athabasca Survey (1790), Churchill River Report (1792)
+- **Peter Fidler** (3 documents): Athabasca Survey (1791), Living with the Peigan (1792-1793), Red River Settlement Survey (1814)
+- **Samuel Hearne** (2 documents): Journey to Arctic Ocean (1771), Matonabbee's Leadership account
+
+**Pacific & Overland Explorers (1789-1854)**
+- **Alexander Mackenzie** (3 documents): Rock Inscription (1793), Crossing the Rockies (1793), Fort Fork Speech (1793)
+- **Simon Fraser** (1 document): Fraser River Canyon (1808)
+- **David Thompson** (2 documents): Field Notes (1811), Charlotte Small references
+- **Dr. John Rae** (1 document): Franklin Expedition Report (1854)
+
+**Military & Naval (1782)**
+- **Comte de La Pérouse** (4 documents): Attack on Prince of Wales Fort (1782), Destruction of York Factory (1782), Letter to French Minister (1782), plus Hearne's account of the French capture
+
+**Scientific Exploration (1834-1898)**
+- **Sir George Back** (3 documents): Great Fish River Expedition (1834), Fort Reliance Winter (1833-1834), Letter to Admiralty (1836)
+- **Joseph Burr Tyrrell** (3 documents): Barren Lands Expedition (1893), Dinosaur Bone Beds Discovery (1884), Klondike Survey (1898)
+
+**Additional Documents**
+- York Factory Trade Record (1780), Letter from Matonabbee (1772), Peter Pond's Map (1785), James Knight on Thanadelthur (1715)
+
+Each document includes original text/transcription, vocabulary definitions, historical context, and discussion questions for classroom use.
 
 ### Virtual Field Trips (6 complete tours - NEW)
 - **York Factory** - Walk through the HBC's main depot on Hudson Bay (6 stops)
