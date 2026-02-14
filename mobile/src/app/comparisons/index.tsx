@@ -12,7 +12,7 @@ import {
 import { useRouter, Stack } from 'expo-router';
 import { GitCompare, ChevronRight, Filter } from 'lucide-react-native';
 import { useComparisons, useComparisonTypes } from '@/lib/api/education-api';
-import { getGradeLevelColor, getGradeLevelLabel, GRADE_LEVELS } from '@/lib/types/education';
+import { getGradeLevelRangeColor, getGradeLevelRangeLabel, GRADE_LEVEL_RANGES } from '@/lib/types/education';
 import type { ComparisonSummary } from '@/lib/types/education';
 
 const colors = {
@@ -80,11 +80,11 @@ export default function ComparisonsScreen() {
           <View
             style={[
               styles.gradeBadge,
-              { backgroundColor: getGradeLevelColor(item.gradeLevel) },
+              { backgroundColor: getGradeLevelRangeColor(item.gradeLevel) },
             ]}
           >
             <Text style={styles.gradeBadgeText}>
-              {getGradeLevelLabel(item.gradeLevel)}
+              {getGradeLevelRangeLabel(item.gradeLevel)}
             </Text>
           </View>
         ) : null}
@@ -190,7 +190,7 @@ export default function ComparisonsScreen() {
                 All
               </Text>
             </Pressable>
-            {GRADE_LEVELS.map((grade) => (
+            {GRADE_LEVEL_RANGES.map((grade) => (
               <Pressable
                 key={grade}
                 style={[

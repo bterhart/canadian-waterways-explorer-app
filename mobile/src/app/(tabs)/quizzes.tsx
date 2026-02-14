@@ -201,20 +201,10 @@ export default function QuizzesScreen() {
           return false;
         }
       }
-      // Filter by grade level if selected
+      // Filter by grade level if selected - database stores ranges like 'K-3', '4-6', etc.
       if (selectedGradeLevel !== 'All') {
         const gradeLevel = quiz.gradeLevel || '';
-        // Simple grade range matching
-        if (selectedGradeLevel === 'K-3' && !['K', '1', '2', '3'].includes(gradeLevel)) {
-          return false;
-        }
-        if (selectedGradeLevel === '4-6' && !['4', '5', '6'].includes(gradeLevel)) {
-          return false;
-        }
-        if (selectedGradeLevel === '7-9' && !['7', '8', '9'].includes(gradeLevel)) {
-          return false;
-        }
-        if (selectedGradeLevel === '10-12' && !['10', '11', '12'].includes(gradeLevel)) {
+        if (gradeLevel !== selectedGradeLevel) {
           return false;
         }
       }

@@ -13,7 +13,6 @@ import {
 import { useRouter, Stack } from 'expo-router';
 import { FileText, Calendar, User, ChevronRight, Filter } from 'lucide-react-native';
 import { useDocuments, useDocumentTypes } from '@/lib/api/education-api';
-import { getGradeLevelColor, getGradeLevelLabel, GRADE_LEVELS } from '@/lib/types/education';
 import type { DocumentSummary } from '@/lib/types/education';
 
 const colors = {
@@ -35,11 +34,9 @@ const documentTypeIcons: Record<string, string> = {
 export default function DocumentsScreen() {
   const router = useRouter();
   const [selectedType, setSelectedType] = useState<string | undefined>();
-  const [selectedGrade, setSelectedGrade] = useState<string | undefined>();
 
   const { data: documents, isLoading, isError } = useDocuments({
     type: selectedType,
-    gradeLevel: selectedGrade,
   });
   const { data: documentTypes } = useDocumentTypes();
 
@@ -84,18 +81,6 @@ export default function DocumentsScreen() {
                 {item.documentType}
               </Text>
             </View>
-            {item.gradeLevel ? (
-              <View
-                style={[
-                  styles.gradeBadge,
-                  { backgroundColor: getGradeLevelColor(item.gradeLevel) },
-                ]}
-              >
-                <Text style={styles.gradeBadgeText}>
-                  {getGradeLevelLabel(item.gradeLevel)}
-                </Text>
-              </View>
-            ) : null}
           </View>
 
           <Text style={styles.docTitle} numberOfLines={2}>
@@ -186,54 +171,6 @@ export default function DocumentsScreen() {
           </ScrollView>
         </View>
 
-        <View style={styles.filterRow}>
-          <FileText size={16} color="#6B7280" />
-          <Text style={styles.filterLabel}>Grade:</Text>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={{ flexGrow: 0 }}
-            contentContainerStyle={styles.filterChips}
-          >
-            <Pressable
-              style={[
-                styles.filterChip,
-                !selectedGrade && styles.filterChipActive,
-              ]}
-              onPress={() => setSelectedGrade(undefined)}
-            >
-              <Text
-                style={[
-                  styles.filterChipText,
-                  !selectedGrade && styles.filterChipTextActive,
-                ]}
-              >
-                All
-              </Text>
-            </Pressable>
-            {GRADE_LEVELS.map((grade) => (
-              <Pressable
-                key={grade}
-                style={[
-                  styles.filterChip,
-                  selectedGrade === grade && styles.filterChipActive,
-                ]}
-                onPress={() =>
-                  setSelectedGrade(selectedGrade === grade ? undefined : grade)
-                }
-              >
-                <Text
-                  style={[
-                    styles.filterChipText,
-                    selectedGrade === grade && styles.filterChipTextActive,
-                  ]}
-                >
-                  {grade}
-                </Text>
-              </Pressable>
-            ))}
-          </ScrollView>
-        </View>
       </View>
 
       {/* Content */}

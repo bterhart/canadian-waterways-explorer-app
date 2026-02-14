@@ -13,7 +13,7 @@ import {
 import { useRouter, Stack } from 'expo-router';
 import { Map, Clock, MapPin, ChevronRight, Filter } from 'lucide-react-native';
 import { useFieldTrips } from '@/lib/api/education-api';
-import { getGradeLevelColor, getGradeLevelLabel, GRADE_LEVELS } from '@/lib/types/education';
+import { getGradeLevelRangeColor, getGradeLevelRangeLabel, GRADE_LEVEL_RANGES } from '@/lib/types/education';
 import type { FieldTripSummary } from '@/lib/types/education';
 
 const colors = {
@@ -54,11 +54,11 @@ export default function FieldTripsScreen() {
           <View
             style={[
               styles.gradeBadge,
-              { backgroundColor: getGradeLevelColor(item.gradeLevel) },
+              { backgroundColor: getGradeLevelRangeColor(item.gradeLevel) },
             ]}
           >
             <Text style={styles.gradeBadgeText}>
-              {getGradeLevelLabel(item.gradeLevel)}
+              {getGradeLevelRangeLabel(item.gradeLevel)}
             </Text>
           </View>
           {item.theme ? (
@@ -133,7 +133,7 @@ export default function FieldTripsScreen() {
                 All
               </Text>
             </Pressable>
-            {GRADE_LEVELS.map((grade) => (
+            {GRADE_LEVEL_RANGES.map((grade) => (
               <Pressable
                 key={grade}
                 style={[
@@ -150,7 +150,7 @@ export default function FieldTripsScreen() {
                     selectedGrade === grade && styles.filterChipTextActive,
                   ]}
                 >
-                  {grade === 'K' ? 'K' : grade}
+                  {grade}
                 </Text>
               </Pressable>
             ))}
