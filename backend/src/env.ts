@@ -9,7 +9,7 @@ const envSchema = z.object({
   PORT: z.string().optional().default("3000"),
   NODE_ENV: z.string().optional(),
   BACKEND_URL: z.url("BACKEND_URL must be a valid URL").default("http://localhost:3000"), // Set via the Vibecode enviroment at run-time
-  DATABASE_URL: z.string().optional(), // Only for Prisma CLI - app uses Turso
+  DATABASE_URL: z.string().default("file:./prisma/dev.db"), // For Prisma CLI only - app uses Turso
 
   // Turso Database Configuration
   TURSO_DATABASE_URL: z.string().min(1, "TURSO_DATABASE_URL is required"),
