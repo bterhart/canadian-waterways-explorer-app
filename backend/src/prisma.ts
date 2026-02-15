@@ -1,19 +1,13 @@
 import { PrismaClient } from "@prisma/client";
+import { PrismaLibSql } from "@prisma/adapter-libsql";
 
-// Use local SQLite in development, Turso in production
-let prisma: PrismaClient;
+// Create Prisma adapter with Turso configuration
+const adapter = new PrismaLibSql({
+  url: process.env.TURSO_DATABASE_URL!,
+  authToken: process.env.TURSO_AUTH_TOKEN,
+});
 
-if (process.env.NODE_ENV === "production" && process.env.TURSO_DATABASE_URL) {
-  // Dynamically import Turso adapter only in production
-  const { PrismaLibSql } = require("@prisma/adapter-libsql");
-  const adapter = new PrismaLibSql({
-    url: process.env.TURSO_DATABASE_URL,
-    authToken: process.env.TURSO_AUTH_TOKEN,
-  });
-  prisma = new PrismaClient({ adapter });
-} else {
-  // Use local SQLite for development
-  prisma = new PrismaClient();
-}
+// Create Prisma client with Turso adapter
+const prisma = new PrismaClient({ adapter });
 
 export { prisma };
