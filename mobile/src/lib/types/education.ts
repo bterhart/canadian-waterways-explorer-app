@@ -8,7 +8,32 @@ export interface LessonPlanSummary {
   gradeLevel: string | null;
   topic: string;
   estimatedMinutes: number | null;
+  heroImageUrl: string | null;
+  readingTimeMinutes: number | null;
   createdAt: string;
+}
+
+// Deep Dive image type
+export interface DeepDiveImage {
+  url: string;
+  caption: string;
+  credit?: string;
+}
+
+// Key historical figure type
+export interface KeyFigure {
+  name: string;
+  role: string;
+  years?: string;
+  description: string;
+  imageUrl?: string;
+}
+
+// Deep Dive timeline event type
+export interface DeepDiveTimelineEvent {
+  year: number;
+  title: string;
+  description: string;
 }
 
 export interface LessonPlanActivity {
@@ -38,6 +63,17 @@ export interface LessonPlanDetail extends LessonPlanSummary {
   relatedLocationIds: string[] | null;
   relatedExplorerIds: string[] | null;
   isPublished: boolean;
+  // General User Deep Dive Content
+  narrativeContent: string | null;
+  mainContent: string | null;
+  images: DeepDiveImage[] | null;
+  keyFigures: KeyFigure[] | null;
+  timeline: DeepDiveTimelineEvent[] | null;
+  // Enhanced Teacher Content
+  teacherObjectives: string[] | null;
+  teacherActivities: (LessonPlanActivity | string)[] | null;
+  teacherQuestions: string[] | null;
+  teacherNotes: string | null;
 }
 
 // Timeline types

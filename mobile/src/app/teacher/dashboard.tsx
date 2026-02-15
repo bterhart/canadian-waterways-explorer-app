@@ -19,6 +19,7 @@ import {
   LogOut,
   Settings,
   BookOpen,
+  Compass,
 } from 'lucide-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTeacherClasses } from '@/lib/api/education-api';
@@ -184,22 +185,42 @@ export default function TeacherDashboardScreen() {
         </View>
       </View>
 
-      {/* Lesson Plans Card */}
-      <Pressable
-        style={({ pressed }) => [styles.lessonPlansCard, pressed && styles.cardPressed]}
-        onPress={() => router.push('/teacher/lesson-plans')}
-      >
-        <View style={styles.lessonPlansIcon}>
-          <BookOpen size={24} color={colors.forestGreen} />
-        </View>
-        <View style={styles.lessonPlansInfo}>
-          <Text style={styles.lessonPlansTitle}>Lesson Plans</Text>
-          <Text style={styles.lessonPlansSubtitle}>
-            Curriculum-aligned lessons for K-12
-          </Text>
-        </View>
-        <ChevronRight size={20} color="#9CA3AF" />
-      </Pressable>
+      {/* Resource Cards */}
+      <View style={styles.resourceCardsContainer}>
+        {/* Deep Dives Card */}
+        <Pressable
+          style={({ pressed }) => [styles.resourceCard, pressed && styles.cardPressed]}
+          onPress={() => router.push('/teacher/deep-dives')}
+        >
+          <View style={[styles.resourceIcon, { backgroundColor: '#7C3AED15' }]}>
+            <Compass size={24} color="#7C3AED" />
+          </View>
+          <View style={styles.resourceInfo}>
+            <Text style={styles.resourceTitle}>Deep Dives</Text>
+            <Text style={styles.resourceSubtitle}>
+              Teaching resources & activities
+            </Text>
+          </View>
+          <ChevronRight size={20} color="#9CA3AF" />
+        </Pressable>
+
+        {/* Lesson Plans Card */}
+        <Pressable
+          style={({ pressed }) => [styles.resourceCard, pressed && styles.cardPressed]}
+          onPress={() => router.push('/teacher/lesson-plans')}
+        >
+          <View style={[styles.resourceIcon, { backgroundColor: colors.forestGreen + '15' }]}>
+            <BookOpen size={24} color={colors.forestGreen} />
+          </View>
+          <View style={styles.resourceInfo}>
+            <Text style={styles.resourceTitle}>Lesson Plans</Text>
+            <Text style={styles.resourceSubtitle}>
+              Curriculum-aligned lessons
+            </Text>
+          </View>
+          <ChevronRight size={20} color="#9CA3AF" />
+        </Pressable>
+      </View>
 
       {/* Classes Section */}
       <View style={styles.sectionHeader}>
@@ -490,6 +511,44 @@ const styles = StyleSheet.create({
     color: colors.darkGreen,
   },
   lessonPlansSubtitle: {
+    fontSize: 14,
+    color: '#6B7280',
+    marginTop: 2,
+  },
+  resourceCardsContainer: {
+    paddingHorizontal: 16,
+    marginBottom: 16,
+    gap: 12,
+  },
+  resourceCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    padding: 16,
+    borderRadius: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  resourceIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 14,
+  },
+  resourceInfo: {
+    flex: 1,
+  },
+  resourceTitle: {
+    fontSize: 17,
+    fontWeight: '700',
+    color: colors.darkGreen,
+  },
+  resourceSubtitle: {
     fontSize: 14,
     color: '#6B7280',
     marginTop: 2,

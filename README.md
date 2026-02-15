@@ -146,16 +146,31 @@ An interactive educational map app showcasing Canada's major waterways, their In
 - **Fur Trade Terms**: Voyageur, Pemmican, Coureur des bois, Portage, Canot du maitre, etc.
 - **Phonetic Guidance**: Clear pronunciation guides for difficult or unfamiliar terms
 
-### Deep Dives (General Users) / Lesson Plans (Teacher Portal)
-- **Deep Dives**: General users see curriculum-aligned content branded as "Deep Dives" with the tagline "Plunge into the Past"
-- **Teacher Portal**: Teachers access the same content as "Lesson Plans" with full filtering and classroom assignment features
+### Deep Dives (General Users)
+- **Rich Narrative Content**: General users see engaging, story-format articles with educational content woven naturally throughout
+- **Hero Images**: Each topic features high-quality historical images from Creative Commons sources
+- **Key Figures**: Historical figures relevant to each topic with biographical information
+- **Image Galleries**: Multiple images per topic with captions and credits
+- **Timelines**: Chronological events helping users understand the historical context
+- **Reading Time Estimates**: Each Deep Dive shows estimated reading time (8-15 minutes)
+- **Available Topics**:
+  - **"The Red River Cart"** (Grade 4-6) - Metis engineering, prairie transportation, cart trails
+  - **"The Voyageur Life"** (Grade 4-6) - Daily life of voyageurs, canoe routes, pemmican
+  - **"Louis Riel and the Métis Nation"** (Grade 7-9) - Métis identity, Red River Resistance, Riel's legacy
+  - **"Women of the Fur Trade"** (Grade 7-9) - Crucial roles of Indigenous and Métis women
+  - **"Mapping Canada: The Work of David Thompson"** (Grade 10-12) - Surveying techniques
+
+### Teacher Portal - Deep Dives & Lesson Plans
+- **Deep Dives for Teachers**: Same topics as general users but with full pedagogical framework
+- **Teacher-Specific Content**:
+  - **Learning Objectives**: Detailed curriculum-aligned objectives
+  - **Classroom Activities**: Hands-on activities with materials lists and durations
+  - **Discussion Questions**: Thought-provoking questions for classroom discussion
+  - **Teacher Notes**: Tips, sensitive considerations, and extension opportunities
+- **Lesson Plans**: Separate curriculum-aligned lesson plans with full filtering
+- **Classroom Assignment**: Teachers can assign content to their classes
 - **Grade-Specific Content**: Content for all grade levels (K-3, 4-6, 7-9, 10-12)
-- **"The Voyageur Life"** (Grade 4-6) - Daily life of voyageurs, canoe routes, pemmican
-- **"Louis Riel and the Métis Nation"** (Grade 7-9) - Métis identity, Red River Resistance, Riel's legacy
-- **"Women of the Fur Trade"** (Grade 7-9) - Crucial roles of Indigenous and Métis women
-- **"Mapping Canada: The Work of David Thompson"** (Grade 10-12) - Surveying techniques
-- **"The Hudson's Bay Company"** (Grade 4-6) - HBC history, trading post life
-- **Curriculum-Aligned**: Connected to provincial curriculum expectations with learning objectives, activities, and assessments
+- **Curriculum-Aligned**: Connected to provincial curriculum expectations
 
 ### Primary Source Documents (48 documents)
 Access historical documents with age-appropriate annotations spanning 500+ years of Canadian exploration:

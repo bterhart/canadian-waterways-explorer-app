@@ -32,6 +32,8 @@ lessonPlansRouter.get("/", async (c) => {
       gradeLevel: true,
       topic: true,
       estimatedMinutes: true,
+      heroImageUrl: true,
+      readingTimeMinutes: true,
       createdAt: true,
     },
     orderBy: { createdAt: "desc" },
@@ -55,17 +57,31 @@ lessonPlansRouter.get("/:id", async (c) => {
     );
   }
 
-  // Parse JSON fields
+  // Parse JSON fields - General User content
   const result = {
     ...lessonPlan,
+    // General user narrative content
+    images: lessonPlan.images ? JSON.parse(lessonPlan.images) : null,
+    keyFigures: lessonPlan.keyFigures ? JSON.parse(lessonPlan.keyFigures) : null,
+    timeline: lessonPlan.timeline ? JSON.parse(lessonPlan.timeline) : null,
+    // Teacher content (excluded from general user view by default)
     curriculumConnections: lessonPlan.curriculumConnections
       ? JSON.parse(lessonPlan.curriculumConnections)
       : null,
-    objectives: JSON.parse(lessonPlan.objectives),
+    objectives: lessonPlan.objectives ? JSON.parse(lessonPlan.objectives) : [],
     materials: lessonPlan.materials ? JSON.parse(lessonPlan.materials) : null,
     activities: lessonPlan.activities ? JSON.parse(lessonPlan.activities) : null,
     discussionQuestions: lessonPlan.discussionQuestions
       ? JSON.parse(lessonPlan.discussionQuestions)
+      : null,
+    teacherObjectives: lessonPlan.teacherObjectives
+      ? JSON.parse(lessonPlan.teacherObjectives)
+      : null,
+    teacherActivities: lessonPlan.teacherActivities
+      ? JSON.parse(lessonPlan.teacherActivities)
+      : null,
+    teacherQuestions: lessonPlan.teacherQuestions
+      ? JSON.parse(lessonPlan.teacherQuestions)
       : null,
     relatedQuizIds: lessonPlan.relatedQuizIds
       ? JSON.parse(lessonPlan.relatedQuizIds)

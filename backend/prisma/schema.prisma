@@ -279,6 +279,20 @@ model LessonPlan {
   updatedAt             DateTime          @updatedAt
   assignments           ClassAssignment[]
 
+  // General User Deep Dive Content
+  narrativeContent      String?           // Rich narrative for general users (answers to objectives/questions woven in)
+  heroImageUrl          String?           // Main image for the topic
+  images                String?           // JSON array of image objects [{url, caption, credit}]
+  keyFigures            String?           // JSON array of historical figures relevant to topic
+  timeline              String?           // JSON array of key dates/events
+  readingTimeMinutes    Int?              // Estimated reading time for general users
+
+  // Enhanced Teacher Content
+  teacherObjectives     String?           // Additional learning objectives for teachers
+  teacherActivities     String?           // Additional activities for teachers
+  teacherQuestions      String?           // Additional discussion questions for teachers
+  teacherNotes          String?           // Notes and tips for educators
+
   @@index([gradeLevel])
   @@index([isPublished])
   @@index([visibility])
