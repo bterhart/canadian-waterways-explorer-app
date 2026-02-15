@@ -36,8 +36,8 @@ An interactive educational map app showcasing Canada's major waterways, their In
 - **Security Features**: Brute force protection, account lockout, password complexity requirements
 - **Test Accounts Available**:
   - Teacher: teacher@canadianwaterways.ca / Teacher123!
-  - Admin: admin@waterways.edu / Admin123!
-  - Super-Admin: superadmin@waterways.edu / SuperAdmin123!
+  - Admin: admin@canadianwaterways.ca / Admin123!
+  - Super-Admin: superadmin@canadianwaterways.ca / SuperAdmin123!
 
 ### RCGS Educational Quizzes
 - **Quiz Categories**: Explorers, Fur Trade, Maritime History, Indigenous Heritage, Geography, Archaeological Discoveries
