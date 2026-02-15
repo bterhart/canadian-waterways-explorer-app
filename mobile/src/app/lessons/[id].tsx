@@ -1,6 +1,6 @@
 // Deep Dive Detail Screen - General User View
 // Shows narrative content, key figures, timeline, and images (NOT teacher materials)
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -10,21 +10,25 @@ import {
   Image,
   Dimensions,
   Pressable,
+  Modal,
 } from 'react-native';
-import { useLocalSearchParams, Stack, useRouter } from 'expo-router';
+import { useLocalSearchParams, Stack } from 'expo-router';
 import {
   BookOpen,
   Clock,
   Users,
   Calendar,
   ImageIcon,
+  X,
 } from 'lucide-react-native';
 import { useLessonPlan } from '@/lib/api/education-api';
+import { useExplorerDetail } from '@/lib/api/waterways-api';
 import { getGradeLevelColor, getGradeLevelLabel } from '@/lib/types/education';
 import type { KeyFigure, DeepDiveTimelineEvent, DeepDiveImage } from '@/lib/types/education';
 import { MarkdownContent } from '@/components/MarkdownContent';
+import ExplorerDetailModal from '@/components/ExplorerDetailModal';
 
-const { width: screenWidth } = Dimensions.get('window');
+const { width: screenWidth, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 const colors = {
   forestGreen: '#2D5A3D',
@@ -53,8 +57,11 @@ function Section({ title, icon, children }: SectionProps) {
 
 export default function DeepDiveDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const router = useRouter();
   const { data: lesson, isLoading, isError } = useLessonPlan(id ?? null);
+  const [selectedExplorerId, setSelectedExplorerId] = useState<string | null>(null);
+  const [selectedTimelineEvent, setSelectedTimelineEvent] = useState<DeepDiveTimelineEvent | null>(null);
+
+  const { data: selectedExplorerDetail } = useExplorerDetail(selectedExplorerId);
 
   if (isLoading) {
     return (
@@ -79,6 +86,7 @@ export default function DeepDiveDetailScreen() {
   const images = lesson.images as DeepDiveImage[] | null;
 
   return (
+    <>
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <Stack.Screen
         options={{
@@ -155,7 +163,7 @@ export default function DeepDiveDetailScreen() {
             const CardWrapper = explorerId ? Pressable : View;
             const cardProps = explorerId
               ? {
-                  onPress: () => router.push(`/notable-figures/${explorerId}` as any),
+                  onPress: () => setSelectedExplorerId(explorerId),
                   style: ({ pressed }: { pressed: boolean }) => [
                     styles.figureCard,
                     pressed && styles.figureCardPressed,
@@ -200,16 +208,14 @@ export default function DeepDiveDetailScreen() {
             {timeline.map((event, index) => {
               const waterwayId = (event as any).waterwayId;
               const locationRef = (event as any).locationRef;
-              const ContentWrapper = waterwayId ? Pressable : View;
-              const contentProps = waterwayId
-                ? {
-                    onPress: () => router.push(`/voyageur-journey/${waterwayId}` as any),
-                    style: ({ pressed }: { pressed: boolean }) => [
-                      styles.timelineContent,
-                      pressed && styles.timelineContentPressed,
-                    ],
-                  }
-                : { style: styles.timelineContent };
+              const ContentWrapper = Pressable;
+              const contentProps = {
+                onPress: () => setSelectedTimelineEvent(event),
+                style: ({ pressed }: { pressed: boolean }) => [
+                  styles.timelineContent,
+                  pressed && styles.timelineContentPressed,
+                ],
+              };
 
               return (
                 <View key={index} style={styles.timelineItem}>
@@ -259,6 +265,60 @@ export default function DeepDiveDetailScreen() {
 
       <View style={styles.bottomSpacer} />
     </ScrollView>
+
+    {/* Explorer Detail Modal */}
+    {selectedExplorerId && selectedExplorerDetail ? (
+      <ExplorerDetailModal
+        explorer={selectedExplorerDetail}
+        onClose={() => setSelectedExplorerId(null)}
+      />
+    ) : null}
+
+    {/* Timeline Event Detail Modal */}
+    <Modal
+      visible={selectedTimelineEvent !== null}
+      animationType="slide"
+      transparent
+      onRequestClose={() => setSelectedTimelineEvent(null)}
+    >
+      <View style={styles.modalOverlay}>
+        <Pressable
+          style={{ flex: 1 }}
+          onPress={() => setSelectedTimelineEvent(null)}
+        />
+        <View style={styles.modalContent}>
+          <View style={styles.modalHeader}>
+            <Text style={styles.modalTitle} numberOfLines={2}>
+              {selectedTimelineEvent?.title}
+            </Text>
+            <Pressable
+              style={styles.modalCloseButton}
+              onPress={() => setSelectedTimelineEvent(null)}
+            >
+              <X size={20} color="#6B7280" />
+            </Pressable>
+          </View>
+          <ScrollView
+            style={styles.modalScrollContent}
+            showsVerticalScrollIndicator={false}
+          >
+            {selectedTimelineEvent ? (
+              <>
+                <Text style={styles.modalDate}>
+                  {selectedTimelineEvent.year}
+                </Text>
+                {selectedTimelineEvent.description ? (
+                  <Text style={styles.modalDescription}>
+                    {selectedTimelineEvent.description}
+                  </Text>
+                ) : null}
+              </>
+            ) : null}
+          </ScrollView>
+        </View>
+      </View>
+    </Modal>
+  </>
   );
 }
 
@@ -492,5 +552,55 @@ const styles = StyleSheet.create({
   },
   bottomSpacer: {
     height: 32,
+  },
+  // Modal styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    maxHeight: SCREEN_HEIGHT * 0.85,
+    paddingBottom: 32,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E7EB',
+  },
+  modalCloseButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#F3F4F6',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: colors.darkGreen,
+    flex: 1,
+    marginRight: 8,
+  },
+  modalScrollContent: {
+    padding: 16,
+  },
+  modalDate: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.forestGreen,
+    marginBottom: 12,
+  },
+  modalDescription: {
+    fontSize: 15,
+    lineHeight: 24,
+    color: '#374151',
   },
 });
