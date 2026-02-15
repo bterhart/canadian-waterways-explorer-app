@@ -21,7 +21,7 @@ import {
   ImageIcon,
   X,
 } from 'lucide-react-native';
-import { useLessonPlan } from '@/lib/api/education-api';
+import { useLessonPlan, useTimelineEvent } from '@/lib/api/education-api';
 import { useExplorerDetail } from '@/lib/api/waterways-api';
 import { getGradeLevelColor, getGradeLevelLabel } from '@/lib/types/education';
 import type { KeyFigure, DeepDiveTimelineEvent, DeepDiveImage } from '@/lib/types/education';
@@ -59,9 +59,10 @@ export default function DeepDiveDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { data: lesson, isLoading, isError } = useLessonPlan(id ?? null);
   const [selectedExplorerId, setSelectedExplorerId] = useState<string | null>(null);
-  const [selectedTimelineEvent, setSelectedTimelineEvent] = useState<DeepDiveTimelineEvent | null>(null);
+  const [selectedTimelineEventId, setSelectedTimelineEventId] = useState<string | null>(null);
 
   const { data: selectedExplorerDetail } = useExplorerDetail(selectedExplorerId);
+  const { data: selectedTimelineEventDetail } = useTimelineEvent(selectedTimelineEventId);
 
   if (isLoading) {
     return (
@@ -206,11 +207,10 @@ export default function DeepDiveDetailScreen() {
         >
           <View style={styles.timeline}>
             {timeline.map((event, index) => {
-              const waterwayId = (event as any).waterwayId;
-              const locationRef = (event as any).locationRef;
+              const eventId = (event as any).eventId;
               const ContentWrapper = Pressable;
               const contentProps = {
-                onPress: () => setSelectedTimelineEvent(event),
+                onPress: () => setSelectedTimelineEventId(eventId || null),
                 style: ({ pressed }: { pressed: boolean }) => [
                   styles.timelineContent,
                   pressed && styles.timelineContentPressed,
@@ -276,24 +276,24 @@ export default function DeepDiveDetailScreen() {
 
     {/* Timeline Event Detail Modal */}
     <Modal
-      visible={selectedTimelineEvent !== null}
+      visible={selectedTimelineEventId !== null && !!selectedTimelineEventDetail}
       animationType="slide"
       transparent
-      onRequestClose={() => setSelectedTimelineEvent(null)}
+      onRequestClose={() => setSelectedTimelineEventId(null)}
     >
       <View style={styles.modalOverlay}>
         <Pressable
           style={{ flex: 1 }}
-          onPress={() => setSelectedTimelineEvent(null)}
+          onPress={() => setSelectedTimelineEventId(null)}
         />
         <View style={styles.modalContent}>
           <View style={styles.modalHeader}>
             <Text style={styles.modalTitle} numberOfLines={2}>
-              {selectedTimelineEvent?.title}
+              {selectedTimelineEventDetail?.title}
             </Text>
             <Pressable
               style={styles.modalCloseButton}
-              onPress={() => setSelectedTimelineEvent(null)}
+              onPress={() => setSelectedTimelineEventId(null)}
             >
               <X size={20} color="#6B7280" />
             </Pressable>
@@ -302,14 +302,17 @@ export default function DeepDiveDetailScreen() {
             style={styles.modalScrollContent}
             showsVerticalScrollIndicator={false}
           >
-            {selectedTimelineEvent ? (
+            {selectedTimelineEventDetail ? (
               <>
                 <Text style={styles.modalDate}>
-                  {selectedTimelineEvent.year}
+                  {selectedTimelineEventDetail.year}
+                  {selectedTimelineEventDetail.month && selectedTimelineEventDetail.day
+                    ? ` (${selectedTimelineEventDetail.month}/${selectedTimelineEventDetail.day})`
+                    : ''}
                 </Text>
-                {selectedTimelineEvent.description ? (
+                {selectedTimelineEventDetail.description ? (
                   <Text style={styles.modalDescription}>
-                    {selectedTimelineEvent.description}
+                    {selectedTimelineEventDetail.description}
                   </Text>
                 ) : null}
               </>
