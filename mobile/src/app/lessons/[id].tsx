@@ -155,7 +155,7 @@ export default function DeepDiveDetailScreen() {
             const CardWrapper = explorerId ? Pressable : View;
             const cardProps = explorerId
               ? {
-                  onPress: () => router.push(`/explorers/${explorerId}` as any),
+                  onPress: () => router.push(`/notable-figures/${explorerId}` as any),
                   style: ({ pressed }: { pressed: boolean }) => [
                     styles.figureCard,
                     pressed && styles.figureCardPressed,
@@ -203,7 +203,7 @@ export default function DeepDiveDetailScreen() {
               const ContentWrapper = waterwayId ? Pressable : View;
               const contentProps = waterwayId
                 ? {
-                    onPress: () => router.push(`/waterways/${waterwayId}` as any),
+                    onPress: () => router.push(`/voyageur-journey/${waterwayId}` as any),
                     style: ({ pressed }: { pressed: boolean }) => [
                       styles.timelineContent,
                       pressed && styles.timelineContentPressed,
