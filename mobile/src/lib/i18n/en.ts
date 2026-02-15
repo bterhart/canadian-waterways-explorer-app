@@ -40,6 +40,23 @@ export const en = {
   bays: 'Bays',
   strait: 'Strait',
 
+  // Filter Sections
+  filterByWaterway: 'Filter by Waterway',
+  filterByExplorer: 'Filter by Explorer',
+  filterByEra: 'Filter by Era',
+  clearAllFilters: 'Clear All Filters',
+  selectWaterway: 'Select a waterway',
+  selectExplorer: 'Select an explorer',
+  selectEra: 'Select an era',
+  pre1700: 'Pre-1700',
+  era1700to1780: '1700-1780 (Early HBC)',
+  era1780to1821: '1780-1821 (NWC Era)',
+  era1821to1870: '1821-1870 (Merged HBC)',
+  post1870: 'Post-1870',
+  noWaterwaysFound: 'No waterways found',
+  noExplorersFound: 'No explorers found',
+  loadingExplorers: 'Loading explorers...',
+
   // Location Types
   fort: 'Fort',
   forts: 'Forts',

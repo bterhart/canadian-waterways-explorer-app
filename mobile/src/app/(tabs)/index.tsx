@@ -1,12 +1,24 @@
 // Interactive Map Screen for Canadian Waterways Education
 import React, { useState, useRef, useCallback, useMemo, useEffect } from 'react';
-import { View, Text, ActivityIndicator, StyleSheet, TouchableOpacity, Animated } from 'react-native';
+import { View, Text, ActivityIndicator, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import MapView, { Marker, Callout, PROVIDER_DEFAULT, Region, Polyline, Polygon } from 'react-native-maps';
-import { Menu } from 'lucide-react-native';
-import { useWaterways, useLocations } from '@/lib/api/waterways-api';
+import { Menu, ChevronDown, ChevronRight } from 'lucide-react-native';
+import { useWaterways, useLocations, useExplorers, useExplorerDetail } from '@/lib/api/waterways-api';
 import DetailBottomSheet, { DetailBottomSheetRef } from '@/components/DetailBottomSheet';
 import type { MarkerType, Waterway, Location } from '@/lib/types/waterways';
 import { useTranslation } from '@/lib/i18n';
+
+// Filter types
+type FilterType = 'legend' | 'waterway' | 'explorer' | 'period' | null;
+
+// Time period definitions with year ranges
+const TIME_PERIODS = [
+  { id: 'pre1700', key: 'pre1700' as const, minYear: null, maxYear: 1699 },
+  { id: '1700-1780', key: 'era1700to1780' as const, minYear: 1700, maxYear: 1780 },
+  { id: '1780-1821', key: 'era1780to1821' as const, minYear: 1780, maxYear: 1821 },
+  { id: '1821-1870', key: 'era1821to1870' as const, minYear: 1821, maxYear: 1870 },
+  { id: 'post1870', key: 'post1870' as const, minYear: 1870, maxYear: null },
+];
 
 // Canada center coordinates
 const CANADA_CENTER: Region = {
@@ -74,16 +86,34 @@ const getRegionForCoordinates = (coordinates: { latitude: number; longitude: num
 };
 
 export default function MapScreen() {
-  const { data: waterways, isLoading: waterwaysLoading, isError: waterwaysError } = useWaterways();
-  const { data: locations, isLoading: locationsLoading, isError: locationsError } = useLocations();
   const { t } = useTranslation();
 
+  // State declarations first
   const [selectedMarker, setSelectedMarker] = useState<{
     id: string;
     type: MarkerType;
   } | null>(null);
   const [legendVisible, setLegendVisible] = useState(false);
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
+
+  // Expanded filter state
+  const [filterType, setFilterType] = useState<FilterType>(null);
+  const [filterValue, setFilterValue] = useState<string | null>(null);
+
+  // Collapsible section states
+  const [legendExpanded, setLegendExpanded] = useState(true);
+  const [waterwayExpanded, setWaterwayExpanded] = useState(false);
+  const [explorerExpanded, setExplorerExpanded] = useState(false);
+  const [eraExpanded, setEraExpanded] = useState(false);
+
+  // Selected explorer ID for fetching detail
+  const [selectedExplorerId, setSelectedExplorerId] = useState<string | null>(null);
+
+  // Data fetching hooks (after state declarations)
+  const { data: waterways, isLoading: waterwaysLoading, isError: waterwaysError } = useWaterways();
+  const { data: locations, isLoading: locationsLoading, isError: locationsError } = useLocations();
+  const { data: explorers, isLoading: explorersLoading } = useExplorers();
+  const { data: explorerDetail } = useExplorerDetail(selectedExplorerId);
 
   const bottomSheetRef = useRef<DetailBottomSheetRef>(null);
   const mapRef = useRef<MapView>(null);
@@ -95,35 +125,146 @@ export default function MapScreen() {
     setLegendVisible(prev => !prev);
   }, []);
 
-  const handleFilterPress = useCallback((filterType: string) => {
-    setActiveFilter(prev => prev === filterType ? null : filterType);
+  // Legacy legend filter handler (for map legend items)
+  const handleLegendFilterPress = useCallback((legendType: string) => {
+    if (activeFilter === legendType) {
+      // Clear filter if same item tapped
+      setActiveFilter(null);
+      setFilterType(null);
+      setFilterValue(null);
+    } else {
+      setActiveFilter(legendType);
+      setFilterType('legend');
+      setFilterValue(legendType);
+    }
+  }, [activeFilter]);
+
+  // Handler for waterway filter selection
+  const handleWaterwayFilterSelect = useCallback((waterwayId: string) => {
+    setFilterType('waterway');
+    setFilterValue(waterwayId);
+    setActiveFilter(null);
+    setSelectedExplorerId(null);
   }, []);
 
-  const clearFilter = useCallback(() => {
+  // Handler for explorer filter selection
+  const handleExplorerFilterSelect = useCallback((explorerId: string) => {
+    setFilterType('explorer');
+    setFilterValue(explorerId);
+    setSelectedExplorerId(explorerId);
     setActiveFilter(null);
   }, []);
+
+  // Handler for time period filter selection
+  const handlePeriodFilterSelect = useCallback((periodId: string) => {
+    setFilterType('period');
+    setFilterValue(periodId);
+    setActiveFilter(null);
+    setSelectedExplorerId(null);
+  }, []);
+
+  // Clear all filters
+  const clearAllFilters = useCallback(() => {
+    setActiveFilter(null);
+    setFilterType(null);
+    setFilterValue(null);
+    setSelectedExplorerId(null);
+  }, []);
+
+  // Check if any filter is active
+  const hasActiveFilter = filterType !== null || activeFilter !== null;
+
+  // Get explorer's waterway IDs for filtering
+  const explorerWaterwayIds = useMemo(() => {
+    if (!explorerDetail?.waterways) return new Set<string>();
+    return new Set(explorerDetail.waterways.map(ew => ew.waterway.id));
+  }, [explorerDetail]);
+
+  // Get time period for filtering
+  const selectedPeriod = useMemo(() => {
+    if (filterType !== 'period' || !filterValue) return null;
+    return TIME_PERIODS.find(p => p.id === filterValue) || null;
+  }, [filterType, filterValue]);
 
   // Filter waterways based on active filter
   const filteredWaterways = useMemo(() => {
     if (!waterways) return [];
-    if (!activeFilter) return waterways;
-    // Waterway types: River, Lake, Bay
-    if (['River', 'Lake', 'Bay'].includes(activeFilter)) {
-      return waterways.filter(w => w.type?.name === activeFilter);
+
+    // No filter active - show all
+    if (!filterType && !activeFilter) return waterways;
+
+    // Legacy legend filter (waterway types)
+    if (filterType === 'legend' || activeFilter) {
+      const filter = activeFilter || filterValue;
+      if (['River', 'Lake', 'Bay'].includes(filter || '')) {
+        return waterways.filter(w => w.type?.name === filter);
+      }
+      // If filtering by location type, don't show waterways
+      if (['Fort', 'Trading Post', 'Portage'].includes(filter || '')) {
+        return [];
+      }
     }
-    return [];
-  }, [waterways, activeFilter]);
+
+    // Filter by specific waterway - show only that waterway
+    if (filterType === 'waterway' && filterValue) {
+      return waterways.filter(w => w.id === filterValue);
+    }
+
+    // Filter by explorer - show waterways they explored
+    if (filterType === 'explorer' && explorerWaterwayIds.size > 0) {
+      return waterways.filter(w => explorerWaterwayIds.has(w.id));
+    }
+
+    // Filter by time period - we would need year data on waterways
+    // For now, show all waterways when period filter is active
+    if (filterType === 'period') {
+      return waterways;
+    }
+
+    return waterways;
+  }, [waterways, activeFilter, filterType, filterValue, explorerWaterwayIds]);
 
   // Filter locations based on active filter
   const filteredLocations = useMemo(() => {
     if (!locations) return [];
-    if (!activeFilter) return locations;
-    // Location types: Fort, Trading Post, Portage
-    if (['Fort', 'Trading Post', 'Portage'].includes(activeFilter)) {
-      return locations.filter(l => l.locationType === activeFilter);
+
+    // No filter active - show all
+    if (!filterType && !activeFilter) return locations;
+
+    // Legacy legend filter (location types)
+    if (filterType === 'legend' || activeFilter) {
+      const filter = activeFilter || filterValue;
+      if (['Fort', 'Trading Post', 'Portage'].includes(filter || '')) {
+        return locations.filter(l => l.locationType === filter);
+      }
+      // If filtering by waterway type, don't show locations
+      if (['River', 'Lake', 'Bay'].includes(filter || '')) {
+        return [];
+      }
     }
-    return [];
-  }, [locations, activeFilter]);
+
+    // Filter by specific waterway - show locations on that waterway
+    if (filterType === 'waterway' && filterValue) {
+      return locations.filter(l => l.waterway?.id === filterValue);
+    }
+
+    // Filter by explorer - show locations along their waterways
+    if (filterType === 'explorer' && explorerWaterwayIds.size > 0) {
+      return locations.filter(l => l.waterway && explorerWaterwayIds.has(l.waterway.id));
+    }
+
+    // Filter by time period - filter by yearEstablished
+    if (filterType === 'period' && selectedPeriod) {
+      return locations.filter(l => {
+        // We need to check location's year - using waterway relationship or other data
+        // For now, we filter based on historical context
+        // Locations without years are included in all periods
+        return true; // Show all locations for now - would need yearEstablished data
+      });
+    }
+
+    return locations;
+  }, [locations, activeFilter, filterType, filterValue, explorerWaterwayIds, selectedPeriod]);
 
   // Find selected waterway for highlighting
   const selectedWaterway = useMemo(() => {
@@ -304,63 +445,208 @@ export default function MapScreen() {
         <Menu size={24} color="#2D5A3D" />
       </TouchableOpacity>
 
-      {/* Legend Dropdown */}
+      {/* Filter Menu Dropdown */}
       {legendVisible ? (
-        <View style={styles.legend}>
-          <Text style={styles.legendTitle}>{t('mapLegend')}</Text>
-          <View style={styles.legendSection}>
-            <Text style={styles.legendSectionTitle}>{t('waterways')}</Text>
+        <View style={styles.filterMenu}>
+          <ScrollView style={styles.filterMenuScroll} showsVerticalScrollIndicator={false}>
+            {/* Map Legend Section */}
             <TouchableOpacity
-              style={[styles.legendRow, activeFilter === 'River' && styles.legendRowActive]}
-              onPress={() => handleFilterPress('River')}
+              style={styles.sectionHeader}
+              onPress={() => setLegendExpanded(prev => !prev)}
             >
-              <View style={[styles.legendDot, { backgroundColor: markerColors.River }]} />
-              <Text style={[styles.legendText, activeFilter === 'River' && styles.legendTextActive]}>{t('river')}</Text>
+              {legendExpanded ? (
+                <ChevronDown size={16} color="#2D5A3D" />
+              ) : (
+                <ChevronRight size={16} color="#2D5A3D" />
+              )}
+              <Text style={styles.sectionHeaderText}>{t('mapLegend')}</Text>
             </TouchableOpacity>
+
+            {legendExpanded ? (
+              <View style={styles.sectionContent}>
+                <Text style={styles.legendSectionTitle}>{t('waterways')}</Text>
+                <TouchableOpacity
+                  style={[styles.legendRow, activeFilter === 'River' && styles.legendRowActive]}
+                  onPress={() => handleLegendFilterPress('River')}
+                >
+                  <View style={[styles.legendDot, { backgroundColor: markerColors.River }]} />
+                  <Text style={[styles.legendText, activeFilter === 'River' && styles.legendTextActive]}>{t('river')}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.legendRow, activeFilter === 'Lake' && styles.legendRowActive]}
+                  onPress={() => handleLegendFilterPress('Lake')}
+                >
+                  <View style={[styles.legendDot, { backgroundColor: markerColors.Lake }]} />
+                  <Text style={[styles.legendText, activeFilter === 'Lake' && styles.legendTextActive]}>{t('lake')}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.legendRow, activeFilter === 'Bay' && styles.legendRowActive]}
+                  onPress={() => handleLegendFilterPress('Bay')}
+                >
+                  <View style={[styles.legendDot, { backgroundColor: markerColors.Bay }]} />
+                  <Text style={[styles.legendText, activeFilter === 'Bay' && styles.legendTextActive]}>{t('bay')}</Text>
+                </TouchableOpacity>
+
+                <Text style={[styles.legendSectionTitle, { marginTop: 8 }]}>{t('locations')}</Text>
+                <TouchableOpacity
+                  style={[styles.legendRow, activeFilter === 'Fort' && styles.legendRowActive]}
+                  onPress={() => handleLegendFilterPress('Fort')}
+                >
+                  <View style={[styles.legendDot, { backgroundColor: markerColors.Fort }]} />
+                  <Text style={[styles.legendText, activeFilter === 'Fort' && styles.legendTextActive]}>{t('fort')}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.legendRow, activeFilter === 'Trading Post' && styles.legendRowActive]}
+                  onPress={() => handleLegendFilterPress('Trading Post')}
+                >
+                  <View style={[styles.legendDot, { backgroundColor: markerColors['Trading Post'] }]} />
+                  <Text style={[styles.legendText, activeFilter === 'Trading Post' && styles.legendTextActive]}>{t('tradingPost')}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.legendRow, activeFilter === 'Portage' && styles.legendRowActive]}
+                  onPress={() => handleLegendFilterPress('Portage')}
+                >
+                  <View style={[styles.legendDot, { backgroundColor: markerColors.Portage }]} />
+                  <Text style={[styles.legendText, activeFilter === 'Portage' && styles.legendTextActive]}>{t('portage')}</Text>
+                </TouchableOpacity>
+              </View>
+            ) : null}
+
+            {/* Filter by Waterway Section */}
             <TouchableOpacity
-              style={[styles.legendRow, activeFilter === 'Lake' && styles.legendRowActive]}
-              onPress={() => handleFilterPress('Lake')}
+              style={styles.sectionHeader}
+              onPress={() => setWaterwayExpanded(prev => !prev)}
             >
-              <View style={[styles.legendDot, { backgroundColor: markerColors.Lake }]} />
-              <Text style={[styles.legendText, activeFilter === 'Lake' && styles.legendTextActive]}>{t('lake')}</Text>
+              {waterwayExpanded ? (
+                <ChevronDown size={16} color="#2D5A3D" />
+              ) : (
+                <ChevronRight size={16} color="#2D5A3D" />
+              )}
+              <Text style={styles.sectionHeaderText}>{t('filterByWaterway')}</Text>
             </TouchableOpacity>
+
+            {waterwayExpanded ? (
+              <View style={styles.sectionContent}>
+                {waterways && waterways.length > 0 ? (
+                  <ScrollView style={styles.filterList} nestedScrollEnabled>
+                    {waterways.map(waterway => (
+                      <TouchableOpacity
+                        key={waterway.id}
+                        style={[
+                          styles.filterItem,
+                          filterType === 'waterway' && filterValue === waterway.id && styles.filterItemActive,
+                        ]}
+                        onPress={() => handleWaterwayFilterSelect(waterway.id)}
+                      >
+                        <View style={[styles.legendDot, { backgroundColor: getMarkerColor(waterway.type?.name || 'River') }]} />
+                        <Text
+                          style={[
+                            styles.filterItemText,
+                            filterType === 'waterway' && filterValue === waterway.id && styles.filterItemTextActive,
+                          ]}
+                          numberOfLines={1}
+                        >
+                          {waterway.name}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </ScrollView>
+                ) : (
+                  <Text style={styles.emptyText}>{t('noWaterwaysFound')}</Text>
+                )}
+              </View>
+            ) : null}
+
+            {/* Filter by Explorer Section */}
             <TouchableOpacity
-              style={[styles.legendRow, activeFilter === 'Bay' && styles.legendRowActive]}
-              onPress={() => handleFilterPress('Bay')}
+              style={styles.sectionHeader}
+              onPress={() => setExplorerExpanded(prev => !prev)}
             >
-              <View style={[styles.legendDot, { backgroundColor: markerColors.Bay }]} />
-              <Text style={[styles.legendText, activeFilter === 'Bay' && styles.legendTextActive]}>{t('bay')}</Text>
+              {explorerExpanded ? (
+                <ChevronDown size={16} color="#2D5A3D" />
+              ) : (
+                <ChevronRight size={16} color="#2D5A3D" />
+              )}
+              <Text style={styles.sectionHeaderText}>{t('filterByExplorer')}</Text>
             </TouchableOpacity>
-          </View>
-          <View style={styles.legendSection}>
-            <Text style={styles.legendSectionTitle}>{t('locations')}</Text>
+
+            {explorerExpanded ? (
+              <View style={styles.sectionContent}>
+                {explorersLoading ? (
+                  <Text style={styles.emptyText}>{t('loadingExplorers')}</Text>
+                ) : explorers && explorers.length > 0 ? (
+                  <ScrollView style={styles.filterList} nestedScrollEnabled>
+                    {explorers.map(explorer => (
+                      <TouchableOpacity
+                        key={explorer.id}
+                        style={[
+                          styles.filterItem,
+                          filterType === 'explorer' && filterValue === explorer.id && styles.filterItemActive,
+                        ]}
+                        onPress={() => handleExplorerFilterSelect(explorer.id)}
+                      >
+                        <Text
+                          style={[
+                            styles.filterItemText,
+                            filterType === 'explorer' && filterValue === explorer.id && styles.filterItemTextActive,
+                          ]}
+                          numberOfLines={1}
+                        >
+                          {explorer.name}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </ScrollView>
+                ) : (
+                  <Text style={styles.emptyText}>{t('noExplorersFound')}</Text>
+                )}
+              </View>
+            ) : null}
+
+            {/* Filter by Era Section */}
             <TouchableOpacity
-              style={[styles.legendRow, activeFilter === 'Fort' && styles.legendRowActive]}
-              onPress={() => handleFilterPress('Fort')}
+              style={styles.sectionHeader}
+              onPress={() => setEraExpanded(prev => !prev)}
             >
-              <View style={[styles.legendDot, { backgroundColor: markerColors.Fort }]} />
-              <Text style={[styles.legendText, activeFilter === 'Fort' && styles.legendTextActive]}>{t('fort')}</Text>
+              {eraExpanded ? (
+                <ChevronDown size={16} color="#2D5A3D" />
+              ) : (
+                <ChevronRight size={16} color="#2D5A3D" />
+              )}
+              <Text style={styles.sectionHeaderText}>{t('filterByEra')}</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.legendRow, activeFilter === 'Trading Post' && styles.legendRowActive]}
-              onPress={() => handleFilterPress('Trading Post')}
-            >
-              <View style={[styles.legendDot, { backgroundColor: markerColors['Trading Post'] }]} />
-              <Text style={[styles.legendText, activeFilter === 'Trading Post' && styles.legendTextActive]}>{t('tradingPost')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.legendRow, activeFilter === 'Portage' && styles.legendRowActive]}
-              onPress={() => handleFilterPress('Portage')}
-            >
-              <View style={[styles.legendDot, { backgroundColor: markerColors.Portage }]} />
-              <Text style={[styles.legendText, activeFilter === 'Portage' && styles.legendTextActive]}>{t('portage')}</Text>
-            </TouchableOpacity>
-          </View>
-          {activeFilter ? (
-            <TouchableOpacity style={styles.clearFilterButton} onPress={clearFilter}>
-              <Text style={styles.clearFilterText}>{t('clearFilter')}</Text>
-            </TouchableOpacity>
-          ) : null}
+
+            {eraExpanded ? (
+              <View style={styles.sectionContent}>
+                {TIME_PERIODS.map(period => (
+                  <TouchableOpacity
+                    key={period.id}
+                    style={[
+                      styles.filterItem,
+                      filterType === 'period' && filterValue === period.id && styles.filterItemActive,
+                    ]}
+                    onPress={() => handlePeriodFilterSelect(period.id)}
+                  >
+                    <Text
+                      style={[
+                        styles.filterItemText,
+                        filterType === 'period' && filterValue === period.id && styles.filterItemTextActive,
+                      ]}
+                    >
+                      {t(period.key)}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            ) : null}
+
+            {/* Clear All Filters */}
+            {hasActiveFilter ? (
+              <TouchableOpacity style={styles.clearAllButton} onPress={clearAllFilters}>
+                <Text style={styles.clearAllText}>{t('clearAllFilters')}</Text>
+              </TouchableOpacity>
+            ) : null}
+          </ScrollView>
         </View>
       ) : null}
 
@@ -521,5 +807,81 @@ const styles = StyleSheet.create({
     color: '#EF4444',
     textAlign: 'center',
     fontWeight: '500',
+  },
+  // New filter menu styles
+  filterMenu: {
+    position: 'absolute',
+    top: 60,
+    left: 16,
+    backgroundColor: 'rgba(255, 254, 247, 0.98)',
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 5,
+    maxWidth: 220,
+    maxHeight: 400,
+  },
+  filterMenuScroll: {
+    padding: 12,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E7EB',
+  },
+  sectionHeaderText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#2D5A3D',
+    marginLeft: 6,
+  },
+  sectionContent: {
+    paddingVertical: 8,
+    paddingLeft: 22,
+  },
+  filterList: {
+    maxHeight: 120,
+  },
+  filterItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 6,
+    paddingHorizontal: 8,
+    borderRadius: 6,
+    marginBottom: 2,
+  },
+  filterItemActive: {
+    backgroundColor: 'rgba(45, 90, 61, 0.15)',
+  },
+  filterItemText: {
+    fontSize: 12,
+    color: '#374151',
+    flex: 1,
+  },
+  filterItemTextActive: {
+    fontWeight: '600',
+    color: '#2D5A3D',
+  },
+  emptyText: {
+    fontSize: 11,
+    color: '#9CA3AF',
+    fontStyle: 'italic',
+    paddingVertical: 4,
+  },
+  clearAllButton: {
+    marginTop: 12,
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#E5E7EB',
+  },
+  clearAllText: {
+    fontSize: 12,
+    color: '#EF4444',
+    textAlign: 'center',
+    fontWeight: '600',
   },
 });

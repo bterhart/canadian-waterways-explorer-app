@@ -43,6 +43,23 @@ export const fr: Record<TranslationKey, string> = {
   bays: 'Baies',
   strait: 'Detroit',
 
+  // Filter Sections
+  filterByWaterway: 'Filtrer par voie navigable',
+  filterByExplorer: 'Filtrer par explorateur',
+  filterByEra: 'Filtrer par epoque',
+  clearAllFilters: 'Effacer tous les filtres',
+  selectWaterway: 'Selectionnez une voie navigable',
+  selectExplorer: 'Selectionnez un explorateur',
+  selectEra: 'Selectionnez une epoque',
+  pre1700: 'Avant 1700',
+  era1700to1780: '1700-1780 (Debut CBH)',
+  era1780to1821: '1780-1821 (Ere CNO)',
+  era1821to1870: '1821-1870 (CBH fusionnee)',
+  post1870: 'Apres 1870',
+  noWaterwaysFound: 'Aucune voie navigable trouvee',
+  noExplorersFound: 'Aucun explorateur trouve',
+  loadingExplorers: 'Chargement des explorateurs...',
+
   // Location Types
   fort: 'Fort',
   forts: 'Forts',
