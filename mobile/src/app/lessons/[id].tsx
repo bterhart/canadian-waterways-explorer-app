@@ -9,8 +9,9 @@ import {
   ActivityIndicator,
   Image,
   Dimensions,
+  Pressable,
 } from 'react-native';
-import { useLocalSearchParams, Stack } from 'expo-router';
+import { useLocalSearchParams, Stack, useRouter } from 'expo-router';
 import {
   BookOpen,
   Clock,
@@ -52,6 +53,7 @@ function Section({ title, icon, children }: SectionProps) {
 
 export default function DeepDiveDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const router = useRouter();
   const { data: lesson, isLoading, isError } = useLessonPlan(id ?? null);
 
   if (isLoading) {
@@ -148,29 +150,43 @@ export default function DeepDiveDetailScreen() {
           title="Key Figures"
           icon={<Users size={20} color={colors.forestGreen} />}
         >
-          {keyFigures.map((figure, index) => (
-            <View key={index} style={styles.figureCard}>
-              {figure.imageUrl ? (
-                <Image
-                  source={{ uri: figure.imageUrl }}
-                  style={styles.figureImage}
-                  resizeMode="cover"
-                />
-              ) : (
-                <View style={styles.figureImagePlaceholder}>
-                  <Users size={24} color={colors.forestGreen} />
+          {keyFigures.map((figure, index) => {
+            const explorerId = (figure as any).explorerId;
+            const CardWrapper = explorerId ? Pressable : View;
+            const cardProps = explorerId
+              ? {
+                  onPress: () => router.push(`/explorers/${explorerId}` as any),
+                  style: ({ pressed }: { pressed: boolean }) => [
+                    styles.figureCard,
+                    pressed && styles.figureCardPressed,
+                  ],
+                }
+              : { style: styles.figureCard };
+
+            return (
+              <CardWrapper key={index} {...cardProps}>
+                {figure.imageUrl ? (
+                  <Image
+                    source={{ uri: figure.imageUrl }}
+                    style={styles.figureImage}
+                    resizeMode="cover"
+                  />
+                ) : (
+                  <View style={styles.figureImagePlaceholder}>
+                    <Users size={24} color={colors.forestGreen} />
+                  </View>
+                )}
+                <View style={styles.figureInfo}>
+                  <Text style={styles.figureName}>{figure.name}</Text>
+                  <Text style={styles.figureRole}>{figure.role}</Text>
+                  {figure.years ? (
+                    <Text style={styles.figureYears}>{figure.years}</Text>
+                  ) : null}
+                  <Text style={styles.figureDescription}>{figure.description}</Text>
                 </View>
-              )}
-              <View style={styles.figureInfo}>
-                <Text style={styles.figureName}>{figure.name}</Text>
-                <Text style={styles.figureRole}>{figure.role}</Text>
-                {figure.years ? (
-                  <Text style={styles.figureYears}>{figure.years}</Text>
-                ) : null}
-                <Text style={styles.figureDescription}>{figure.description}</Text>
-              </View>
-            </View>
-          ))}
+              </CardWrapper>
+            );
+          })}
         </Section>
       ) : null}
 
@@ -181,23 +197,38 @@ export default function DeepDiveDetailScreen() {
           icon={<Calendar size={20} color={colors.forestGreen} />}
         >
           <View style={styles.timeline}>
-            {timeline.map((event, index) => (
-              <View key={index} style={styles.timelineItem}>
-                <View style={styles.timelineLeft}>
-                  <View style={styles.timelineDot} />
-                  {index < timeline.length - 1 && (
-                    <View style={styles.timelineLine} />
-                  )}
+            {timeline.map((event, index) => {
+              const waterwayId = (event as any).waterwayId;
+              const locationRef = (event as any).locationRef;
+              const ContentWrapper = waterwayId ? Pressable : View;
+              const contentProps = waterwayId
+                ? {
+                    onPress: () => router.push(`/waterways/${waterwayId}` as any),
+                    style: ({ pressed }: { pressed: boolean }) => [
+                      styles.timelineContent,
+                      pressed && styles.timelineContentPressed,
+                    ],
+                  }
+                : { style: styles.timelineContent };
+
+              return (
+                <View key={index} style={styles.timelineItem}>
+                  <View style={styles.timelineLeft}>
+                    <View style={styles.timelineDot} />
+                    {index < timeline.length - 1 && (
+                      <View style={styles.timelineLine} />
+                    )}
+                  </View>
+                  <ContentWrapper {...contentProps}>
+                    <Text style={styles.timelineYear}>{event.year}</Text>
+                    <Text style={styles.timelineTitle}>{event.title}</Text>
+                    <Text style={styles.timelineDescription}>
+                      {event.description}
+                    </Text>
+                  </ContentWrapper>
                 </View>
-                <View style={styles.timelineContent}>
-                  <Text style={styles.timelineYear}>{event.year}</Text>
-                  <Text style={styles.timelineTitle}>{event.title}</Text>
-                  <Text style={styles.timelineDescription}>
-                    {event.description}
-                  </Text>
-                </View>
-              </View>
-            ))}
+              );
+            })}
           </View>
         </Section>
       ) : null}
@@ -346,6 +377,10 @@ const styles = StyleSheet.create({
     padding: 14,
     marginBottom: 12,
   },
+  figureCardPressed: {
+    backgroundColor: '#E5E7EB',
+    opacity: 0.8,
+  },
   figureImage: {
     width: 70,
     height: 70,
@@ -413,6 +448,9 @@ const styles = StyleSheet.create({
   timelineContent: {
     flex: 1,
     paddingBottom: 4,
+  },
+  timelineContentPressed: {
+    opacity: 0.6,
   },
   timelineYear: {
     fontSize: 15,
