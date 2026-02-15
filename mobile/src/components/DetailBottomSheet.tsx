@@ -2,7 +2,7 @@
 import React, { useCallback, useMemo, forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import { View, Text, ActivityIndicator, Image, Pressable } from 'react-native';
 import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
-import { Plus, MessageSquare, Camera, BookOpen, History, Compass, ChevronUp } from 'lucide-react-native';
+import { Plus, MessageSquare, Camera, BookOpen, History, Compass } from 'lucide-react-native';
 import { useWaterwayDetail, useLocationDetail, useWaterwayContributions, useLocationContributions } from '@/lib/api/waterways-api';
 import ContributeModal from './ContributeModal';
 import type { MarkerType, WaterwayDetail, LocationDetail, UserContribution, ArchaeologicalDiscovery } from '@/lib/types/waterways';
@@ -33,13 +33,8 @@ export interface DetailBottomSheetRef {
 const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProps>(
   ({ markerId, markerType, onClose }, ref) => {
     const bottomSheetRef = useRef<BottomSheet>(null);
-    // Three snap points: minimal peek (10%), medium (50%), full (85%)
-    const snapPoints = useMemo(() => ['10%', '50%', '85%'], []);
-    const [currentSnapIndex, setCurrentSnapIndex] = useState(0);
+    const snapPoints = useMemo(() => ['50%', '85%'], []);
     const [showContributeModal, setShowContributeModal] = useState(false);
-
-    // Check if we're at the minimal peek position
-    const isMinimalPeek = currentSnapIndex === 0;
 
     // Fetch data based on marker type
     const { data: waterwayData, isLoading: waterwayLoading } = useWaterwayDetail(
@@ -79,26 +74,18 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
     };
 
     useImperativeHandle(ref, () => ({
-      expand: () => bottomSheetRef.current?.snapToIndex(1), // Snap to medium (50%) by default
+      expand: () => bottomSheetRef.current?.snapToIndex(0),
       close: () => bottomSheetRef.current?.close(),
     }));
 
     const handleSheetChanges = useCallback(
       (index: number) => {
-        setCurrentSnapIndex(index);
-        // Only clear selection when fully dismissed (index === -1)
-        // Keep highlight visible at all snap points including minimal peek
         if (index === -1) {
           onClose();
         }
       },
       [onClose]
     );
-
-    // Expand from minimal peek to medium view
-    const handleExpandFromPeek = useCallback(() => {
-      bottomSheetRef.current?.snapToIndex(1);
-    }, []);
 
     const getTypeLabel = (typeName: string): string => {
       return typeName || 'Unknown';
@@ -116,46 +103,6 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
         backgroundStyle={{ backgroundColor: colors.creamWhite }}
         handleIndicatorStyle={{ backgroundColor: colors.forestGreen }}
       >
-        {/* Compact Preview Header - shown at minimal peek (10%) */}
-        {isMinimalPeek ? (
-          <Pressable
-            onPress={handleExpandFromPeek}
-            className="px-5 py-2"
-          >
-            <View className="flex-row items-center justify-between">
-              <View className="flex-row items-center flex-1">
-                {/* Type badge */}
-                <View
-                  className="px-3 py-1 rounded-full mr-3"
-                  style={{ backgroundColor: colors.forestGreen }}
-                >
-                  <Text className="text-white text-xs font-semibold">
-                    {markerType === 'waterway' && waterwayData?.type?.name
-                      ? getTypeLabel(waterwayData.type.name)
-                      : markerType === 'location' && locationData?.locationType
-                      ? getTypeLabel(locationData.locationType)
-                      : 'Loading...'}
-                  </Text>
-                </View>
-                {/* Name */}
-                <Text
-                  className="text-lg font-bold flex-1"
-                  style={{ color: colors.forestGreen }}
-                  numberOfLines={1}
-                >
-                  {data?.name || 'Loading...'}
-                </Text>
-              </View>
-              {/* Expand indicator */}
-              <View className="ml-2">
-                <ChevronUp size={20} color={colors.forestGreen} />
-              </View>
-            </View>
-            <Text className="text-xs text-gray-500 mt-1">
-              Tap to view details
-            </Text>
-          </Pressable>
-        ) : (
         <BottomSheetScrollView
           contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 40 }}
         >
@@ -602,7 +549,6 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
             </View>
           )}
         </BottomSheetScrollView>
-        )}
 
         {/* Contribute Modal */}
         <ContributeModal
