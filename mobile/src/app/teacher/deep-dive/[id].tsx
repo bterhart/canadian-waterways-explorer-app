@@ -27,6 +27,7 @@ import {
 } from 'lucide-react-native';
 import { useLessonPlan } from '@/lib/api/education-api';
 import { getGradeLevelRangeColor, getGradeLevelRangeLabel, LessonPlanActivity } from '@/lib/types/education';
+import { MarkdownContent } from '@/components/MarkdownContent';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -198,7 +199,10 @@ export default function TeacherDeepDiveDetailScreen() {
           icon={<Lightbulb size={20} color={colors.teacherPurple} />}
           teacherOnly
         >
-          <Text style={styles.teacherNotesText}>{lesson.teacherNotes}</Text>
+          <MarkdownContent
+            content={lesson.teacherNotes}
+            accentColor={colors.teacherPurple}
+          />
         </Section>
       ) : null}
 
@@ -263,7 +267,10 @@ export default function TeacherDeepDiveDetailScreen() {
           title="Assessment Suggestions"
           icon={<Award size={20} color={colors.forestGreen} />}
         >
-          <Text style={styles.assessmentText}>{lesson.assessmentSuggestions}</Text>
+          <MarkdownContent
+            content={lesson.assessmentSuggestions}
+            accentColor={colors.forestGreen}
+          />
         </Section>
       ) : null}
 
@@ -454,12 +461,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: 'white',
   },
-  teacherNotesText: {
-    fontSize: 15,
-    color: '#4B5563',
-    lineHeight: 24,
-    fontStyle: 'italic',
-  },
   listItem: {
     flexDirection: 'row',
     alignItems: 'flex-start',
@@ -554,11 +555,6 @@ const styles = StyleSheet.create({
   },
   questionText: {
     flex: 1,
-    fontSize: 15,
-    color: '#374151',
-    lineHeight: 22,
-  },
-  assessmentText: {
     fontSize: 15,
     color: '#374151',
     lineHeight: 22,

@@ -21,6 +21,7 @@ import {
 import { useLessonPlan } from '@/lib/api/education-api';
 import { getGradeLevelColor, getGradeLevelLabel } from '@/lib/types/education';
 import type { KeyFigure, DeepDiveTimelineEvent, DeepDiveImage } from '@/lib/types/education';
+import { MarkdownContent } from '@/components/MarkdownContent';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -134,14 +135,20 @@ export default function DeepDiveDetailScreen() {
       {/* Narrative Content (Story) */}
       {lesson.narrativeContent ? (
         <View style={styles.narrativeSection}>
-          <Text style={styles.narrativeContent}>{lesson.narrativeContent}</Text>
+          <MarkdownContent
+            content={lesson.narrativeContent}
+            accentColor={colors.forestGreen}
+          />
         </View>
       ) : null}
 
       {/* Main Content (Additional narrative) */}
       {lesson.mainContent ? (
         <View style={styles.narrativeSection}>
-          <Text style={styles.narrativeContent}>{lesson.mainContent}</Text>
+          <MarkdownContent
+            content={lesson.mainContent}
+            accentColor={colors.forestGreen}
+          />
         </View>
       ) : null}
 
@@ -324,12 +331,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     marginTop: 12,
     padding: 20,
-  },
-  narrativeContent: {
-    fontSize: 16,
-    color: '#374151',
-    lineHeight: 26,
-    letterSpacing: 0.2,
   },
   section: {
     backgroundColor: 'white',
