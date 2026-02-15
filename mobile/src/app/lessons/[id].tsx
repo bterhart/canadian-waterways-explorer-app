@@ -1,4 +1,5 @@
-// Lesson Plan Detail Screen
+// Deep Dive Detail Screen - General User View
+// Shows narrative content, key figures, timeline, and images (NOT teacher materials)
 import React from 'react';
 import {
   View,
@@ -6,26 +7,28 @@ import {
   ScrollView,
   StyleSheet,
   ActivityIndicator,
-  Pressable,
+  Image,
+  Dimensions,
 } from 'react-native';
-import { useLocalSearchParams, Stack, useRouter } from 'expo-router';
+import { useLocalSearchParams, Stack } from 'expo-router';
 import {
   BookOpen,
   Clock,
-  Target,
-  Package,
-  MessageCircle,
-  Award,
-  Play,
-  ChevronRight,
+  Users,
+  Calendar,
+  ImageIcon,
 } from 'lucide-react-native';
 import { useLessonPlan } from '@/lib/api/education-api';
 import { getGradeLevelColor, getGradeLevelLabel } from '@/lib/types/education';
+import type { KeyFigure, DeepDiveTimelineEvent, DeepDiveImage } from '@/lib/types/education';
+
+const { width: screenWidth } = Dimensions.get('window');
 
 const colors = {
   forestGreen: '#2D5A3D',
   creamWhite: '#FFFEF7',
   darkGreen: '#1A3A24',
+  warmBrown: '#8B7355',
 };
 
 interface SectionProps {
@@ -46,9 +49,8 @@ function Section({ title, icon, children }: SectionProps) {
   );
 }
 
-export default function LessonPlanDetailScreen() {
+export default function DeepDiveDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const router = useRouter();
   const { data: lesson, isLoading, isError } = useLessonPlan(id ?? null);
 
   if (isLoading) {
@@ -64,39 +66,58 @@ export default function LessonPlanDetailScreen() {
     return (
       <View style={styles.centerContainer}>
         <Stack.Screen options={{ title: 'Error' }} />
-        <Text style={styles.errorText}>Unable to load lesson plan</Text>
+        <Text style={styles.errorText}>Unable to load content</Text>
       </View>
     );
   }
+
+  const keyFigures = lesson.keyFigures as KeyFigure[] | null;
+  const timeline = lesson.timeline as DeepDiveTimelineEvent[] | null;
+  const images = lesson.images as DeepDiveImage[] | null;
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <Stack.Screen
         options={{
-          title: 'Lesson Plan',
+          title: 'Deep Dive',
           headerStyle: { backgroundColor: colors.forestGreen },
           headerTintColor: 'white',
         }}
       />
 
+      {/* Hero Image */}
+      {lesson.heroImageUrl ? (
+        <Image
+          source={{ uri: lesson.heroImageUrl }}
+          style={styles.heroImage}
+          resizeMode="cover"
+        />
+      ) : (
+        <View style={styles.heroPlaceholder}>
+          <BookOpen size={48} color={colors.forestGreen} />
+        </View>
+      )}
+
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.headerBadges}>
-          <View
-            style={[
-              styles.gradeBadge,
-              { backgroundColor: getGradeLevelColor(lesson.gradeLevel) },
-            ]}
-          >
-            <Text style={styles.gradeBadgeText}>
-              {getGradeLevelLabel(lesson.gradeLevel)}
-            </Text>
-          </View>
-          {lesson.estimatedMinutes ? (
+          {lesson.gradeLevel ? (
+            <View
+              style={[
+                styles.gradeBadge,
+                { backgroundColor: getGradeLevelColor(lesson.gradeLevel) },
+              ]}
+            >
+              <Text style={styles.gradeBadgeText}>
+                {getGradeLevelLabel(lesson.gradeLevel)}
+              </Text>
+            </View>
+          ) : null}
+          {lesson.readingTimeMinutes ? (
             <View style={styles.durationBadge}>
               <Clock size={14} color="#6B7280" />
               <Text style={styles.durationText}>
-                {lesson.estimatedMinutes} minutes
+                {lesson.readingTimeMinutes} min read
               </Text>
             </View>
           ) : null}
@@ -110,143 +131,102 @@ export default function LessonPlanDetailScreen() {
         </View>
       </View>
 
-      {/* Learning Objectives */}
-      {lesson.objectives && lesson.objectives.length > 0 ? (
-        <Section
-          title="Learning Objectives"
-          icon={<Target size={20} color={colors.forestGreen} />}
-        >
-          {lesson.objectives.map((objective, index) => (
-            <View key={index} style={styles.listItem}>
-              <View style={styles.bulletPoint} />
-              <Text style={styles.listItemText}>{objective}</Text>
-            </View>
-          ))}
-        </Section>
-      ) : null}
-
-      {/* Materials Needed */}
-      {lesson.materials && lesson.materials.length > 0 ? (
-        <Section
-          title="Materials Needed"
-          icon={<Package size={20} color={colors.forestGreen} />}
-        >
-          {lesson.materials.map((material, index) => (
-            <View key={index} style={styles.listItem}>
-              <View style={styles.bulletPoint} />
-              <Text style={styles.listItemText}>{material}</Text>
-            </View>
-          ))}
-        </Section>
-      ) : null}
-
-      {/* Activities */}
-      {lesson.activities && lesson.activities.length > 0 ? (
-        <Section
-          title="Activities"
-          icon={<Play size={20} color={colors.forestGreen} />}
-        >
-          {lesson.activities.map((activity, index) => {
-            // Handle both string activities and object activities
-            if (typeof activity === 'string') {
-              return (
-                <View key={index} style={styles.listItem}>
-                  <View style={styles.bulletPoint} />
-                  <Text style={styles.listItemText}>{activity}</Text>
-                </View>
-              );
-            }
-            // Object activity with title, duration, description
-            return (
-              <View key={index} style={styles.activityCard}>
-                <View style={styles.activityHeader}>
-                  <Text style={styles.activityNumber}>{index + 1}</Text>
-                  <View style={styles.activityTitleRow}>
-                    <Text style={styles.activityTitle}>{activity.title}</Text>
-                    <Text style={styles.activityDuration}>{activity.duration}</Text>
-                  </View>
-                </View>
-                <Text style={styles.activityDescription}>
-                  {activity.description}
-                </Text>
-                {activity.materials && activity.materials.length > 0 ? (
-                  <View style={styles.activityMaterials}>
-                    <Text style={styles.activityMaterialsLabel}>Materials:</Text>
-                    <Text style={styles.activityMaterialsText}>
-                      {activity.materials.join(', ')}
-                    </Text>
-                  </View>
-                ) : null}
-              </View>
-            );
-          })}
-        </Section>
-      ) : null}
-
-      {/* Discussion Questions */}
-      {lesson.discussionQuestions && lesson.discussionQuestions.length > 0 ? (
-        <Section
-          title="Discussion Questions"
-          icon={<MessageCircle size={20} color={colors.forestGreen} />}
-        >
-          {lesson.discussionQuestions.map((question, index) => (
-            <View key={index} style={styles.questionCard}>
-              <Text style={styles.questionNumber}>Q{index + 1}</Text>
-              <Text style={styles.questionText}>{question}</Text>
-            </View>
-          ))}
-        </Section>
-      ) : null}
-
-      {/* Assessment */}
-      {lesson.assessmentSuggestions ? (
-        <Section
-          title="Assessment Suggestions"
-          icon={<Award size={20} color={colors.forestGreen} />}
-        >
-          <Text style={styles.assessmentText}>
-            {lesson.assessmentSuggestions}
-          </Text>
-        </Section>
-      ) : null}
-
-      {/* Curriculum Connections */}
-      {lesson.curriculumConnections && lesson.curriculumConnections.length > 0 ? (
-        <Section
-          title="Curriculum Connections"
-          icon={<BookOpen size={20} color={colors.forestGreen} />}
-        >
-          {lesson.curriculumConnections.map((connection, index) => (
-            <View key={index} style={styles.curriculumCard}>
-              <Text style={styles.curriculumProvince}>
-                {connection.province} - {connection.subject} ({connection.grade})
-              </Text>
-              {connection.expectations?.map((exp, expIndex) => (
-                <View key={expIndex} style={styles.listItem}>
-                  <View style={styles.bulletPoint} />
-                  <Text style={styles.listItemText}>{exp}</Text>
-                </View>
-              ))}
-            </View>
-          ))}
-        </Section>
-      ) : null}
-
-      {/* Related Quizzes */}
-      {lesson.relatedQuizIds && lesson.relatedQuizIds.length > 0 ? (
-        <View style={styles.relatedSection}>
-          <Text style={styles.relatedTitle}>Related Quizzes</Text>
-          <Pressable
-            style={styles.relatedButton}
-            onPress={() => router.push('/(tabs)/quizzes')}
-          >
-            <Text style={styles.relatedButtonText}>
-              View {lesson.relatedQuizIds.length} related quiz
-              {lesson.relatedQuizIds.length > 1 ? 'zes' : ''}
-            </Text>
-            <ChevronRight size={18} color={colors.forestGreen} />
-          </Pressable>
+      {/* Narrative Content (Story) */}
+      {lesson.narrativeContent ? (
+        <View style={styles.narrativeSection}>
+          <Text style={styles.narrativeContent}>{lesson.narrativeContent}</Text>
         </View>
+      ) : null}
+
+      {/* Main Content (Additional narrative) */}
+      {lesson.mainContent ? (
+        <View style={styles.narrativeSection}>
+          <Text style={styles.narrativeContent}>{lesson.mainContent}</Text>
+        </View>
+      ) : null}
+
+      {/* Key Figures */}
+      {keyFigures && keyFigures.length > 0 ? (
+        <Section
+          title="Key Figures"
+          icon={<Users size={20} color={colors.forestGreen} />}
+        >
+          {keyFigures.map((figure, index) => (
+            <View key={index} style={styles.figureCard}>
+              {figure.imageUrl ? (
+                <Image
+                  source={{ uri: figure.imageUrl }}
+                  style={styles.figureImage}
+                  resizeMode="cover"
+                />
+              ) : (
+                <View style={styles.figureImagePlaceholder}>
+                  <Users size={24} color={colors.forestGreen} />
+                </View>
+              )}
+              <View style={styles.figureInfo}>
+                <Text style={styles.figureName}>{figure.name}</Text>
+                <Text style={styles.figureRole}>{figure.role}</Text>
+                {figure.years ? (
+                  <Text style={styles.figureYears}>{figure.years}</Text>
+                ) : null}
+                <Text style={styles.figureDescription}>{figure.description}</Text>
+              </View>
+            </View>
+          ))}
+        </Section>
+      ) : null}
+
+      {/* Timeline */}
+      {timeline && timeline.length > 0 ? (
+        <Section
+          title="Timeline"
+          icon={<Calendar size={20} color={colors.forestGreen} />}
+        >
+          <View style={styles.timeline}>
+            {timeline.map((event, index) => (
+              <View key={index} style={styles.timelineItem}>
+                <View style={styles.timelineLeft}>
+                  <View style={styles.timelineDot} />
+                  {index < timeline.length - 1 && (
+                    <View style={styles.timelineLine} />
+                  )}
+                </View>
+                <View style={styles.timelineContent}>
+                  <Text style={styles.timelineYear}>{event.year}</Text>
+                  <Text style={styles.timelineTitle}>{event.title}</Text>
+                  <Text style={styles.timelineDescription}>
+                    {event.description}
+                  </Text>
+                </View>
+              </View>
+            ))}
+          </View>
+        </Section>
+      ) : null}
+
+      {/* Image Gallery */}
+      {images && images.length > 0 ? (
+        <Section
+          title="Gallery"
+          icon={<ImageIcon size={20} color={colors.forestGreen} />}
+        >
+          {images.map((image, index) => (
+            <View key={index} style={styles.galleryItem}>
+              <Image
+                source={{ uri: image.url }}
+                style={styles.galleryImage}
+                resizeMode="cover"
+              />
+              {image.caption ? (
+                <Text style={styles.galleryCaption}>{image.caption}</Text>
+              ) : null}
+              {image.credit ? (
+                <Text style={styles.galleryCredit}>{image.credit}</Text>
+              ) : null}
+            </View>
+          ))}
+        </Section>
       ) : null}
 
       <View style={styles.bottomSpacer} />
@@ -268,6 +248,17 @@ const styles = StyleSheet.create({
   errorText: {
     fontSize: 16,
     color: '#EF4444',
+  },
+  heroImage: {
+    width: screenWidth,
+    height: 220,
+  },
+  heroPlaceholder: {
+    width: screenWidth,
+    height: 180,
+    backgroundColor: colors.forestGreen + '15',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   header: {
     backgroundColor: 'white',
@@ -305,15 +296,16 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   title: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: '800',
     color: colors.darkGreen,
     marginBottom: 8,
+    lineHeight: 32,
   },
   description: {
-    fontSize: 15,
+    fontSize: 16,
     color: '#6B7280',
-    lineHeight: 22,
+    lineHeight: 24,
     marginBottom: 12,
   },
   topicBadge: {
@@ -328,6 +320,17 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: colors.forestGreen,
   },
+  narrativeSection: {
+    backgroundColor: 'white',
+    marginTop: 12,
+    padding: 20,
+  },
+  narrativeContent: {
+    fontSize: 16,
+    color: '#374151',
+    lineHeight: 26,
+    letterSpacing: 0.2,
+  },
   section: {
     backgroundColor: 'white',
     marginTop: 12,
@@ -340,147 +343,123 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '700',
     color: colors.darkGreen,
   },
-  listItem: {
+  // Key Figures styles
+  figureCard: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
-    marginBottom: 10,
-  },
-  bulletPoint: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: colors.forestGreen,
-    marginTop: 7,
-    marginRight: 12,
-  },
-  listItemText: {
-    flex: 1,
-    fontSize: 15,
-    color: '#374151',
-    lineHeight: 22,
-  },
-  activityCard: {
     backgroundColor: '#F9FAFB',
     borderRadius: 12,
-    padding: 16,
+    padding: 14,
     marginBottom: 12,
   },
-  activityHeader: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    marginBottom: 10,
+  figureImage: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
   },
-  activityNumber: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: colors.forestGreen,
-    color: 'white',
-    fontSize: 14,
-    fontWeight: '700',
-    textAlign: 'center',
-    lineHeight: 28,
-    marginRight: 12,
+  figureImagePlaceholder: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    backgroundColor: colors.forestGreen + '20',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  activityTitleRow: {
+  figureInfo: {
     flex: 1,
+    marginLeft: 14,
   },
-  activityTitle: {
-    fontSize: 16,
-    fontWeight: '600',
+  figureName: {
+    fontSize: 17,
+    fontWeight: '700',
     color: colors.darkGreen,
+    marginBottom: 2,
   },
-  activityDuration: {
+  figureRole: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: colors.forestGreen,
+    marginBottom: 2,
+  },
+  figureYears: {
     fontSize: 13,
     color: '#6B7280',
-    marginTop: 2,
+    marginBottom: 6,
   },
-  activityDescription: {
+  figureDescription: {
     fontSize: 14,
     color: '#4B5563',
-    lineHeight: 21,
-    marginLeft: 40,
+    lineHeight: 20,
   },
-  activityMaterials: {
+  // Timeline styles
+  timeline: {
+    paddingLeft: 4,
+  },
+  timelineItem: {
     flexDirection: 'row',
-    marginLeft: 40,
-    marginTop: 8,
+    marginBottom: 20,
   },
-  activityMaterialsLabel: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#6B7280',
+  timelineLeft: {
+    alignItems: 'center',
+    width: 24,
+    marginRight: 12,
   },
-  activityMaterialsText: {
+  timelineDot: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: colors.forestGreen,
+  },
+  timelineLine: {
     flex: 1,
-    fontSize: 13,
-    color: '#6B7280',
-    marginLeft: 4,
+    width: 2,
+    backgroundColor: colors.forestGreen + '30',
+    marginTop: 4,
   },
-  questionCard: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    backgroundColor: '#F0FDF4',
-    borderRadius: 12,
-    padding: 14,
-    marginBottom: 10,
+  timelineContent: {
+    flex: 1,
+    paddingBottom: 4,
   },
-  questionNumber: {
-    fontSize: 13,
+  timelineYear: {
+    fontSize: 15,
     fontWeight: '700',
     color: colors.forestGreen,
-    marginRight: 10,
+    marginBottom: 4,
   },
-  questionText: {
-    flex: 1,
-    fontSize: 15,
-    color: '#374151',
-    lineHeight: 22,
-  },
-  assessmentText: {
-    fontSize: 15,
-    color: '#374151',
-    lineHeight: 22,
-  },
-  curriculumCard: {
-    backgroundColor: '#F9FAFB',
-    borderRadius: 12,
-    padding: 14,
-    marginBottom: 10,
-  },
-  curriculumProvince: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: colors.darkGreen,
-    marginBottom: 10,
-  },
-  relatedSection: {
-    backgroundColor: 'white',
-    marginTop: 12,
-    padding: 20,
-  },
-  relatedTitle: {
+  timelineTitle: {
     fontSize: 16,
     fontWeight: '600',
     color: colors.darkGreen,
-    marginBottom: 12,
+    marginBottom: 4,
   },
-  relatedButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: colors.forestGreen + '10',
-    padding: 14,
+  timelineDescription: {
+    fontSize: 14,
+    color: '#4B5563',
+    lineHeight: 20,
+  },
+  // Gallery styles
+  galleryItem: {
+    marginBottom: 16,
+  },
+  galleryImage: {
+    width: '100%',
+    height: 200,
     borderRadius: 12,
   },
-  relatedButtonText: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: colors.forestGreen,
+  galleryCaption: {
+    fontSize: 14,
+    color: '#374151',
+    marginTop: 8,
+    lineHeight: 20,
+  },
+  galleryCredit: {
+    fontSize: 12,
+    color: '#9CA3AF',
+    marginTop: 4,
+    fontStyle: 'italic',
   },
   bottomSpacer: {
     height: 32,
