@@ -29,7 +29,7 @@ export interface LessonPlanDetail extends LessonPlanSummary {
   curriculumConnections: CurriculumConnection[] | null;
   objectives: string[];
   materials: string[] | null;
-  activities: LessonPlanActivity[] | null;
+  activities: (LessonPlanActivity | string)[] | null;
   discussionQuestions: string[] | null;
   assessmentSuggestions: string | null;
   extensionActivities: string | null;

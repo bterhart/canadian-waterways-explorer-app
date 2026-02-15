@@ -146,28 +146,40 @@ export default function TeacherLessonPlanDetailScreen() {
           title="Activities"
           icon={<Play size={20} color={colors.forestGreen} />}
         >
-          {lesson.activities.map((activity, index) => (
-            <View key={index} style={styles.activityCard}>
-              <View style={styles.activityHeader}>
-                <Text style={styles.activityNumber}>{index + 1}</Text>
-                <View style={styles.activityTitleRow}>
-                  <Text style={styles.activityTitle}>{activity.title}</Text>
-                  <Text style={styles.activityDuration}>{activity.duration}</Text>
+          {lesson.activities.map((activity, index) => {
+            // Handle both string activities and object activities
+            if (typeof activity === 'string') {
+              return (
+                <View key={index} style={styles.listItem}>
+                  <View style={styles.bulletPoint} />
+                  <Text style={styles.listItemText}>{activity}</Text>
                 </View>
+              );
+            }
+            // Object activity with title, duration, description
+            return (
+              <View key={index} style={styles.activityCard}>
+                <View style={styles.activityHeader}>
+                  <Text style={styles.activityNumber}>{index + 1}</Text>
+                  <View style={styles.activityTitleRow}>
+                    <Text style={styles.activityTitle}>{activity.title}</Text>
+                    <Text style={styles.activityDuration}>{activity.duration}</Text>
+                  </View>
+                </View>
+                <Text style={styles.activityDescription}>
+                  {activity.description}
+                </Text>
+                {activity.materials && activity.materials.length > 0 ? (
+                  <View style={styles.activityMaterials}>
+                    <Text style={styles.activityMaterialsLabel}>Materials:</Text>
+                    <Text style={styles.activityMaterialsText}>
+                      {activity.materials.join(', ')}
+                    </Text>
+                  </View>
+                ) : null}
               </View>
-              <Text style={styles.activityDescription}>
-                {activity.description}
-              </Text>
-              {activity.materials && activity.materials.length > 0 ? (
-                <View style={styles.activityMaterials}>
-                  <Text style={styles.activityMaterialsLabel}>Materials:</Text>
-                  <Text style={styles.activityMaterialsText}>
-                    {activity.materials.join(', ')}
-                  </Text>
-                </View>
-              ) : null}
-            </View>
-          ))}
+            );
+          })}
         </Section>
       ) : null}
 
