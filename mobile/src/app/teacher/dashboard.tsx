@@ -22,6 +22,7 @@ import {
 } from 'lucide-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTeacherClasses } from '@/lib/api/education-api';
+import { setAuthToken } from '@/lib/api/api';
 import type { ClassSummary, Teacher } from '@/lib/types/education';
 
 const colors = {
@@ -49,7 +50,11 @@ export default function TeacherDashboardScreen() {
     try {
       const stored = await AsyncStorage.getItem(TEACHER_SESSION_KEY);
       if (stored) {
-        setTeacher(JSON.parse(stored));
+        const data = JSON.parse(stored);
+        if (data.accessToken) {
+          setAuthToken(data.accessToken);
+        }
+        setTeacher(data);
       } else {
         router.replace('/teacher/login');
       }

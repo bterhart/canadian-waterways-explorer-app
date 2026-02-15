@@ -314,6 +314,8 @@ export interface TeacherLoginPayload {
 export interface TeacherLoginResponse {
   success: boolean;
   teacher: Teacher;
+  accessToken: string;
+  refreshToken: string;
 }
 
 // Class types

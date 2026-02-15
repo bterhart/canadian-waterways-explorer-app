@@ -48,7 +48,7 @@ export default function TeacherLoginScreen() {
       if (result.success && result.teacher) {
         await AsyncStorage.setItem(
           TEACHER_SESSION_KEY,
-          JSON.stringify(result.teacher)
+          JSON.stringify({ ...result.teacher, accessToken: result.accessToken })
         );
         router.replace('/teacher/dashboard');
       }
