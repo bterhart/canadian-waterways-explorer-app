@@ -155,7 +155,10 @@ export interface AdminLoginResponse {
   admin?: {
     email: string;
     name: string;
+    role: 'super_admin' | 'moderator';
   };
+  accessToken?: string;
+  refreshToken?: string;
 }
 
 export interface PendingContribution extends UserContribution {

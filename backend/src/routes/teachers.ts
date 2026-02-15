@@ -132,6 +132,47 @@ teachersRouter.post(
       );
     }
 
+    // Check approval status before allowing login
+    if (teacher.status === "pending") {
+      return c.json(
+        {
+          error: {
+            message: "Your account is pending approval. Please wait for an administrator to approve your registration.",
+            code: "PENDING_APPROVAL",
+          },
+        },
+        403
+      );
+    }
+
+    if (teacher.status === "rejected") {
+      return c.json(
+        {
+          error: {
+            message: teacher.rejectionReason
+              ? `Your account registration was rejected: ${teacher.rejectionReason}`
+              : "Your account registration was rejected. Please contact an administrator for more information.",
+            code: "ACCOUNT_REJECTED",
+          },
+        },
+        403
+      );
+    }
+
+    if (teacher.status === "suspended") {
+      return c.json(
+        {
+          error: {
+            message: teacher.rejectionReason
+              ? `Your account has been suspended: ${teacher.rejectionReason}`
+              : "Your account has been suspended. Please contact an administrator for more information.",
+            code: "ACCOUNT_SUSPENDED",
+          },
+        },
+        403
+      );
+    }
+
     // Verify password using Bun's password verification (matches Bun.password.hash used during registration)
     const isValid = await Bun.password.verify(password, teacher.passwordHash);
 
@@ -178,7 +219,7 @@ teachersRouter.post(
       email: teacher.email,
       role: "teacher",
       type: "teacher",
-      status: "approved",
+      status: teacher.status,
     });
 
     const refreshToken = generateRefreshToken({
@@ -186,7 +227,7 @@ teachersRouter.post(
       email: teacher.email,
       role: "teacher",
       type: "teacher",
-      status: "approved",
+      status: teacher.status,
     });
 
     // Log successful login

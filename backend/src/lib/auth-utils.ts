@@ -121,7 +121,9 @@ export interface EmailNotification {
     | "admin_registration"
     | "admin_approved"
     | "admin_rejected"
-    | "content_approved";
+    | "content_approved"
+    | "teacher_approved"
+    | "teacher_rejected";
 }
 
 export function sendEmailNotification(notification: EmailNotification): void {

@@ -36,8 +36,10 @@ import {
   useAdminDocuments,
   useAdminPrintables,
   usePendingAdmins,
+  usePendingTeachers,
 } from '@/lib/api/admin-api';
 import { useAdminQuizzes } from '@/lib/api/waterways-api';
+import { setAuthToken } from '@/lib/api/api';
 
 // Theme colors
 const colors = {
@@ -105,6 +107,7 @@ export default function AdminScreen() {
   const { data: printables } = useAdminPrintables();
   const { data: quizzes } = useAdminQuizzes();
   const { data: pendingAdmins } = usePendingAdmins(isLoggedIn && adminRole === 'super_admin');
+  const { data: pendingTeachers } = usePendingTeachers(isLoggedIn && adminRole === 'super_admin');
   const { data: pendingContributions } = usePendingContributions(isLoggedIn);
 
   const showFeedback = (type: 'success' | 'error', message: string) => {
@@ -121,11 +124,17 @@ export default function AdminScreen() {
     try {
       const result = await loginMutation.mutateAsync({ email: email.trim(), password });
       if (result?.success) {
+        // Store the auth token for authenticated API requests
+        if (result.accessToken) {
+          setAuthToken(result.accessToken);
+        }
         setIsLoggedIn(true);
         setPassword('');
-        // In a real app, you'd get the role from the API response
-        setAdminRole('super_admin'); // Temporary - should come from API
+        // Get the role from the API response
+        setAdminRole(result.admin?.role ?? 'moderator');
         showFeedback('success', 'Login successful');
+        // Invalidate queries to refetch with auth token
+        queryClient.invalidateQueries();
       } else {
         showFeedback('error', result?.message || 'Login failed');
       }
@@ -135,9 +144,13 @@ export default function AdminScreen() {
   };
 
   const handleLogout = () => {
+    // Clear auth token on logout
+    setAuthToken(null);
     setIsLoggedIn(false);
     setEmail('');
     setPassword('');
+    // Clear cached data
+    queryClient.clear();
   };
 
   // Login form
@@ -244,10 +257,18 @@ export default function AdminScreen() {
               />
               <View style={styles.divider} />
               <MenuItem
-                icon={<CheckCircle size={24} color={colors.waterBlue} />}
+                icon={<GraduationCap size={24} color={colors.waterBlue} />}
+                label="Pending Teacher Approvals"
+                count={pendingTeachers?.length ?? 0}
+                onPress={() => router.push('/admin/teacher-approvals')}
+                color={colors.waterBlue}
+              />
+              <View style={styles.divider} />
+              <MenuItem
+                icon={<CheckCircle size={24} color={colors.forestGreen} />}
                 label="All Admin Users"
                 onPress={() => router.push('/admin/users')}
-                color={colors.waterBlue}
+                color={colors.forestGreen}
               />
             </View>
           </>

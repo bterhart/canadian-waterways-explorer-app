@@ -19,6 +19,26 @@ export interface AdminUser {
   lastLoginAt: string | null;
 }
 
+// =========== Teacher Types ===========
+
+export interface Teacher {
+  id: string;
+  email: string;
+  name: string;
+  schoolName: string;
+  schoolDistrict: string;
+  province: string;
+  status: 'pending' | 'approved' | 'rejected';
+  approvedBy: string | null;
+  approvedAt: string | null;
+  rejectionReason: string | null;
+  createdAt: string;
+}
+
+export interface TeacherRejectPayload {
+  rejectionReason: string;
+}
+
 export interface AdminRegisterPayload {
   email: string;
   name: string;
@@ -265,6 +285,11 @@ export const adminApprovalKeys = {
   allAdmins: (status?: string) => [...adminApprovalKeys.all, 'all', status] as const,
 };
 
+export const teacherApprovalKeys = {
+  all: ['teacher-approval'] as const,
+  pending: () => [...teacherApprovalKeys.all, 'pending'] as const,
+};
+
 export const adminLessonPlansKeys = {
   all: ['admin-lesson-plans'] as const,
   lists: () => [...adminLessonPlansKeys.all, 'list'] as const,
@@ -356,6 +381,38 @@ export function useGrantSuperAdmin() {
       api.post<{ message: string; admin: AdminUser }>(`/api/admin-approval/grant-super-admin/${id}`, { confirm: true }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: adminApprovalKeys.all });
+    },
+  });
+}
+
+// =========== Teacher Approval Hooks ===========
+
+export function usePendingTeachers(enabled: boolean = false) {
+  return useQuery({
+    queryKey: teacherApprovalKeys.pending(),
+    queryFn: () => api.get<Teacher[]>('/api/teacher-approval/pending'),
+    enabled,
+  });
+}
+
+export function useApproveTeacher() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) =>
+      api.post<{ message: string; teacher: Teacher }>(`/api/teacher-approval/approve/${id}`, {}),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: teacherApprovalKeys.pending() });
+    },
+  });
+}
+
+export function useRejectTeacher() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, payload }: { id: string; payload: TeacherRejectPayload }) =>
+      api.post<{ message: string; teacher: Teacher }>(`/api/teacher-approval/reject/${id}`, payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: teacherApprovalKeys.pending() });
     },
   });
 }

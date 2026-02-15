@@ -7,13 +7,30 @@ interface ApiResponse<T> {
 
 const baseUrl = process.env.EXPO_PUBLIC_BACKEND_URL!;
 
+// Auth token storage for authenticated API requests
+let authToken: string | null = null;
+
+export const setAuthToken = (token: string | null) => {
+  authToken = token;
+};
+
+export const getAuthToken = () => authToken;
+
 const request = async <T>(
   url: string,
   options: { method?: string; body?: string } = {}
 ): Promise<T> => {
+  const headers: Record<string, string> = {};
+  if (options.body) {
+    headers["Content-Type"] = "application/json";
+  }
+  if (authToken) {
+    headers["Authorization"] = `Bearer ${authToken}`;
+  }
+
   const response = await fetch(`${baseUrl}${url}`, {
     ...options,
-    headers: options.body ? { "Content-Type": "application/json" } : undefined,
+    headers: Object.keys(headers).length > 0 ? headers : undefined,
   });
 
   // 1. Handle 204 No Content
