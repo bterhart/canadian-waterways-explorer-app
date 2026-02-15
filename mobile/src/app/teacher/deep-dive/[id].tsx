@@ -192,6 +192,33 @@ export default function TeacherDeepDiveDetailScreen() {
         </View>
       </View>
 
+      {/* Narrative Content (Student-Facing Story) */}
+      {lesson.narrativeContent ? (
+        <Section
+          title="The Story"
+          icon={<BookOpen size={20} color={colors.forestGreen} />}
+        >
+          <MarkdownContent
+            content={lesson.narrativeContent}
+            accentColor={colors.forestGreen}
+          />
+        </Section>
+      ) : null}
+
+      {/* Main Content (Teacher Expansion & Context) */}
+      {lesson.mainContent ? (
+        <Section
+          title="Teaching Context & Extensions"
+          icon={<GraduationCap size={20} color={colors.teacherPurple} />}
+          teacherOnly
+        >
+          <MarkdownContent
+            content={lesson.mainContent}
+            accentColor={colors.teacherPurple}
+          />
+        </Section>
+      ) : null}
+
       {/* Teacher Notes */}
       {lesson.teacherNotes ? (
         <Section
