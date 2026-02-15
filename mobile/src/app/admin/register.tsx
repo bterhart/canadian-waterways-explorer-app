@@ -1,4 +1,4 @@
-// Teacher Registration Screen
+// Admin Registration Screen
 import React, { useState } from 'react';
 import {
   View,
@@ -14,56 +14,37 @@ import {
 } from 'react-native';
 import { useRouter, Stack, Link } from 'expo-router';
 import {
-  GraduationCap,
+  Shield,
   Mail,
   Lock,
   User,
   Building,
-  MapPin,
   Eye,
   EyeOff,
   CheckCircle,
 } from 'lucide-react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useTeacherRegister } from '@/lib/api/education-api';
+import { useRegisterAdmin } from '@/lib/api/admin-api';
 
 const colors = {
   forestGreen: '#2D5A3D',
   creamWhite: '#FFFEF7',
   darkGreen: '#1A3A24',
+  gold: '#C9A227',
+  gray100: '#F3F4F6',
+  gray500: '#6B7280',
 };
 
-const TEACHER_SESSION_KEY = '@waterways_teacher_session';
-
-const PROVINCES = [
-  'Alberta',
-  'British Columbia',
-  'Manitoba',
-  'New Brunswick',
-  'Newfoundland and Labrador',
-  'Northwest Territories',
-  'Nova Scotia',
-  'Nunavut',
-  'Ontario',
-  'Prince Edward Island',
-  'Quebec',
-  'Saskatchewan',
-  'Yukon',
-];
-
-export default function TeacherRegisterScreen() {
+export default function AdminRegisterScreen() {
   const router = useRouter();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [schoolName, setSchoolName] = useState('');
-  const [schoolDistrict, setSchoolDistrict] = useState('');
-  const [province, setProvince] = useState('');
+  const [organization, setOrganization] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [registrationComplete, setRegistrationComplete] = useState(false);
 
-  const registerMutation = useTeacherRegister();
+  const registerMutation = useRegisterAdmin();
 
   const handleRegister = async () => {
     if (!name.trim() || !email.trim() || !password.trim()) {
@@ -89,18 +70,14 @@ export default function TeacherRegisterScreen() {
         name: name.trim(),
         email: email.trim().toLowerCase(),
         password,
-        schoolName: schoolName.trim() || undefined,
-        schoolDistrict: schoolDistrict.trim() || undefined,
-        province: province || undefined,
+        organization: organization.trim() || undefined,
       });
 
-      // Show success state - account is pending approval
+      // Show success state instead of navigating
       setRegistrationComplete(true);
-    } catch (error) {
-      Alert.alert(
-        'Registration Failed',
-        'Unable to create account. This email may already be registered.'
-      );
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Unable to submit request. This email may already be registered.';
+      Alert.alert('Registration Failed', errorMessage);
     }
   };
 
@@ -110,7 +87,7 @@ export default function TeacherRegisterScreen() {
       <View style={styles.container}>
         <Stack.Screen
           options={{
-            title: 'Registration Complete',
+            title: 'Request Submitted',
             headerStyle: { backgroundColor: colors.forestGreen },
             headerTintColor: 'white',
           }}
@@ -119,26 +96,26 @@ export default function TeacherRegisterScreen() {
           <View style={styles.successIconContainer}>
             <CheckCircle size={64} color={colors.forestGreen} />
           </View>
-          <Text style={styles.successTitle}>Registration Complete</Text>
+          <Text style={styles.successTitle}>Request Submitted</Text>
           <Text style={styles.successMessage}>
-            Your teacher account has been created successfully.
+            Your admin access request has been submitted successfully.
           </Text>
           <Text style={styles.successDetail}>
-            Your account is pending approval by an administrator. You will be able to sign in once your account has been approved. This process typically takes 1-2 business days.
+            A Super Admin will review your request and you will be notified once your account is approved. This process typically takes 1-2 business days.
           </Text>
           <View style={styles.infoBox}>
             <Text style={styles.infoTitle}>What happens next?</Text>
             <Text style={styles.infoText}>
-              1. An administrator reviews your application{'\n'}
-              2. You'll receive approval notification{'\n'}
+              1. A Super Admin reviews your request{'\n'}
+              2. You'll receive approval or feedback{'\n'}
               3. Once approved, sign in with your credentials
             </Text>
           </View>
           <Pressable
             style={styles.backButton}
-            onPress={() => router.replace('/teacher/login')}
+            onPress={() => router.replace('/(tabs)/admin')}
           >
-            <Text style={styles.backButtonText}>Return to Login</Text>
+            <Text style={styles.backButtonText}>Return to Admin Login</Text>
           </Pressable>
         </View>
       </View>
@@ -152,7 +129,7 @@ export default function TeacherRegisterScreen() {
     >
       <Stack.Screen
         options={{
-          title: 'Create Account',
+          title: 'Request Admin Access',
           headerStyle: { backgroundColor: colors.forestGreen },
           headerTintColor: 'white',
         }}
@@ -166,11 +143,11 @@ export default function TeacherRegisterScreen() {
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.iconContainer}>
-            <GraduationCap size={40} color={colors.forestGreen} />
+            <Shield size={40} color={colors.gold} />
           </View>
-          <Text style={styles.title}>Join the Teacher Portal</Text>
+          <Text style={styles.title}>Request Admin Access</Text>
           <Text style={styles.subtitle}>
-            Create your account to access educational resources
+            Submit your request to become a content administrator
           </Text>
         </View>
 
@@ -205,6 +182,21 @@ export default function TeacherRegisterScreen() {
                 keyboardType="email-address"
                 autoCapitalize="none"
                 autoCorrect={false}
+              />
+            </View>
+          </View>
+
+          {/* Organization */}
+          <View style={styles.inputGroup}>
+            <Text style={styles.inputLabel}>Organization (optional)</Text>
+            <View style={styles.inputWrapper}>
+              <Building size={20} color="#9CA3AF" style={styles.inputIcon} />
+              <TextInput
+                style={styles.input}
+                value={organization}
+                onChangeText={setOrganization}
+                placeholder="School, institution, or organization"
+                placeholderTextColor="#9CA3AF"
               />
             </View>
           </View>
@@ -251,51 +243,6 @@ export default function TeacherRegisterScreen() {
             </View>
           </View>
 
-          {/* School Name */}
-          <View style={styles.inputGroup}>
-            <Text style={styles.inputLabel}>School Name (optional)</Text>
-            <View style={styles.inputWrapper}>
-              <Building size={20} color="#9CA3AF" style={styles.inputIcon} />
-              <TextInput
-                style={styles.input}
-                value={schoolName}
-                onChangeText={setSchoolName}
-                placeholder="Enter your school name"
-                placeholderTextColor="#9CA3AF"
-              />
-            </View>
-          </View>
-
-          {/* School District */}
-          <View style={styles.inputGroup}>
-            <Text style={styles.inputLabel}>School District (optional)</Text>
-            <View style={styles.inputWrapper}>
-              <Building size={20} color="#9CA3AF" style={styles.inputIcon} />
-              <TextInput
-                style={styles.input}
-                value={schoolDistrict}
-                onChangeText={setSchoolDistrict}
-                placeholder="Enter your school district"
-                placeholderTextColor="#9CA3AF"
-              />
-            </View>
-          </View>
-
-          {/* Province */}
-          <View style={styles.inputGroup}>
-            <Text style={styles.inputLabel}>Province/Territory (optional)</Text>
-            <View style={styles.inputWrapper}>
-              <MapPin size={20} color="#9CA3AF" style={styles.inputIcon} />
-              <TextInput
-                style={styles.input}
-                value={province}
-                onChangeText={setProvince}
-                placeholder="Select your province"
-                placeholderTextColor="#9CA3AF"
-              />
-            </View>
-          </View>
-
           <Pressable
             style={[
               styles.registerButton,
@@ -307,19 +254,26 @@ export default function TeacherRegisterScreen() {
             {registerMutation.isPending ? (
               <ActivityIndicator size="small" color="white" />
             ) : (
-              <Text style={styles.registerButtonText}>Create Account</Text>
+              <Text style={styles.registerButtonText}>Submit Request</Text>
             )}
           </Pressable>
         </View>
 
         {/* Login Link */}
         <View style={styles.loginSection}>
-          <Text style={styles.loginText}>Already have an account?</Text>
-          <Link href="/teacher/login" asChild>
+          <Text style={styles.loginText}>Already have admin access?</Text>
+          <Link href="/(tabs)/admin" asChild>
             <Pressable>
               <Text style={styles.loginLink}>Sign In</Text>
             </Pressable>
           </Link>
+        </View>
+
+        {/* Note */}
+        <View style={styles.noteSection}>
+          <Text style={styles.noteText}>
+            Admin access allows you to create and manage educational content for the Canadian Waterways Explorer platform. All requests are reviewed by Super Admins.
+          </Text>
         </View>
 
         <View style={styles.bottomSpacer} />
@@ -345,7 +299,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: colors.forestGreen + '15',
+    backgroundColor: colors.gold + '20',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 16,
@@ -418,6 +372,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     gap: 6,
+    marginBottom: 24,
   },
   loginText: {
     fontSize: 14,
@@ -427,6 +382,17 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     color: colors.forestGreen,
+  },
+  noteSection: {
+    backgroundColor: colors.gray100,
+    padding: 16,
+    borderRadius: 12,
+  },
+  noteText: {
+    fontSize: 13,
+    color: colors.gray500,
+    textAlign: 'center',
+    lineHeight: 20,
   },
   bottomSpacer: {
     height: 32,
@@ -463,14 +429,14 @@ const styles = StyleSheet.create({
   },
   successDetail: {
     fontSize: 14,
-    color: '#6B7280',
+    color: colors.gray500,
     textAlign: 'center',
     lineHeight: 22,
     marginBottom: 24,
     paddingHorizontal: 16,
   },
   infoBox: {
-    backgroundColor: '#F3F4F6',
+    backgroundColor: colors.gray100,
     padding: 20,
     borderRadius: 16,
     width: '100%',
@@ -484,7 +450,7 @@ const styles = StyleSheet.create({
   },
   infoText: {
     fontSize: 14,
-    color: '#6B7280',
+    color: colors.gray500,
     lineHeight: 24,
   },
   backButton: {

@@ -10,7 +10,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, Link } from 'expo-router';
 import { useQueryClient } from '@tanstack/react-query';
 import {
   BookOpen,
@@ -214,6 +214,16 @@ export default function AdminScreen() {
                 <Text style={styles.loginButtonText}>Sign In</Text>
               )}
             </Pressable>
+
+            {/* Register Link */}
+            <View style={styles.registerSection}>
+              <Text style={styles.registerText}>Need admin access?</Text>
+              <Link href="/admin/register" asChild>
+                <Pressable>
+                  <Text style={styles.registerLink}>Request Access</Text>
+                </Pressable>
+              </Link>
+            </View>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -586,5 +596,23 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: colors.gray500,
     textAlign: 'center',
+  },
+
+  // Register link styles
+  registerSection: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 6,
+    marginTop: 20,
+  },
+  registerText: {
+    fontSize: 14,
+    color: colors.gray500,
+  },
+  registerLink: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: colors.forestGreen,
   },
 });

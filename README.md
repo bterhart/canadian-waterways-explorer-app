@@ -39,6 +39,45 @@ An interactive educational map app showcasing Canada's major waterways, their In
   - Admin: admin@canadianwaterways.ca / Admin123!
   - Super-Admin: superadmin@canadianwaterways.ca / SuperAdmin123!
 
+### Teacher & Admin Access Application Process
+
+#### How Teachers Apply for Access
+1. Open the app and navigate to the **Teacher Portal** (via the Learn tab or settings)
+2. On the login screen, tap **"Create an Account"**
+3. Fill out the registration form:
+   - Full Name (required)
+   - Email (required)
+   - Password (minimum 8 characters, required)
+   - School Name (optional)
+   - School District (optional)
+   - Province/Territory (optional)
+4. Tap **"Create Account"**
+5. Your account is created with **"pending"** status
+6. Wait for an administrator to approve your account (typically 1-2 business days)
+7. Once approved, sign in with your credentials to access the Teacher Dashboard
+
+#### How Admins Apply for Access
+1. Open the app and navigate to the **Admin** tab
+2. On the login screen, tap **"Request Access"**
+3. Fill out the registration form:
+   - Full Name (required)
+   - Email (required)
+   - Organization (optional)
+   - Password (minimum 8 characters, required)
+4. Tap **"Submit Request"**
+5. Your account is created with **"pending"** status and **"moderator"** role
+6. Wait for a Super Admin to review and approve your request
+7. Once approved, sign in to access the Admin Dashboard
+
+#### How Super Admins Approve Requests
+1. Sign in to the Admin tab as a **Super Admin**
+2. View **"Pending Teacher Approvals"** to see teacher requests
+3. View **"Pending Admin Approvals"** to see admin requests
+4. For each request, you can:
+   - **Approve**: Grant access to the applicant
+   - **Reject**: Deny access with a required reason (minimum 10 characters)
+5. Approved admins start as "moderators" and can be promoted to Super Admin if needed
+
 ### RCGS Educational Quizzes
 - **Quiz Categories**: Explorers, Fur Trade, Maritime History, Indigenous Heritage, Geography, Archaeological Discoveries
 - **Grade Levels**: K-3, 4-6, 7-9, 10-12, and All
