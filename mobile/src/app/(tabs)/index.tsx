@@ -1,7 +1,8 @@
 // Interactive Map Screen for Canadian Waterways Education
 import React, { useState, useRef, useCallback, useMemo, useEffect } from 'react';
-import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, Text, ActivityIndicator, StyleSheet, TouchableOpacity, Animated } from 'react-native';
 import MapView, { Marker, Callout, PROVIDER_DEFAULT, Region, Polyline, Polygon } from 'react-native-maps';
+import { Menu } from 'lucide-react-native';
 import { useWaterways, useLocations } from '@/lib/api/waterways-api';
 import DetailBottomSheet, { DetailBottomSheetRef } from '@/components/DetailBottomSheet';
 import type { MarkerType, Waterway, Location } from '@/lib/types/waterways';
@@ -81,12 +82,17 @@ export default function MapScreen() {
     id: string;
     type: MarkerType;
   } | null>(null);
+  const [legendVisible, setLegendVisible] = useState(false);
 
   const bottomSheetRef = useRef<DetailBottomSheetRef>(null);
   const mapRef = useRef<MapView>(null);
 
   const isLoading = waterwaysLoading || locationsLoading;
   const isError = waterwaysError || locationsError;
+
+  const toggleLegend = useCallback(() => {
+    setLegendVisible(prev => !prev);
+  }, []);
 
   // Find selected waterway for highlighting
   const selectedWaterway = useMemo(() => {
@@ -258,40 +264,51 @@ export default function MapScreen() {
         ) : null}
       </MapView>
 
-      {/* Legend */}
-      <View style={styles.legend}>
-        <Text style={styles.legendTitle}>{t('mapLegend')}</Text>
-        <View style={styles.legendSection}>
-          <Text style={styles.legendSectionTitle}>{t('waterways')}</Text>
-          <View style={styles.legendRow}>
-            <View style={[styles.legendDot, { backgroundColor: markerColors.River }]} />
-            <Text style={styles.legendText}>{t('river')}</Text>
+      {/* Legend Toggle Button */}
+      <TouchableOpacity
+        style={styles.legendButton}
+        onPress={toggleLegend}
+        activeOpacity={0.8}
+      >
+        <Menu size={24} color="#2D5A3D" />
+      </TouchableOpacity>
+
+      {/* Legend Dropdown */}
+      {legendVisible ? (
+        <View style={styles.legend}>
+          <Text style={styles.legendTitle}>{t('mapLegend')}</Text>
+          <View style={styles.legendSection}>
+            <Text style={styles.legendSectionTitle}>{t('waterways')}</Text>
+            <View style={styles.legendRow}>
+              <View style={[styles.legendDot, { backgroundColor: markerColors.River }]} />
+              <Text style={styles.legendText}>{t('river')}</Text>
+            </View>
+            <View style={styles.legendRow}>
+              <View style={[styles.legendDot, { backgroundColor: markerColors.Lake }]} />
+              <Text style={styles.legendText}>{t('lake')}</Text>
+            </View>
+            <View style={styles.legendRow}>
+              <View style={[styles.legendDot, { backgroundColor: markerColors.Bay }]} />
+              <Text style={styles.legendText}>{t('bay')}</Text>
+            </View>
           </View>
-          <View style={styles.legendRow}>
-            <View style={[styles.legendDot, { backgroundColor: markerColors.Lake }]} />
-            <Text style={styles.legendText}>{t('lake')}</Text>
-          </View>
-          <View style={styles.legendRow}>
-            <View style={[styles.legendDot, { backgroundColor: markerColors.Bay }]} />
-            <Text style={styles.legendText}>{t('bay')}</Text>
+          <View style={styles.legendSection}>
+            <Text style={styles.legendSectionTitle}>{t('locations')}</Text>
+            <View style={styles.legendRow}>
+              <View style={[styles.legendDot, { backgroundColor: markerColors.Fort }]} />
+              <Text style={styles.legendText}>{t('fort')}</Text>
+            </View>
+            <View style={styles.legendRow}>
+              <View style={[styles.legendDot, { backgroundColor: markerColors['Trading Post'] }]} />
+              <Text style={styles.legendText}>{t('tradingPost')}</Text>
+            </View>
+            <View style={styles.legendRow}>
+              <View style={[styles.legendDot, { backgroundColor: markerColors.Portage }]} />
+              <Text style={styles.legendText}>{t('portage')}</Text>
+            </View>
           </View>
         </View>
-        <View style={styles.legendSection}>
-          <Text style={styles.legendSectionTitle}>{t('locations')}</Text>
-          <View style={styles.legendRow}>
-            <View style={[styles.legendDot, { backgroundColor: markerColors.Fort }]} />
-            <Text style={styles.legendText}>{t('fort')}</Text>
-          </View>
-          <View style={styles.legendRow}>
-            <View style={[styles.legendDot, { backgroundColor: markerColors['Trading Post'] }]} />
-            <Text style={styles.legendText}>{t('tradingPost')}</Text>
-          </View>
-          <View style={styles.legendRow}>
-            <View style={[styles.legendDot, { backgroundColor: markerColors.Portage }]} />
-            <Text style={styles.legendText}>{t('portage')}</Text>
-          </View>
-        </View>
-      </View>
+      ) : null}
 
       {/* Bottom Sheet for details */}
       {selectedMarker ? (
@@ -372,9 +389,22 @@ const styles = StyleSheet.create({
     color: '#6B7280',
     marginTop: 4,
   },
-  legend: {
+  legendButton: {
     position: 'absolute',
     top: 16,
+    left: 16,
+    backgroundColor: 'rgba(255, 254, 247, 0.95)',
+    padding: 10,
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  legend: {
+    position: 'absolute',
+    top: 60,
     left: 16,
     backgroundColor: 'rgba(255, 254, 247, 0.95)',
     padding: 12,
