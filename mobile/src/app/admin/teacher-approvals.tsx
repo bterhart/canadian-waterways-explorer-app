@@ -21,6 +21,7 @@ import {
 } from 'lucide-react-native';
 import {
   usePendingTeachers,
+  useAllTeachers,
   useApproveTeacher,
   useRejectTeacher,
   teacherApprovalKeys,
@@ -52,17 +53,32 @@ interface TeacherApprovalCardProps {
 }
 
 function TeacherApprovalCard({ teacher, onApprove, onReject }: TeacherApprovalCardProps) {
+  const getStatusConfig = () => {
+    switch (teacher.status) {
+      case 'approved':
+        return { color: colors.green500, label: 'Approved' };
+      case 'rejected':
+        return { color: colors.red500, label: 'Rejected' };
+      case 'suspended':
+        return { color: colors.gray500, label: 'Suspended' };
+      default:
+        return { color: colors.waterBlue, label: 'Pending Approval' };
+    }
+  };
+
+  const statusConfig = getStatusConfig();
+
   return (
     <View style={styles.teacherCard}>
       {/* Status stripe */}
-      <View style={[styles.statusStripe, { backgroundColor: colors.waterBlue }]} />
+      <View style={[styles.statusStripe, { backgroundColor: statusConfig.color }]} />
 
       <View style={styles.cardContent}>
         {/* Status badge */}
         <View style={styles.badgesRow}>
-          <View style={[styles.statusBadge, styles.pendingBadge]}>
-            <GraduationCap size={12} color={colors.waterBlue} />
-            <Text style={[styles.statusText, { color: colors.waterBlue }]}>Pending Approval</Text>
+          <View style={[styles.statusBadge, { backgroundColor: `${statusConfig.color}20` }]}>
+            <GraduationCap size={12} color={statusConfig.color} />
+            <Text style={[styles.statusText, { color: statusConfig.color }]}>{statusConfig.label}</Text>
           </View>
         </View>
 
@@ -110,11 +126,19 @@ function TeacherApprovalCard({ teacher, onApprove, onReject }: TeacherApprovalCa
 export default function TeacherApprovalsScreen() {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { data: pendingTeachers, isLoading, error, refetch } = usePendingTeachers(true);
+  const [activeTab, setActiveTab] = useState<'pending' | 'all'>('pending');
+
+  const { data: pendingTeachers, isLoading: pendingLoading, error: pendingError, refetch: refetchPending } = usePendingTeachers(true);
+  const { data: allTeachers, isLoading: allLoading, error: allError, refetch: refetchAll } = useAllTeachers();
   const approveMutation = useApproveTeacher();
   const rejectMutation = useRejectTeacher();
 
   const [processingId, setProcessingId] = useState<string | null>(null);
+
+  const teachers = activeTab === 'pending' ? pendingTeachers : allTeachers;
+  const isLoading = activeTab === 'pending' ? pendingLoading : allLoading;
+  const error = activeTab === 'pending' ? pendingError : allError;
+  const refetch = activeTab === 'pending' ? refetchPending : refetchAll;
 
   const handleApprove = (teacher: Teacher) => {
     Alert.alert(
@@ -230,11 +254,24 @@ export default function TeacherApprovalsScreen() {
         }}
       />
 
-      {/* Header section */}
-      <View style={styles.headerSection}>
-        <Text style={styles.approvalCount}>
-          {pendingTeachers?.length ?? 0} pending approval{(pendingTeachers?.length ?? 0) !== 1 ? 's' : ''}
-        </Text>
+      {/* Tabs */}
+      <View style={styles.tabsContainer}>
+        <Pressable
+          style={[styles.tab, activeTab === 'pending' && styles.activeTab]}
+          onPress={() => setActiveTab('pending')}
+        >
+          <Text style={[styles.tabText, activeTab === 'pending' && styles.activeTabText]}>
+            Pending ({pendingTeachers?.length ?? 0})
+          </Text>
+        </Pressable>
+        <Pressable
+          style={[styles.tab, activeTab === 'all' && styles.activeTab]}
+          onPress={() => setActiveTab('all')}
+        >
+          <Text style={[styles.tabText, activeTab === 'all' && styles.activeTabText]}>
+            All Teachers ({allTeachers?.length ?? 0})
+          </Text>
+        </Pressable>
       </View>
 
       {/* Teacher list */}
@@ -243,8 +280,8 @@ export default function TeacherApprovalsScreen() {
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
       >
-        {pendingTeachers && pendingTeachers.length > 0 ? (
-          pendingTeachers.map((teacher) => (
+        {teachers && teachers.length > 0 ? (
+          teachers.map((teacher) => (
             <View key={teacher.id} style={processingId === teacher.id ? styles.processingCard : undefined}>
               {processingId === teacher.id ? (
                 <View style={styles.processingOverlay}>
@@ -277,6 +314,32 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.creamWhite,
+  },
+
+  // Tabs
+  tabsContainer: {
+    flexDirection: 'row',
+    backgroundColor: colors.white,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.gray200,
+  },
+  tab: {
+    flex: 1,
+    paddingVertical: 16,
+    alignItems: 'center',
+    borderBottomWidth: 2,
+    borderBottomColor: 'transparent',
+  },
+  activeTab: {
+    borderBottomColor: colors.forestGreen,
+  },
+  tabText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: colors.gray500,
+  },
+  activeTabText: {
+    color: colors.forestGreen,
   },
 
   // Header section

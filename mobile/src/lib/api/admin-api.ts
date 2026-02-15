@@ -28,7 +28,7 @@ export interface Teacher {
   schoolName: string;
   schoolDistrict: string;
   province: string;
-  status: 'pending' | 'approved' | 'rejected';
+  status: 'pending' | 'approved' | 'rejected' | 'suspended';
   approvedBy: string | null;
   approvedAt: string | null;
   rejectionReason: string | null;
@@ -288,6 +288,7 @@ export const adminApprovalKeys = {
 export const teacherApprovalKeys = {
   all: ['teacher-approval'] as const,
   pending: () => [...teacherApprovalKeys.all, 'pending'] as const,
+  allTeachers: (status?: string) => [...teacherApprovalKeys.all, 'all-teachers', status ?? 'all'] as const,
 };
 
 export const adminLessonPlansKeys = {
@@ -395,6 +396,17 @@ export function usePendingTeachers(enabled: boolean = false) {
   });
 }
 
+export function useAllTeachers(status?: string) {
+  return useQuery({
+    queryKey: teacherApprovalKeys.allTeachers(status),
+    queryFn: () => {
+      const params = new URLSearchParams();
+      if (status) params.append('status', status);
+      return api.get<Teacher[]>(`/api/teacher-approval/all${status ? `?${params.toString()}` : ''}`);
+    },
+  });
+}
+
 export function useApproveTeacher() {
   const queryClient = useQueryClient();
   return useMutation({
@@ -402,6 +414,7 @@ export function useApproveTeacher() {
       api.post<{ message: string; teacher: Teacher }>(`/api/teacher-approval/approve/${id}`, {}),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: teacherApprovalKeys.pending() });
+      queryClient.invalidateQueries({ queryKey: teacherApprovalKeys.all });
     },
   });
 }
@@ -413,6 +426,7 @@ export function useRejectTeacher() {
       api.post<{ message: string; teacher: Teacher }>(`/api/teacher-approval/reject/${id}`, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: teacherApprovalKeys.pending() });
+      queryClient.invalidateQueries({ queryKey: teacherApprovalKeys.all });
     },
   });
 }
