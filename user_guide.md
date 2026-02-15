@@ -293,11 +293,30 @@ Visualize 1,000 years of exploration history:
 
 The Teacher Portal provides tools for managing classroom learning.
 
-### Getting Started
+### How to Apply for Teacher Access
+
+1. Open the app and navigate to the **Teacher Portal** (via the Learn tab)
+2. On the login screen, tap **"Create an Account"**
+3. Fill out the registration form:
+   - Full Name (required)
+   - Email (required)
+   - Password (minimum 8 characters, required)
+   - School Name (optional)
+   - School District (optional)
+   - Province/Territory (optional)
+4. Tap **"Create Account"**
+5. Your account is created with **"pending"** status
+6. Wait for an administrator to approve your account (typically 1-2 business days)
+7. Once approved, sign in with your credentials to access the Teacher Dashboard
+
+**Test Account Available:**
+- Teacher: teacher@canadianwaterways.ca / Teacher123!
+
+### Getting Started (After Approval)
 
 1. Tap "Learn" tab
 2. Tap "Teacher Portal"
-3. Register with your school email or log in
+3. Log in with your approved credentials
 
 ### Dashboard Features
 
@@ -486,26 +505,30 @@ For administrators managing educational content.
 
 ### Admin Registration & Approval Process
 
-**New Admin Registration:**
-1. Navigate to admin registration page
-2. Provide: name, email, password (min 12 chars, must include upper, lower, number, special character), organization
-3. Account created with "pending" status
-4. Super-admin receives notification of new admin request
+**How to Apply for Admin Access:**
+1. Open the app and navigate to the **Admin** tab
+2. On the login screen, tap **"Request Access"**
+3. Fill out the registration form:
+   - Full Name (required)
+   - Email (required)
+   - Organization (optional)
+   - Password (minimum 8 characters, required)
+4. Tap **"Submit Request"**
+5. Your account is created with **"pending"** status and **"moderator"** role
+6. Wait for a Super Admin to review and approve your request
+7. Once approved, sign in to access the Admin Dashboard
 
 **Super-Admin Approval:**
 - Only super-admins can approve new admin accounts
 - Super-admin reviews: name, email, organization, registration date
 - Options:
   - **Approve** - Grant admin access with specified permissions
-  - **Approve with Super-Admin privileges** - Grant super-admin role (use sparingly)
-  - **Reject** - Deny access with reason
-- Approved admins receive email confirmation and can login
+  - **Reject** - Deny access with reason (minimum 10 characters required)
+- Approved admins can then login and access the Admin Dashboard
 
-**Initial Super-Admin Access:**
-- Email: superadmin@waterways.edu
-- Password: SecurePassword123!
-- **CRITICAL**: Change password immediately after first login
-- Super-admin can grant super-admin privilege to other admins
+**Test Accounts Available:**
+- Admin: admin@canadianwaterways.ca / Admin123!
+- Super-Admin: superadmin@canadianwaterways.ca / SuperAdmin123!
 
 ### Admin Roles & Permissions
 

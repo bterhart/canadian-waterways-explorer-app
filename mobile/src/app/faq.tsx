@@ -175,8 +175,20 @@ const FAQ_DATA: FAQItem[] = [
   // For Teachers
   {
     id: 'teacher-account',
-    question: 'How do I create a teacher account?',
-    answer: 'Go to Learn > Teacher Portal and tap "Register." Enter your email, name, school, and create a password. Once registered, you can create classes, assign content, and track student progress.',
+    question: 'How do I apply for teacher access?',
+    answer: 'Go to Learn > Teacher Portal, tap "Create an Account," and fill out the registration form with your name, email, password, and optional school information. Your account will be created with "pending" status. An administrator will review and approve your application (typically 1-2 business days). Once approved, you can sign in and access all teacher features.',
+    category: 'For Teachers',
+  },
+  {
+    id: 'teacher-approval-time',
+    question: 'How long does teacher approval take?',
+    answer: 'Teacher account approval typically takes 1-2 business days. An administrator will review your application and approve or reject it. You\'ll be able to sign in once approved.',
+    category: 'For Teachers',
+  },
+  {
+    id: 'teacher-pending-status',
+    question: 'What does "pending" status mean for my teacher account?',
+    answer: 'When you register, your account is created with "pending" status. This means an administrator needs to review and approve your application before you can access teacher features. You cannot sign in until approved.',
     category: 'For Teachers',
   },
   {
@@ -296,6 +308,26 @@ const FAQ_DATA: FAQItem[] = [
     question: 'Is there a leaderboard?',
     answer: 'Yes! Compare your progress with classmates in the class leaderboard (if enrolled in a class) or see top explorers in the global leaderboard. Rankings are based on total points.',
     category: 'Gamification',
+  },
+
+  // Admin Access
+  {
+    id: 'admin-access',
+    question: 'How do I apply for admin access?',
+    answer: 'Go to the Admin tab and tap "Request Access." Fill out the registration form with your name, email, organization (optional), and password. Your account will be created with "pending" status. A Super Admin will review your request. Once approved, you can sign in and manage educational content.',
+    category: 'Technical',
+  },
+  {
+    id: 'admin-approval-process',
+    question: 'How does admin approval work?',
+    answer: 'When you request admin access, your account is created with "pending" status. A Super Admin reviews your application and either approves or rejects it. If approved, you\'ll be able to sign in as a moderator. Super Admins can later grant additional permissions if needed.',
+    category: 'Technical',
+  },
+  {
+    id: 'super-admin-approve',
+    question: 'How do Super Admins approve teacher and admin requests?',
+    answer: 'Super Admins sign in to the Admin tab, then access "Pending Teacher Approvals" or "Pending Admin Approvals" from the dashboard. They can review each request and approve or reject it. Rejections require a reason (minimum 10 characters).',
+    category: 'Technical',
   },
 
   // Technical
