@@ -142,16 +142,6 @@ export default function DeepDiveDetailScreen() {
         </View>
       ) : null}
 
-      {/* Main Content (Additional narrative) */}
-      {lesson.mainContent ? (
-        <View style={styles.narrativeSection}>
-          <MarkdownContent
-            content={lesson.mainContent}
-            accentColor={colors.forestGreen}
-          />
-        </View>
-      ) : null}
-
       {/* Key Figures */}
       {keyFigures && keyFigures.length > 0 ? (
         <Section
