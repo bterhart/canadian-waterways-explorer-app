@@ -35,9 +35,9 @@ An interactive educational map app showcasing Canada's major waterways, their In
 - **JWT Authentication**: Persistent sessions with 15-minute access tokens and 7-day refresh tokens
 - **Security Features**: Brute force protection, account lockout, password complexity requirements
 - **Test Accounts Available**:
-  - Teacher: teacher@canadianwaterways.ca / Teacher123! (must be approved)
-  - Admin: admin@canadianwaterways.ca / Admin123!@# (or admin@waterways.edu / Admin123!)
-  - Super-Admin: superadmin@canadianwaterways.ca / SuperAdmin123!@# (or superadmin@waterways.edu / SuperAdmin123!)
+  - Teacher: teacher@canadianwaterways.ca / Teacher123!
+  - Admin: admin@waterways.edu / Admin123!
+  - Super-Admin: superadmin@waterways.edu / SuperAdmin123!
 
 ### RCGS Educational Quizzes
 - **Quiz Categories**: Explorers, Fur Trade, Maritime History, Indigenous Heritage, Geography, Archaeological Discoveries
