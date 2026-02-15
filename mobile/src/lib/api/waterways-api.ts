@@ -266,10 +266,11 @@ export function useSubmitQuizAttempt() {
 }
 
 // Admin quiz hooks
-export function useAdminQuizzes() {
+export function useAdminQuizzes(enabled: boolean = true) {
   return useQuery({
     queryKey: adminQuizzesKeys.list(),
     queryFn: () => api.get<Quiz[]>('/api/admin/quizzes'),
+    enabled,
   });
 }
 

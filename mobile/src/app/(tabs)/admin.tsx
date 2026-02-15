@@ -100,12 +100,12 @@ export default function AdminScreen() {
   // API hooks
   const loginMutation = useAdminLogin();
 
-  // Content counts
-  const { data: lessonPlans } = useAdminLessonPlans();
-  const { data: fieldTrips } = useAdminFieldTrips();
-  const { data: documents } = useAdminDocuments();
-  const { data: printables } = useAdminPrintables();
-  const { data: quizzes } = useAdminQuizzes();
+  // Content counts - only fetch when logged in
+  const { data: lessonPlans } = useAdminLessonPlans(isLoggedIn);
+  const { data: fieldTrips } = useAdminFieldTrips(isLoggedIn);
+  const { data: documents } = useAdminDocuments(isLoggedIn);
+  const { data: printables } = useAdminPrintables(isLoggedIn);
+  const { data: quizzes } = useAdminQuizzes(isLoggedIn);
   const { data: pendingAdmins } = usePendingAdmins(isLoggedIn && adminRole === 'super_admin');
   const { data: pendingTeachers } = usePendingTeachers(isLoggedIn && adminRole === 'super_admin');
   const { data: pendingContributions } = usePendingContributions(isLoggedIn);

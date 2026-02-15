@@ -419,10 +419,11 @@ export function useRejectTeacher() {
 
 // =========== Lesson Plan Hooks ===========
 
-export function useAdminLessonPlans() {
+export function useAdminLessonPlans(enabled: boolean = true) {
   return useQuery({
     queryKey: adminLessonPlansKeys.list(),
     queryFn: () => api.get<AdminLessonPlan[]>('/api/admin/lesson-plans'),
+    enabled,
   });
 }
 
@@ -469,10 +470,11 @@ export function useDeleteLessonPlan() {
 
 // =========== Field Trip Hooks ===========
 
-export function useAdminFieldTrips() {
+export function useAdminFieldTrips(enabled: boolean = true) {
   return useQuery({
     queryKey: adminFieldTripsKeys.list(),
     queryFn: () => api.get<AdminFieldTrip[]>('/api/admin/field-trips'),
+    enabled,
   });
 }
 
@@ -552,10 +554,11 @@ export function useDeleteFieldTripStop() {
 
 // =========== Document Hooks ===========
 
-export function useAdminDocuments() {
+export function useAdminDocuments(enabled: boolean = true) {
   return useQuery({
     queryKey: adminDocumentsKeys.list(),
     queryFn: () => api.get<AdminDocument[]>('/api/admin/documents'),
+    enabled,
   });
 }
 
@@ -602,10 +605,11 @@ export function useDeleteDocument() {
 
 // =========== Printable Resource Hooks ===========
 
-export function useAdminPrintables() {
+export function useAdminPrintables(enabled: boolean = true) {
   return useQuery({
     queryKey: adminPrintablesKeys.list(),
     queryFn: () => api.get<AdminPrintable[]>('/api/admin/printables'),
+    enabled,
   });
 }
 
