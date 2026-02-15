@@ -236,19 +236,23 @@ export default function MapScreen() {
           selectedWaterway.type?.name === 'Lake' || selectedWaterway.type?.name === 'Bay' ? (
             // Lakes and bays use polygon (closed shape with fill)
             <Polygon
+              key={`polygon-${selectedWaterway.id}`}
               coordinates={boundaryCoordinates}
               strokeColor={getMarkerColor(selectedWaterway.type?.name || 'Lake')}
-              strokeWidth={3}
-              fillColor={`${getMarkerColor(selectedWaterway.type?.name || 'Lake')}40`}
+              strokeWidth={4}
+              fillColor={`${getMarkerColor(selectedWaterway.type?.name || 'Lake')}30`}
+              tappable={false}
             />
           ) : (
             // Rivers use polyline (path without fill)
             <Polyline
+              key={`polyline-${selectedWaterway.id}`}
               coordinates={boundaryCoordinates}
               strokeColor={getMarkerColor(selectedWaterway.type?.name || 'River')}
-              strokeWidth={5}
+              strokeWidth={6}
               lineCap="round"
               lineJoin="round"
+              tappable={false}
             />
           )
         ) : null}
