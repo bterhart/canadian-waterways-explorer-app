@@ -221,7 +221,7 @@ export default function LessonPlanDetailScreen() {
               <Text style={styles.curriculumProvince}>
                 {connection.province} - {connection.subject} ({connection.grade})
               </Text>
-              {connection.expectations.map((exp, expIndex) => (
+              {connection.expectations?.map((exp, expIndex) => (
                 <View key={expIndex} style={styles.listItem}>
                   <View style={styles.bulletPoint} />
                   <Text style={styles.listItemText}>{exp}</Text>
