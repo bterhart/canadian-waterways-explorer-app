@@ -83,6 +83,7 @@ export default function MapScreen() {
     type: MarkerType;
   } | null>(null);
   const [legendVisible, setLegendVisible] = useState(false);
+  const [activeFilter, setActiveFilter] = useState<string | null>(null);
 
   const bottomSheetRef = useRef<DetailBottomSheetRef>(null);
   const mapRef = useRef<MapView>(null);
@@ -93,6 +94,36 @@ export default function MapScreen() {
   const toggleLegend = useCallback(() => {
     setLegendVisible(prev => !prev);
   }, []);
+
+  const handleFilterPress = useCallback((filterType: string) => {
+    setActiveFilter(prev => prev === filterType ? null : filterType);
+  }, []);
+
+  const clearFilter = useCallback(() => {
+    setActiveFilter(null);
+  }, []);
+
+  // Filter waterways based on active filter
+  const filteredWaterways = useMemo(() => {
+    if (!waterways) return [];
+    if (!activeFilter) return waterways;
+    // Waterway types: River, Lake, Bay
+    if (['River', 'Lake', 'Bay'].includes(activeFilter)) {
+      return waterways.filter(w => w.type?.name === activeFilter);
+    }
+    return [];
+  }, [waterways, activeFilter]);
+
+  // Filter locations based on active filter
+  const filteredLocations = useMemo(() => {
+    if (!locations) return [];
+    if (!activeFilter) return locations;
+    // Location types: Fort, Trading Post, Portage
+    if (['Fort', 'Trading Post', 'Portage'].includes(activeFilter)) {
+      return locations.filter(l => l.locationType === activeFilter);
+    }
+    return [];
+  }, [locations, activeFilter]);
 
   // Find selected waterway for highlighting
   const selectedWaterway = useMemo(() => {
@@ -232,10 +263,10 @@ export default function MapScreen() {
         mapType="terrain"
       >
         {/* Waterway markers */}
-        {waterways?.map(renderWaterwayMarker)}
+        {filteredWaterways.map(renderWaterwayMarker)}
 
         {/* Location markers */}
-        {locations?.map(renderLocationMarker)}
+        {filteredLocations.map(renderLocationMarker)}
 
         {/* Boundary highlight for selected waterway */}
         {boundaryCoordinates.length > 0 && selectedWaterway ? (
@@ -279,34 +310,57 @@ export default function MapScreen() {
           <Text style={styles.legendTitle}>{t('mapLegend')}</Text>
           <View style={styles.legendSection}>
             <Text style={styles.legendSectionTitle}>{t('waterways')}</Text>
-            <View style={styles.legendRow}>
+            <TouchableOpacity
+              style={[styles.legendRow, activeFilter === 'River' && styles.legendRowActive]}
+              onPress={() => handleFilterPress('River')}
+            >
               <View style={[styles.legendDot, { backgroundColor: markerColors.River }]} />
-              <Text style={styles.legendText}>{t('river')}</Text>
-            </View>
-            <View style={styles.legendRow}>
+              <Text style={[styles.legendText, activeFilter === 'River' && styles.legendTextActive]}>{t('river')}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.legendRow, activeFilter === 'Lake' && styles.legendRowActive]}
+              onPress={() => handleFilterPress('Lake')}
+            >
               <View style={[styles.legendDot, { backgroundColor: markerColors.Lake }]} />
-              <Text style={styles.legendText}>{t('lake')}</Text>
-            </View>
-            <View style={styles.legendRow}>
+              <Text style={[styles.legendText, activeFilter === 'Lake' && styles.legendTextActive]}>{t('lake')}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.legendRow, activeFilter === 'Bay' && styles.legendRowActive]}
+              onPress={() => handleFilterPress('Bay')}
+            >
               <View style={[styles.legendDot, { backgroundColor: markerColors.Bay }]} />
-              <Text style={styles.legendText}>{t('bay')}</Text>
-            </View>
+              <Text style={[styles.legendText, activeFilter === 'Bay' && styles.legendTextActive]}>{t('bay')}</Text>
+            </TouchableOpacity>
           </View>
           <View style={styles.legendSection}>
             <Text style={styles.legendSectionTitle}>{t('locations')}</Text>
-            <View style={styles.legendRow}>
+            <TouchableOpacity
+              style={[styles.legendRow, activeFilter === 'Fort' && styles.legendRowActive]}
+              onPress={() => handleFilterPress('Fort')}
+            >
               <View style={[styles.legendDot, { backgroundColor: markerColors.Fort }]} />
-              <Text style={styles.legendText}>{t('fort')}</Text>
-            </View>
-            <View style={styles.legendRow}>
+              <Text style={[styles.legendText, activeFilter === 'Fort' && styles.legendTextActive]}>{t('fort')}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.legendRow, activeFilter === 'Trading Post' && styles.legendRowActive]}
+              onPress={() => handleFilterPress('Trading Post')}
+            >
               <View style={[styles.legendDot, { backgroundColor: markerColors['Trading Post'] }]} />
-              <Text style={styles.legendText}>{t('tradingPost')}</Text>
-            </View>
-            <View style={styles.legendRow}>
+              <Text style={[styles.legendText, activeFilter === 'Trading Post' && styles.legendTextActive]}>{t('tradingPost')}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.legendRow, activeFilter === 'Portage' && styles.legendRowActive]}
+              onPress={() => handleFilterPress('Portage')}
+            >
               <View style={[styles.legendDot, { backgroundColor: markerColors.Portage }]} />
-              <Text style={styles.legendText}>{t('portage')}</Text>
-            </View>
+              <Text style={[styles.legendText, activeFilter === 'Portage' && styles.legendTextActive]}>{t('portage')}</Text>
+            </TouchableOpacity>
           </View>
+          {activeFilter ? (
+            <TouchableOpacity style={styles.clearFilterButton} onPress={clearFilter}>
+              <Text style={styles.clearFilterText}>{t('clearFilter')}</Text>
+            </TouchableOpacity>
+          ) : null}
         </View>
       ) : null}
 
@@ -445,5 +499,27 @@ const styles = StyleSheet.create({
   legendText: {
     fontSize: 11,
     color: '#374151',
+  },
+  legendRowActive: {
+    backgroundColor: 'rgba(45, 90, 61, 0.1)',
+    borderRadius: 4,
+    marginHorizontal: -4,
+    paddingHorizontal: 4,
+  },
+  legendTextActive: {
+    fontWeight: '600',
+    color: '#2D5A3D',
+  },
+  clearFilterButton: {
+    marginTop: 8,
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: '#E5E7EB',
+  },
+  clearFilterText: {
+    fontSize: 11,
+    color: '#EF4444',
+    textAlign: 'center',
+    fontWeight: '500',
   },
 });

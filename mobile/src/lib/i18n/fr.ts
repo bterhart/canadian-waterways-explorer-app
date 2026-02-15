@@ -32,6 +32,7 @@ export const fr: Record<TranslationKey, string> = {
   waterways: 'Voies navigables',
   locations: 'Emplacements',
   tapForDetails: 'Appuyez pour plus de details',
+  clearFilter: 'Effacer le filtre',
 
   // Waterway Types
   river: 'Riviere',

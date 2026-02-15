@@ -29,6 +29,7 @@ export const en = {
   waterways: 'Waterways',
   locations: 'Locations',
   tapForDetails: 'Tap for details',
+  clearFilter: 'Clear Filter',
 
   // Waterway Types
   river: 'River',
