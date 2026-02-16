@@ -684,6 +684,16 @@ export default function MapScreen() {
           markerId={selectedMarker.id}
           markerType={selectedMarker.type}
           onClose={handleBottomSheetClose}
+          markerLatitude={
+            selectedMarker.type === 'waterway'
+              ? waterways?.find(w => w.id === selectedMarker.id)?.latitude
+              : locations?.find(l => l.id === selectedMarker.id)?.latitude
+          }
+          markerLongitude={
+            selectedMarker.type === 'waterway'
+              ? waterways?.find(w => w.id === selectedMarker.id)?.longitude
+              : locations?.find(l => l.id === selectedMarker.id)?.longitude
+          }
         />
       ) : null}
     </View>

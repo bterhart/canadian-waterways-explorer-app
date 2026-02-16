@@ -1,8 +1,9 @@
 // Bottom sheet component for displaying waterway and location details
 import React, { useCallback, useMemo, forwardRef, useImperativeHandle, useRef, useState } from 'react';
-import { View, Text, ActivityIndicator, Image, Pressable, Linking, ScrollView, Modal, Dimensions } from 'react-native';
+import { View, Text, ActivityIndicator, Image, Pressable, Linking, ScrollView, Modal, Dimensions, Platform } from 'react-native';
 import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
-import { Plus, MessageSquare, Camera, BookOpen, History, Compass, Globe, Play, X, ImageIcon } from 'lucide-react-native';
+import MapView, { Marker, PROVIDER_DEFAULT } from 'react-native-maps';
+import { Plus, MessageSquare, Camera, BookOpen, History, Compass, Globe, Play, X, ImageIcon, ChevronLeft, MapPin } from 'lucide-react-native';
 import { useWaterwayDetail, useLocationDetail, useWaterwayContributions, useLocationContributions } from '@/lib/api/waterways-api';
 import ContributeModal from './ContributeModal';
 import type { MarkerType, WaterwayDetail, LocationDetail, UserContribution, ArchaeologicalDiscovery } from '@/lib/types/waterways';
@@ -73,6 +74,8 @@ interface DetailBottomSheetProps {
   markerId: string | null;
   markerType: MarkerType | null;
   onClose: () => void;
+  markerLatitude?: number;
+  markerLongitude?: number;
 }
 
 export interface DetailBottomSheetRef {
@@ -81,7 +84,7 @@ export interface DetailBottomSheetRef {
 }
 
 const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProps>(
-  ({ markerId, markerType, onClose }, ref) => {
+  ({ markerId, markerType, onClose, markerLatitude, markerLongitude }, ref) => {
     const bottomSheetRef = useRef<BottomSheet>(null);
     const snapPoints = useMemo(() => ['50%', '85%'], []);
     const [showContributeModal, setShowContributeModal] = useState(false);
@@ -164,7 +167,89 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
             </View>
           ) : data ? (
             <>
-              {/* Header */}
+              {/* Navigation Header - Return to Map */}
+              <View className="flex-row items-center justify-between mb-4 -mx-2 px-2 py-3 border-b" style={{ borderBottomColor: '#E5E7EB' }}>
+                {/* Left: Back to Map Button */}
+                <Pressable
+                  onPress={onClose}
+                  className="flex-row items-center py-2 px-3 rounded-lg active:opacity-70"
+                  style={{ backgroundColor: `${colors.forestGreen}15` }}
+                >
+                  <ChevronLeft size={20} color={colors.forestGreen} strokeWidth={2.5} />
+                  <Text className="ml-1 font-semibold text-sm" style={{ color: colors.forestGreen }}>
+                    Map
+                  </Text>
+                </Pressable>
+
+                {/* Right: Mini-Map Thumbnail (Option 3) */}
+                {markerLatitude && markerLongitude ? (
+                  <Pressable
+                    onPress={onClose}
+                    className="rounded-xl overflow-hidden shadow-sm"
+                    style={{
+                      width: 72,
+                      height: 52,
+                      borderWidth: 2,
+                      borderColor: colors.forestGreen,
+                    }}
+                  >
+                    <MapView
+                      style={{ width: '100%', height: '100%' }}
+                      provider={PROVIDER_DEFAULT}
+                      initialRegion={{
+                        latitude: markerLatitude,
+                        longitude: markerLongitude,
+                        latitudeDelta: 2,
+                        longitudeDelta: 2,
+                      }}
+                      scrollEnabled={false}
+                      zoomEnabled={false}
+                      rotateEnabled={false}
+                      pitchEnabled={false}
+                      pointerEvents="none"
+                      liteMode={Platform.OS === 'android'}
+                    >
+                      <Marker
+                        coordinate={{
+                          latitude: markerLatitude,
+                          longitude: markerLongitude,
+                        }}
+                        pinColor={markerType === 'waterway' ? colors.waterBlue : colors.earthBrown}
+                      />
+                    </MapView>
+                    {/* Tap indicator overlay */}
+                    <View
+                      style={{
+                        position: 'absolute',
+                        bottom: 2,
+                        right: 2,
+                        backgroundColor: 'rgba(45, 90, 61, 0.9)',
+                        borderRadius: 4,
+                        paddingHorizontal: 4,
+                        paddingVertical: 2,
+                      }}
+                    >
+                      <MapPin size={10} color="white" />
+                    </View>
+                  </Pressable>
+                ) : (
+                  <View
+                    className="rounded-xl items-center justify-center"
+                    style={{
+                      width: 72,
+                      height: 52,
+                      backgroundColor: `${colors.forestGreen}10`,
+                      borderWidth: 2,
+                      borderColor: colors.forestGreen,
+                      borderStyle: 'dashed',
+                    }}
+                  >
+                    <MapPin size={20} color={colors.forestGreen} />
+                  </View>
+                )}
+              </View>
+
+              {/* Content Header */}
               <View className="mb-4">
                 {/* Image for waterway or location */}
                 {(markerType === 'waterway' && waterwayData?.imageUrl) || (markerType === 'location' && locationData?.imageUrl) ? (

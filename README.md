@@ -11,6 +11,7 @@ An interactive educational map app showcasing Canada's major waterways, their In
 - **Tap-to-Explore**: Tap any marker to learn more
 - **Boundary Highlighting**: When you tap on a river or lake, it highlights the entire waterway boundary like a highlighter on a map
 - **Zoom to Fit**: Map automatically zooms to show the full extent of a selected waterway
+- **Enhanced Navigation** (NEW): Clear "Back to Map" button and mini-map thumbnail in detail views for easy return navigation from any depth
 
 ### Educational Content
 - **Chronological Timeline**: Explorer information is displayed chronologically, from earliest (Leif Erikson, c. 1000 AD) to latest (Vilhjalmur Stefansson, 1918)
