@@ -340,10 +340,7 @@ export default function MapScreen() {
         pinColor={getMarkerColor(typeName)}
         tracksViewChanges={false}
       >
-        <Callout
-          onPress={() => handleCalloutPress(waterway.id, 'waterway')}
-          tooltip={false}
-        >
+        <Callout tooltip>
           <View style={styles.calloutContainer}>
             {/* Header row: Type badge + Google Earth on left, Close X on right */}
             <View style={styles.calloutHeader}>
@@ -365,14 +362,19 @@ export default function MapScreen() {
                 style={styles.closeButton}
                 onPress={handleBottomSheetClose}
               >
-                <X size={16} color="#EF4444" />
+                <X size={14} color="white" />
               </TouchableOpacity>
             </View>
             <Text style={styles.calloutTitle}>{waterway.name}</Text>
             {waterway.indigenousName ? (
               <Text style={styles.calloutIndigenous}>"{waterway.indigenousName}"</Text>
             ) : null}
-            <Text style={styles.calloutHint}>{t('tapForDetails')}</Text>
+            <TouchableOpacity
+              style={styles.calloutDetailButton}
+              onPress={() => handleCalloutPress(waterway.id, 'waterway')}
+            >
+              <Text style={styles.calloutDetailButtonText}>{t('tapForDetails')}</Text>
+            </TouchableOpacity>
           </View>
         </Callout>
       </Marker>
@@ -395,10 +397,7 @@ export default function MapScreen() {
         pinColor={getMarkerColor(locationType)}
         tracksViewChanges={false}
       >
-        <Callout
-          onPress={() => handleCalloutPress(location.id, 'location')}
-          tooltip={false}
-        >
+        <Callout tooltip>
           <View style={styles.calloutContainer}>
             {/* Header row: Type badge + Google Earth on left, Close X on right */}
             <View style={styles.calloutHeader}>
@@ -420,14 +419,19 @@ export default function MapScreen() {
                 style={styles.closeButton}
                 onPress={handleBottomSheetClose}
               >
-                <X size={16} color="#EF4444" />
+                <X size={14} color="white" />
               </TouchableOpacity>
             </View>
             <Text style={styles.calloutTitle}>{location.name}</Text>
             {location.indigenousName ? (
               <Text style={styles.calloutIndigenous}>"{location.indigenousName}"</Text>
             ) : null}
-            <Text style={styles.calloutHint}>{t('tapForDetails')}</Text>
+            <TouchableOpacity
+              style={styles.calloutDetailButton}
+              onPress={() => handleCalloutPress(location.id, 'location')}
+            >
+              <Text style={styles.calloutDetailButtonText}>{t('tapForDetails')}</Text>
+            </TouchableOpacity>
           </View>
         </Callout>
       </Marker>
@@ -790,9 +794,22 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   closeButton: {
-    padding: 4,
-    backgroundColor: '#F3F4F6',
+    padding: 5,
+    backgroundColor: '#EF4444',
     borderRadius: 12,
+  },
+  calloutDetailButton: {
+    marginTop: 8,
+    backgroundColor: '#2D5A3D',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  calloutDetailButtonText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: '600',
   },
   typeBadge: {
     paddingHorizontal: 8,

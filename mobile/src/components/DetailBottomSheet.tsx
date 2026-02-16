@@ -168,8 +168,8 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
           ) : data ? (
             <>
               {/* Navigation Header - Return to Map */}
-              <View className="flex-row items-center justify-between mb-4 -mx-2 px-2 py-3 border-b" style={{ borderBottomColor: '#E5E7EB' }}>
-                {/* Left: Back to Map Button */}
+              <View className="flex-row items-center mb-4 -mx-2 px-2 py-3 border-b" style={{ borderBottomColor: '#E5E7EB', gap: 12 }}>
+                {/* Back to Map Button */}
                 <Pressable
                   onPress={onClose}
                   className="flex-row items-center py-2 px-3 rounded-lg active:opacity-70"
@@ -181,7 +181,7 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                   </Text>
                 </Pressable>
 
-                {/* Right: Mini-Map Thumbnail (Option 3) */}
+                {/* Mini-Map Thumbnail - immediately to the right of Map button */}
                 {markerLatitude && markerLongitude ? (
                   <Pressable
                     onPress={onClose}
