@@ -424,7 +424,6 @@ export default function MapScreen() {
         showsCompass={true}
         showsScale={true}
         mapType="terrain"
-        onPress={handleBottomSheetClose}
       >
         {/* Waterway markers */}
         {filteredWaterways.map(renderWaterwayMarker)}
