@@ -1,8 +1,8 @@
 // Interactive Map Screen for Canadian Waterways Education
 import React, { useState, useRef, useCallback, useMemo, useEffect } from 'react';
-import { View, Text, ActivityIndicator, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, ActivityIndicator, StyleSheet, TouchableOpacity, ScrollView, Linking } from 'react-native';
 import MapView, { Marker, Callout, PROVIDER_DEFAULT, Region, Polyline, Polygon } from 'react-native-maps';
-import { Menu, ChevronDown, ChevronRight } from 'lucide-react-native';
+import { Menu, ChevronDown, ChevronRight, Globe } from 'lucide-react-native';
 import { useWaterways, useLocations, useExplorers, useExplorerDetail } from '@/lib/api/waterways-api';
 import DetailBottomSheet, { DetailBottomSheetRef } from '@/components/DetailBottomSheet';
 import type { MarkerType, Waterway, Location } from '@/lib/types/waterways';
@@ -45,6 +45,11 @@ const markerColors: Record<string, string> = {
 
 const getMarkerColor = (typeName: string): string => {
   return markerColors[typeName] || '#6B7280';
+};
+
+// Generate Google Earth Web URL
+const getGoogleEarthUrl = (latitude: number, longitude: number): string => {
+  return `https://earth.google.com/web/@${latitude},${longitude},500a,5000d,35y,0h,45t,0r`;
 };
 
 // Parse boundary coordinates from JSON string
@@ -326,8 +331,19 @@ export default function MapScreen() {
           tooltip={false}
         >
           <View style={styles.calloutContainer}>
-            <View style={[styles.typeBadge, { backgroundColor: getMarkerColor(typeName) }]}>
-              <Text style={styles.typeBadgeText}>{typeName}</Text>
+            <View style={styles.calloutHeader}>
+              <View style={[styles.typeBadge, { backgroundColor: getMarkerColor(typeName) }]}>
+                <Text style={styles.typeBadgeText}>{typeName}</Text>
+              </View>
+              <TouchableOpacity
+                style={styles.earthButton}
+                onPress={() => {
+                  const url = getGoogleEarthUrl(waterway.latitude, waterway.longitude);
+                  Linking.openURL(url);
+                }}
+              >
+                <Globe size={16} color="#3B82F6" />
+              </TouchableOpacity>
             </View>
             <Text style={styles.calloutTitle}>{waterway.name}</Text>
             {waterway.indigenousName ? (
@@ -357,8 +373,19 @@ export default function MapScreen() {
           tooltip={false}
         >
           <View style={styles.calloutContainer}>
-            <View style={[styles.typeBadge, { backgroundColor: getMarkerColor(locationType) }]}>
-              <Text style={styles.typeBadgeText}>{locationType}</Text>
+            <View style={styles.calloutHeader}>
+              <View style={[styles.typeBadge, { backgroundColor: getMarkerColor(locationType) }]}>
+                <Text style={styles.typeBadgeText}>{locationType}</Text>
+              </View>
+              <TouchableOpacity
+                style={styles.earthButton}
+                onPress={() => {
+                  const url = getGoogleEarthUrl(location.latitude, location.longitude);
+                  Linking.openURL(url);
+                }}
+              >
+                <Globe size={16} color="#3B82F6" />
+              </TouchableOpacity>
             </View>
             <Text style={styles.calloutTitle}>{location.name}</Text>
             {location.indigenousName ? (
@@ -700,12 +727,22 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFEF7',
     borderRadius: 12,
   },
+  calloutHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 6,
+  },
+  earthButton: {
+    padding: 6,
+    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+    borderRadius: 16,
+  },
   typeBadge: {
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 12,
     alignSelf: 'flex-start',
-    marginBottom: 6,
   },
   typeBadgeText: {
     color: 'white',

@@ -1,11 +1,18 @@
 // Bottom sheet component for displaying waterway and location details
 import React, { useCallback, useMemo, forwardRef, useImperativeHandle, useRef, useState } from 'react';
-import { View, Text, ActivityIndicator, Image, Pressable } from 'react-native';
+import { View, Text, ActivityIndicator, Image, Pressable, Linking } from 'react-native';
 import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
-import { Plus, MessageSquare, Camera, BookOpen, History, Compass } from 'lucide-react-native';
+import { Plus, MessageSquare, Camera, BookOpen, History, Compass, Globe } from 'lucide-react-native';
 import { useWaterwayDetail, useLocationDetail, useWaterwayContributions, useLocationContributions } from '@/lib/api/waterways-api';
 import ContributeModal from './ContributeModal';
 import type { MarkerType, WaterwayDetail, LocationDetail, UserContribution, ArchaeologicalDiscovery } from '@/lib/types/waterways';
+
+// Generate Google Earth Web URL
+const getGoogleEarthUrl = (latitude: number, longitude: number, name?: string): string => {
+  // Format: https://earth.google.com/web/@{lat},{lng},{altitude}a,{range}d,35y,0h,0t,0r
+  // altitude 'a' is camera altitude in meters, range 'd' is distance from point of interest
+  return `https://earth.google.com/web/@${latitude},${longitude},500a,5000d,35y,0h,45t,0r`;
+};
 
 // Theme colors
 const colors = {
@@ -531,17 +538,47 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                 </View>
               ) : null}
 
-              {/* Contribute Button */}
-              <Pressable
-                className="flex-row items-center justify-center py-4 rounded-xl mt-2"
-                style={{ backgroundColor: colors.forestGreen }}
-                onPress={() => setShowContributeModal(true)}
-              >
-                <Plus size={20} color="white" />
-                <Text className="text-white font-semibold ml-2">
-                  Add Your Contribution
-                </Text>
-              </Pressable>
+              {/* Action Buttons */}
+              <View className="mt-4 gap-3">
+                {/* Google Earth Button */}
+                <Pressable
+                  className="flex-row items-center justify-center py-4 rounded-xl"
+                  style={{ backgroundColor: colors.waterBlue }}
+                  onPress={() => {
+                    const lat = markerType === 'waterway' && waterwayData
+                      ? waterwayData.latitude
+                      : markerType === 'location' && locationData
+                        ? locationData.latitude
+                        : null;
+                    const lng = markerType === 'waterway' && waterwayData
+                      ? waterwayData.longitude
+                      : markerType === 'location' && locationData
+                        ? locationData.longitude
+                        : null;
+                    if (lat && lng) {
+                      const url = getGoogleEarthUrl(lat, lng, data?.name);
+                      Linking.openURL(url);
+                    }
+                  }}
+                >
+                  <Globe size={20} color="white" />
+                  <Text className="text-white font-semibold ml-2">
+                    Explore in Google Earth
+                  </Text>
+                </Pressable>
+
+                {/* Contribute Button */}
+                <Pressable
+                  className="flex-row items-center justify-center py-4 rounded-xl"
+                  style={{ backgroundColor: colors.forestGreen }}
+                  onPress={() => setShowContributeModal(true)}
+                >
+                  <Plus size={20} color="white" />
+                  <Text className="text-white font-semibold ml-2">
+                    Add Your Contribution
+                  </Text>
+                </Pressable>
+              </View>
             </>
           ) : (
             <View className="py-20 items-center">
