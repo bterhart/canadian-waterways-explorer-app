@@ -560,8 +560,8 @@ export default function MapScreen() {
                 position: 'absolute',
                 // Callout is 200px wide, centered on marker. Left edge = marker.x - 100
                 left: calloutScreenPosition.x - 100,
-                // Position above callout (callout ~120px tall + pin ~40px + gap)
-                top: calloutScreenPosition.y - 175,
+                // Position barely above callout
+                top: calloutScreenPosition.y - 195,
               },
             ]}
             onPress={() => {
@@ -580,9 +580,9 @@ export default function MapScreen() {
               {
                 position: 'absolute',
                 // Right edge of callout = marker.x + 100
-                // Button is 36px wide, so left = callout right - button width
-                left: calloutScreenPosition.x + 100 - 36,
-                top: calloutScreenPosition.y - 175,
+                // Button is 48px wide, so left = callout right - button width
+                left: calloutScreenPosition.x + 100 - 48,
+                top: calloutScreenPosition.y - 195,
               },
             ]}
             onPress={handleCalloutDismiss}
@@ -876,8 +876,8 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
   calloutEarthButton: {
-    width: 36,
-    height: 32,
+    width: 48,
+    height: 28,
     borderRadius: 6,
     backgroundColor: '#4285F4',
     alignItems: 'center',
@@ -889,8 +889,8 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   calloutCloseButton: {
-    width: 36,
-    height: 32,
+    width: 48,
+    height: 28,
     borderRadius: 6,
     backgroundColor: '#EF4444',
     alignItems: 'center',
