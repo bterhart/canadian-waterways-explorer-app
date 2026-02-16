@@ -122,6 +122,8 @@ export default function MapScreen() {
 
   const bottomSheetRef = useRef<DetailBottomSheetRef>(null);
   const mapRef = useRef<MapView>(null);
+  // Store marker refs to allow programmatic callout dismissal
+  const markerRefs = useRef<Record<string, any>>({});
 
   const isLoading = waterwaysLoading || locationsLoading;
   const isError = waterwaysError || locationsError;
@@ -311,14 +313,26 @@ export default function MapScreen() {
   }, []);
 
   const handleBottomSheetClose = useCallback(() => {
+    // Hide the callout for the currently selected marker before clearing selection
+    if (selectedMarker) {
+      const markerKey = `${selectedMarker.type}-${selectedMarker.id}`;
+      const markerRef = markerRefs.current[markerKey];
+      if (markerRef?.hideCallout) {
+        markerRef.hideCallout();
+      }
+    }
     setSelectedMarker(null);
-  }, []);
+  }, [selectedMarker]);
 
   const renderWaterwayMarker = (waterway: Waterway) => {
     const typeName = waterway.type?.name || 'River';
+    const markerKey = `waterway-${waterway.id}`;
     return (
       <Marker
-        key={`waterway-${waterway.id}`}
+        key={markerKey}
+        ref={(ref) => {
+          if (ref) markerRefs.current[markerKey] = ref;
+        }}
         coordinate={{
           latitude: waterway.latitude,
           longitude: waterway.longitude,
@@ -358,9 +372,13 @@ export default function MapScreen() {
 
   const renderLocationMarker = (location: Location) => {
     const locationType = location.locationType || 'Settlement';
+    const markerKey = `location-${location.id}`;
     return (
       <Marker
-        key={`location-${location.id}`}
+        key={markerKey}
+        ref={(ref) => {
+          if (ref) markerRefs.current[markerKey] = ref;
+        }}
         coordinate={{
           latitude: location.latitude,
           longitude: location.longitude,
