@@ -1,8 +1,8 @@
 // Interactive Map Screen for Canadian Waterways Education
 import React, { useState, useRef, useCallback, useMemo, useEffect } from 'react';
-import { View, Text, ActivityIndicator, StyleSheet, TouchableOpacity, ScrollView, Linking } from 'react-native';
+import { View, Text, ActivityIndicator, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import MapView, { Marker, Callout, PROVIDER_DEFAULT, Region, Polyline, Polygon } from 'react-native-maps';
-import { Menu, ChevronDown, ChevronRight, Globe2, X } from 'lucide-react-native';
+import { Menu, ChevronDown, ChevronRight } from 'lucide-react-native';
 import { useWaterways, useLocations, useExplorers, useExplorerDetail } from '@/lib/api/waterways-api';
 import DetailBottomSheet, { DetailBottomSheetRef } from '@/components/DetailBottomSheet';
 import type { MarkerType, Waterway, Location } from '@/lib/types/waterways';
@@ -45,11 +45,6 @@ const markerColors: Record<string, string> = {
 
 const getMarkerColor = (typeName: string): string => {
   return markerColors[typeName] || '#6B7280';
-};
-
-// Generate Google Earth Web URL
-const getGoogleEarthUrl = (latitude: number, longitude: number): string => {
-  return `https://earth.google.com/web/@${latitude},${longitude},500a,5000d,35y,0h,45t,0r`;
 };
 
 // Parse boundary coordinates from JSON string
@@ -340,41 +335,21 @@ export default function MapScreen() {
         pinColor={getMarkerColor(typeName)}
         tracksViewChanges={false}
       >
-        <Callout tooltip>
+        <Callout
+          onPress={() => handleCalloutPress(waterway.id, 'waterway')}
+          tooltip={false}
+        >
           <View style={styles.calloutContainer}>
-            {/* Header row: Type badge + Google Earth on left, Close X on right */}
-            <View style={styles.calloutHeader}>
-              <View style={styles.calloutHeaderLeft}>
-                <View style={[styles.typeBadge, { backgroundColor: getMarkerColor(typeName) }]}>
-                  <Text style={styles.typeBadgeText}>{typeName}</Text>
-                </View>
-                <TouchableOpacity
-                  style={styles.earthButton}
-                  onPress={() => {
-                    const url = getGoogleEarthUrl(waterway.latitude, waterway.longitude);
-                    Linking.openURL(url);
-                  }}
-                >
-                  <Globe2 size={14} color="white" />
-                </TouchableOpacity>
-              </View>
-              <TouchableOpacity
-                style={styles.closeButton}
-                onPress={handleBottomSheetClose}
-              >
-                <X size={14} color="white" />
-              </TouchableOpacity>
+            <View style={[styles.typeBadge, { backgroundColor: getMarkerColor(typeName) }]}>
+              <Text style={styles.typeBadgeText}>{typeName}</Text>
             </View>
             <Text style={styles.calloutTitle}>{waterway.name}</Text>
             {waterway.indigenousName ? (
               <Text style={styles.calloutIndigenous}>"{waterway.indigenousName}"</Text>
             ) : null}
-            <TouchableOpacity
-              style={styles.calloutDetailButton}
-              onPress={() => handleCalloutPress(waterway.id, 'waterway')}
-            >
+            <View style={styles.calloutDetailButton}>
               <Text style={styles.calloutDetailButtonText}>{t('tapForDetails')}</Text>
-            </TouchableOpacity>
+            </View>
           </View>
         </Callout>
       </Marker>
@@ -397,41 +372,21 @@ export default function MapScreen() {
         pinColor={getMarkerColor(locationType)}
         tracksViewChanges={false}
       >
-        <Callout tooltip>
+        <Callout
+          onPress={() => handleCalloutPress(location.id, 'location')}
+          tooltip={false}
+        >
           <View style={styles.calloutContainer}>
-            {/* Header row: Type badge + Google Earth on left, Close X on right */}
-            <View style={styles.calloutHeader}>
-              <View style={styles.calloutHeaderLeft}>
-                <View style={[styles.typeBadge, { backgroundColor: getMarkerColor(locationType) }]}>
-                  <Text style={styles.typeBadgeText}>{locationType}</Text>
-                </View>
-                <TouchableOpacity
-                  style={styles.earthButton}
-                  onPress={() => {
-                    const url = getGoogleEarthUrl(location.latitude, location.longitude);
-                    Linking.openURL(url);
-                  }}
-                >
-                  <Globe2 size={14} color="white" />
-                </TouchableOpacity>
-              </View>
-              <TouchableOpacity
-                style={styles.closeButton}
-                onPress={handleBottomSheetClose}
-              >
-                <X size={14} color="white" />
-              </TouchableOpacity>
+            <View style={[styles.typeBadge, { backgroundColor: getMarkerColor(locationType) }]}>
+              <Text style={styles.typeBadgeText}>{locationType}</Text>
             </View>
             <Text style={styles.calloutTitle}>{location.name}</Text>
             {location.indigenousName ? (
               <Text style={styles.calloutIndigenous}>"{location.indigenousName}"</Text>
             ) : null}
-            <TouchableOpacity
-              style={styles.calloutDetailButton}
-              onPress={() => handleCalloutPress(location.id, 'location')}
-            >
+            <View style={styles.calloutDetailButton}>
               <Text style={styles.calloutDetailButtonText}>{t('tapForDetails')}</Text>
-            </TouchableOpacity>
+            </View>
           </View>
         </Callout>
       </Marker>
@@ -777,39 +732,18 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFEF7',
     borderRadius: 12,
   },
-  calloutHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 6,
-  },
-  calloutHeaderLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  earthButton: {
-    padding: 5,
-    backgroundColor: '#4285F4',
-    borderRadius: 12,
-  },
-  closeButton: {
-    padding: 5,
-    backgroundColor: '#EF4444',
-    borderRadius: 12,
-  },
   calloutDetailButton: {
     marginTop: 8,
-    backgroundColor: '#2D5A3D',
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 8,
+    backgroundColor: '#F3F4F6',
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 6,
     alignItems: 'center',
   },
   calloutDetailButtonText: {
-    color: 'white',
-    fontSize: 12,
-    fontWeight: '600',
+    color: '#6B7280',
+    fontSize: 11,
+    fontWeight: '500',
   },
   typeBadge: {
     paddingHorizontal: 8,
