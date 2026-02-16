@@ -93,6 +93,14 @@ export default function MapScreen() {
     id: string;
     type: MarkerType;
   } | null>(null);
+
+  // Track which waterway callout is visible (controls boundary display)
+  // This is separate from selectedMarker which controls bottom sheet
+  const [visibleCalloutMarker, setVisibleCalloutMarker] = useState<{
+    id: string;
+    type: MarkerType;
+  } | null>(null);
+
   const [legendVisible, setLegendVisible] = useState(false);
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
 
@@ -268,11 +276,11 @@ export default function MapScreen() {
     return locations;
   }, [locations, activeFilter, filterType, filterValue, explorerWaterwayIds, selectedPeriod]);
 
-  // Find selected waterway for highlighting
+  // Find waterway for boundary highlighting (based on visible callout)
   const selectedWaterway = useMemo(() => {
-    if (!selectedMarker || selectedMarker.type !== 'waterway') return null;
-    return waterways?.find(w => w.id === selectedMarker.id) || null;
-  }, [selectedMarker, waterways]);
+    if (!visibleCalloutMarker || visibleCalloutMarker.type !== 'waterway') return null;
+    return waterways?.find(w => w.id === visibleCalloutMarker.id) || null;
+  }, [visibleCalloutMarker, waterways]);
 
   // Parse boundary coordinates for the selected waterway
   const boundaryCoordinates = useMemo(() => {
@@ -280,15 +288,15 @@ export default function MapScreen() {
     return parseBoundaryCoordinates(selectedWaterway.boundaryCoordinates);
   }, [selectedWaterway]);
 
-  // Animate to waterway when selected
+  // Animate to waterway when callout becomes visible
   useEffect(() => {
-    if (selectedMarker?.type === 'waterway' && boundaryCoordinates.length > 0) {
+    if (visibleCalloutMarker?.type === 'waterway' && boundaryCoordinates.length > 0) {
       const region = getRegionForCoordinates(boundaryCoordinates);
       if (region && mapRef.current) {
         mapRef.current.animateToRegion(region, 500);
       }
-    } else if (selectedMarker?.type === 'location') {
-      const location = locations?.find(l => l.id === selectedMarker.id);
+    } else if (visibleCalloutMarker?.type === 'location') {
+      const location = locations?.find(l => l.id === visibleCalloutMarker.id);
       if (location && mapRef.current) {
         mapRef.current.animateToRegion({
           latitude: location.latitude,
@@ -298,8 +306,14 @@ export default function MapScreen() {
         }, 500);
       }
     }
-  }, [selectedMarker, boundaryCoordinates, locations]);
+  }, [visibleCalloutMarker, boundaryCoordinates, locations]);
 
+  // Called when marker is tapped (callout appears) - show boundary
+  const handleMarkerSelect = useCallback((id: string, type: MarkerType) => {
+    setVisibleCalloutMarker({ id, type });
+  }, []);
+
+  // Called when "Tap for details" is pressed in callout - show bottom sheet
   const handleCalloutPress = useCallback((id: string, type: MarkerType) => {
     setSelectedMarker({ id, type });
     setTimeout(() => {
@@ -307,17 +321,26 @@ export default function MapScreen() {
     }, 100);
   }, []);
 
+  // Called when bottom sheet is closed - only closes sheet, leaves callout and boundary visible
   const handleBottomSheetClose = useCallback(() => {
-    // Hide the callout for the currently selected marker before clearing selection
-    if (selectedMarker) {
-      const markerKey = `${selectedMarker.type}-${selectedMarker.id}`;
+    setSelectedMarker(null);
+  }, []);
+
+  // Called when callout should be dismissed (clears both callout and boundary)
+  const handleCalloutDismiss = useCallback(() => {
+    // Hide the callout for the currently visible marker
+    if (visibleCalloutMarker) {
+      const markerKey = `${visibleCalloutMarker.type}-${visibleCalloutMarker.id}`;
       const markerRef = markerRefs.current[markerKey];
       if (markerRef?.hideCallout) {
         markerRef.hideCallout();
       }
     }
+    setVisibleCalloutMarker(null);
+    // Also close bottom sheet if open
     setSelectedMarker(null);
-  }, [selectedMarker]);
+    bottomSheetRef.current?.close();
+  }, [visibleCalloutMarker]);
 
   const renderWaterwayMarker = (waterway: Waterway) => {
     const typeName = waterway.type?.name || 'River';
@@ -334,6 +357,7 @@ export default function MapScreen() {
         }}
         pinColor={getMarkerColor(typeName)}
         tracksViewChanges={false}
+        onSelect={() => handleMarkerSelect(waterway.id, 'waterway')}
       >
         <Callout
           onPress={() => handleCalloutPress(waterway.id, 'waterway')}
@@ -371,6 +395,7 @@ export default function MapScreen() {
         }}
         pinColor={getMarkerColor(locationType)}
         tracksViewChanges={false}
+        onSelect={() => handleMarkerSelect(location.id, 'location')}
       >
         <Callout
           onPress={() => handleCalloutPress(location.id, 'location')}
@@ -425,9 +450,9 @@ export default function MapScreen() {
         showsScale={true}
         mapType="terrain"
         onPress={(e) => {
-          // Only close bottom sheet when tapping empty map area, not markers or callouts
+          // Only dismiss callout and close bottom sheet when tapping empty map area
           if (e.nativeEvent.action === 'press') {
-            handleBottomSheetClose();
+            handleCalloutDismiss();
           }
         }}
       >
