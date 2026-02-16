@@ -710,6 +710,7 @@ export default function MapScreen() {
           markerId={selectedMarker.id}
           markerType={selectedMarker.type}
           onClose={handleBottomSheetClose}
+          onReturnToMap={handleCalloutDismiss}
           markerLatitude={
             selectedMarker.type === 'waterway'
               ? waterways?.find(w => w.id === selectedMarker.id)?.latitude

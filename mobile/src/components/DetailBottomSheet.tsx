@@ -93,6 +93,7 @@ interface DetailBottomSheetProps {
   markerId: string | null;
   markerType: MarkerType | null;
   onClose: () => void;
+  onReturnToMap?: () => void; // Called when user explicitly taps "Return to Map" button
   markerLatitude?: number;
   markerLongitude?: number;
 }
@@ -103,7 +104,7 @@ export interface DetailBottomSheetRef {
 }
 
 const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProps>(
-  ({ markerId, markerType, onClose, markerLatitude, markerLongitude }, ref) => {
+  ({ markerId, markerType, onClose, onReturnToMap, markerLatitude, markerLongitude }, ref) => {
     const bottomSheetRef = useRef<BottomSheet>(null);
     const snapPoints = useMemo(() => ['50%', '85%'], []);
     const [showContributeModal, setShowContributeModal] = useState(false);
@@ -191,7 +192,7 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                 {/* Left group: Back to Map Button + Type Badge */}
                 <View className="flex-row items-center" style={{ gap: 10 }}>
                   <Pressable
-                    onPress={onClose}
+                    onPress={onReturnToMap ?? onClose}
                     className="flex-row items-center py-2 px-3 rounded-lg active:opacity-70"
                     style={{ backgroundColor: `${colors.forestGreen}15` }}
                   >
@@ -225,7 +226,7 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                 {/* Right: Mini-Map Thumbnail */}
                 {markerLatitude && markerLongitude ? (
                   <Pressable
-                    onPress={onClose}
+                    onPress={onReturnToMap ?? onClose}
                     className="rounded-xl overflow-hidden shadow-sm"
                     style={{
                       width: 72,
