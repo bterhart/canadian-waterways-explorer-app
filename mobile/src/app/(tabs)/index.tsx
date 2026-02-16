@@ -580,8 +580,8 @@ export default function MapScreen() {
               {
                 position: 'absolute',
                 // Right edge of callout = marker.x + 100
-                // Button is 48px wide, so left = callout right - button width
-                left: calloutScreenPosition.x + 100 - 48,
+                // Button is 56px wide, so left = callout right - button width
+                left: calloutScreenPosition.x + 100 - 56,
                 top: calloutScreenPosition.y - 195,
               },
             ]}
@@ -876,7 +876,7 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
   calloutEarthButton: {
-    width: 48,
+    width: 56,
     height: 28,
     borderRadius: 6,
     backgroundColor: '#4285F4',
@@ -889,7 +889,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   calloutCloseButton: {
-    width: 48,
+    width: 56,
     height: 28,
     borderRadius: 6,
     backgroundColor: '#EF4444',
