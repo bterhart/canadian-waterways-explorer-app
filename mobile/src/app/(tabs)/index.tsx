@@ -424,6 +424,12 @@ export default function MapScreen() {
         showsCompass={true}
         showsScale={true}
         mapType="terrain"
+        onPress={(e) => {
+          // Only close bottom sheet when tapping empty map area, not markers or callouts
+          if (e.nativeEvent.action === 'press') {
+            handleBottomSheetClose();
+          }
+        }}
       >
         {/* Waterway markers */}
         {filteredWaterways.map(renderWaterwayMarker)}
