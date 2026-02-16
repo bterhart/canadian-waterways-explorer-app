@@ -168,7 +168,7 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
           ) : data ? (
             <>
               {/* Navigation Header - Return to Map */}
-              <View className="flex-row items-center mb-4 -mx-2 px-2 py-3 border-b" style={{ borderBottomColor: '#E5E7EB', gap: 12 }}>
+              <View className="flex-row items-center justify-between mb-4 -mx-2 px-2 py-3 border-b" style={{ borderBottomColor: '#E5E7EB' }}>
                 {/* Back to Map Button */}
                 <Pressable
                   onPress={onClose}
