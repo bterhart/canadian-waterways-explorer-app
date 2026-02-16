@@ -169,19 +169,35 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
             <>
               {/* Navigation Header - Return to Map */}
               <View className="flex-row items-center justify-between mb-4 -mx-2 px-2 py-3 border-b" style={{ borderBottomColor: '#E5E7EB' }}>
-                {/* Back to Map Button */}
-                <Pressable
-                  onPress={onClose}
-                  className="flex-row items-center py-2 px-3 rounded-lg active:opacity-70"
-                  style={{ backgroundColor: `${colors.forestGreen}15` }}
-                >
-                  <ChevronLeft size={20} color={colors.forestGreen} strokeWidth={2.5} />
-                  <Text className="ml-1 font-semibold text-sm" style={{ color: colors.forestGreen }}>
-                    Map
-                  </Text>
-                </Pressable>
+                {/* Left group: Back to Map Button + Type Badge */}
+                <View className="flex-row items-center" style={{ gap: 10 }}>
+                  <Pressable
+                    onPress={onClose}
+                    className="flex-row items-center py-2 px-3 rounded-lg active:opacity-70"
+                    style={{ backgroundColor: `${colors.forestGreen}15` }}
+                  >
+                    <ChevronLeft size={20} color={colors.forestGreen} strokeWidth={2.5} />
+                    <Text className="ml-1 font-semibold text-sm" style={{ color: colors.forestGreen }}>
+                      Map
+                    </Text>
+                  </Pressable>
 
-                {/* Mini-Map Thumbnail - immediately to the right of Map button */}
+                  {/* Type Badge */}
+                  <View
+                    className="px-3 py-1 rounded-full"
+                    style={{ backgroundColor: colors.forestGreen }}
+                  >
+                    <Text className="text-white text-xs font-semibold">
+                      {markerType === 'waterway' && waterwayData?.type?.name
+                        ? getTypeLabel(waterwayData.type.name)
+                        : markerType === 'location' && locationData?.locationType
+                        ? getTypeLabel(locationData.locationType)
+                        : 'Location'}
+                    </Text>
+                  </View>
+                </View>
+
+                {/* Right: Mini-Map Thumbnail */}
                 {markerLatitude && markerLongitude ? (
                   <Pressable
                     onPress={onClose}
