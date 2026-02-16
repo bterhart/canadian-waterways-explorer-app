@@ -106,6 +106,9 @@ export default function MapScreen() {
     type: MarkerType;
   } | null>(null);
 
+  // Track screen position of the callout icons
+  const [calloutScreenPosition, setCalloutScreenPosition] = useState<{ x: number; y: number } | null>(null);
+
   const [legendVisible, setLegendVisible] = useState(false);
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
 
@@ -325,6 +328,29 @@ export default function MapScreen() {
     }
   }, [visibleCalloutMarker, boundaryCoordinates, locations]);
 
+  // Update screen position for callout icons after animation
+  useEffect(() => {
+    if (!visibleMarkerCoords || !mapRef.current) {
+      setCalloutScreenPosition(null);
+      return;
+    }
+    // Wait for animation to complete, then get screen position
+    const timer = setTimeout(async () => {
+      try {
+        const point = await mapRef.current?.pointForCoordinate({
+          latitude: visibleMarkerCoords.latitude,
+          longitude: visibleMarkerCoords.longitude,
+        });
+        if (point) {
+          setCalloutScreenPosition({ x: point.x, y: point.y });
+        }
+      } catch {
+        // Ignore errors - map may not be ready
+      }
+    }, 600); // Wait for animation (500ms) + buffer
+    return () => clearTimeout(timer);
+  }, [visibleMarkerCoords]);
+
   // Called when marker is tapped (callout appears) - show boundary
   const handleMarkerSelect = useCallback((id: string, type: MarkerType) => {
     setVisibleCalloutMarker({ id, type });
@@ -507,27 +533,46 @@ export default function MapScreen() {
       </MapView>
 
       {/* Floating Icons Above Callout */}
-      {visibleCalloutMarker && visibleMarkerCoords ? (
-        <View style={styles.calloutIconsContainer}>
-          {/* Google Earth Button - Left */}
+      {visibleCalloutMarker && visibleMarkerCoords && calloutScreenPosition ? (
+        <View style={styles.calloutIconsOverlay} pointerEvents="box-none">
+          {/* Google Earth Button - Left aligned with callout left edge */}
           <TouchableOpacity
-            style={styles.calloutEarthButton}
+            style={[
+              styles.calloutEarthButton,
+              {
+                position: 'absolute',
+                // Callout is 200px wide, centered on marker. Left edge = marker.x - 100
+                // Icon is 40px wide, so left edge of icon = callout left edge
+                left: calloutScreenPosition.x - 100,
+                // Position above callout (callout ~120px tall + pin ~40px + gap)
+                top: calloutScreenPosition.y - 175,
+              },
+            ]}
             onPress={() => {
               const url = getGoogleEarthUrl(visibleMarkerCoords.latitude, visibleMarkerCoords.longitude);
               Linking.openURL(url);
             }}
             activeOpacity={0.8}
           >
-            <Globe2 size={22} color="white" />
+            <Globe2 size={18} color="white" />
           </TouchableOpacity>
 
-          {/* Close Button - Right */}
+          {/* Close Button - Right aligned with callout right edge */}
           <TouchableOpacity
-            style={styles.calloutCloseButton}
+            style={[
+              styles.calloutCloseButton,
+              {
+                position: 'absolute',
+                // Right edge of callout = marker.x + 100
+                // Icon is 40px wide, so left = callout right - icon width
+                left: calloutScreenPosition.x + 100 - 40,
+                top: calloutScreenPosition.y - 175,
+              },
+            ]}
             onPress={handleCalloutDismiss}
             activeOpacity={0.8}
           >
-            <X size={22} color="white" strokeWidth={3} />
+            <X size={18} color="white" strokeWidth={3} />
           </TouchableOpacity>
         </View>
       ) : null}
@@ -807,20 +852,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFEF7',
     borderRadius: 12,
   },
-  calloutIconsContainer: {
+  calloutIconsOverlay: {
     position: 'absolute',
-    bottom: 120,
+    top: 0,
     left: 0,
     right: 0,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 24,
-    pointerEvents: 'box-none',
+    bottom: 0,
   },
   calloutEarthButton: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     backgroundColor: '#4285F4',
     alignItems: 'center',
     justifyContent: 'center',
@@ -831,9 +873,9 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   calloutCloseButton: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     backgroundColor: '#EF4444',
     alignItems: 'center',
     justifyContent: 'center',
