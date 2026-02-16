@@ -328,28 +328,44 @@ export default function MapScreen() {
     }
   }, [visibleCalloutMarker, boundaryCoordinates, locations]);
 
-  // Update screen position for callout icons after animation
-  useEffect(() => {
+  // Function to update screen position of callout icons
+  const updateCalloutScreenPosition = useCallback(async () => {
     if (!visibleMarkerCoords || !mapRef.current) {
       setCalloutScreenPosition(null);
       return;
     }
-    // Wait for animation to complete, then get screen position
-    const timer = setTimeout(async () => {
-      try {
-        const point = await mapRef.current?.pointForCoordinate({
-          latitude: visibleMarkerCoords.latitude,
-          longitude: visibleMarkerCoords.longitude,
-        });
-        if (point) {
-          setCalloutScreenPosition({ x: point.x, y: point.y });
-        }
-      } catch {
-        // Ignore errors - map may not be ready
+    try {
+      const point = await mapRef.current.pointForCoordinate({
+        latitude: visibleMarkerCoords.latitude,
+        longitude: visibleMarkerCoords.longitude,
+      });
+      if (point) {
+        setCalloutScreenPosition({ x: point.x, y: point.y });
       }
+    } catch {
+      // Ignore errors - map may not be ready
+    }
+  }, [visibleMarkerCoords]);
+
+  // Update screen position for callout icons after animation
+  useEffect(() => {
+    if (!visibleMarkerCoords) {
+      setCalloutScreenPosition(null);
+      return;
+    }
+    // Wait for animation to complete, then get screen position
+    const timer = setTimeout(() => {
+      updateCalloutScreenPosition();
     }, 600); // Wait for animation (500ms) + buffer
     return () => clearTimeout(timer);
-  }, [visibleMarkerCoords]);
+  }, [visibleMarkerCoords, updateCalloutScreenPosition]);
+
+  // Update callout icon position when map region changes (drag/zoom)
+  const handleRegionChange = useCallback(() => {
+    if (visibleMarkerCoords) {
+      updateCalloutScreenPosition();
+    }
+  }, [visibleMarkerCoords, updateCalloutScreenPosition]);
 
   // Called when marker is tapped (callout appears) - show boundary
   const handleMarkerSelect = useCallback((id: string, type: MarkerType) => {
@@ -492,6 +508,7 @@ export default function MapScreen() {
         showsCompass={true}
         showsScale={true}
         mapType="terrain"
+        onRegionChange={handleRegionChange}
         onPress={(e) => {
           // Only dismiss callout and close bottom sheet when tapping empty map area
           if (e.nativeEvent.action === 'press') {
@@ -542,7 +559,6 @@ export default function MapScreen() {
               {
                 position: 'absolute',
                 // Callout is 200px wide, centered on marker. Left edge = marker.x - 100
-                // Icon is 40px wide, so left edge of icon = callout left edge
                 left: calloutScreenPosition.x - 100,
                 // Position above callout (callout ~120px tall + pin ~40px + gap)
                 top: calloutScreenPosition.y - 175,
@@ -554,7 +570,7 @@ export default function MapScreen() {
             }}
             activeOpacity={0.8}
           >
-            <Globe2 size={18} color="white" />
+            <Globe2 size={16} color="white" />
           </TouchableOpacity>
 
           {/* Close Button - Right aligned with callout right edge */}
@@ -564,15 +580,15 @@ export default function MapScreen() {
               {
                 position: 'absolute',
                 // Right edge of callout = marker.x + 100
-                // Icon is 40px wide, so left = callout right - icon width
-                left: calloutScreenPosition.x + 100 - 40,
+                // Button is 36px wide, so left = callout right - button width
+                left: calloutScreenPosition.x + 100 - 36,
                 top: calloutScreenPosition.y - 175,
               },
             ]}
             onPress={handleCalloutDismiss}
             activeOpacity={0.8}
           >
-            <X size={18} color="white" strokeWidth={3} />
+            <X size={16} color="white" strokeWidth={3} />
           </TouchableOpacity>
         </View>
       ) : null}
@@ -860,9 +876,9 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
   calloutEarthButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 36,
+    height: 32,
+    borderRadius: 6,
     backgroundColor: '#4285F4',
     alignItems: 'center',
     justifyContent: 'center',
@@ -873,9 +889,9 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   calloutCloseButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 36,
+    height: 32,
+    borderRadius: 6,
     backgroundColor: '#EF4444',
     alignItems: 'center',
     justifyContent: 'center',
