@@ -28,6 +28,9 @@ model Waterway {
   createdAt              DateTime                  @default(now())
   updatedAt              DateTime                  @updatedAt
   boundaryCoordinates    String?
+  imageUrl               String?                   // Primary image
+  galleryImages          String?                   // JSON array: [{url, caption, credit}]
+  videoUrl               String?                   // YouTube or video URL
   discoveries            ArchaeologicalDiscovery[]
   explorers              ExplorerWaterway[]
   furTradeInfo           FurTradeInfo?
@@ -52,6 +55,8 @@ model Location {
   yearEstablished    Int?
   historicalNotes    String?
   imageUrl           String?
+  galleryImages      String?            // JSON array: [{url, caption, credit}]
+  videoUrl           String?            // YouTube or video URL
   waterwayId         String
   cartographerId     String?
   createdAt          DateTime           @default(now())
