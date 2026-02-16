@@ -324,14 +324,6 @@ export default function MapScreen() {
     setSelectedMarker(null);
   }, [selectedMarker]);
 
-  // Handler to dismiss a callout by marker key
-  const handleDismissCallout = useCallback((markerKey: string) => {
-    const markerRef = markerRefs.current[markerKey];
-    if (markerRef?.hideCallout) {
-      markerRef.hideCallout();
-    }
-  }, []);
-
   const renderWaterwayMarker = (waterway: Waterway) => {
     const typeName = waterway.type?.name || 'River';
     const markerKey = `waterway-${waterway.id}`;
@@ -371,9 +363,9 @@ export default function MapScreen() {
               </View>
               <TouchableOpacity
                 style={styles.closeButton}
-                onPress={() => handleDismissCallout(markerKey)}
+                onPress={handleBottomSheetClose}
               >
-                <X size={16} color="#6B7280" />
+                <X size={16} color="#EF4444" />
               </TouchableOpacity>
             </View>
             <Text style={styles.calloutTitle}>{waterway.name}</Text>
@@ -426,9 +418,9 @@ export default function MapScreen() {
               </View>
               <TouchableOpacity
                 style={styles.closeButton}
-                onPress={() => handleDismissCallout(markerKey)}
+                onPress={handleBottomSheetClose}
               >
-                <X size={16} color="#6B7280" />
+                <X size={16} color="#EF4444" />
               </TouchableOpacity>
             </View>
             <Text style={styles.calloutTitle}>{location.name}</Text>
