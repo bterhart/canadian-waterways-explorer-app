@@ -1,5 +1,5 @@
 // Explorer Directory Screen
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -14,6 +14,19 @@ import { useExplorers, useExplorerDetail } from '@/lib/api/waterways-api';
 import ExplorerDetailModal from '@/components/ExplorerDetailModal';
 import type { Explorer } from '@/lib/types/waterways';
 
+// Helper function to extract last name for sorting
+// Handles cases like "Captain George Vancouver" -> "Vancouver"
+// Also handles special cases like "Bruno de Heceta" -> "Heceta"
+function getLastNameForSorting(fullName: string): string {
+  const parts = fullName.trim().split(/\s+/);
+  if (parts.length === 0) return '';
+
+  // Get the last word as the surname
+  const lastName = parts[parts.length - 1];
+
+  return lastName.toLowerCase();
+}
+
 // Theme colors
 const colors = {
   forestGreen: '#2D5A3D',
@@ -26,6 +39,16 @@ const colors = {
 export default function ExplorersScreen() {
   const { data: explorers, isLoading, isError, refetch, isRefetching } = useExplorers();
   const [selectedExplorerId, setSelectedExplorerId] = useState<string | null>(null);
+
+  // Sort explorers alphabetically by last name
+  const sortedExplorers = useMemo(() => {
+    if (!explorers) return [];
+    return [...explorers].sort((a, b) => {
+      const lastNameA = getLastNameForSorting(a.name);
+      const lastNameB = getLastNameForSorting(b.name);
+      return lastNameA.localeCompare(lastNameB);
+    });
+  }, [explorers]);
 
   // Fetch selected explorer details
   const { data: selectedExplorerDetail, isLoading: detailLoading } =
@@ -105,7 +128,7 @@ export default function ExplorersScreen() {
   return (
     <View style={styles.container}>
       <FlatList
-        data={explorers}
+        data={sortedExplorers}
         keyExtractor={(item) => item.id}
         renderItem={renderExplorerCard}
         ListHeaderComponent={ListHeader}
