@@ -55,6 +55,55 @@ function Section({ title, icon, children }: SectionProps) {
   );
 }
 
+// Key Figure Card Component - fetches explorer portrait when explorerId is present
+interface KeyFigureCardProps {
+  figure: KeyFigure;
+  onPress?: () => void;
+}
+
+function KeyFigureCard({ figure, onPress }: KeyFigureCardProps) {
+  const explorerId = (figure as any).explorerId as string | undefined;
+  const { data: explorerData } = useExplorerDetail(explorerId ?? null);
+
+  // Use explorer's imageUrl if available, fallback to figure.imageUrl
+  const imageUrl = explorerData?.imageUrl ?? figure.imageUrl;
+
+  const CardWrapper = explorerId ? Pressable : View;
+  const cardProps = explorerId && onPress
+    ? {
+        onPress,
+        style: ({ pressed }: { pressed: boolean }) => [
+          styles.figureCard,
+          pressed && styles.figureCardPressed,
+        ],
+      }
+    : { style: styles.figureCard };
+
+  return (
+    <CardWrapper {...cardProps}>
+      {imageUrl ? (
+        <Image
+          source={{ uri: imageUrl }}
+          style={styles.figureImage}
+          resizeMode="cover"
+        />
+      ) : (
+        <View style={styles.figureImagePlaceholder}>
+          <Users size={24} color={colors.forestGreen} />
+        </View>
+      )}
+      <View style={styles.figureInfo}>
+        <Text style={styles.figureName}>{figure.name}</Text>
+        <Text style={styles.figureRole}>{figure.role}</Text>
+        {figure.years ? (
+          <Text style={styles.figureYears}>{figure.years}</Text>
+        ) : null}
+        <Text style={styles.figureDescription}>{figure.description}</Text>
+      </View>
+    </CardWrapper>
+  );
+}
+
 export default function DeepDiveDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { data: lesson, isLoading, isError } = useLessonPlan(id ?? null);
@@ -161,39 +210,12 @@ export default function DeepDiveDetailScreen() {
         >
           {keyFigures.map((figure, index) => {
             const explorerId = (figure as any).explorerId;
-            const CardWrapper = explorerId ? Pressable : View;
-            const cardProps = explorerId
-              ? {
-                  onPress: () => setSelectedExplorerId(explorerId),
-                  style: ({ pressed }: { pressed: boolean }) => [
-                    styles.figureCard,
-                    pressed && styles.figureCardPressed,
-                  ],
-                }
-              : { style: styles.figureCard };
-
             return (
-              <CardWrapper key={index} {...cardProps}>
-                {figure.imageUrl ? (
-                  <Image
-                    source={{ uri: figure.imageUrl }}
-                    style={styles.figureImage}
-                    resizeMode="cover"
-                  />
-                ) : (
-                  <View style={styles.figureImagePlaceholder}>
-                    <Users size={24} color={colors.forestGreen} />
-                  </View>
-                )}
-                <View style={styles.figureInfo}>
-                  <Text style={styles.figureName}>{figure.name}</Text>
-                  <Text style={styles.figureRole}>{figure.role}</Text>
-                  {figure.years ? (
-                    <Text style={styles.figureYears}>{figure.years}</Text>
-                  ) : null}
-                  <Text style={styles.figureDescription}>{figure.description}</Text>
-                </View>
-              </CardWrapper>
+              <KeyFigureCard
+                key={index}
+                figure={figure}
+                onPress={explorerId ? () => setSelectedExplorerId(explorerId) : undefined}
+              />
             );
           })}
         </Section>
