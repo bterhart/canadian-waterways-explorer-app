@@ -92,6 +92,9 @@ export interface WaterwayDetail {
   typeId: string;
   historicalSignificance: string | null;
   boundaryCoordinates: string | null;
+  imageUrl: string | null;
+  galleryImages: string | null;
+  videoUrl: string | null;
   type: WaterwayTypeInfo;
   explorers: ExplorerWaterway[];
   furTradeInfo: FurTradeInfo | null;
@@ -138,6 +141,8 @@ export interface LocationDetail {
   yearEstablished: number | null;
   historicalNotes: string | null;
   imageUrl: string | null;
+  galleryImages: string | null;
+  videoUrl: string | null;
   waterwayId: string;
   cartographerId: string | null;
   waterway: {

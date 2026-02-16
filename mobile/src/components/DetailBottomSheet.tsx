@@ -1,8 +1,8 @@
 // Bottom sheet component for displaying waterway and location details
 import React, { useCallback, useMemo, forwardRef, useImperativeHandle, useRef, useState } from 'react';
-import { View, Text, ActivityIndicator, Image, Pressable, Linking } from 'react-native';
+import { View, Text, ActivityIndicator, Image, Pressable, Linking, ScrollView, Modal, Dimensions } from 'react-native';
 import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
-import { Plus, MessageSquare, Camera, BookOpen, History, Compass, Globe } from 'lucide-react-native';
+import { Plus, MessageSquare, Camera, BookOpen, History, Compass, Globe, Play, X, ImageIcon } from 'lucide-react-native';
 import { useWaterwayDetail, useLocationDetail, useWaterwayContributions, useLocationContributions } from '@/lib/api/waterways-api';
 import ContributeModal from './ContributeModal';
 import type { MarkerType, WaterwayDetail, LocationDetail, UserContribution, ArchaeologicalDiscovery } from '@/lib/types/waterways';
@@ -26,6 +26,49 @@ const colors = {
   section: '#F5F5DC',
 };
 
+// Gallery image type
+interface GalleryImage {
+  url: string;
+  caption?: string;
+  credit?: string;
+}
+
+// Parse gallery images from JSON string
+const parseGalleryImages = (galleryJson: string | null): GalleryImage[] => {
+  if (!galleryJson) return [];
+  try {
+    const parsed = JSON.parse(galleryJson);
+    if (Array.isArray(parsed)) {
+      return parsed.filter((item): item is GalleryImage =>
+        typeof item === 'object' && item !== null && typeof item.url === 'string'
+      );
+    }
+    return [];
+  } catch {
+    return [];
+  }
+};
+
+// Extract YouTube video ID from URL
+const getYouTubeVideoId = (url: string): string | null => {
+  const patterns = [
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/,
+    /youtube\.com\/shorts\/([a-zA-Z0-9_-]{11})/,
+  ];
+  for (const pattern of patterns) {
+    const match = url.match(pattern);
+    if (match) return match[1];
+  }
+  return null;
+};
+
+// Get YouTube thumbnail URL
+const getYouTubeThumbnail = (videoId: string): string => {
+  return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+};
+
+const { width: screenWidth } = Dimensions.get('window');
+
 interface DetailBottomSheetProps {
   markerId: string | null;
   markerType: MarkerType | null;
@@ -42,6 +85,7 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
     const bottomSheetRef = useRef<BottomSheet>(null);
     const snapPoints = useMemo(() => ['50%', '85%'], []);
     const [showContributeModal, setShowContributeModal] = useState(false);
+    const [selectedGalleryImage, setSelectedGalleryImage] = useState<GalleryImage | null>(null);
 
     // Fetch data based on marker type
     const { data: waterwayData, isLoading: waterwayLoading } = useWaterwayDetail(
@@ -122,10 +166,10 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
             <>
               {/* Header */}
               <View className="mb-4">
-                {/* Image for location */}
-                {markerType === 'location' && locationData?.imageUrl ? (
+                {/* Image for waterway or location */}
+                {(markerType === 'waterway' && waterwayData?.imageUrl) || (markerType === 'location' && locationData?.imageUrl) ? (
                   <Image
-                    source={{ uri: locationData.imageUrl }}
+                    source={{ uri: markerType === 'waterway' ? waterwayData?.imageUrl! : locationData?.imageUrl! }}
                     className="w-full h-48 rounded-xl mb-4"
                     resizeMode="cover"
                   />
@@ -215,6 +259,133 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                   </View>
                 </View>
               ) : null}
+
+              {/* Gallery Images Section */}
+              {(() => {
+                const galleryJson = markerType === 'waterway' ? waterwayData?.galleryImages : locationData?.galleryImages;
+                const galleryImages = parseGalleryImages(galleryJson ?? null);
+                if (galleryImages.length === 0) return null;
+                return (
+                  <View className="mb-4">
+                    <View className="flex-row items-center mb-2">
+                      <ImageIcon size={20} color={colors.waterBlue} />
+                      <Text
+                        className="text-lg font-bold ml-2"
+                        style={{ color: colors.waterBlue }}
+                      >
+                        Photo Gallery
+                      </Text>
+                    </View>
+                    <ScrollView
+                      horizontal
+                      showsHorizontalScrollIndicator={false}
+                      contentContainerStyle={{ paddingRight: 16 }}
+                      style={{ flexGrow: 0 }}
+                    >
+                      {galleryImages.map((image, index) => (
+                        <Pressable
+                          key={`gallery-${index}`}
+                          onPress={() => setSelectedGalleryImage(image)}
+                          className="mr-3"
+                        >
+                          <View className="rounded-xl overflow-hidden" style={{ width: 200, height: 150 }}>
+                            <Image
+                              source={{ uri: image.url }}
+                              style={{ width: 200, height: 150 }}
+                              resizeMode="cover"
+                            />
+                          </View>
+                          {image.caption ? (
+                            <Text
+                              className="text-xs mt-1 text-gray-600"
+                              numberOfLines={2}
+                              style={{ maxWidth: 200 }}
+                            >
+                              {image.caption}
+                            </Text>
+                          ) : null}
+                        </Pressable>
+                      ))}
+                    </ScrollView>
+                  </View>
+                );
+              })()}
+
+              {/* Video Section */}
+              {(() => {
+                const videoUrl = markerType === 'waterway' ? waterwayData?.videoUrl : locationData?.videoUrl;
+                if (!videoUrl) return null;
+                const videoId = getYouTubeVideoId(videoUrl);
+                const thumbnailUrl = videoId ? getYouTubeThumbnail(videoId) : null;
+                return (
+                  <View className="mb-4">
+                    <View className="flex-row items-center mb-2">
+                      <Play size={20} color={colors.forestGreen} />
+                      <Text
+                        className="text-lg font-bold ml-2"
+                        style={{ color: colors.forestGreen }}
+                      >
+                        Video
+                      </Text>
+                    </View>
+                    <Pressable
+                      onPress={() => Linking.openURL(videoUrl)}
+                      className="rounded-xl overflow-hidden"
+                      style={{ backgroundColor: '#000' }}
+                    >
+                      {thumbnailUrl ? (
+                        <View style={{ position: 'relative' }}>
+                          <Image
+                            source={{ uri: thumbnailUrl }}
+                            style={{ width: '100%', height: 200 }}
+                            resizeMode="cover"
+                          />
+                          <View
+                            style={{
+                              position: 'absolute',
+                              top: 0,
+                              left: 0,
+                              right: 0,
+                              bottom: 0,
+                              backgroundColor: 'rgba(0,0,0,0.3)',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                            }}
+                          >
+                            <View
+                              style={{
+                                width: 64,
+                                height: 64,
+                                borderRadius: 32,
+                                backgroundColor: colors.forestGreen,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                              }}
+                            >
+                              <Play size={32} color="white" fill="white" />
+                            </View>
+                          </View>
+                        </View>
+                      ) : (
+                        <View
+                          style={{
+                            width: '100%',
+                            height: 150,
+                            backgroundColor: colors.section,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}
+                        >
+                          <Play size={40} color={colors.forestGreen} />
+                          <Text className="mt-2 text-sm" style={{ color: colors.forestGreen }}>
+                            Watch Video
+                          </Text>
+                        </View>
+                      )}
+                    </Pressable>
+                  </View>
+                );
+              })()}
 
               {/* Waterway-specific sections */}
               {markerType === 'waterway' && waterwayData ? (
@@ -596,6 +767,86 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
           waterwayName={markerType === 'waterway' ? data?.name : undefined}
           locationName={markerType === 'location' ? data?.name : undefined}
         />
+
+        {/* Gallery Image Modal */}
+        <Modal
+          visible={selectedGalleryImage !== null}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setSelectedGalleryImage(null)}
+        >
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: 'rgba(0,0,0,0.9)',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            {/* Close Button */}
+            <Pressable
+              onPress={() => setSelectedGalleryImage(null)}
+              style={{
+                position: 'absolute',
+                top: 50,
+                right: 20,
+                zIndex: 10,
+                width: 44,
+                height: 44,
+                borderRadius: 22,
+                backgroundColor: 'rgba(255,255,255,0.2)',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <X size={24} color="white" />
+            </Pressable>
+
+            {/* Image */}
+            {selectedGalleryImage ? (
+              <View style={{ width: screenWidth, alignItems: 'center', paddingHorizontal: 20 }}>
+                <Image
+                  source={{ uri: selectedGalleryImage.url }}
+                  style={{
+                    width: screenWidth - 40,
+                    height: screenWidth - 40,
+                    borderRadius: 12,
+                  }}
+                  resizeMode="contain"
+                />
+                {/* Caption and Credit */}
+                {(selectedGalleryImage.caption || selectedGalleryImage.credit) ? (
+                  <View style={{ marginTop: 16, paddingHorizontal: 20 }}>
+                    {selectedGalleryImage.caption ? (
+                      <Text
+                        style={{
+                          color: 'white',
+                          fontSize: 16,
+                          textAlign: 'center',
+                          marginBottom: 8,
+                        }}
+                      >
+                        {selectedGalleryImage.caption}
+                      </Text>
+                    ) : null}
+                    {selectedGalleryImage.credit ? (
+                      <Text
+                        style={{
+                          color: 'rgba(255,255,255,0.7)',
+                          fontSize: 12,
+                          textAlign: 'center',
+                          fontStyle: 'italic',
+                        }}
+                      >
+                        Credit: {selectedGalleryImage.credit}
+                      </Text>
+                    ) : null}
+                  </View>
+                ) : null}
+              </View>
+            ) : null}
+          </View>
+        </Modal>
       </BottomSheet>
     );
   }
