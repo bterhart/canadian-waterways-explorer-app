@@ -1,8 +1,8 @@
 // Interactive Map Screen for Canadian Waterways Education
 import React, { useState, useRef, useCallback, useMemo, useEffect } from 'react';
-import { View, Text, ActivityIndicator, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, ActivityIndicator, StyleSheet, TouchableOpacity, ScrollView, Linking } from 'react-native';
 import MapView, { Marker, Callout, PROVIDER_DEFAULT, Region, Polyline, Polygon } from 'react-native-maps';
-import { Menu, ChevronDown, ChevronRight } from 'lucide-react-native';
+import { Menu, ChevronDown, ChevronRight, Globe2, X } from 'lucide-react-native';
 import { useWaterways, useLocations, useExplorers, useExplorerDetail } from '@/lib/api/waterways-api';
 import DetailBottomSheet, { DetailBottomSheetRef } from '@/components/DetailBottomSheet';
 import type { MarkerType, Waterway, Location } from '@/lib/types/waterways';
@@ -45,6 +45,11 @@ const markerColors: Record<string, string> = {
 
 const getMarkerColor = (typeName: string): string => {
   return markerColors[typeName] || '#6B7280';
+};
+
+// Generate Google Earth Web URL
+const getGoogleEarthUrl = (latitude: number, longitude: number): string => {
+  return `https://earth.google.com/web/@${latitude},${longitude},500a,5000d,35y,0h,45t,0r`;
 };
 
 // Parse boundary coordinates from JSON string
@@ -288,6 +293,18 @@ export default function MapScreen() {
     return parseBoundaryCoordinates(selectedWaterway.boundaryCoordinates);
   }, [selectedWaterway]);
 
+  // Get coordinates for the visible callout marker (for floating icons)
+  const visibleMarkerCoords = useMemo(() => {
+    if (!visibleCalloutMarker) return null;
+    if (visibleCalloutMarker.type === 'waterway') {
+      const waterway = waterways?.find(w => w.id === visibleCalloutMarker.id);
+      return waterway ? { latitude: waterway.latitude, longitude: waterway.longitude } : null;
+    } else {
+      const location = locations?.find(l => l.id === visibleCalloutMarker.id);
+      return location ? { latitude: location.latitude, longitude: location.longitude } : null;
+    }
+  }, [visibleCalloutMarker, waterways, locations]);
+
   // Animate to waterway when callout becomes visible
   useEffect(() => {
     if (visibleCalloutMarker?.type === 'waterway' && boundaryCoordinates.length > 0) {
@@ -488,6 +505,32 @@ export default function MapScreen() {
           )
         ) : null}
       </MapView>
+
+      {/* Floating Icons Above Callout */}
+      {visibleCalloutMarker && visibleMarkerCoords ? (
+        <View style={styles.calloutIconsContainer}>
+          {/* Google Earth Button - Left */}
+          <TouchableOpacity
+            style={styles.calloutEarthButton}
+            onPress={() => {
+              const url = getGoogleEarthUrl(visibleMarkerCoords.latitude, visibleMarkerCoords.longitude);
+              Linking.openURL(url);
+            }}
+            activeOpacity={0.8}
+          >
+            <Globe2 size={22} color="white" />
+          </TouchableOpacity>
+
+          {/* Close Button - Right */}
+          <TouchableOpacity
+            style={styles.calloutCloseButton}
+            onPress={handleCalloutDismiss}
+            activeOpacity={0.8}
+          >
+            <X size={22} color="white" strokeWidth={3} />
+          </TouchableOpacity>
+        </View>
+      ) : null}
 
       {/* Legend Toggle Button */}
       <TouchableOpacity
@@ -763,6 +806,42 @@ const styles = StyleSheet.create({
     padding: 12,
     backgroundColor: '#FFFEF7',
     borderRadius: 12,
+  },
+  calloutIconsContainer: {
+    position: 'absolute',
+    bottom: 120,
+    left: 0,
+    right: 0,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 24,
+    pointerEvents: 'box-none',
+  },
+  calloutEarthButton: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: '#4285F4',
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  calloutCloseButton: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: '#EF4444',
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
   calloutDetailButton: {
     marginTop: 8,
