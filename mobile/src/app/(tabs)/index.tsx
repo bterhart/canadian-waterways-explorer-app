@@ -2,7 +2,7 @@
 import React, { useState, useRef, useCallback, useMemo, useEffect } from 'react';
 import { View, Text, ActivityIndicator, StyleSheet, TouchableOpacity, ScrollView, Linking } from 'react-native';
 import MapView, { Marker, Callout, PROVIDER_DEFAULT, Region, Polyline, Polygon } from 'react-native-maps';
-import { Menu, ChevronDown, ChevronRight, Globe } from 'lucide-react-native';
+import { Menu, ChevronDown, ChevronRight, Globe2, X } from 'lucide-react-native';
 import { useWaterways, useLocations, useExplorers, useExplorerDetail } from '@/lib/api/waterways-api';
 import DetailBottomSheet, { DetailBottomSheetRef } from '@/components/DetailBottomSheet';
 import type { MarkerType, Waterway, Location } from '@/lib/types/waterways';
@@ -324,6 +324,14 @@ export default function MapScreen() {
     setSelectedMarker(null);
   }, [selectedMarker]);
 
+  // Handler to dismiss a callout by marker key
+  const handleDismissCallout = useCallback((markerKey: string) => {
+    const markerRef = markerRefs.current[markerKey];
+    if (markerRef?.hideCallout) {
+      markerRef.hideCallout();
+    }
+  }, []);
+
   const renderWaterwayMarker = (waterway: Waterway) => {
     const typeName = waterway.type?.name || 'River';
     const markerKey = `waterway-${waterway.id}`;
@@ -345,18 +353,27 @@ export default function MapScreen() {
           tooltip={false}
         >
           <View style={styles.calloutContainer}>
+            {/* Header row: Type badge + Google Earth on left, Close X on right */}
             <View style={styles.calloutHeader}>
-              <View style={[styles.typeBadge, { backgroundColor: getMarkerColor(typeName) }]}>
-                <Text style={styles.typeBadgeText}>{typeName}</Text>
+              <View style={styles.calloutHeaderLeft}>
+                <View style={[styles.typeBadge, { backgroundColor: getMarkerColor(typeName) }]}>
+                  <Text style={styles.typeBadgeText}>{typeName}</Text>
+                </View>
+                <TouchableOpacity
+                  style={styles.earthButton}
+                  onPress={() => {
+                    const url = getGoogleEarthUrl(waterway.latitude, waterway.longitude);
+                    Linking.openURL(url);
+                  }}
+                >
+                  <Globe2 size={14} color="white" />
+                </TouchableOpacity>
               </View>
               <TouchableOpacity
-                style={styles.earthButton}
-                onPress={() => {
-                  const url = getGoogleEarthUrl(waterway.latitude, waterway.longitude);
-                  Linking.openURL(url);
-                }}
+                style={styles.closeButton}
+                onPress={() => handleDismissCallout(markerKey)}
               >
-                <Globe size={16} color="#3B82F6" />
+                <X size={16} color="#6B7280" />
               </TouchableOpacity>
             </View>
             <Text style={styles.calloutTitle}>{waterway.name}</Text>
@@ -391,18 +408,27 @@ export default function MapScreen() {
           tooltip={false}
         >
           <View style={styles.calloutContainer}>
+            {/* Header row: Type badge + Google Earth on left, Close X on right */}
             <View style={styles.calloutHeader}>
-              <View style={[styles.typeBadge, { backgroundColor: getMarkerColor(locationType) }]}>
-                <Text style={styles.typeBadgeText}>{locationType}</Text>
+              <View style={styles.calloutHeaderLeft}>
+                <View style={[styles.typeBadge, { backgroundColor: getMarkerColor(locationType) }]}>
+                  <Text style={styles.typeBadgeText}>{locationType}</Text>
+                </View>
+                <TouchableOpacity
+                  style={styles.earthButton}
+                  onPress={() => {
+                    const url = getGoogleEarthUrl(location.latitude, location.longitude);
+                    Linking.openURL(url);
+                  }}
+                >
+                  <Globe2 size={14} color="white" />
+                </TouchableOpacity>
               </View>
               <TouchableOpacity
-                style={styles.earthButton}
-                onPress={() => {
-                  const url = getGoogleEarthUrl(location.latitude, location.longitude);
-                  Linking.openURL(url);
-                }}
+                style={styles.closeButton}
+                onPress={() => handleDismissCallout(markerKey)}
               >
-                <Globe size={16} color="#3B82F6" />
+                <X size={16} color="#6B7280" />
               </TouchableOpacity>
             </View>
             <Text style={styles.calloutTitle}>{location.name}</Text>
@@ -761,10 +787,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 6,
   },
+  calloutHeaderLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
   earthButton: {
-    padding: 6,
-    backgroundColor: 'rgba(59, 130, 246, 0.1)',
-    borderRadius: 16,
+    padding: 5,
+    backgroundColor: '#4285F4',
+    borderRadius: 12,
+  },
+  closeButton: {
+    padding: 4,
+    backgroundColor: '#F3F4F6',
+    borderRadius: 12,
   },
   typeBadge: {
     paddingHorizontal: 8,
