@@ -27,6 +27,25 @@ const colors = {
   section: '#F5F5DC',
 };
 
+// Marker colors by type (matching map icons)
+const markerColors: Record<string, string> = {
+  // Waterway types
+  River: '#3B82F6', // Blue
+  Lake: '#06B6D4', // Cyan
+  Bay: '#10B981', // Green/Teal
+  Strait: '#0EA5E9', // Sky blue
+  // Location types
+  Fort: '#EF4444', // Red
+  'Trading Post': '#F97316', // Orange
+  Portage: '#92400E', // Brown
+  Settlement: '#8B5CF6', // Purple
+  'Cultural Site': '#EC4899', // Pink
+};
+
+const getMarkerColor = (typeName: string): string => {
+  return markerColors[typeName] || '#6B7280';
+};
+
 // Gallery image type
 interface GalleryImage {
   url: string;
@@ -185,7 +204,13 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                   {/* Type Badge */}
                   <View
                     className="px-3 py-1 rounded-full"
-                    style={{ backgroundColor: colors.forestGreen }}
+                    style={{ backgroundColor: getMarkerColor(
+                      markerType === 'waterway' && waterwayData?.type?.name
+                        ? waterwayData.type.name
+                        : markerType === 'location' && locationData?.locationType
+                        ? locationData.locationType
+                        : ''
+                    ) }}
                   >
                     <Text className="text-white text-xs font-semibold">
                       {markerType === 'waterway' && waterwayData?.type?.name
@@ -277,7 +302,13 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                 ) : null}
                 <View
                   className="px-3 py-1 rounded-full self-start mb-2"
-                  style={{ backgroundColor: colors.forestGreen }}
+                  style={{ backgroundColor: getMarkerColor(
+                    markerType === 'waterway' && 'type' in data
+                      ? (data as WaterwayDetail).type?.name || ''
+                      : 'locationType' in data
+                      ? (data as LocationDetail).locationType
+                      : ''
+                  ) }}
                 >
                   <Text className="text-white text-xs font-semibold">
                     {markerType === 'waterway' && 'type' in data
