@@ -198,7 +198,7 @@ export default function ExplorerDetailModal({ explorer, onClose }: ExplorerDetai
                       key={index}
                       style={[
                         styles.readingEntry,
-                        { backgroundColor: isOdd ? '#FAF5EF' : '#F5EDE3' },
+                        { backgroundColor: isOdd ? '#F7EDE1' : '#F5EDE3' },
                       ]}
                     >
                       {entry.title ? (
