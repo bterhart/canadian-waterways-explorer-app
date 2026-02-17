@@ -24,6 +24,52 @@ const readingGuideData: Record<string, ReadingGuideEntry[]> = {
       year: '1823',
       description: "Primary account of Franklin's Coppermine River expedition highlighting Akaitcho's essential guidance and leadership among the Yellowknives Dene.",
     },
+    {
+      authorSource: 'Piper Liza',
+      title: 'When Disease Came to This Country: Epidemics and Colonialism in Northern North America',
+      publisher: 'Cambridge University Press',
+      year: '2023',
+      description: "Examines Akaitcho's role in Dene history peace negotiations and early colonial encounters in the Northwest Territories.",
+    },
+    {
+      authorSource: 'Coulthard Glen Sean',
+      title: 'Red Skin White Masks: Rejecting the Colonial Politics of Recognition',
+      publisher: 'University of Minnesota Press',
+      year: '2014',
+      description: 'Scholarly work by a Yellowknives Dene author providing context on Dene resistance and historical figures like Akaitcho in colonial frameworks.',
+    },
+    {
+      authorSource: 'Helm June',
+      title: "The People of Denendeh: Ethnohistory of the Indians of Canada's Northwest Territories",
+      publisher: "McGill-Queen's University Press",
+      year: '2000',
+      description: "Ethnohistorical analysis of Dene peoples including Akaitcho's leadership and interactions with European explorers.",
+    },
+    {
+      authorSource: 'Blondin George',
+      title: 'When the World Was New: Stories of the Sahtú Dene',
+      publisher: 'Outcrop',
+      year: '1990',
+      description: 'Collection of Dene oral histories that reference traditional leaders like Akaitcho and their roles in northern exploration.',
+    },
+    {
+      authorSource: 'Yellowknives Dene First Nation',
+      title: 'Our History',
+      url: 'https://ykdene.com/about-us/our-history/',
+      description: "Community-sourced overview of Akaitcho's legacy and Yellowknives Dene heritage.",
+    },
+    {
+      authorSource: 'The Canadian Encyclopedia',
+      title: 'Akaitcho',
+      url: 'https://www.thecanadianencyclopedia.ca/en/article/akaitcho',
+      description: "Biographical entry on Akaitcho's contributions to exploration and treaties.",
+    },
+    {
+      authorSource: 'Wikipedia',
+      title: 'Akaitcho',
+      url: 'https://en.wikipedia.org/wiki/Akaitcho',
+      description: 'Starting point for his expeditions with Franklin and Dene diplomacy.',
+    },
   ],
 };
 
