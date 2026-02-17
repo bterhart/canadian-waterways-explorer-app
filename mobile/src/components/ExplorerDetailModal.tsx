@@ -190,45 +190,52 @@ export default function ExplorerDetailModal({ explorer, onClose }: ExplorerDetai
                   Additional Study and Reading Guide
                 </Text>
               </View>
-              <View style={[styles.sectionContent, { backgroundColor: '#FAF5EF' }]}>
-                {readingGuideData[explorer.id].map((entry, index) => (
-                  <View
-                    key={index}
-                    style={[
-                      styles.readingEntry,
-                      index < readingGuideData[explorer.id].length - 1 && styles.readingEntryBorder,
-                    ]}
-                  >
-                    {entry.title ? (
-                      <Text style={styles.readingTitle}>{entry.title}</Text>
-                    ) : null}
-                    {entry.authorSource ? (
-                      <Text style={styles.readingAuthor}>{entry.authorSource}</Text>
-                    ) : null}
-                    <View style={styles.readingMeta}>
-                      {entry.publisher ? (
-                        <Text style={styles.readingPublisher}>{entry.publisher}</Text>
+              <View style={styles.readingGuideContainer}>
+                {readingGuideData[explorer.id].map((entry, index) => {
+                  const isEven = index % 2 === 0;
+                  return (
+                    <View
+                      key={index}
+                      style={[
+                        styles.readingEntry,
+                        { backgroundColor: isEven ? '#FAF5EF' : '#F5EDE3' },
+                      ]}
+                    >
+                      {entry.title ? (
+                        <Text style={[styles.readingTitle, { color: isEven ? '#333' : '#2A2520' }]}>
+                          {entry.title}
+                        </Text>
                       ) : null}
-                      {entry.publisher && entry.year ? (
-                        <Text style={styles.readingMetaSeparator}> · </Text>
+                      {entry.authorSource ? (
+                        <Text style={[styles.readingAuthor, { color: isEven ? colors.earthBrown : '#6B4423' }]}>
+                          {entry.authorSource}
+                        </Text>
                       ) : null}
-                      {entry.year ? (
-                        <Text style={styles.readingYear}>{entry.year}</Text>
+                      <View style={styles.readingMeta}>
+                        {entry.publisher ? (
+                          <Text style={styles.readingPublisher}>{entry.publisher}</Text>
+                        ) : null}
+                        {entry.publisher && entry.year ? (
+                          <Text style={styles.readingMetaSeparator}> · </Text>
+                        ) : null}
+                        {entry.year ? (
+                          <Text style={styles.readingYear}>{entry.year}</Text>
+                        ) : null}
+                      </View>
+                      {entry.description ? (
+                        <Text style={styles.readingDescription}>{entry.description}</Text>
+                      ) : null}
+                      {entry.url ? (
+                        <Pressable
+                          onPress={() => Linking.openURL(entry.url!)}
+                          style={styles.readingLink}
+                        >
+                          <Text style={styles.readingLinkText}>View Resource</Text>
+                        </Pressable>
                       ) : null}
                     </View>
-                    {entry.description ? (
-                      <Text style={styles.readingDescription}>{entry.description}</Text>
-                    ) : null}
-                    {entry.url ? (
-                      <Pressable
-                        onPress={() => Linking.openURL(entry.url!)}
-                        style={styles.readingLink}
-                      >
-                        <Text style={styles.readingLinkText}>View Resource</Text>
-                      </Pressable>
-                    ) : null}
-                  </View>
-                ))}
+                  );
+                })}
               </View>
             </View>
           ) : null}
@@ -390,12 +397,13 @@ const styles = StyleSheet.create({
     marginBottom: 0,
     color: colors.earthBrown,
   },
+  readingGuideContainer: {
+    borderRadius: 12,
+    overflow: 'hidden',
+  },
   readingEntry: {
     paddingVertical: 12,
-  },
-  readingEntryBorder: {
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(139, 90, 43, 0.15)',
+    paddingHorizontal: 16,
   },
   readingTitle: {
     fontSize: 15,
