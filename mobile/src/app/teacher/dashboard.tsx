@@ -57,10 +57,10 @@ export default function TeacherDashboardScreen() {
         }
         setTeacher(data);
       } else {
-        router.replace('./login');
+        router.replace('/teacher/login');
       }
     } catch {
-      router.replace('./login');
+      router.replace('/teacher/login');
     } finally {
       setLoading(false);
     }
@@ -74,7 +74,7 @@ export default function TeacherDashboardScreen() {
         style: 'destructive',
         onPress: async () => {
           await AsyncStorage.removeItem(TEACHER_SESSION_KEY);
-          router.replace('./login');
+          router.replace('/teacher/login');
         },
       },
     ]);
@@ -83,7 +83,7 @@ export default function TeacherDashboardScreen() {
   const renderClassCard = ({ item }: { item: ClassSummary }) => (
     <Pressable
       style={({ pressed }) => [styles.classCard, pressed && styles.cardPressed]}
-      onPress={() => router.push(`./class/${item.id}`)}
+      onPress={() => router.push(`/teacher/class/${item.id}`)}
     >
       <View style={styles.classHeader}>
         <View style={styles.classIcon}>
@@ -190,7 +190,7 @@ export default function TeacherDashboardScreen() {
         {/* Deep Dives Card */}
         <Pressable
           style={({ pressed }) => [styles.resourceCard, pressed && styles.cardPressed]}
-          onPress={() => router.push('./deep-dives')}
+          onPress={() => router.push('/teacher/deep-dives')}
         >
           <View style={[styles.resourceIcon, { backgroundColor: '#7C3AED15' }]}>
             <Compass size={24} color="#7C3AED" />
@@ -207,7 +207,7 @@ export default function TeacherDashboardScreen() {
         {/* Lesson Plans Card */}
         <Pressable
           style={({ pressed }) => [styles.resourceCard, pressed && styles.cardPressed]}
-          onPress={() => router.push('./lesson-plans')}
+          onPress={() => router.push('/teacher/lesson-plans')}
         >
           <View style={[styles.resourceIcon, { backgroundColor: colors.forestGreen + '15' }]}>
             <BookOpen size={24} color={colors.forestGreen} />
@@ -227,7 +227,7 @@ export default function TeacherDashboardScreen() {
         <Text style={styles.sectionTitle}>Your Classes</Text>
         <Pressable
           style={styles.addButton}
-          onPress={() => router.push('./class/new')}
+          onPress={() => router.push('/teacher/class/new')}
         >
           <Plus size={18} color="white" />
           <Text style={styles.addButtonText}>New Class</Text>

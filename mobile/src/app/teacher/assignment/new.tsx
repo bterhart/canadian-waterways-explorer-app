@@ -59,10 +59,10 @@ export default function NewAssignmentScreen() {
       if (stored) {
         setTeacher(JSON.parse(stored));
       } else {
-        router.replace('../login');
+        router.replace('/teacher/login');
       }
     } catch {
-      router.replace('../login');
+      router.replace('/teacher/login');
     }
   };
 

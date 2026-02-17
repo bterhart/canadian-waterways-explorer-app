@@ -344,7 +344,7 @@ export default function TeacherDeepDiveDetailScreen() {
       <View style={styles.assignSection}>
         <Pressable
           style={styles.assignButton}
-          onPress={() => router.push(`../assignment/new?lessonId=${id}`)}
+          onPress={() => router.push(`/teacher/assignment/new?lessonId=${id}`)}
         >
           <Users size={20} color="white" />
           <Text style={styles.assignButtonText}>Assign to Class</Text>

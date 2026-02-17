@@ -50,7 +50,7 @@ export default function TeacherLoginScreen() {
           TEACHER_SESSION_KEY,
           JSON.stringify({ ...result.teacher, accessToken: result.accessToken })
         );
-        router.replace('./dashboard');
+        router.replace('/teacher/dashboard');
       }
     } catch (error) {
       Alert.alert(
