@@ -87,6 +87,38 @@ const getYouTubeThumbnail = (videoId: string): string => {
   return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
 };
 
+// Video item type
+interface VideoItem {
+  url: string;
+  type?: 'youtube' | 'manual';
+  thumbnailUrl?: string | null;
+  caption?: string;
+}
+
+// Parse video data from JSON string or plain URL (backward compatible)
+const parseVideoData = (videoUrlField: string | null): VideoItem[] => {
+  if (!videoUrlField) return [];
+
+  // Try parsing as JSON array
+  try {
+    const parsed = JSON.parse(videoUrlField);
+    if (Array.isArray(parsed)) {
+      return parsed.filter((item): item is VideoItem =>
+        typeof item === 'object' && item !== null && typeof item.url === 'string'
+      );
+    }
+  } catch {
+    // Not JSON, treat as plain URL string (backward compatibility)
+  }
+
+  // Plain URL string - determine type automatically
+  const videoId = getYouTubeVideoId(videoUrlField);
+  return [{
+    url: videoUrlField,
+    type: videoId ? 'youtube' : 'manual',
+  }];
+};
+
 const { width: screenWidth } = Dimensions.get('window');
 
 interface DetailBottomSheetProps {
@@ -446,10 +478,10 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
 
               {/* Video Section */}
               {(() => {
-                const videoUrl = markerType === 'waterway' ? waterwayData?.videoUrl : locationData?.videoUrl;
-                if (!videoUrl) return null;
-                const videoId = getYouTubeVideoId(videoUrl);
-                const thumbnailUrl = videoId ? getYouTubeThumbnail(videoId) : null;
+                const videoUrlField = markerType === 'waterway' ? waterwayData?.videoUrl : locationData?.videoUrl;
+                const videos = parseVideoData(videoUrlField ?? null);
+                if (videos.length === 0) return null;
+
                 return (
                   <View className="mb-4">
                     <View className="flex-row items-center mb-2">
@@ -458,64 +490,91 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                         className="text-lg font-bold ml-2"
                         style={{ color: colors.forestGreen }}
                       >
-                        Video
+                        Video{videos.length > 1 ? 's' : ''}
                       </Text>
                     </View>
-                    <Pressable
-                      onPress={() => Linking.openURL(videoUrl)}
-                      className="rounded-xl overflow-hidden"
-                      style={{ backgroundColor: '#000' }}
+                    <ScrollView
+                      horizontal
+                      showsHorizontalScrollIndicator={false}
+                      contentContainerStyle={{ paddingRight: 16 }}
+                      style={{ flexGrow: 0 }}
                     >
-                      {thumbnailUrl ? (
-                        <View style={{ position: 'relative' }}>
-                          <Image
-                            source={{ uri: thumbnailUrl }}
-                            style={{ width: '100%', height: 200 }}
-                            resizeMode="cover"
-                          />
-                          <View
-                            style={{
-                              position: 'absolute',
-                              top: 0,
-                              left: 0,
-                              right: 0,
-                              bottom: 0,
-                              backgroundColor: 'rgba(0,0,0,0.3)',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                            }}
+                      {videos.map((video, index) => {
+                        const videoId = getYouTubeVideoId(video.url);
+                        const thumbnailUrl = videoId
+                          ? getYouTubeThumbnail(videoId)
+                          : video.thumbnailUrl || null;
+
+                        return (
+                          <Pressable
+                            key={`video-${index}`}
+                            onPress={() => Linking.openURL(video.url)}
+                            className="mr-3 rounded-xl overflow-hidden"
+                            style={{ backgroundColor: '#000', width: 280 }}
                           >
-                            <View
-                              style={{
-                                width: 64,
-                                height: 64,
-                                borderRadius: 32,
-                                backgroundColor: colors.forestGreen,
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                              }}
-                            >
-                              <Play size={32} color="white" fill="white" />
-                            </View>
-                          </View>
-                        </View>
-                      ) : (
-                        <View
-                          style={{
-                            width: '100%',
-                            height: 150,
-                            backgroundColor: colors.section,
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                          }}
-                        >
-                          <Play size={40} color={colors.forestGreen} />
-                          <Text className="mt-2 text-sm" style={{ color: colors.forestGreen }}>
-                            Watch Video
-                          </Text>
-                        </View>
-                      )}
-                    </Pressable>
+                            {thumbnailUrl ? (
+                              <View style={{ position: 'relative' }}>
+                                <Image
+                                  source={{ uri: thumbnailUrl }}
+                                  style={{ width: 280, height: 160 }}
+                                  resizeMode="cover"
+                                />
+                                <View
+                                  style={{
+                                    position: 'absolute',
+                                    top: 0,
+                                    left: 0,
+                                    right: 0,
+                                    bottom: 0,
+                                    backgroundColor: 'rgba(0,0,0,0.3)',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                  }}
+                                >
+                                  <View
+                                    style={{
+                                      width: 56,
+                                      height: 56,
+                                      borderRadius: 28,
+                                      backgroundColor: colors.forestGreen,
+                                      alignItems: 'center',
+                                      justifyContent: 'center',
+                                    }}
+                                  >
+                                    <Play size={28} color="white" fill="white" />
+                                  </View>
+                                </View>
+                              </View>
+                            ) : (
+                              <View
+                                style={{
+                                  width: 280,
+                                  height: 160,
+                                  backgroundColor: colors.section,
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                }}
+                              >
+                                <Play size={40} color={colors.forestGreen} />
+                                <Text className="mt-2 text-sm" style={{ color: colors.forestGreen }}>
+                                  Watch Video
+                                </Text>
+                              </View>
+                            )}
+                            {video.caption ? (
+                              <View style={{ padding: 8, backgroundColor: '#1a1a1a' }}>
+                                <Text
+                                  className="text-xs text-white"
+                                  numberOfLines={1}
+                                >
+                                  {video.caption}
+                                </Text>
+                              </View>
+                            ) : null}
+                          </Pressable>
+                        );
+                      })}
+                    </ScrollView>
                   </View>
                 );
               })()}
