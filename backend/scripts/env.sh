@@ -6,11 +6,10 @@ ENVIRONMENT="${ENVIRONMENT:-development}"
 if [[ "${ENVIRONMENT}" == "production" ]]; then
   echo "Starting in production mode..."
   export NODE_ENV="production"
+  DATA_DIR="${DATA_DIR:-/data}"
+  export DATABASE_FILE="${DATA_DIR}/production.db"
+  export DATABASE_URL="file:${DATABASE_FILE}"
 else
   echo "Starting in development mode..."
   export NODE_ENV="development"
 fi
-
-# Always use Turso for both development and production
-# DATABASE_URL is used by Prisma CLI commands (db push, migrate)
-# The actual runtime uses TURSO_DATABASE_URL via the libsql adapter in db.ts
