@@ -457,6 +457,7 @@ const styles = StyleSheet.create({
   // Key Figures styles
   figureCard: {
     flexDirection: 'row',
+    alignItems: 'flex-start',
     backgroundColor: '#F9FAFB',
     borderRadius: 12,
     padding: 14,
@@ -470,6 +471,7 @@ const styles = StyleSheet.create({
     width: 70,
     height: 70,
     borderRadius: 35,
+    flexShrink: 0,
   },
   figureImagePlaceholder: {
     width: 70,
@@ -478,10 +480,12 @@ const styles = StyleSheet.create({
     backgroundColor: colors.forestGreen + '20',
     justifyContent: 'center',
     alignItems: 'center',
+    flexShrink: 0,
   },
   figureInfo: {
     flex: 1,
     marginLeft: 14,
+    flexShrink: 1,
   },
   figureName: {
     fontSize: 17,
