@@ -192,22 +192,22 @@ export default function ExplorerDetailModal({ explorer, onClose }: ExplorerDetai
               </View>
               <View style={styles.readingGuideContainer}>
                 {readingGuideData[explorer.id].map((entry, index) => {
-                  const isEven = index % 2 === 0;
+                  const isOdd = index % 2 === 1;
                   return (
                     <View
                       key={index}
                       style={[
                         styles.readingEntry,
-                        { backgroundColor: isEven ? '#FAF5EF' : '#F5EDE3' },
+                        { backgroundColor: isOdd ? '#FAF5EF' : '#F5EDE3' },
                       ]}
                     >
                       {entry.title ? (
-                        <Text style={[styles.readingTitle, { color: isEven ? '#333' : '#2A2520' }]}>
+                        <Text style={[styles.readingTitle, { color: isOdd ? '#333' : '#2A2520' }]}>
                           {entry.title}
                         </Text>
                       ) : null}
                       {entry.authorSource ? (
-                        <Text style={[styles.readingAuthor, { color: isEven ? colors.earthBrown : '#6B4423' }]}>
+                        <Text style={[styles.readingAuthor, { color: isOdd ? colors.earthBrown : '#6B4423' }]}>
                           {entry.authorSource}
                         </Text>
                       ) : null}
