@@ -44,10 +44,10 @@ export default function NewClassScreen() {
       if (stored) {
         setTeacher(JSON.parse(stored));
       } else {
-        router.replace('/teacher/login');
+        router.replace('../login');
       }
     } catch {
-      router.replace('/teacher/login');
+      router.replace('../login');
     }
   };
 
@@ -76,7 +76,7 @@ export default function NewClassScreen() {
       Alert.alert('Class Created', `Join code: ${newClass.joinCode}`, [
         {
           text: 'Go to Class',
-          onPress: () => router.replace(`/teacher/class/${newClass.id}`),
+          onPress: () => router.replace(`./${newClass.id}`),
         },
       ]);
     } catch (error) {

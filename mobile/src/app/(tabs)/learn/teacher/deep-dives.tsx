@@ -82,7 +82,7 @@ export default function TeacherDeepDivesScreen() {
           <Pressable
             key={lesson.id}
             style={styles.card}
-            onPress={() => router.push(`/teacher/deep-dive/${lesson.id}`)}
+            onPress={() => router.push(`./deep-dive/${lesson.id}`)}
           >
             {lesson.heroImageUrl ? (
               <Image

@@ -126,7 +126,7 @@ export default function LearnHubScreen() {
         <View style={styles.heroHeader}>
           <Text style={styles.heroTitle}>{t('exploreAndLearn')}</Text>
           <Pressable
-            onPress={() => router.push('/settings')}
+            onPress={() => router.push('./settings')}
             style={styles.settingsButton}
           >
             <Settings size={24} color={colors.forestGreen} />
@@ -139,7 +139,7 @@ export default function LearnHubScreen() {
 
       {/* My Progress Card */}
       <Pressable
-        onPress={() => router.push('/achievements')}
+        onPress={() => router.push('./achievements')}
         style={({ pressed }) => [
           styles.progressCard,
           pressed && styles.progressCardPressed,
@@ -178,28 +178,28 @@ export default function LearnHubScreen() {
             description={t('deepDivesDesc')}
             icon={<BookOpen size={28} color="white" />}
             gradientColors={['#2D5A3D', '#1A3A24'] as const}
-            onPress={() => router.push('/lessons')}
+            onPress={() => router.push('./lessons')}
           />
           <FeatureCard
             title={t('timeline')}
             description={t('timelineDesc')}
             icon={<Clock size={28} color="white" />}
             gradientColors={['#3B82F6', '#1D4ED8'] as const}
-            onPress={() => router.push('/timeline')}
+            onPress={() => router.push('./timeline')}
           />
           <FeatureCard
             title={t('fieldTrips')}
             description={t('fieldTripsDesc')}
             icon={<Map size={28} color="white" />}
             gradientColors={['#10B981', '#047857'] as const}
-            onPress={() => router.push('/field-trips')}
+            onPress={() => router.push('./field-trips')}
           />
           <FeatureCard
             title={t('documents')}
             description={t('documentsDesc')}
             icon={<FileText size={28} color="white" />}
             gradientColors={['#8B5CF6', '#6D28D9'] as const}
-            onPress={() => router.push('/documents')}
+            onPress={() => router.push('./documents')}
           />
         </View>
       </View>
@@ -213,7 +213,7 @@ export default function LearnHubScreen() {
             description="Discover historical events near your location"
             icon={<MapPin size={28} color="white" />}
             gradientColors={['#DC2626', '#991B1B'] as const}
-            onPress={() => router.push('/nearby-history')}
+            onPress={() => router.push('./nearby-history')}
             isLarge
           />
         </View>
@@ -228,7 +228,7 @@ export default function LearnHubScreen() {
             description="Women and Indigenous leaders who shaped Canadian history"
             icon={<Users size={28} color="white" />}
             gradientColors={['#8B5CF6', '#6D28D9'] as const}
-            onPress={() => router.push('/notable-figures')}
+            onPress={() => router.push('./notable-figures')}
             isLarge
           />
         </View>
@@ -243,28 +243,28 @@ export default function LearnHubScreen() {
             description="Draw routes and add pins"
             icon={<Pencil size={28} color="white" />}
             gradientColors={['#0EA5E9', '#0284C7'] as const}
-            onPress={() => router.push('/my-maps')}
+            onPress={() => router.push('./my-maps')}
           />
           <FeatureCard
             title={t('indigenousLanguages')}
             description={t('indigenousLanguagesDesc')}
             icon={<Languages size={28} color="white" />}
             gradientColors={['#059669', '#047857'] as const}
-            onPress={() => router.push('/indigenous-languages')}
+            onPress={() => router.push('./indigenous-languages')}
           />
           <FeatureCard
             title={t('compare')}
             description={t('compareDesc')}
             icon={<GitCompare size={28} color="white" />}
             gradientColors={['#F97316', '#C2410C'] as const}
-            onPress={() => router.push('/comparisons')}
+            onPress={() => router.push('./comparisons')}
           />
           <FeatureCard
             title={t('pronunciations')}
             description={t('pronunciationsDesc')}
             icon={<Volume2 size={28} color="white" />}
             gradientColors={['#EC4899', '#BE185D'] as const}
-            onPress={() => router.push('/pronunciations')}
+            onPress={() => router.push('./pronunciations')}
           />
         </View>
       </View>
@@ -277,43 +277,43 @@ export default function LearnHubScreen() {
             title={t('myJournal')}
             icon={<BookMarked size={20} color={colors.forestGreen} />}
             color={colors.forestGreen}
-            onPress={() => router.push('/journal')}
+            onPress={() => router.push('./journal')}
           />
           <QuickLink
             title={t('teacherPortal')}
             icon={<GraduationCap size={20} color="#3B82F6" />}
             color="#3B82F6"
-            onPress={() => router.push('/teacher/login')}
+            onPress={() => router.push('./teacher/login')}
           />
           <QuickLink
             title={t('printableResources')}
             icon={<Printer size={20} color="#8B5CF6" />}
             color="#8B5CF6"
-            onPress={() => router.push('/printables')}
+            onPress={() => router.push('./printables')}
           />
           <QuickLink
             title="User Guide"
             icon={<BookOpen size={20} color="#10B981" />}
             color="#10B981"
-            onPress={() => router.push('/user-guide')}
+            onPress={() => router.push('./user-guide')}
           />
           <QuickLink
             title="FAQ"
             icon={<HelpCircle size={20} color="#F97316" />}
             color="#F97316"
-            onPress={() => router.push('/faq')}
+            onPress={() => router.push('./faq')}
           />
           <QuickLink
             title="About"
             icon={<Info size={20} color="#EC4899" />}
             color="#EC4899"
-            onPress={() => router.push('/about')}
+            onPress={() => router.push('./about')}
           />
           <QuickLink
             title={t('settings')}
             icon={<Settings size={20} color="#6B7280" />}
             color="#6B7280"
-            onPress={() => router.push('/settings')}
+            onPress={() => router.push('./settings')}
           />
         </View>
       </View>

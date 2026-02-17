@@ -192,7 +192,7 @@ export default function ClassDetailScreen() {
           </Text>
           <Pressable
             style={styles.addAssignmentButton}
-            onPress={() => router.push(`/teacher/assignment/new?classId=${id}`)}
+            onPress={() => router.push(`../assignment/new?classId=${id}`)}
           >
             <Plus size={16} color="white" />
             <Text style={styles.addAssignmentText}>Add</Text>

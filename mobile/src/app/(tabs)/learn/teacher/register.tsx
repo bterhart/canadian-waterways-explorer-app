@@ -136,7 +136,7 @@ export default function TeacherRegisterScreen() {
           </View>
           <Pressable
             style={styles.backButton}
-            onPress={() => router.replace('/teacher/login')}
+            onPress={() => router.replace('./login')}
           >
             <Text style={styles.backButtonText}>Return to Login</Text>
           </Pressable>

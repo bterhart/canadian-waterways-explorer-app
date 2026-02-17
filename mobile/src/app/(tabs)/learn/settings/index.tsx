@@ -74,14 +74,14 @@ export default function SettingsScreen() {
               icon={<BookOpen size={22} color="white" />}
               title="User Guide"
               subtitle="Complete guide to using the app"
-              onPress={() => router.push('/user-guide')}
+              onPress={() => router.push('../user-guide')}
               iconBgColor="#2D5A3D"
             />
             <SettingsItem
               icon={<HelpCircle size={22} color="white" />}
               title="FAQ"
               subtitle="Frequently asked questions"
-              onPress={() => router.push('/faq')}
+              onPress={() => router.push('../faq')}
               iconBgColor="#8B5CF6"
             />
             <SettingsItem
@@ -101,7 +101,7 @@ export default function SettingsScreen() {
               icon={<Globe size={22} color="white" />}
               title={t('languageSettings')}
               subtitle={currentLanguageName}
-              onPress={() => router.push('/settings/language')}
+              onPress={() => router.push('./language')}
               iconBgColor="#3B82F6"
             />
           </View>
@@ -114,7 +114,7 @@ export default function SettingsScreen() {
               icon={<Info size={22} color="white" />}
               title={t('aboutApp')}
               subtitle="Credits, acknowledgments, and contact"
-              onPress={() => router.push('/about')}
+              onPress={() => router.push('../about')}
               iconBgColor="#F97316"
             />
           </View>

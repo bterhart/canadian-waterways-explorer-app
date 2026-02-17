@@ -25,52 +25,21 @@ function RootLayoutNav({ colorScheme }: { colorScheme: 'light' | 'dark' | null |
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
         <Stack.Screen name="quiz/[id]" options={{ headerShown: false }} />
+        {/* Admin Screens - remain at root level */}
         <Stack.Screen name="admin/quizzes" options={{ headerShown: true }} />
         <Stack.Screen name="admin/quiz-editor/new" options={{ headerShown: true }} />
         <Stack.Screen name="admin/quiz-editor/[id]" options={{ headerShown: true }} />
-        {/* Educational Feature Screens */}
-        <Stack.Screen name="lessons/index" options={{ headerShown: true }} />
-        <Stack.Screen name="lessons/[id]" options={{ headerShown: true }} />
-        <Stack.Screen name="timeline" options={{ headerShown: true }} />
-        <Stack.Screen name="field-trips/index" options={{ headerShown: true }} />
-        <Stack.Screen name="field-trips/[id]" options={{ headerShown: true }} />
-        <Stack.Screen name="documents/index" options={{ headerShown: true }} />
-        <Stack.Screen name="documents/[id]" options={{ headerShown: true }} />
-        <Stack.Screen name="comparisons/index" options={{ headerShown: true }} />
-        <Stack.Screen name="comparisons/[id]" options={{ headerShown: true }} />
-        <Stack.Screen name="pronunciations" options={{ headerShown: true }} />
-        <Stack.Screen name="journal/index" options={{ headerShown: true }} />
-        <Stack.Screen name="journal/entry/[id]" options={{ headerShown: true }} />
-        <Stack.Screen name="printables" options={{ headerShown: true }} />
-        {/* Teacher Portal Screens */}
-        <Stack.Screen name="teacher/login" options={{ headerShown: true }} />
-        <Stack.Screen name="teacher/register" options={{ headerShown: true }} />
-        <Stack.Screen name="teacher/dashboard" options={{ headerShown: true }} />
-        <Stack.Screen name="teacher/class/new" options={{ headerShown: true }} />
-        <Stack.Screen name="teacher/class/[id]" options={{ headerShown: true }} />
-        <Stack.Screen name="teacher/assignment/new" options={{ headerShown: true }} />
-        <Stack.Screen name="indigenous-languages" options={{ headerShown: true }} />
-        {/* Settings Screens */}
-        <Stack.Screen name="settings/index" options={{ headerShown: true }} />
-        <Stack.Screen name="settings/language" options={{ headerShown: true }} />
-        {/* My Maps Screens */}
-        <Stack.Screen name="my-maps/index" options={{ headerShown: true }} />
-        <Stack.Screen name="my-maps/new" options={{ headerShown: true }} />
-        <Stack.Screen name="my-maps/[id]" options={{ headerShown: false }} />
-        {/* Nearby History Screen */}
-        <Stack.Screen name="nearby-history" options={{ headerShown: true }} />
-        {/* Achievements & Progress Screen */}
-        <Stack.Screen name="achievements" options={{ headerShown: true }} />
-        {/* Notable Figures Screens */}
-        <Stack.Screen name="notable-figures/index" options={{ headerShown: true }} />
-        <Stack.Screen name="notable-figures/[id]" options={{ headerShown: true }} />
-        {/* Voyageur Journey Screens */}
-        <Stack.Screen name="voyageur-journey/index" options={{ headerShown: true }} />
-        <Stack.Screen name="voyageur-journey/[id]" options={{ headerShown: true }} />
-        {/* Help & Support Screens */}
-        <Stack.Screen name="user-guide" options={{ headerShown: true }} />
-        <Stack.Screen name="faq" options={{ headerShown: true }} />
-        <Stack.Screen name="about" options={{ headerShown: true }} />
+        <Stack.Screen name="admin/approvals" options={{ headerShown: true }} />
+        <Stack.Screen name="admin/teacher-approvals" options={{ headerShown: true }} />
+        <Stack.Screen name="admin/users" options={{ headerShown: true }} />
+        <Stack.Screen name="admin/lesson-plans" options={{ headerShown: true }} />
+        <Stack.Screen name="admin/field-trips" options={{ headerShown: true }} />
+        <Stack.Screen name="admin/documents" options={{ headerShown: true }} />
+        <Stack.Screen name="admin/printables" options={{ headerShown: true }} />
+        <Stack.Screen name="admin/contributions" options={{ headerShown: true }} />
+        <Stack.Screen name="admin/my-content" options={{ headerShown: true }} />
+        <Stack.Screen name="admin/register" options={{ headerShown: true }} />
+        {/* Onboarding - remains at root level */}
         <Stack.Screen name="onboarding" options={{ headerShown: false, presentation: 'fullScreenModal' }} />
       </Stack>
     </ThemeProvider>
