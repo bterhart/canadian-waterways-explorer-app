@@ -1,8 +1,31 @@
 // Explorer Detail Modal Component
 import React from 'react';
-import { View, Text, Image, ScrollView, Pressable, StyleSheet } from 'react-native';
-import { X } from 'lucide-react-native';
+import { View, Text, Image, ScrollView, Pressable, StyleSheet, Linking } from 'react-native';
+import { X, BookOpen } from 'lucide-react-native';
 import type { ExplorerDetail, ExplorerWaterwayDetail } from '@/lib/types/waterways';
+
+// Reading Guide Entry type
+interface ReadingGuideEntry {
+  authorSource?: string;
+  title: string;
+  publisher?: string;
+  year?: string;
+  url?: string;
+  description?: string;
+}
+
+// Reading guide data mapped by explorer ID (test entry only)
+const readingGuideData: Record<string, ReadingGuideEntry[]> = {
+  'cmlijaif2000om22ru83xdxmj': [
+    {
+      authorSource: 'Franklin John',
+      title: 'Narrative of a Journey to the Shores of the Polar Sea in the Years 1819 20 21 and 22',
+      publisher: 'John Murray',
+      year: '1823',
+      description: "Primary account of Franklin's Coppermine River expedition highlighting Akaitcho's essential guidance and leadership among the Yellowknives Dene.",
+    },
+  ],
+};
 
 // Theme colors
 const colors = {
@@ -105,6 +128,58 @@ export default function ExplorerDetailModal({ explorer, onClose }: ExplorerDetai
                       <Text style={styles.waterwayDescription}>
                         {explorerWaterway.expeditionNotes}
                       </Text>
+                    ) : null}
+                  </View>
+                ))}
+              </View>
+            </View>
+          ) : null}
+
+          {/* Additional Study and Reading Guide */}
+          {readingGuideData[explorer.id] && readingGuideData[explorer.id].length > 0 ? (
+            <View style={styles.section}>
+              <View style={styles.readingGuideHeader}>
+                <BookOpen size={20} color={colors.earthBrown} />
+                <Text style={[styles.sectionTitle, styles.readingGuideTitle]}>
+                  Additional Study and Reading Guide
+                </Text>
+              </View>
+              <View style={[styles.sectionContent, { backgroundColor: '#FAF5EF' }]}>
+                {readingGuideData[explorer.id].map((entry, index) => (
+                  <View
+                    key={index}
+                    style={[
+                      styles.readingEntry,
+                      index < readingGuideData[explorer.id].length - 1 && styles.readingEntryBorder,
+                    ]}
+                  >
+                    {entry.title ? (
+                      <Text style={styles.readingTitle}>{entry.title}</Text>
+                    ) : null}
+                    {entry.authorSource ? (
+                      <Text style={styles.readingAuthor}>{entry.authorSource}</Text>
+                    ) : null}
+                    <View style={styles.readingMeta}>
+                      {entry.publisher ? (
+                        <Text style={styles.readingPublisher}>{entry.publisher}</Text>
+                      ) : null}
+                      {entry.publisher && entry.year ? (
+                        <Text style={styles.readingMetaSeparator}> · </Text>
+                      ) : null}
+                      {entry.year ? (
+                        <Text style={styles.readingYear}>{entry.year}</Text>
+                      ) : null}
+                    </View>
+                    {entry.description ? (
+                      <Text style={styles.readingDescription}>{entry.description}</Text>
+                    ) : null}
+                    {entry.url ? (
+                      <Pressable
+                        onPress={() => Linking.openURL(entry.url!)}
+                        style={styles.readingLink}
+                      >
+                        <Text style={styles.readingLinkText}>View Resource</Text>
+                      </Pressable>
                     ) : null}
                   </View>
                 ))}
@@ -258,5 +333,66 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#6B7280',
     lineHeight: 18,
+  },
+  readingGuideHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+    gap: 8,
+  },
+  readingGuideTitle: {
+    marginBottom: 0,
+    color: colors.earthBrown,
+  },
+  readingEntry: {
+    paddingVertical: 12,
+  },
+  readingEntryBorder: {
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(139, 90, 43, 0.15)',
+  },
+  readingTitle: {
+    fontSize: 15,
+    fontStyle: 'italic',
+    color: '#333',
+    lineHeight: 22,
+    marginBottom: 4,
+  },
+  readingAuthor: {
+    fontSize: 14,
+    color: colors.earthBrown,
+    fontWeight: '500',
+    marginBottom: 4,
+  },
+  readingMeta: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  readingPublisher: {
+    fontSize: 13,
+    color: '#666',
+  },
+  readingMetaSeparator: {
+    fontSize: 13,
+    color: '#999',
+  },
+  readingYear: {
+    fontSize: 13,
+    color: '#666',
+  },
+  readingDescription: {
+    fontSize: 13,
+    color: '#555',
+    lineHeight: 20,
+  },
+  readingLink: {
+    marginTop: 8,
+    alignSelf: 'flex-start',
+  },
+  readingLinkText: {
+    fontSize: 13,
+    color: colors.waterBlue,
+    textDecorationLine: 'underline',
   },
 });
