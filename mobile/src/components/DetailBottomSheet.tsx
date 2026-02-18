@@ -802,7 +802,7 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                     </View>
                   ) : null}
 
-                  {/* Additional Study and Reading Guide */}
+                  {/* Additional Study */}
                   {markerId && locationReadingGuideData[markerId] && locationReadingGuideData[markerId].length > 0 ? (
                     <View className="mb-4">
                       <View className="flex-row items-center mb-3" style={{ gap: 8 }}>
@@ -811,7 +811,7 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                           className="text-lg font-bold"
                           style={{ color: colors.earthBrown, marginBottom: 0 }}
                         >
-                          Additional Study and Reading Guide
+                          Additional Study
                         </Text>
                       </View>
                       <View className="rounded-xl overflow-hidden">
@@ -960,7 +960,7 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                     </View>
                   ) : null}
 
-                  {/* Additional Study and Reading Guide */}
+                  {/* Additional Study */}
                   {markerId && locationReadingGuideData[markerId] && locationReadingGuideData[markerId].length > 0 ? (
                     <View className="mb-4">
                       <View className="flex-row items-center mb-3" style={{ gap: 8 }}>
@@ -969,7 +969,7 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                           className="text-lg font-bold"
                           style={{ color: colors.earthBrown, marginBottom: 0 }}
                         >
-                          Additional Study and Reading Guide
+                          Additional Study
                         </Text>
                       </View>
                       <View className="rounded-xl overflow-hidden">
