@@ -7,6 +7,7 @@ import { Plus, MessageSquare, Camera, BookOpen, History, Compass, Globe, Play, X
 import { useWaterwayDetail, useLocationDetail, useWaterwayContributions, useLocationContributions } from '@/lib/api/waterways-api';
 import ContributeModal from './ContributeModal';
 import type { MarkerType, WaterwayDetail, LocationDetail, UserContribution, ArchaeologicalDiscovery } from '@/lib/types/waterways';
+import { locationReadingGuideData } from '@/data/locationReadingGuideData';
 
 // Generate Google Earth Web URL
 const getGoogleEarthUrl = (latitude: number, longitude: number, name?: string): string => {
@@ -863,6 +864,83 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                         <Text className="text-sm mt-1 text-gray-600">
                           {locationData.waterway.type?.name || 'Waterway'}
                         </Text>
+                      </View>
+                    </View>
+                  ) : null}
+
+                  {/* Additional Study and Reading Guide */}
+                  {markerId && locationReadingGuideData[markerId] && locationReadingGuideData[markerId].length > 0 ? (
+                    <View className="mb-4">
+                      <View className="flex-row items-center mb-3" style={{ gap: 8 }}>
+                        <BookOpen size={20} color={colors.earthBrown} />
+                        <Text
+                          className="text-lg font-bold"
+                          style={{ color: colors.earthBrown }}
+                        >
+                          Additional Study and Reading Guide
+                        </Text>
+                      </View>
+                      <View className="rounded-xl overflow-hidden">
+                        {locationReadingGuideData[markerId].map((entry, index) => {
+                          const isOdd = index % 2 === 1;
+                          return (
+                            <View
+                              key={index}
+                              className="py-3 px-4"
+                              style={{ backgroundColor: isOdd ? '#FAF3E8' : '#F0E6D9' }}
+                            >
+                              {entry.title ? (
+                                <Text
+                                  className="text-base italic mb-1"
+                                  style={{ color: isOdd ? '#333' : '#2A2520', lineHeight: 22 }}
+                                >
+                                  {entry.title}
+                                </Text>
+                              ) : null}
+                              {entry.authorSource ? (
+                                <Text
+                                  className="text-sm font-medium mb-1"
+                                  style={{ color: isOdd ? colors.earthBrown : '#6B4423' }}
+                                >
+                                  {entry.authorSource}
+                                </Text>
+                              ) : null}
+                              <View className="flex-row items-center mb-2">
+                                {entry.publisher ? (
+                                  <Text className="text-sm" style={{ color: '#666' }}>
+                                    {entry.publisher}
+                                  </Text>
+                                ) : null}
+                                {entry.publisher && entry.year ? (
+                                  <Text className="text-sm" style={{ color: '#999' }}> · </Text>
+                                ) : null}
+                                {entry.year ? (
+                                  <Text className="text-sm" style={{ color: '#666' }}>
+                                    {entry.year}
+                                  </Text>
+                                ) : null}
+                              </View>
+                              {entry.description ? (
+                                <Text className="text-sm" style={{ color: '#555', lineHeight: 20 }}>
+                                  {entry.description}
+                                </Text>
+                              ) : null}
+                              {entry.url ? (
+                                <Pressable
+                                  onPress={() => Linking.openURL(entry.url!)}
+                                  className="mt-2 self-start"
+                                >
+                                  <Text
+                                    className="text-sm underline"
+                                    style={{ color: colors.waterBlue }}
+                                  >
+                                    View Resource
+                                  </Text>
+                                </Pressable>
+                              ) : null}
+                            </View>
+                          );
+                        })}
                       </View>
                     </View>
                   ) : null}
