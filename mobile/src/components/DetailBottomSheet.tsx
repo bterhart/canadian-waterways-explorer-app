@@ -875,7 +875,7 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                         <BookOpen size={20} color={colors.earthBrown} />
                         <Text
                           className="text-lg font-bold"
-                          style={{ color: colors.earthBrown }}
+                          style={{ color: colors.earthBrown, marginBottom: 0 }}
                         >
                           Additional Study and Reading Guide
                         </Text>
@@ -886,53 +886,68 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                           return (
                             <View
                               key={index}
-                              className="py-3 px-4"
-                              style={{ backgroundColor: isOdd ? '#FAF3E8' : '#F0E6D9' }}
+                              style={{
+                                paddingVertical: 12,
+                                paddingHorizontal: 16,
+                                backgroundColor: isOdd ? '#FAF3E8' : '#F0E6D9',
+                              }}
                             >
                               {entry.title ? (
                                 <Text
-                                  className="text-base italic mb-1"
-                                  style={{ color: isOdd ? '#333' : '#2A2520', lineHeight: 22 }}
+                                  style={{
+                                    fontSize: 15,
+                                    fontStyle: 'italic',
+                                    color: isOdd ? '#333' : '#2A2520',
+                                    lineHeight: 22,
+                                    marginBottom: 4,
+                                  }}
                                 >
                                   {entry.title}
                                 </Text>
                               ) : null}
                               {entry.authorSource ? (
                                 <Text
-                                  className="text-sm font-medium mb-1"
-                                  style={{ color: isOdd ? colors.earthBrown : '#6B4423' }}
+                                  style={{
+                                    fontSize: 14,
+                                    fontWeight: '500',
+                                    color: isOdd ? colors.earthBrown : '#6B4423',
+                                    marginBottom: 4,
+                                  }}
                                 >
                                   {entry.authorSource}
                                 </Text>
                               ) : null}
-                              <View className="flex-row items-center mb-2">
+                              <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
                                 {entry.publisher ? (
-                                  <Text className="text-sm" style={{ color: '#666' }}>
+                                  <Text style={{ fontSize: 13, color: '#666' }}>
                                     {entry.publisher}
                                   </Text>
                                 ) : null}
                                 {entry.publisher && entry.year ? (
-                                  <Text className="text-sm" style={{ color: '#999' }}> · </Text>
+                                  <Text style={{ fontSize: 13, color: '#999' }}> · </Text>
                                 ) : null}
                                 {entry.year ? (
-                                  <Text className="text-sm" style={{ color: '#666' }}>
+                                  <Text style={{ fontSize: 13, color: '#666' }}>
                                     {entry.year}
                                   </Text>
                                 ) : null}
                               </View>
                               {entry.description ? (
-                                <Text className="text-sm" style={{ color: '#555', lineHeight: 20 }}>
+                                <Text style={{ fontSize: 13, color: '#555', lineHeight: 20 }}>
                                   {entry.description}
                                 </Text>
                               ) : null}
                               {entry.url ? (
                                 <Pressable
                                   onPress={() => Linking.openURL(entry.url!)}
-                                  className="mt-2 self-start"
+                                  style={{ marginTop: 8, alignSelf: 'flex-start' }}
                                 >
                                   <Text
-                                    className="text-sm underline"
-                                    style={{ color: colors.waterBlue }}
+                                    style={{
+                                      fontSize: 13,
+                                      color: colors.waterBlue,
+                                      textDecorationLine: 'underline',
+                                    }}
                                   >
                                     View Resource
                                   </Text>
