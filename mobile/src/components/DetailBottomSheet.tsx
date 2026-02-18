@@ -801,6 +801,98 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                       </View>
                     </View>
                   ) : null}
+
+                  {/* Additional Study and Reading Guide */}
+                  {markerId && locationReadingGuideData[markerId] && locationReadingGuideData[markerId].length > 0 ? (
+                    <View className="mb-4">
+                      <View className="flex-row items-center mb-3" style={{ gap: 8 }}>
+                        <BookOpen size={20} color={colors.earthBrown} />
+                        <Text
+                          className="text-lg font-bold"
+                          style={{ color: colors.earthBrown, marginBottom: 0 }}
+                        >
+                          Additional Study and Reading Guide
+                        </Text>
+                      </View>
+                      <View className="rounded-xl overflow-hidden">
+                        {locationReadingGuideData[markerId].map((entry, index) => {
+                          const isOdd = index % 2 === 1;
+                          return (
+                            <View
+                              key={index}
+                              style={{
+                                paddingVertical: 12,
+                                paddingHorizontal: 16,
+                                backgroundColor: isOdd ? '#FAF3E8' : '#F0E6D9',
+                              }}
+                            >
+                              {entry.title ? (
+                                <Text
+                                  style={{
+                                    fontSize: 15,
+                                    fontStyle: 'italic',
+                                    color: isOdd ? '#333' : '#2A2520',
+                                    lineHeight: 22,
+                                    marginBottom: 4,
+                                  }}
+                                >
+                                  {entry.title}
+                                </Text>
+                              ) : null}
+                              {entry.authorSource ? (
+                                <Text
+                                  style={{
+                                    fontSize: 14,
+                                    fontWeight: '500',
+                                    color: isOdd ? colors.earthBrown : '#6B4423',
+                                    marginBottom: 4,
+                                  }}
+                                >
+                                  {entry.authorSource}
+                                </Text>
+                              ) : null}
+                              <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
+                                {entry.publisher ? (
+                                  <Text style={{ fontSize: 13, color: '#666' }}>
+                                    {entry.publisher}
+                                  </Text>
+                                ) : null}
+                                {entry.publisher && entry.year ? (
+                                  <Text style={{ fontSize: 13, color: '#999' }}> · </Text>
+                                ) : null}
+                                {entry.year ? (
+                                  <Text style={{ fontSize: 13, color: '#666' }}>
+                                    {entry.year}
+                                  </Text>
+                                ) : null}
+                              </View>
+                              {entry.description ? (
+                                <Text style={{ fontSize: 13, color: '#555', lineHeight: 20 }}>
+                                  {entry.description}
+                                </Text>
+                              ) : null}
+                              {entry.url ? (
+                                <Pressable
+                                  onPress={() => Linking.openURL(entry.url!)}
+                                  style={{ marginTop: 8, alignSelf: 'flex-start' }}
+                                >
+                                  <Text
+                                    style={{
+                                      fontSize: 13,
+                                      color: colors.waterBlue,
+                                      textDecorationLine: 'underline',
+                                    }}
+                                  >
+                                    View Resource
+                                  </Text>
+                                </Pressable>
+                              ) : null}
+                            </View>
+                          );
+                        })}
+                      </View>
+                    </View>
+                  ) : null}
                 </>
               ) : null}
 
