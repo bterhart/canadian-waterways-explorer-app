@@ -113,15 +113,12 @@ export default function ExplorerDetailModal({ explorer, onClose }: ExplorerDetai
             </View>
           ) : null}
 
-          {/* Additional Study and Reading Guide */}
+          {/* Additional Study */}
           {readingGuideData[explorer.id] && readingGuideData[explorer.id].length > 0 ? (
             <View style={styles.section}>
-              <View style={styles.readingGuideHeader}>
-                <BookOpen size={20} color={colors.earthBrown} />
-                <Text style={[styles.sectionTitle, styles.readingGuideTitle]}>
-                  Additional Study and Reading Guide
-                </Text>
-              </View>
+              <Text style={[styles.sectionTitle, styles.readingGuideTitle]}>
+                Additional Study
+              </Text>
               <View style={styles.readingGuideContainer}>
                 {readingGuideData[explorer.id].map((entry, index) => {
                   const isOdd = index % 2 === 1;

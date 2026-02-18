@@ -433,15 +433,12 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                 if (galleryImages.length === 0) return null;
                 return (
                   <View className="mb-4">
-                    <View className="flex-row items-center mb-2">
-                      <ImageIcon size={20} color={colors.waterBlue} />
-                      <Text
-                        className="text-lg font-bold ml-2"
-                        style={{ color: colors.waterBlue }}
-                      >
-                        Photo Gallery
-                      </Text>
-                    </View>
+                    <Text
+                      className="text-lg font-bold mb-2"
+                      style={{ color: colors.waterBlue }}
+                    >
+                      Photo Gallery
+                    </Text>
                     <ScrollView
                       horizontal
                       showsHorizontalScrollIndicator={false}
@@ -805,15 +802,12 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                   {/* Additional Study */}
                   {markerId && locationReadingGuideData[markerId] && locationReadingGuideData[markerId].length > 0 ? (
                     <View className="mb-4">
-                      <View className="flex-row items-center mb-3" style={{ gap: 8 }}>
-                        <BookOpen size={20} color={colors.earthBrown} />
-                        <Text
-                          className="text-lg font-bold"
-                          style={{ color: colors.earthBrown, marginBottom: 0 }}
-                        >
-                          Additional Study
-                        </Text>
-                      </View>
+                      <Text
+                        className="text-lg font-bold mb-3"
+                        style={{ color: colors.earthBrown }}
+                      >
+                        Additional Study
+                      </Text>
                       <View className="rounded-xl overflow-hidden">
                         {locationReadingGuideData[markerId].map((entry, index) => {
                           const isOdd = index % 2 === 1;
@@ -963,15 +957,12 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                   {/* Additional Study */}
                   {markerId && locationReadingGuideData[markerId] && locationReadingGuideData[markerId].length > 0 ? (
                     <View className="mb-4">
-                      <View className="flex-row items-center mb-3" style={{ gap: 8 }}>
-                        <BookOpen size={20} color={colors.earthBrown} />
-                        <Text
-                          className="text-lg font-bold"
-                          style={{ color: colors.earthBrown, marginBottom: 0 }}
-                        >
-                          Additional Study
-                        </Text>
-                      </View>
+                      <Text
+                        className="text-lg font-bold mb-3"
+                        style={{ color: colors.earthBrown }}
+                      >
+                        Additional Study
+                      </Text>
                       <View className="rounded-xl overflow-hidden">
                         {locationReadingGuideData[markerId].map((entry, index) => {
                           const isOdd = index % 2 === 1;
