@@ -12,7 +12,7 @@ export interface LocationReadingGuideEntry {
 export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[]> = {
   'atikokan-river-waterway': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Atikokan River Area Records',
       publisher: 'HBCA various series',
       description: 'Primary references to Atikokan River as part of the Rainy Lake–Lake Superior watershed in early fur trade canoe routes.',
@@ -48,7 +48,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
     },
     {
       authorSource: 'McGoogan Ken',
-      title: 'Lady Franklin\\',
+      title: 'Lady Franklin\\\\',
       publisher: 'HarperCollins',
       year: '2005',
       description: 'Context on Back River in Franklin search expeditions and Inuit knowledge.',
@@ -72,7 +72,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'The Voyages of William Baffin 1612-1622',
       publisher: 'Hakluyt Society',
       year: '1881',
-      description: 'Primary accounts of Baffin\\',
+      description: 'Primary accounts of Baffin\\\\',
     },
     {
       authorSource: 'Mancall Peter C.',
@@ -100,7 +100,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'The Discovery of the North-West Passage by H.M.S. Investigator ed. Sherard Osborn',
       publisher: 'Longman Brown Green Longmans & Roberts',
       year: '1856',
-      description: 'Primary narrative referencing Bellot Strait (Tallurutiup Imanga) during McClure\\',
+      description: 'Primary narrative referencing Bellot Strait (Tallurutiup Imanga) during McClure\\\\',
     },
     {
       authorSource: 'The Canadian Encyclopedia',
@@ -118,14 +118,14 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   'bloody_falls_location': [
     {
       authorSource: 'Hearne Samuel',
-      title: 'A Journey from Prince of Wales\\',
+      title: 'A Journey from Prince of Wales\\\\',
       publisher: 'Champlain Society',
       year: '1958 (reprint of 1795)',
-      description: 'Primary narrative of Hearne\\',
+      description: 'Primary narrative of Hearne\\\\',
     },
     {
       authorSource: 'McGoogan Ken',
-      title: 'Ancient Mariner: The Amazing Adventures of Samuel Hearne the Sailor Who Inspired Coleridge\\',
+      title: 'Ancient Mariner: The Amazing Adventures of Samuel Hearne the Sailor Who Inspired Coleridge\\\\',
       publisher: 'Carroll & Graf',
       year: '2004',
       description: 'Modern biography with detailed analysis of the Bloody Falls event and Dene oral perspectives.',
@@ -168,7 +168,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
     {
       authorSource: 'Eber Dorothy Harley',
       title: 'When the Whalers Were Up North: Inuit Memories from the Eastern Arctic',
-      publisher: 'McGill-Queen\\',
+      publisher: 'McGill-Queen\\\\',
       year: '1989',
       description: 'Inuit oral histories and memories of Marble Island as a whaling harbour and site of the 1719 Knight expedition shipwreck.',
     },
@@ -176,7 +176,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       authorSource: 'Parks Canada',
       title: 'Marble Island (Inuit Possession)',
       url: 'https://www.pc.gc.ca (related Nunavut sites)',
-      description: 'Interpretive information on Marble Island\\',
+      description: 'Interpretive information on Marble Island\\\\',
     },
     {
       authorSource: 'Wikipedia',
@@ -211,7 +211,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       authorSource: 'The Canadian Encyclopedia',
       title: 'St. Lawrence River',
       url: 'https://www.thecanadianencyclopedia.ca/en/article/st-lawrence-river',
-      description: 'Overview of the river\\',
+      description: 'Overview of the river\\\\',
     },
     {
       authorSource: 'Wikipedia',
@@ -226,32 +226,32 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'Voyages from Montreal on the River St. Laurence through the Continent of North America to the Frozen and Pacific Oceans',
       publisher: 'T. Cadell & W. Davies',
       year: '1801',
-      description: 'Primary narrative of Mackenzie\\',
+      description: 'Primary narrative of Mackenzie\\\\',
     },
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Mackenzie River District Records',
       publisher: 'HBCA B.200/a series',
       description: 'Company records referencing Mackenzie River posts like Fort Good Hope and Fort Norman in HBC trade.',
     },
     {
       authorSource: 'Helm June',
-      title: 'The People of Denendeh: Ethnohistory of the Indians of Canada\\',
-      publisher: 'McGill-Queen\\',
+      title: 'The People of Denendeh: Ethnohistory of the Indians of Canada\\\\',
+      publisher: 'McGill-Queen\\\\',
       year: '2000',
-      description: 'Ethnohistorical context for Dene (Slavey/Gwich\\',
+      description: 'Ethnohistorical context for Dene (Slavey/Gwich\\\\',
     },
     {
       authorSource: 'The Canadian Encyclopedia',
       title: 'Mackenzie River',
       url: 'https://www.thecanadianencyclopedia.ca/en/article/mackenzie-river',
-      description: 'Overview of the river\\',
+      description: 'Overview of the river\\\\',
     },
     {
       authorSource: 'Wikipedia',
       title: 'Mackenzie River',
       url: 'https://en.wikipedia.org/wiki/Mackenzie_River',
-      description: 'Historic significance as Canada\\',
+      description: 'Historic significance as Canada\\\\',
     }
   ],
   'cmlhaslqs000om2zh7u6tr7m8': [
@@ -260,7 +260,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'The Letters and Journals of Simon Fraser 1806–1808 ed. W. Kaye Lamb',
       publisher: 'Macmillan of Canada',
       year: '1960',
-      description: 'Primary journal entries on Fraser\\',
+      description: 'Primary journal entries on Fraser\\\\',
     },
     {
       authorSource: 'Mackie Richard Somerset',
@@ -273,7 +273,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       authorSource: 'The Canadian Encyclopedia',
       title: 'Fraser River',
       url: 'https://www.thecanadianencyclopedia.ca/en/article/fraser-river',
-      description: 'Overview of the river\\',
+      description: 'Overview of the river\\\\',
     },
     {
       authorSource: 'Wikipedia',
@@ -288,7 +288,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'The Works of Samuel de Champlain Vol. 1',
       publisher: 'Champlain Society',
       year: '1922',
-      description: 'Primary references to Ottawa River (Kichi Sibi) during Champlain\\',
+      description: 'Primary references to Ottawa River (Kichi Sibi) during Champlain\\\\',
     },
     {
       authorSource: 'Innis Harold A.',
@@ -301,7 +301,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       authorSource: 'The Canadian Encyclopedia',
       title: 'Ottawa River',
       url: 'https://www.thecanadianencyclopedia.ca/en/article/ottawa-river',
-      description: 'Overview of the river\\',
+      description: 'Overview of the river\\\\',
     },
     {
       authorSource: 'Wikipedia',
@@ -312,7 +312,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   ],
   'cmlhaslqy000sm2zhxfks60fd': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Saskatchewan River Post Journals (Fort Carlton/Edmonton)',
       publisher: 'HBCA B.27/a and B.60/a series',
       description: 'Primary records from key Saskatchewan River (Kisiskāciwani-sīpiy) posts documenting HBC operations and Plains Cree trade.',
@@ -328,7 +328,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       authorSource: 'The Canadian Encyclopedia',
       title: 'Saskatchewan River',
       url: 'https://www.thecanadianencyclopedia.ca/en/article/saskatchewan-river',
-      description: 'Overview of the river\\',
+      description: 'Overview of the river\\\\',
     },
     {
       authorSource: 'Wikipedia',
@@ -339,7 +339,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   ],
   'cmlhaslr1000um2zh1ohr52f9': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Churchill River (Saskatchewan) Records',
       publisher: 'HBCA B.42/a series (related)',
       description: 'Primary references to Churchill River (Missinipi) as a key fur trade corridor linking Reindeer Lake to Hudson Bay.',
@@ -361,10 +361,10 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   'cmlhaslr7000wm2zhi88te1r4': [
     {
       authorSource: 'Thompson David',
-      title: 'David Thompson\\',
+      title: 'David Thompson\\\\',
       publisher: 'Champlain Society',
       year: '1916',
-      description: 'Primary journal entries on Thompson\\',
+      description: 'Primary journal entries on Thompson\\\\',
     },
     {
       authorSource: 'Mackie Richard Somerset',
@@ -375,10 +375,10 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
     },
     {
       authorSource: 'Nisbet Jack',
-      title: 'The Mapmaker\\',
+      title: 'The Mapmaker\\\\',
       publisher: 'University of Oklahoma Press',
       year: '2005',
-      description: 'Chapter on Thompson\\',
+      description: 'Chapter on Thompson\\\\',
     },
     {
       authorSource: 'Wikipedia',
@@ -390,7 +390,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       authorSource: 'The Canadian Encyclopedia',
       title: 'Columbia River',
       url: 'https://www.thecanadianencyclopedia.ca/en/article/columbia-river',
-      description: 'Overview of the river\\',
+      description: 'Overview of the river\\\\',
     }
   ],
   'cmlhaslra000ym2zh4pyu55je': [
@@ -412,7 +412,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       authorSource: 'The Canadian Encyclopedia',
       title: 'Lake Superior',
       url: 'https://www.thecanadianencyclopedia.ca/en/article/lake-superior',
-      description: 'Overview of the lake\\',
+      description: 'Overview of the lake\\\\',
     },
     {
       authorSource: 'Wikipedia',
@@ -427,7 +427,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'The Works of Samuel de Champlain Vol. 2 ed. H.P. Biggar',
       publisher: 'Champlain Society',
       year: '1925',
-      description: 'Primary accounts of Champlain\\',
+      description: 'Primary accounts of Champlain\\\\',
     },
     {
       authorSource: 'Innis Harold A.',
@@ -440,7 +440,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       authorSource: 'The Canadian Encyclopedia',
       title: 'Lake Huron',
       url: 'https://www.thecanadianencyclopedia.ca/en/article/lake-huron',
-      description: 'Overview of the lake\\',
+      description: 'Overview of the lake\\\\',
     },
     {
       authorSource: 'Wikipedia',
@@ -455,7 +455,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'The Works of Samuel de Champlain Vol. 2 ed. H.P. Biggar',
       publisher: 'Champlain Society',
       year: '1925',
-      description: 'Primary accounts of Champlain\\',
+      description: 'Primary accounts of Champlain\\\\',
     },
     {
       authorSource: 'Innis Harold A.',
@@ -468,7 +468,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       authorSource: 'The Canadian Encyclopedia',
       title: 'Lake Ontario',
       url: 'https://www.thecanadianencyclopedia.ca/en/article/lake-ontario',
-      description: 'Overview of the lake\\',
+      description: 'Overview of the lake\\\\',
     },
     {
       authorSource: 'Wikipedia',
@@ -479,7 +479,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   ],
   'cmlhaslri0014m2zhlrrx8pqe': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Lake Winnipeg Records',
       publisher: 'HBCA B.239/a series (related York Factory)',
       description: 'Primary references to Lake Winnipeg (Win-nipi) as a key HBC inland lake connecting York Factory to the Saskatchewan River system.',
@@ -495,7 +495,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       authorSource: 'The Canadian Encyclopedia',
       title: 'Lake Winnipeg',
       url: 'https://www.thecanadianencyclopedia.ca/en/article/lake-winnipeg',
-      description: 'Overview of the lake\\',
+      description: 'Overview of the lake\\\\',
     },
     {
       authorSource: 'Wikipedia',
@@ -506,15 +506,15 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   ],
   'cmlhaslrl0016m2zh71casjqv': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Great Slave Lake Records (Fort Resolution/Providence)',
       publisher: 'HBCA B.181/a and B.200/a series',
       description: 'Primary references to Great Slave Lake (Tu Nedhé) as a major HBC Mackenzie District lake and trading hub.',
     },
     {
       authorSource: 'Helm June',
-      title: 'The People of Denendeh: Ethnohistory of the Indians of Canada\\',
-      publisher: 'McGill-Queen\\',
+      title: 'The People of Denendeh: Ethnohistory of the Indians of Canada\\\\',
+      publisher: 'McGill-Queen\\\\',
       year: '2000',
       description: 'Ethnohistorical context for Slavey Dene trade community and life around Great Slave Lake.',
     },
@@ -522,7 +522,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       authorSource: 'The Canadian Encyclopedia',
       title: 'Great Slave Lake',
       url: 'https://www.thecanadianencyclopedia.ca/en/article/great-slave-lake',
-      description: 'Overview of the lake\\',
+      description: 'Overview of the lake\\\\',
     },
     {
       authorSource: 'Wikipedia',
@@ -533,15 +533,15 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   ],
   'cmlhaslro0018m2zh54ssf898': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Great Bear Lake Records',
       publisher: 'HBCA various series',
       description: 'Primary references to Great Bear Lake (Sahtu) as a northern HBC outpost and Sahtu Dene trade area.',
     },
     {
       authorSource: 'Helm June',
-      title: 'The People of Denendeh: Ethnohistory of the Indians of Canada\\',
-      publisher: 'McGill-Queen\\',
+      title: 'The People of Denendeh: Ethnohistory of the Indians of Canada\\\\',
+      publisher: 'McGill-Queen\\\\',
       year: '2000',
       description: 'Ethnohistorical context for Sahtu Dene trade and life around Great Bear Lake.',
     },
@@ -554,15 +554,15 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   ],
   'cmlhaslrq001am2zhud0snm8t': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Lake Athabasca Records (Fort Chipewyan)',
       publisher: 'HBCA B.39/a series',
       description: 'Primary records from Fort Chipewyan on Lake Athabasca (Desnethché) as a key HBC post in the Athabasca–Mackenzie district.',
     },
     {
       authorSource: 'Helm June',
-      title: 'The People of Denendeh: Ethnohistory of the Indians of Canada\\',
-      publisher: 'McGill-Queen\\',
+      title: 'The People of Denendeh: Ethnohistory of the Indians of Canada\\\\',
+      publisher: 'McGill-Queen\\\\',
       year: '2000',
       description: 'Ethnohistorical context for Chipewyan (Dene) trade and community at Lake Athabasca.',
     },
@@ -570,7 +570,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       authorSource: 'The Canadian Encyclopedia',
       title: 'Lake Athabasca',
       url: 'https://www.thecanadianencyclopedia.ca/en/article/lake-athabasca',
-      description: 'Overview of the lake\\',
+      description: 'Overview of the lake\\\\',
     },
     {
       authorSource: 'Wikipedia',
@@ -581,14 +581,14 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   ],
   'cmlhaslrt001cm2zh9tknhhbe': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Hudson Bay Records (York Factory/Prince of Wales Fort)',
       publisher: 'HBCA B.239/a and B.42/a series',
       description: 'Primary references to Hudson Bay (Wînipekw Kihci-kâmiy) as the central HBC maritime gateway and depot for inland trade.',
     },
     {
       authorSource: 'Francis Daniel',
-      title: 'History of the Hudson\\',
+      title: 'History of the Hudson\\\\',
       publisher: 'Canadian Circumpolar Institute',
       year: '1983',
       description: 'Comprehensive history of Hudson Bay posts and Cree/Inuit trade networks.',
@@ -597,7 +597,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       authorSource: 'The Canadian Encyclopedia',
       title: 'Hudson Bay',
       url: 'https://www.thecanadianencyclopedia.ca/en/article/hudson-bay',
-      description: 'Overview of the bay\\',
+      description: 'Overview of the bay\\\\',
     },
     {
       authorSource: 'Wikipedia',
@@ -608,14 +608,14 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   ],
   'cmlhaslrv001em2zheht25x94': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'James Bay Records (Fort Rupert/Moose Factory)',
       publisher: 'HBCA B.135/a and B.135/a series',
       description: 'Primary records from James Bay (Wînipekw) posts documenting early HBC trade with Cree communities.',
     },
     {
       authorSource: 'Francis Daniel',
-      title: 'History of the Hudson\\',
+      title: 'History of the Hudson\\\\',
       publisher: 'Canadian Circumpolar Institute',
       year: '1983',
       description: 'Historical study of James Bay as the original HBC focus area.',
@@ -639,20 +639,20 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'The Works of Samuel de Champlain Vol. 1',
       publisher: 'Champlain Society',
       year: '1922',
-      description: 'Primary references to Quebec City (Kébec) as Champlain\\',
+      description: 'Primary references to Quebec City (Kébec) as Champlain\\\\',
     },
     {
       authorSource: 'Trudel Marcel',
       title: 'The Beginnings of New France 1524–1663',
       publisher: 'McClelland & Stewart',
       year: '1973',
-      description: 'Detailed chapter on Quebec City\\',
+      description: 'Detailed chapter on Quebec City\\\\',
     },
     {
       authorSource: 'The Canadian Encyclopedia',
       title: 'Quebec City',
       url: 'https://www.thecanadianencyclopedia.ca/en/article/quebec-city',
-      description: 'Overview of the city\\',
+      description: 'Overview of the city\\\\',
     },
     {
       authorSource: 'Wikipedia',
@@ -661,16 +661,51 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       description: 'Historic settlement on the St. Lawrence River.',
     }
   ],
+  'cmlhasls40020m2zhz16w8vz5': [
+    {
+      authorSource: 'Morison Samuel Eliot',
+      title: 'The European Discovery of America: The Northern Voyages A.D. 500-1600',
+      publisher: 'Oxford University Press',
+      year: '1971',
+      description: 'Historical context for Montreal (Tiohtià:ke / Mooniyang) as a major Indigenous trade hub before French settlement on the St. Lawrence River.',
+    },
+    {
+      authorSource: 'Trudel Marcel',
+      title: 'The Beginnings of New France 1524–1663',
+      publisher: 'McClelland & Stewart',
+      year: '1973',
+      description: 'Analysis of Montreal\'s founding as Ville-Marie in 1642 and its role in early fur trade with Iroquois and Algonquin peoples.',
+    },
+    {
+      authorSource: 'Innis Harold A.',
+      title: 'The Fur Trade in Canada',
+      publisher: 'Yale University Press',
+      year: '1930',
+      description: 'Economic study of Montreal as the central hub for the French and later British fur trade on the St. Lawrence River.',
+    },
+    {
+      authorSource: 'The Canadian Encyclopedia',
+      title: 'Montreal',
+      url: 'https://www.thecanadianencyclopedia.ca/en/article/montreal',
+      description: 'Overview of the settlement\'s significance in New France history and fur trade.',
+    },
+    {
+      authorSource: 'Wikipedia',
+      title: 'Montreal',
+      url: 'https://en.wikipedia.org/wiki/Montreal',
+      description: 'Historic settlement on the St. Lawrence River with Indigenous origins.',
+    }
+  ],
   'cmlhasls40021m2zhu35xikyc': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'York Factory / Kichiwasinahikan Journals',
       publisher: 'HBCA B.239/a series',
       description: 'Primary records from York Factory (Kichiwasinahikan) on Hudson Bay as the main HBC depot for over two centuries.',
     },
     {
       authorSource: 'Francis Daniel',
-      title: 'History of the Hudson\\',
+      title: 'History of the Hudson\\\\',
       publisher: 'Canadian Circumpolar Institute',
       year: '1983',
       description: 'Comprehensive history of York Factory as the gateway to the interior fur trade.',
@@ -679,7 +714,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       authorSource: 'The Canadian Encyclopedia',
       title: 'York Factory',
       url: 'https://www.thecanadianencyclopedia.ca/en/article/york-factory',
-      description: 'Overview of the post\\',
+      description: 'Overview of the post\\\\',
     },
     {
       authorSource: 'Wikipedia',
@@ -690,23 +725,23 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   ],
   'cmlhasls40022m2zhaovlkwt2': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Fort Churchill Post Journals',
       publisher: 'HBCA B.42/a series',
       description: 'Primary records from Fort Churchill on Hudson Bay as a major early HBC post and gateway to the interior.',
     },
     {
       authorSource: 'Francis Daniel',
-      title: 'History of the Hudson\\',
+      title: 'History of the Hudson\\\\',
       publisher: 'Canadian Circumpolar Institute',
       year: '1983',
-      description: 'Historical study of Fort Churchill\\',
+      description: 'Historical study of Fort Churchill\\\\',
     },
     {
       authorSource: 'The Canadian Encyclopedia',
       title: 'Fort Churchill',
       url: 'https://www.thecanadianencyclopedia.ca/en/article/fort-churchill',
-      description: 'Overview of the post\\',
+      description: 'Overview of the post\\\\',
     },
     {
       authorSource: 'Wikipedia',
@@ -715,9 +750,36 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       description: 'Historic fort and Hudson Bay location.',
     }
   ],
+  'cmlhasls40023m2zhzrnt7rr9': [
+    {
+      authorSource: 'Hudson\'s Bay Company Archives',
+      title: 'Sault Ste. Marie Post Journals',
+      publisher: 'HBCA B.149/a series',
+      description: 'Primary records from Sault Ste. Marie (Baawitigong) as a key HBC/NWC transshipment point between Lake Superior and Lake Huron.',
+    },
+    {
+      authorSource: 'Innis Harold A.',
+      title: 'The Fur Trade in Canada',
+      publisher: 'Yale University Press',
+      year: '1930',
+      description: 'Economic analysis of Sault Ste. Marie\'s role in Great Lakes fur trade routes and Ojibwe trade networks.',
+    },
+    {
+      authorSource: 'The Canadian Encyclopedia',
+      title: 'Sault Ste. Marie',
+      url: 'https://www.thecanadianencyclopedia.ca/en/article/sault-ste-marie',
+      description: 'Overview of the portage\'s significance in fur trade history.',
+    },
+    {
+      authorSource: 'Wikipedia',
+      title: 'Sault Ste. Marie (Ontario)',
+      url: 'https://en.wikipedia.org/wiki/Sault_Ste._Marie_(Ontario)',
+      description: 'Historic portage and trading post on Lake Superior.',
+    }
+  ],
   'cmlhasls40024m2zhk53dsecy': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Grand Portage Journals',
       publisher: 'HBCA B.105/a series (related)',
       description: 'Primary records from Grand Portage (Gichi-Onigaming) on Lake Superior as the major NWC/HBC transshipment point before Fort William.',
@@ -734,7 +796,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'The Fur Trade in Canada',
       publisher: 'Yale University Press',
       year: '1930',
-      description: 'Economic analysis of Grand Portage\\',
+      description: 'Economic analysis of Grand Portage\\\\',
     },
     {
       authorSource: 'Parks Canada',
@@ -751,17 +813,17 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   ],
   'cmlhasls40025m2zh8ceyw7jl': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Cumberland House Post Journals',
       publisher: 'HBCA B.49/a series',
       description: 'Primary daily records from Cumberland House (Wāskahikanihk) on the Saskatchewan River as the first inland HBC post established in 1774.',
     },
     {
       authorSource: 'Rich E.E.',
-      title: 'The History of the Hudson\\',
-      publisher: 'Hudson\\',
+      title: 'The History of the Hudson\\\\',
+      publisher: 'Hudson\\\\',
       year: '1958',
-      description: 'Company history detailing Cumberland House\\',
+      description: 'Company history detailing Cumberland House\\\\',
     },
     {
       authorSource: 'Ray Arthur J.',
@@ -774,7 +836,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       authorSource: 'The Canadian Encyclopedia',
       title: 'Cumberland House',
       url: 'https://www.thecanadianencyclopedia.ca/en/article/cumberland-house',
-      description: 'Overview of the post\\',
+      description: 'Overview of the post\\\\',
     },
     {
       authorSource: 'Wikipedia',
@@ -785,7 +847,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   ],
   'cmlhasls40026m2zhpi43jsew': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Fort Edmonton Post Journals',
       publisher: 'HBCA B.60/a series',
       description: 'Primary records of Fort Edmonton (Amiskwacîwâskahikan) as the principal HBC post on the North Saskatchewan River after 1821.',
@@ -802,14 +864,14 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'Fort Edmonton: A Story of People and Place',
       publisher: 'Fort Edmonton Park',
       year: '2005',
-      description: 'Historical synthesis of the forts\\',
+      description: 'Historical synthesis of the forts\\\\',
     },
     {
       authorSource: 'Moffat Leah',
       title: 'Cree Cosmology and Fort Edmonton Place Names',
       publisher: 'Ethnohistory vol. 56 no. 4',
       year: '2009',
-      description: 'Indigenous (Cree) perspectives on the site\\',
+      description: 'Indigenous (Cree) perspectives on the site\\\\',
     },
     {
       authorSource: 'The Canadian Encyclopedia',
@@ -826,22 +888,22 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   ],
   'cmlhasls40027m2zhq13ab7xs': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Fort Chipewyan Post Journals',
       publisher: 'HBCA B.39/a series',
-      description: 'Primary records from Fort Chipewyan (K\\',
+      description: 'Primary records from Fort Chipewyan (K\\\\',
     },
     {
       authorSource: 'Glover Richard ed.',
-      title: 'Samuel Hearne\\',
+      title: 'Samuel Hearne\\\\',
       publisher: 'Champlain Society',
       year: '1958',
-      description: 'Early context for the region and Athabasca trade routes before Fort Chipewyan\\',
+      description: 'Early context for the region and Athabasca trade routes before Fort Chipewyan\\\\',
     },
     {
       authorSource: 'Helm June',
-      title: 'The People of Denendeh: Ethnohistory of the Indians of Canada\\',
-      publisher: 'McGill-Queen\\',
+      title: 'The People of Denendeh: Ethnohistory of the Indians of Canada\\\\',
+      publisher: 'McGill-Queen\\\\',
       year: '2000',
       description: 'Ethnohistorical context for Chipewyan (Dene) trade and community at Fort Chipewyan.',
     },
@@ -849,7 +911,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       authorSource: 'The Canadian Encyclopedia',
       title: 'Fort Chipewyan',
       url: 'https://www.thecanadianencyclopedia.ca/en/article/fort-chipewyan',
-      description: 'Overview of the post\\',
+      description: 'Overview of the post\\\\',
     },
     {
       authorSource: 'Wikipedia',
@@ -860,15 +922,15 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   ],
   'cmlhasls40028m2zh4aji898k': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Fort Good Hope Post Journals',
       publisher: 'HBCA B.80/a series',
       description: 'Primary daily records from Fort Good Hope (Rádeyı̨lı̨kǫ́ę́) on the Mackenzie River documenting HBC operations in the far north and Dene (Slavey) trade.',
     },
     {
       authorSource: 'Helm June',
-      title: 'The People of Denendeh: Ethnohistory of the Indians of Canada\\',
-      publisher: 'McGill-Queen\\',
+      title: 'The People of Denendeh: Ethnohistory of the Indians of Canada\\\\',
+      publisher: 'McGill-Queen\\\\',
       year: '2000',
       description: 'Ethnohistorical context for Slavey Dene trade, community, and life around Fort Good Hope.',
     },
@@ -876,18 +938,31 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       authorSource: 'The Canadian Encyclopedia',
       title: 'Fort Good Hope',
       url: 'https://www.thecanadianencyclopedia.ca/en/article/fort-good-hope',
-      description: 'Overview of the post\\',
+      description: 'Overview of the post\\\\',
     },
     {
       authorSource: 'Wikipedia',
       title: 'Fort Good Hope',
       url: 'https://en.wikipedia.org/wiki/Fort_Good_Hope',
       description: '_Northwest_Territories',
+    },
+    {
+      authorSource: 'Hudson\'s Bay Company Archives',
+      title: 'Fort Good Hope Post Journals',
+      publisher: 'HBCA B.80/a series',
+      description: 'Primary daily records from Fort Good Hope (Rádeyı̨lı̨kǫ́ę́) on the Mackenzie River documenting HBC operations in the far north and Dene (Slavey) trade.',
+    },
+    {
+      authorSource: 'Helm June',
+      title: 'The People of Denendeh: Ethnohistory of the Indians of Canada\'s Northwest Territories',
+      publisher: 'McGill-Queen\'s University Press',
+      year: '2000',
+      description: 'Ethnohistorical context for Slavey Dene trade, community, and life around Fort Good Hope.',
     }
   ],
   'cmlhasls40029m2zhhfgaamg9': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Fort Langley Journals',
       publisher: 'HBCA B.113/a series',
       description: 'Primary daily records from Fort Langley on the lower Fraser River as the first HBC post on the Pacific Slope and key salmon trade centre.',
@@ -897,7 +972,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'Trading Beyond the Mountains: The British Fur Trade on the Pacific 1793–1843',
       publisher: 'UBC Press',
       year: '1997',
-      description: 'Chapter on Fort Langley\\',
+      description: 'Chapter on Fort Langley\\\\',
     },
     {
       authorSource: 'Harris Cole',
@@ -917,11 +992,17 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'Fort Langley',
       url: 'https://en.wikipedia.org/wiki/Fort_Langley',
       description: 'Significance as birthplace of British Columbia colony and Fraser River post.',
+    },
+    {
+      authorSource: 'Hudson\'s Bay Company Archives',
+      title: 'Fort Langley Journals',
+      publisher: 'HBCA B.113/a series',
+      description: 'Primary daily records from Fort Langley on the lower Fraser River as the first HBC post on the Pacific Slope and key salmon trade centre.',
     }
   ],
   'cmlhasls4002am2zhut4b7lsm': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Fort Témiscamingue / Obadjiwan Journals',
       publisher: 'HBCA B.216/a series',
       description: 'Primary records from Fort Témiscamingue (Obadjiwan) on Lake Timiskaming / Ottawa River as a strategic HBC post linking Montreal to the west.',
@@ -931,13 +1012,13 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'The Fur Trade in Canada',
       publisher: 'Yale University Press',
       year: '1930',
-      description: 'Economic analysis of Fort Témiscamingue\\',
+      description: 'Economic analysis of Fort Témiscamingue\\\\',
     },
     {
       authorSource: 'The Canadian Encyclopedia',
       title: 'Fort Témiscamingue',
       url: 'https://www.thecanadianencyclopedia.ca/en/article/fort-temiscamingue',
-      description: 'Overview of the post\\',
+      description: 'Overview of the post\\\\',
     },
     {
       authorSource: 'Wikipedia',
@@ -948,7 +1029,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   ],
   'cmlhbjrpt0001m2mb70w5ub4a': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Nelson River Records',
       publisher: 'HBCA B.239/a series (related York Factory)',
       description: 'Primary references to Nelson River (Sipiwesk) as a major HBC inland corridor linking York Factory to Lake Winnipeg and Saskatchewan systems.',
@@ -964,7 +1045,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       authorSource: 'The Canadian Encyclopedia',
       title: 'Nelson River',
       url: 'https://www.thecanadianencyclopedia.ca/en/article/nelson-river',
-      description: 'Overview of the river\\',
+      description: 'Overview of the river\\\\',
     },
     {
       authorSource: 'Wikipedia',
@@ -975,15 +1056,15 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   ],
   'cmlhbjrpw0003m2mbmmpa8102': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Athabasca River Records',
       publisher: 'HBCA B.39/a series (related Fort Chipewyan)',
       description: 'Primary references to Athabasca River (Ayaskatawa-sipi) as a key corridor linking Lake Athabasca to the Mackenzie system and fur trade posts.',
     },
     {
       authorSource: 'Helm June',
-      title: 'The People of Denendeh: Ethnohistory of the Indians of Canada\\',
-      publisher: 'McGill-Queen\\',
+      title: 'The People of Denendeh: Ethnohistory of the Indians of Canada\\\\',
+      publisher: 'McGill-Queen\\\\',
       year: '2000',
       description: 'Ethnohistorical context for Chipewyan and other Dene trade along the Athabasca River.',
     },
@@ -994,29 +1075,42 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       description: 'Historic significance in northern Alberta fur trade.',
     },
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Moose Factory Post Journals',
       publisher: 'HBCA B.135/a series',
       description: 'Primary daily records from Moose Factory on the Moose River as one of the original HBC James Bay posts established in 1673 and a key Cree trade centre.',
     },
     {
       authorSource: 'Francis Daniel',
-      title: 'History of the Hudson\\',
+      title: 'History of the Hudson\\\\',
       publisher: 'Canadian Circumpolar Institute',
       year: '1983',
-      description: 'Historical study of Moose Factory\\',
+      description: 'Historical study of Moose Factory\\\\',
     },
     {
       authorSource: 'The Canadian Encyclopedia',
       title: 'Moose Factory',
       url: 'https://www.thecanadianencyclopedia.ca/en/article/moose-factory',
-      description: 'Overview of the post\\',
+      description: 'Overview of the post\\\\',
     },
     {
       authorSource: 'Wikipedia',
       title: 'Moose Factory',
       url: 'https://en.wikipedia.org/wiki/Moose_Factory',
       description: 'Historic significance as one of the oldest HBC posts.',
+    },
+    {
+      authorSource: 'Hudson\'s Bay Company Archives',
+      title: 'Athabasca River Records',
+      publisher: 'HBCA B.39/a series (related Fort Chipewyan)',
+      description: 'Primary references to Athabasca River (Ayaskatawa-sipi) as a key corridor linking Lake Athabasca to the Mackenzie system and fur trade posts.',
+    },
+    {
+      authorSource: 'Helm June',
+      title: 'The People of Denendeh: Ethnohistory of the Indians of Canada\'s Northwest Territories',
+      publisher: 'McGill-Queen\'s University Press',
+      year: '2000',
+      description: 'Ethnohistorical context for Chipewyan and other Dene trade along the Athabasca River.',
     }
   ],
   'cmlhbjrpy0005m2mbsanafmlo': [
@@ -1025,10 +1119,10 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'Voyages from Montreal... to the Frozen and Pacific Oceans',
       publisher: 'T. Cadell & W. Davies',
       year: '1801',
-      description: 'Primary account of Mackenzie\\',
+      description: 'Primary account of Mackenzie\\\\',
     },
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Peace River Records',
       publisher: 'HBCA various series',
       description: 'References to Peace River in HBC/NWC trade networks and posts like Fort Vermilion.',
@@ -1042,7 +1136,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   ],
   'cmlhbjrq10007m2mb166687ob': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Red River Records',
       publisher: 'HBCA B.235/a series',
       description: 'Primary references to Red River (Miskosipi) as the central corridor for Red River Settlement and Fort Garry operations.',
@@ -1058,7 +1152,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       authorSource: 'The Canadian Encyclopedia',
       title: 'Red River',
       url: 'https://www.thecanadianencyclopedia.ca/en/article/red-river',
-      description: 'Overview of the river\\',
+      description: 'Overview of the river\\\\',
     },
     {
       authorSource: 'Wikipedia',
@@ -1069,7 +1163,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   ],
   'cmlhbjrq30009m2mbjvc52rym': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Assiniboine River Records',
       publisher: 'HBCA various series',
       description: 'Primary references to Assiniboine River as a key fur trade and pemmican provisioning corridor for Red River and Fort Garry.',
@@ -1085,7 +1179,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       authorSource: 'The Canadian Encyclopedia',
       title: 'Assiniboine River',
       url: 'https://www.thecanadianencyclopedia.ca/en/article/assiniboine-river',
-      description: 'Overview of the river\\',
+      description: 'Overview of the river\\\\',
     },
     {
       authorSource: 'Wikipedia',
@@ -1096,17 +1190,17 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   ],
   'cmlhbjrq5000bm2mbpbrh6i7v': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Yukon River Records',
       publisher: 'HBCA B.240/a series (related Fort Yukon)',
       description: 'Primary references to Yukon River (Kwanlin) as a northern HBC corridor linking Fort Yukon to the Mackenzie system.',
     },
     {
       authorSource: 'Helm June',
-      title: 'The People of Denendeh: Ethnohistory of the Indians of Canada\\',
-      publisher: 'McGill-Queen\\',
+      title: 'The People of Denendeh: Ethnohistory of the Indians of Canada\\\\',
+      publisher: 'McGill-Queen\\\\',
       year: '2000',
-      description: 'Ethnohistorical context for Gwich\\',
+      description: 'Ethnohistorical context for Gwich\\\\',
     },
     {
       authorSource: 'Wikipedia',
@@ -1118,10 +1212,10 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   'cmlhbjrqa000dm2mb7n6w7y4w': [
     {
       authorSource: 'Hearne Samuel',
-      title: 'A Journey from Prince of Wales\\',
+      title: 'A Journey from Prince of Wales\\\\',
       publisher: 'Champlain Society',
       year: '1958 (reprint of 1795)',
-      description: 'Primary account of Hearne\\',
+      description: 'Primary account of Hearne\\\\',
     },
     {
       authorSource: 'McGoogan Ken',
@@ -1184,7 +1278,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       authorSource: 'The Canadian Encyclopedia',
       title: 'Saguenay River',
       url: 'https://www.thecanadianencyclopedia.ca/en/article/saguenay-river',
-      description: 'Overview of the river\\',
+      description: 'Overview of the river\\\\',
     },
     {
       authorSource: 'Wikipedia',
@@ -1218,7 +1312,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       authorSource: 'The Canadian Encyclopedia',
       title: 'Saint John River',
       url: 'https://www.thecanadianencyclopedia.ca/en/article/saint-john-river',
-      description: 'Overview of the river\\',
+      description: 'Overview of the river\\\\',
     }
   ],
   'cmlhbjrqm000lm2mb54fxoup5': [
@@ -1227,7 +1321,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'The Works of Samuel de Champlain Vol. 2 ed. H.P. Biggar',
       publisher: 'Champlain Society',
       year: '1925',
-      description: 'Primary references to Lake Erie (Erielhonan) during Champlain\\',
+      description: 'Primary references to Lake Erie (Erielhonan) during Champlain\\\\',
     },
     {
       authorSource: 'Innis Harold A.',
@@ -1240,7 +1334,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       authorSource: 'The Canadian Encyclopedia',
       title: 'Lake Erie',
       url: 'https://www.thecanadianencyclopedia.ca/en/article/lake-erie',
-      description: 'Overview of the lake\\',
+      description: 'Overview of the lake\\\\',
     },
     {
       authorSource: 'Wikipedia',
@@ -1261,7 +1355,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       authorSource: 'The Canadian Encyclopedia',
       title: 'Lake Michigan',
       url: 'https://www.thecanadianencyclopedia.ca/en/article/lake-michigan (related Great Lakes)',
-      description: 'Overview of the lake\\',
+      description: 'Overview of the lake\\\\',
     },
     {
       authorSource: 'Wikipedia',
@@ -1272,7 +1366,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   ],
   'cmlhbjrqs000pm2mb2n5b8ozi': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Reindeer Lake Records',
       publisher: 'HBCA various series',
       description: 'Primary references to Reindeer Lake (Atik Sakahikan) as a northern HBC post and lake in the Churchill River system.',
@@ -1294,15 +1388,21 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       authorSource: 'The Canadian Encyclopedia',
       title: 'Reindeer Lake',
       url: 'https://www.thecanadianencyclopedia.ca/en/article/reindeer-lake',
-      description: 'Overview of the lake\\',
+      description: 'Overview of the lake\\\\',
+    },
+    {
+      authorSource: 'Hudson\'s Bay Company Archives',
+      title: 'Reindeer Lake Records',
+      publisher: 'HBCA various series',
+      description: 'Primary references to Reindeer Lake (Atik Sakahikan) as a northern HBC post and lake in the Churchill River system.',
     }
   ],
   'cmlhbjrqu000rm2mb2jzjv5dc': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Lake Nipigon Records',
       publisher: 'HBCA various series',
-      description: 'Primary references to Lake Nipigon (Animbiigoo Zaaga\\',
+      description: 'Primary references to Lake Nipigon (Animbiigoo Zaaga\\\\',
     },
     {
       authorSource: 'Innis Harold A.',
@@ -1321,12 +1421,18 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       authorSource: 'The Canadian Encyclopedia',
       title: 'Lake Nipigon',
       url: 'https://www.thecanadianencyclopedia.ca/en/article/lake-nipigon',
-      description: 'Overview of the lake\\',
+      description: 'Overview of the lake\\\\',
+    },
+    {
+      authorSource: 'Hudson\'s Bay Company Archives',
+      title: 'Lake Nipigon Records',
+      publisher: 'HBCA various series',
+      description: 'Primary references to Lake Nipigon (Animbiigoo Zaaga\'igan) as a key HBC/NWC post and lake in the Lake Superior watershed.',
     }
   ],
   'cmlhbjrqx000tm2mb8efa6a4y': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Lesser Slave Lake Records',
       publisher: 'HBCA various series',
       description: 'Primary references to Lesser Slave Lake (Utikuma) as a key HBC post and portage point on the Peace River route.',
@@ -1336,7 +1442,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'Voyages from Montreal... to the Frozen and Pacific Oceans',
       publisher: 'T. Cadell & W. Davies',
       year: '1801',
-      description: 'Context on Lesser Slave Lake during Mackenzie\\',
+      description: 'Context on Lesser Slave Lake during Mackenzie\\\\',
     },
     {
       authorSource: 'Wikipedia',
@@ -1347,7 +1453,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   ],
   'cmlhbjrr2000vm2mb4xb3au6o': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Fort William (Thunder Bay) Journals',
       publisher: 'HBCA B.105/a series',
       description: 'Primary records from Fort William on Lake Superior as HBC headquarters after 1821 merger.',
@@ -1357,7 +1463,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'A History of the Canadian West to 1870–71',
       publisher: 'University of Toronto Press',
       year: '1939',
-      description: 'Detailed history of Fort William\\',
+      description: 'Detailed history of Fort William\\\\',
     },
     {
       authorSource: 'Parks Canada',
@@ -1374,7 +1480,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   ],
   'cmlhbjrr5000xm2mbkhf0cqiw': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Fort Garry Post Journals',
       publisher: 'HBCA B.235/a series',
       description: 'Primary records from Fort Garry on the Red River as the main HBC administrative centre in the Red River Settlement.',
@@ -1384,7 +1490,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'The Red River Settlement and the Lord Selkirk Papers',
       publisher: 'Manitoba Historical Society',
       year: '1999',
-      description: 'Historical analysis of Fort Garry\\',
+      description: 'Historical analysis of Fort Garry\\\\',
     },
     {
       authorSource: 'Sprague D.N. and Frye R.P.',
@@ -1408,7 +1514,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   ],
   'cmlhbjrr8000zm2mbjknynnon': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Methye Portage Records',
       publisher: 'HBCA various series',
       description: 'Primary references to Methye Portage (La Loche) as the critical watershed divide between Hudson Bay and Arctic drainage on the Churchill River.',
@@ -1418,7 +1524,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'The Fur Trade in Canada',
       publisher: 'Yale University Press',
       year: '1930',
-      description: 'Economic analysis of Methye Portage\\',
+      description: 'Economic analysis of Methye Portage\\\\',
     },
     {
       authorSource: 'Ray Arthur J.',
@@ -1434,16 +1540,43 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       description: 'Historic portage significance in Saskatchewan.',
     }
   ],
+  'cmlhbjrrb0011m2mb7wkob1wv': [
+    {
+      authorSource: 'Hudson\'s Bay Company Archives',
+      title: 'Moose Factory Post Journals',
+      publisher: 'HBCA B.135/a series',
+      description: 'Primary daily records from Moose Factory as one of the original HBC James Bay posts established in 1673.',
+    },
+    {
+      authorSource: 'Francis Daniel',
+      title: 'History of the Hudson\'s Bay Company Posts on James Bay',
+      publisher: 'Canadian Circumpolar Institute',
+      year: '1983',
+      description: 'Historical study of Moose Factory\'s role in early James Bay Cree trade.',
+    },
+    {
+      authorSource: 'The Canadian Encyclopedia',
+      title: 'Moose Factory',
+      url: 'https://www.thecanadianencyclopedia.ca/en/article/moose-factory',
+      description: 'Overview of the post\'s long history on the Moose River.',
+    },
+    {
+      authorSource: 'Wikipedia',
+      title: 'Moose Factory',
+      url: 'https://en.wikipedia.org/wiki/Moose_Factory',
+      description: 'Historic significance as one of the oldest HBC posts.',
+    }
+  ],
   'cmlhbjrrd0013m2mbr25pwdi0': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Fort Albany Post Journals',
       publisher: 'HBCA B.3/a series',
       description: 'Primary daily records of Fort Albany (Kashechewan) on James Bay including Albany River trade with Cree communities.',
     },
     {
       authorSource: 'Francis Daniel',
-      title: 'History of the Hudson\\',
+      title: 'History of the Hudson\\\\',
       publisher: 'Canadian Circumpolar Institute',
       year: '1983',
       description: 'Historical study of Fort Albany as one of the oldest HBC establishments.',
@@ -1452,7 +1585,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       authorSource: 'The Canadian Encyclopedia',
       title: 'Fort Albany',
       url: 'https://www.thecanadianencyclopedia.ca/en/article/fort-albany',
-      description: 'Overview of the post\\',
+      description: 'Overview of the post\\\\',
     },
     {
       authorSource: 'Wikipedia',
@@ -1463,7 +1596,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   ],
   'cmlhbjrrf0015m2mbj2bojm5s': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Norway House Post Journals',
       publisher: 'HBCA B.154/a series',
       description: 'Primary records from Norway House (Kinosew Sipi) on Lake Winnipeg as a major HBC provisioning and transshipment post.',
@@ -1479,13 +1612,40 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       authorSource: 'The Canadian Encyclopedia',
       title: 'Norway House',
       url: 'https://www.thecanadianencyclopedia.ca/en/article/norway-house',
-      description: 'Overview of the post\\',
+      description: 'Overview of the post\\\\',
     },
     {
       authorSource: 'Wikipedia',
       title: 'Norway House',
       url: 'https://en.wikipedia.org/wiki/Norway_House',
       description: 'Historic significance in Manitoba fur trade.',
+    }
+  ],
+  'cmlhbjrri0017m2mbfts7d8is': [
+    {
+      authorSource: 'Hudson\'s Bay Company Archives',
+      title: 'Fort Simpson Post Journals',
+      publisher: 'HBCA B.200/a series',
+      description: 'Primary records from Fort Simpson (Łíídlįį Kųę́) on the Mackenzie River as the administrative centre for the Mackenzie District.',
+    },
+    {
+      authorSource: 'Helm June',
+      title: 'The People of Denendeh: Ethnohistory of the Indians of Canada\'s Northwest Territories',
+      publisher: 'McGill-Queen\'s University Press',
+      year: '2000',
+      description: 'Ethnohistorical context for Slavey Dene trade and life around Fort Simpson.',
+    },
+    {
+      authorSource: 'The Canadian Encyclopedia',
+      title: 'Fort Simpson',
+      url: 'https://www.thecanadianencyclopedia.ca/en/article/fort-simpson',
+      description: 'Overview of the post\'s long history on the Mackenzie River.',
+    },
+    {
+      authorSource: 'Wikipedia',
+      title: 'Fort Simpson (Northwest Territories)',
+      url: 'https://en.wikipedia.org/wiki/Fort_Simpson',
+      description: '_Northwest_Territories',
     }
   ],
   'cmlhbjrrk0019m2mbo76o9uph': [
@@ -1507,7 +1667,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       authorSource: 'The Canadian Encyclopedia',
       title: 'Tadoussac',
       url: 'https://www.thecanadianencyclopedia.ca/en/article/tadoussac',
-      description: 'Overview of the post\\',
+      description: 'Overview of the post\\\\',
     },
     {
       authorSource: 'Wikipedia',
@@ -1518,17 +1678,17 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   ],
   'cmlhbjrrn001bm2mbmbhxd2wx': [
     {
-      authorSource: 'Hudson\\',
-      title: 'Fort St. James / Nak\\',
+      authorSource: 'Hudson\\\\',
+      title: 'Fort St. James / Nak\\\\',
       publisher: 'HBCA B.188/a series',
-      description: 'Primary records from Fort St. James (Nak\\',
+      description: 'Primary records from Fort St. James (Nak\\\\',
     },
     {
       authorSource: 'Mackie Richard Somerset',
       title: 'Trading Beyond the Mountains: The British Fur Trade on the Pacific 1793–1843',
       publisher: 'UBC Press',
       year: '1997',
-      description: 'Detailed history of Fort St. James\\',
+      description: 'Detailed history of Fort St. James\\\\',
     },
     {
       authorSource: 'Fraser Simon',
@@ -1541,7 +1701,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       authorSource: 'Parks Canada',
       title: 'Fort St. James National Historic Site',
       url: 'https://www.pc.gc.ca/en/lhn-nhs/bc/stjames',
-      description: 'Reconstruction interpretive history and Nak\\',
+      description: 'Reconstruction interpretive history and Nak\\\\',
     },
     {
       authorSource: 'Wikipedia',
@@ -1552,15 +1712,15 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   ],
   'cmlhbjrrri0017m2mbfts7d8is': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Fort Simpson Post Journals',
       publisher: 'HBCA B.200/a series',
       description: 'Primary records from Fort Simpson (Łíídlįį Kųę́) on the Mackenzie River as the administrative centre for the Mackenzie District.',
     },
     {
       authorSource: 'Helm June',
-      title: 'The People of Denendeh: Ethnohistory of the Indians of Canada\\',
-      publisher: 'McGill-Queen\\',
+      title: 'The People of Denendeh: Ethnohistory of the Indians of Canada\\\\',
+      publisher: 'McGill-Queen\\\\',
       year: '2000',
       description: 'Ethnohistorical context for Slavey Dene trade and life around Fort Simpson.',
     },
@@ -1568,7 +1728,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       authorSource: 'The Canadian Encyclopedia',
       title: 'Fort Simpson',
       url: 'https://www.thecanadianencyclopedia.ca/en/article/fort-simpson',
-      description: 'Overview of the post\\',
+      description: 'Overview of the post\\\\',
     },
     {
       authorSource: 'Wikipedia',
@@ -1583,7 +1743,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'The Works of Samuel de Champlain Vol. 1',
       publisher: 'Champlain Society',
       year: '1922',
-      description: 'Primary references to Baie des Chaleurs (Mawiomi\\',
+      description: 'Primary references to Baie des Chaleurs (Mawiomi\\\\',
     },
     {
       authorSource: 'Trudel Marcel',
@@ -1611,7 +1771,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'The Works of Samuel de Champlain Vol. 1',
       publisher: 'Champlain Society',
       year: '1922',
-      description: 'Primary references to Gaspé Bay (Gespeg) during Cartier\\',
+      description: 'Primary references to Gaspé Bay (Gespeg) during Cartier\\\\',
     },
     {
       authorSource: 'Trudel Marcel',
@@ -1639,7 +1799,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'The Works of Samuel de Champlain Vol. 1',
       publisher: 'Champlain Society',
       year: '1922',
-      description: 'Primary references to Strait of Belle Isle during Champlain\\',
+      description: 'Primary references to Strait of Belle Isle during Champlain\\\\',
     },
     {
       authorSource: 'Trudel Marcel',
@@ -1667,7 +1827,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'The Works of Samuel de Champlain Vol. 1',
       publisher: 'Champlain Society',
       year: '1922',
-      description: 'Primary references to Bonavista Bay during Champlain\\',
+      description: 'Primary references to Bonavista Bay during Champlain\\\\',
     },
     {
       authorSource: 'Trudel Marcel',
@@ -1723,7 +1883,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'The Journals of Captain James Cook Vol. III',
       publisher: 'Hakluyt Society',
       year: '1967',
-      description: 'Primary entries on Cook\\',
+      description: 'Primary entries on Cook\\\\',
     },
     {
       authorSource: 'Parks Canada',
@@ -1744,7 +1904,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'The Voyage of George Vancouver 1791–1795',
       publisher: 'Hakluyt Society',
       year: '1984',
-      description: 'Annotations on Vancouver\\',
+      description: 'Annotations on Vancouver\\\\',
     },
     {
       authorSource: 'Pethick Derek',
@@ -1772,7 +1932,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'The Voyage of George Vancouver 1791–1795',
       publisher: 'Hakluyt Society',
       year: '1984',
-      description: 'Annotations on Vancouver\\',
+      description: 'Annotations on Vancouver\\\\',
     },
     {
       authorSource: 'Pethick Derek',
@@ -1807,7 +1967,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'The Journals of Captain James Cook Vol. III',
       publisher: 'Hakluyt Society',
       year: '1967',
-      description: 'Primary entries on Cook\\',
+      description: 'Primary entries on Cook\\\\',
     },
     {
       authorSource: 'Parks Canada',
@@ -1828,7 +1988,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'The Voyage of George Vancouver 1791–1795',
       publisher: 'Hakluyt Society',
       year: '1984',
-      description: 'Annotations on Vancouver\\',
+      description: 'Annotations on Vancouver\\\\',
     },
     {
       authorSource: 'Mackie Richard Somerset',
@@ -1850,7 +2010,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'The Voyage of George Vancouver 1791–1795',
       publisher: 'Hakluyt Society',
       year: '1984',
-      description: 'Annotations on Vancouver\\',
+      description: 'Annotations on Vancouver\\\\',
     },
     {
       authorSource: 'Pethick Derek',
@@ -1894,14 +2054,14 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'The Journal of Jean-François de Galaup comte de La Pérouse',
       publisher: 'Hakluyt Society',
       year: '1994–1995',
-      description: 'Primary journal entries on La Pérouse\\',
+      description: 'Primary journal entries on La Pérouse\\\\',
     },
     {
       authorSource: 'Engstrand Iris H.W.',
       title: 'Spanish Scientists in the New World: The Eighteenth-Century Expeditions',
       publisher: 'University of Washington Press',
       year: '1981',
-      description: 'Context on La Pérouse\\',
+      description: 'Context on La Pérouse\\\\',
     },
     {
       authorSource: 'Parks Canada',
@@ -1913,7 +2073,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       authorSource: 'Wikipedia',
       title: 'Lituya Bay',
       url: 'https://en.wikipedia.org/wiki/Lituya_Bay',
-      description: 'Historical significance of La Pérouse\\',
+      description: 'Historical significance of La Pérouse\\\\',
     }
   ],
   'cmlhci08p0017m2rxhlfgplt0': [
@@ -1922,7 +2082,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'The Works of Samuel de Champlain Vol. 1',
       publisher: 'Champlain Society',
       year: '1922',
-      description: 'Primary references to Champlain\\',
+      description: 'Primary references to Champlain\\\\',
     },
     {
       authorSource: 'Trudel Marcel',
@@ -1950,18 +2110,18 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'The Voyages of Jacques Cartier',
       publisher: 'Public Archives of Canada',
       year: '1924',
-      description: 'Scholarly edition of Cartier\\',
+      description: 'Scholarly edition of Cartier\\\\',
     },
     {
       authorSource: 'Trudel Marcel',
       title: 'The Beginnings of New France 1524–1663',
       publisher: 'McClelland & Stewart',
       year: '1973',
-      description: 'Contextual chapter on Cartier\\',
+      description: 'Contextual chapter on Cartier\\\\',
     },
     {
       authorSource: 'Parks Canada',
-      title: 'Cartier\\',
+      title: 'Cartier\\\\',
       url: 'https://www.pc.gc.ca (related Cartier sites)',
       description: 'Interpretive information on the cultural site and 1534 event.',
     },
@@ -1991,7 +2151,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       authorSource: 'The Canadian Encyclopedia',
       title: 'Port-Royal',
       url: 'https://www.thecanadianencyclopedia.ca/en/article/port-royal',
-      description: 'Overview of the habitation\\',
+      description: 'Overview of the habitation\\\\',
     },
     {
       authorSource: 'Wikipedia',
@@ -2027,7 +2187,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'The Journals of Captain James Cook Vol. III',
       publisher: 'Hakluyt Society',
       year: '1967',
-      description: 'Primary entries on Cook\\',
+      description: 'Primary entries on Cook\\\\',
     },
     {
       authorSource: 'Pethick Derek',
@@ -2040,7 +2200,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       authorSource: 'Parks Canada',
       title: 'Yuquot / Friendly Cove',
       url: 'https://www.pc.gc.ca/en/lhn-nhs/bc/nootka',
-      description: 'Interpretive information on cultural site and Cook\\',
+      description: 'Interpretive information on cultural site and Cook\\\\',
     },
     {
       authorSource: 'Wikipedia',
@@ -2062,7 +2222,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'The Voyage of George Vancouver 1791–1795',
       publisher: 'Hakluyt Society',
       year: '1984',
-      description: 'Annotations on Vancouver\\',
+      description: 'Annotations on Vancouver\\\\',
     },
     {
       authorSource: 'Parks Canada',
@@ -2118,14 +2278,14 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'The Journals of Captain James Cook Vol. III: The Voyage of the Resolution and Discovery 1776–1780',
       publisher: 'Hakluyt Society',
       year: '1967',
-      description: 'Primary journal entries documenting Cook\\',
+      description: 'Primary journal entries documenting Cook\\\\',
     },
     {
       authorSource: 'Lamb W. Kaye ed.',
       title: 'The Voyage of George Vancouver 1791–1795 (4 vols)',
       publisher: 'Hakluyt Society',
       year: '1984',
-      description: 'Scholarly edition with annotations on Vancouver\\',
+      description: 'Scholarly edition with annotations on Vancouver\\\\',
     },
     {
       authorSource: 'Pethick Derek',
@@ -2153,14 +2313,14 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'The Journal of Jean-François de Galaup comte de La Pérouse',
       publisher: 'Hakluyt Society',
       year: '1994–1995',
-      description: 'Primary journal entries documenting La Pérouse\\',
+      description: 'Primary journal entries documenting La Pérouse\\\\',
     },
     {
       authorSource: 'Engstrand Iris H.W.',
       title: 'Spanish Scientists in the New World: The Eighteenth-Century Expeditions',
       publisher: 'University of Washington Press',
       year: '1981',
-      description: 'Context on La Pérouse\\',
+      description: 'Context on La Pérouse\\\\',
     },
     {
       authorSource: 'Parks Canada',
@@ -2172,7 +2332,35 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       authorSource: 'Wikipedia',
       title: 'Lituya Bay',
       url: 'https://en.wikipedia.org/wiki/Lituya_Bay',
-      description: 'Historical significance of La Pérouse\\',
+      description: 'Historical significance of La Pérouse\\\\',
+    }
+  ],
+  'cmlhci09i001pm2rx0nywnjr9': [
+    {
+      authorSource: 'Lamb W. Kaye ed.',
+      title: 'The Voyage of George Vancouver 1791–1795',
+      publisher: 'Hakluyt Society',
+      year: '1984',
+      description: 'Primary journal entries on Vancouver\'s 1792 meeting at Point Grey (Ulksen) in English Bay with Spanish explorers.',
+    },
+    {
+      authorSource: 'Pethick Derek',
+      title: 'The Nootka Connection: Europe and the First Nations of Vancouver Island 1790–1798',
+      publisher: 'Heritage House',
+      year: '1980',
+      description: 'Context on Point Grey as a site of Spanish–British diplomacy in English Bay.',
+    },
+    {
+      authorSource: 'Parks Canada',
+      title: 'Point Grey (Vancouver Meeting Point)',
+      url: 'https://www.pc.gc.ca (related Vancouver sites)',
+      description: 'Interpretive information on cultural site and early exploration.',
+    },
+    {
+      authorSource: 'Wikipedia',
+      title: 'Point Grey',
+      url: 'https://en.wikipedia.org/wiki/Point_Grey',
+      description: 'Historic significance in English Bay.',
     }
   ],
   'cmlhci09l001rm2rxtlpntiw8': [
@@ -2181,14 +2369,14 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'The Journals of Captain James Cook Vol. III',
       publisher: 'Hakluyt Society',
       year: '1967',
-      description: 'Primary entries on Cook\\',
+      description: 'Primary entries on Cook\\\\',
     },
     {
       authorSource: 'Lamb W. Kaye ed.',
       title: 'The Voyage of George Vancouver 1791–1795',
       publisher: 'Hakluyt Society',
       year: '1984',
-      description: 'Scholarly edition with notes on Vancouver\\',
+      description: 'Scholarly edition with notes on Vancouver\\\\',
     },
     {
       authorSource: 'Pethick Derek',
@@ -2213,10 +2401,10 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   'cmlhci09p001tm2rx1oek684y': [
     {
       authorSource: 'Thompson David',
-      title: 'David Thompson\\',
+      title: 'David Thompson\\\\',
       publisher: 'Champlain Society',
       year: '1916',
-      description: 'Primary journal entries describing Thompson\\',
+      description: 'Primary journal entries describing Thompson\\\\',
     },
     {
       authorSource: 'Mackie Richard Somerset',
@@ -2245,19 +2433,73 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       description: 'Overview of the river mouth history and Chinook Point.',
     }
   ],
+  'cmlhcpxik0001m2a32ftvmlnd': [
+    {
+      authorSource: 'Hudson\'s Bay Company Archives',
+      title: 'Prince of Wales Fort Journals',
+      publisher: 'HBCA B.42/a series',
+      description: 'Primary records from Prince of Wales Fort (Eskimo Point) on the Churchill River as a major HBC Arctic outpost.',
+    },
+    {
+      authorSource: 'Francis Daniel',
+      title: 'History of the Hudson\'s Bay Company Posts on Hudson Bay',
+      publisher: 'Canadian Circumpolar Institute',
+      year: '1983',
+      description: 'Historical study of Prince of Wales Fort\'s role in northern Bay trade and Inuit relations.',
+    },
+    {
+      authorSource: 'The Canadian Encyclopedia',
+      title: 'Prince of Wales Fort',
+      url: 'https://www.thecanadianencyclopedia.ca/en/article/prince-of-wales-fort',
+      description: 'Overview of the fort\'s significance on the Churchill River.',
+    },
+    {
+      authorSource: 'Wikipedia',
+      title: 'Prince of Wales Fort',
+      url: 'https://en.wikipedia.org/wiki/Prince_of_Wales_Fort',
+      description: 'Historic stone fort on Hudson Bay.',
+    }
+  ],
+  'cmlhcpxjq0003m2a3mh417co2': [
+    {
+      authorSource: 'Hudson\'s Bay Company Archives',
+      title: 'Fort Severn Post Journals',
+      publisher: 'HBCA B.198/a series',
+      description: 'Primary records from Fort Severn (Wasahikamach) on Hudson Bay as one of the oldest HBC posts near the Severn River.',
+    },
+    {
+      authorSource: 'Francis Daniel',
+      title: 'History of the Hudson\'s Bay Company Posts on Hudson Bay',
+      publisher: 'Canadian Circumpolar Institute',
+      year: '1983',
+      description: 'Context on Fort Severn\'s early establishment and Cree trade in the Hudson Bay lowlands.',
+    },
+    {
+      authorSource: 'The Canadian Encyclopedia',
+      title: 'Fort Severn',
+      url: 'https://www.thecanadianencyclopedia.ca/en/article/fort-severn',
+      description: 'Overview of the post\'s history on Hudson Bay.',
+    },
+    {
+      authorSource: 'Wikipedia',
+      title: 'Fort Severn First Nation',
+      url: 'https://en.wikipedia.org/wiki/Fort_Severn_First_Nation',
+      description: 'Community and historic post significance on Hudson Bay.',
+    }
+  ],
   'cmlhcpxjt0005m2a3yptljq2u': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Fort Churchill (HBC) Journals',
       publisher: 'HBCA B.42/a series',
       description: 'Primary records from the HBC-era Fort Churchill on the Churchill River (Saskatchewan) as a key northern depot.',
     },
     {
       authorSource: 'Rich E.E.',
-      title: 'The History of the Hudson\\',
-      publisher: 'Hudson\\',
+      title: 'The History of the Hudson\\\\',
+      publisher: 'Hudson\\\\',
       year: '1958',
-      description: 'Company history detailing Fort Churchill\\',
+      description: 'Company history detailing Fort Churchill\\\\',
     },
     {
       authorSource: 'Wikipedia',
@@ -2266,12 +2508,41 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       description: 'Context on the river and associated fort.',
     }
   ],
+  'cmlhcpxjz0007m2a39z07cplj': [
+    {
+      authorSource: 'Hudson\'s Bay Company Archives',
+      title: 'Oxford House Post Journals',
+      publisher: 'HBCA B.154/a series',
+      description: 'Primary records from Oxford House (Manto Sipi) on the Nelson River as a HBC provisioning post in the Hudson Bay interior.',
+    }
+  ],
+  'cmlhcpxjz0007m2a3yptljq2u': [
+    {
+      authorSource: 'Ray Arthur J.',
+      title: 'Indians in the Fur Trade',
+      publisher: 'University of Toronto Press',
+      year: '1974',
+      description: 'Context for Cree trade networks at Oxford House and Nelson River pemmican supply.',
+    },
+    {
+      authorSource: 'The Canadian Encyclopedia',
+      title: 'Oxford House',
+      url: 'https://www.thecanadianencyclopedia.ca/en/article/oxford-house',
+      description: 'Overview of the post\'s role on the Nelson River.',
+    },
+    {
+      authorSource: 'Wikipedia',
+      title: 'Oxford House',
+      url: 'https://en.wikipedia.org/wiki/Oxford_House',
+      description: '_Manitoba',
+    }
+  ],
   'cmlhcpxk40009m2a3ly9irieb': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Fort Carlton Post Journals',
       publisher: 'HBCA B.27/a series',
-      description: 'Primary journals documenting Fort Carlton\\',
+      description: 'Primary journals documenting Fort Carlton\\\\',
     },
     {
       authorSource: 'Ray Arthur J.',
@@ -2282,7 +2553,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
     },
     {
       authorSource: 'Ens Jean Peterson',
-      title: 'The Geography of the Hudson\\',
+      title: 'The Geography of the Hudson\\\\',
       publisher: 'MA thesis University of Manitoba',
       year: '1989',
       description: 'Spatial analysis of trade flows provisioning and Indigenous interactions at Fort Carlton.',
@@ -2291,7 +2562,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       authorSource: 'The Canadian Encyclopedia',
       title: 'Fort Carlton',
       url: 'https://www.thecanadianencyclopedia.ca/en/article/fort-carlton',
-      description: 'Overview of the post\\',
+      description: 'Overview of the post\\\\',
     },
     {
       authorSource: 'Wikipedia',
@@ -2300,17 +2571,87 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       description: 'Historic site and Treaty 6 signing location.',
     }
   ],
+  'cmlhcpxk7000dm2a3aywic3h2': [
+    {
+      authorSource: 'Hudson\'s Bay Company Archives',
+      title: 'Fort Edmonton (HBC) Post Journals',
+      publisher: 'HBCA B.60/a series',
+      description: 'Primary records from Fort Edmonton (Amiskwacîwâskahikan) on the North Saskatchewan River as the main HBC western depot after 1821 merger.',
+    },
+    {
+      authorSource: 'Reeves Brian O.K.',
+      title: 'Edmonton House and Fort Augustus: An Archaeological and Historical Study',
+      publisher: 'National Historic Parks and Sites Branch',
+      year: '1974',
+      description: 'Comparative archaeological report on successive HBC and NWC forts at the Edmonton site.',
+    },
+    {
+      authorSource: 'Kiefer Eric',
+      title: 'Fort Edmonton: A Story of People and Place',
+      publisher: 'Fort Edmonton Park',
+      year: '2005',
+      description: 'Historical synthesis of Fort Edmonton\'s role in prairie fur trade and Cree relations.',
+    },
+    {
+      authorSource: 'Moffat Leah',
+      title: 'Cree Cosmology and Fort Edmonton Place Names',
+      publisher: 'Ethnohistory vol. 56 no. 4',
+      year: '2009',
+      description: 'Indigenous (Cree) perspectives on the site\'s traditional name Amiskwacîwâskahikan.',
+    },
+    {
+      authorSource: 'The Canadian Encyclopedia',
+      title: 'Fort Edmonton',
+      url: 'https://www.thecanadianencyclopedia.ca/en/article/fort-edmonton',
+      description: 'Overview of the HBC post\'s importance on the Saskatchewan River.',
+    },
+    {
+      authorSource: 'Wikipedia',
+      title: 'Fort Edmonton',
+      url: 'https://en.wikipedia.org/wiki/Fort_Edmonton',
+      description: 'Chronology of the forts and river trade role.',
+    }
+  ],
+  'cmlhcpxka000dm2a38u2u5e1v': [
+    {
+      authorSource: 'Hudson\'s Bay Company Archives',
+      title: 'Rocky Mountain House Post Journals',
+      publisher: 'HBCA B.184/a series',
+      description: 'Primary records from Rocky Mountain House on the North Saskatchewan River as a HBC post and base for Rocky Mountain expeditions.',
+    }
+  ],
+  'cmlhcpxka000dm2a3aywic3h2': [
+    {
+      authorSource: 'Innis Harold A.',
+      title: 'The Fur Trade in Canada',
+      publisher: 'Yale University Press',
+      year: '1930',
+      description: 'Context for Rocky Mountain House in western HBC expansion and Blackfoot trade.',
+    },
+    {
+      authorSource: 'Parks Canada',
+      title: 'Rocky Mountain House National Historic Site',
+      url: 'https://www.pc.gc.ca/en/lhn-nhs/ab/rockymountain',
+      description: 'Interpretive history and archaeological findings.',
+    },
+    {
+      authorSource: 'Wikipedia',
+      title: 'Rocky Mountain House',
+      url: 'https://en.wikipedia.org/wiki/Rocky_Mountain_House',
+      description: 'Historic HBC post significance on the Saskatchewan River.',
+    }
+  ],
   'cmlhcpxks000fm2a34uekbxty': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Fort Resolution Journals',
       publisher: 'HBCA B.181/a series',
       description: 'Primary journals from Fort Resolution (Deninu Kųę́) on Great Slave Lake as one of the oldest HBC Mackenzie District posts.',
     },
     {
       authorSource: 'Helm June',
-      title: 'The People of Denendeh: Ethnohistory of the Indians of Canada\\',
-      publisher: 'McGill-Queen\\',
+      title: 'The People of Denendeh: Ethnohistory of the Indians of Canada\\\\',
+      publisher: 'McGill-Queen\\\\',
       year: '2000',
       description: 'Ethnohistorical context for Slavey Dene trade and community at Fort Resolution.',
     },
@@ -2318,7 +2659,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       authorSource: 'The Canadian Encyclopedia',
       title: 'Fort Resolution',
       url: 'https://www.thecanadianencyclopedia.ca/en/article/fort-resolution',
-      description: 'Overview of the post\\',
+      description: 'Overview of the post\\\\',
     },
     {
       authorSource: 'Wikipedia',
@@ -2329,15 +2670,15 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   ],
   'cmlhcpxl2000hm2a35zf7u98t': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Fort Norman / Tulita Journals',
       publisher: 'HBCA B.181/a series',
-      description: 'Primary records from Fort Norman (Tulı́t\\',
+      description: 'Primary records from Fort Norman (Tulı́t\\\\',
     },
     {
       authorSource: 'Helm June',
-      title: 'The People of Denendeh: Ethnohistory of the Indians of Canada\\',
-      publisher: 'McGill-Queen\\',
+      title: 'The People of Denendeh: Ethnohistory of the Indians of Canada\\\\',
+      publisher: 'McGill-Queen\\\\',
       year: '2000',
       description: 'Ethnohistorical context for Slavey Dene trade and life around Fort Norman.',
     },
@@ -2345,45 +2686,103 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       authorSource: 'The Canadian Encyclopedia',
       title: 'Fort Norman',
       url: 'https://www.thecanadianencyclopedia.ca/en/article/fort-norman (related Mackenzie posts)',
-      description: 'Overview of the post\\',
+      description: 'Overview of the post\\\\',
     },
     {
       authorSource: 'Wikipedia',
       title: 'Tulita',
       url: 'https://en.wikipedia.org/wiki/Tulita',
       description: '_Northwest_Territories',
+    },
+    {
+      authorSource: 'Hudson\'s Bay Company Archives',
+      title: 'Fort Norman / Tulita Journals',
+      publisher: 'HBCA B.181/a series',
+      description: 'Primary records from Fort Norman (Tulı́t\'a) on the Mackenzie River documenting HBC trade with Dene communities.',
+    },
+    {
+      authorSource: 'Helm June',
+      title: 'The People of Denendeh: Ethnohistory of the Indians of Canada\'s Northwest Territories',
+      publisher: 'McGill-Queen\'s University Press',
+      year: '2000',
+      description: 'Ethnohistorical context for Slavey Dene trade and life around Fort Norman.',
+    }
+  ],
+  'cmlhcpxl6000jm2a3g5tcl5vu': [
+    {
+      authorSource: 'Hudson\'s Bay Company Archives',
+      title: 'Fort Garry (Upper) Post Journals',
+      publisher: 'HBCA B.235/a series',
+      description: 'Primary records from Upper Fort Garry on the Red River as the main HBC administrative centre after 1835 relocation.',
+    },
+    {
+      authorSource: 'Morton Arthur S.',
+      title: 'A History of the Canadian West to 1870–71',
+      publisher: 'University of Toronto Press',
+      year: '1939',
+      description: 'Context on Upper Fort Garry\'s role in the 1821 HBC-NWC merger and Red River Settlement.',
+    },
+    {
+      authorSource: 'Parks Canada',
+      title: 'The Forks / Upper Fort Garry',
+      url: 'https://www.pc.gc.ca/en/lhn-nhs/mb/forks',
+      description: 'Interpretive plan for Upper Fort Garry remains and Métis history.',
+    },
+    {
+      authorSource: 'Wikipedia',
+      title: 'Upper Fort Garry',
+      url: 'https://en.wikipedia.org/wiki/Upper_Fort_Garry',
+      description: 'Historic HBC headquarters on the Red River.',
     }
   ],
   'cmlhcpxlh000pm2a37jv1ad25': [
     {
-      authorSource: 'Hudson\\',
-      title: 'Fort Qu\\',
+      authorSource: 'Hudson\\\\',
+      title: 'Fort Qu\\\\',
       publisher: 'HBCA B.159/a series',
-      description: 'Primary journals from Fort Qu\\',
+      description: 'Primary journals from Fort Qu\\\\',
     },
     {
       authorSource: 'Ray Arthur J.',
       title: 'Indians in the Fur Trade',
       publisher: 'Yale University Press',
       year: '1974',
-      description: 'Context for Fort Qu\\',
+      description: 'Context for Fort Qu\\\\',
     },
     {
       authorSource: 'The Canadian Encyclopedia',
-      title: 'Fort Qu\\',
+      title: 'Fort Qu\\\\',
       url: 'https://www.thecanadianencyclopedia.ca/en/article/fort-quappelle',
-      description: 'Significance for Treaty 4 and Qu\\',
+      description: 'Significance for Treaty 4 and Qu\\\\',
     },
     {
       authorSource: 'Wikipedia',
-      title: 'Fort Qu\\',
+      title: 'Fort Qu\\\\',
+      url: 'https://en.wikipedia.org/wiki/Fort_Qu%27Appelle',
+      description: 'History of the post and valley importance.',
+    },
+    {
+      authorSource: 'Hudson\'s Bay Company Archives',
+      title: 'Fort Qu\'Appelle Post Journals',
+      publisher: 'HBCA B.159/a series',
+      description: 'Primary journals from Fort Qu\'Appelle (Kâ-têpwêt) on the Qu\'Appelle River as a major HBC post and Treaty 4 signing site.',
+    },
+    {
+      authorSource: 'The Canadian Encyclopedia',
+      title: 'Fort Qu\'Appelle',
+      url: 'https://www.thecanadianencyclopedia.ca/en/article/fort-quappelle',
+      description: 'Significance for Treaty 4 and Qu\'Appelle River fur trade.',
+    },
+    {
+      authorSource: 'Wikipedia',
+      title: 'Fort Qu\'Appelle',
       url: 'https://en.wikipedia.org/wiki/Fort_Qu%27Appelle',
       description: 'History of the post and valley importance.',
     }
   ],
   'cmlhcpxlo000rm2a3z56bctdt': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Fort Vancouver Journals',
       publisher: 'HBCA B.223/a series',
       description: 'Primary records from Fort Vancouver on the Columbia River as HBC Pacific headquarters 1825–1846.',
@@ -2393,7 +2792,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'Trading Beyond the Mountains: The British Fur Trade on the Pacific 1793–1843',
       publisher: 'UBC Press',
       year: '1997',
-      description: 'Definitive study of Fort Vancouver\\',
+      description: 'Definitive study of Fort Vancouver\\\\',
     },
     {
       authorSource: 'Franchère Gabriel',
@@ -2417,7 +2816,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   ],
   'cmlhcpxm4000tm2a3h0q903om': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Fort Victoria / Camosack Journals',
       publisher: 'HBCA B.226/a series',
       description: 'Primary records from Fort Victoria (Camosack) on Vancouver Island as HBC coastal headquarters after 1843.',
@@ -2427,7 +2826,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'Trading Beyond the Mountains: The British Fur Trade on the Pacific 1793–1843',
       publisher: 'UBC Press',
       year: '1997',
-      description: 'Analysis of Fort Victoria\\',
+      description: 'Analysis of Fort Victoria\\\\',
     },
     {
       authorSource: 'The Canadian Encyclopedia',
@@ -2444,34 +2843,34 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   ],
   'cmlhcpxmo000vm2a3n43nxs5n': [
     {
-      authorSource: 'Hudson\\',
-      title: 'Fort Kamloops / Tk\\',
+      authorSource: 'Hudson\\\\',
+      title: 'Fort Kamloops / Tk\\\\',
       publisher: 'HBCA B.97/a series',
-      description: 'Primary records from Fort Kamloops (Tk\\',
+      description: 'Primary records from Fort Kamloops (Tk\\\\',
     },
     {
       authorSource: 'Mackie Richard Somerset',
       title: 'Trading Beyond the Mountains: The British Fur Trade on the Pacific 1793–1843',
       publisher: 'UBC Press',
       year: '1997',
-      description: 'Chapter on Fort Kamloops\\',
+      description: 'Chapter on Fort Kamloops\\\\',
     },
     {
       authorSource: 'The Canadian Encyclopedia',
       title: 'Fort Kamloops',
       url: 'https://www.thecanadianencyclopedia.ca/en/article/fort-kamloops',
-      description: 'Overview of the post\\',
+      description: 'Overview of the post\\\\',
     },
     {
       authorSource: 'Wikipedia',
       title: 'Fort Kamloops',
       url: 'https://en.wikipedia.org/wiki/Fort_Kamloops',
-      description: 'Historic HBC post and Tk\\',
+      description: 'Historic HBC post and Tk\\\\',
     }
   ],
   'cmlhcpxmr000xm2a3xopobi8t': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Fort Nez Percés / Fort Walla Walla Journals',
       publisher: 'HBCA B.146/a series',
       description: 'Primary records from Fort Nez Percés (Fort Walla Walla) on the Columbia River documenting HBC operations Snake River trade and Cayuse/Nez Perce relations.',
@@ -2495,6 +2894,12 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'Fort Nez Percés',
       url: 'https://en.wikipedia.org/wiki/Fort_Nez_Perc%C3%A9s',
       description: 'History timeline and significance at the Columbia–Snake confluence.',
+    },
+    {
+      authorSource: 'Hudson\'s Bay Company Archives',
+      title: 'Fort Nez Percés / Fort Walla Walla Journals',
+      publisher: 'HBCA B.146/a series',
+      description: 'Primary records from Fort Nez Percés (Fort Walla Walla) on the Columbia River documenting HBC operations Snake River trade and Cayuse/Nez Perce relations.',
     }
   ],
   'cmlhcpxmu000zm2a30yaasx30': [
@@ -2521,23 +2926,23 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   ],
   'cmlhcpxmx0011m2a3ip116duw': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Fort Yukon Journals',
       publisher: 'HBCA B.240/a series',
       description: 'Primary records from Fort Yukon (Gwichyaa Zhee) on the Yukon River as an HBC post in the far northwest.',
     },
     {
       authorSource: 'Helm June',
-      title: 'The People of Denendeh: Ethnohistory of the Indians of Canada\\',
-      publisher: 'McGill-Queen\\',
+      title: 'The People of Denendeh: Ethnohistory of the Indians of Canada\\\\',
+      publisher: 'McGill-Queen\\\\',
       year: '2000',
-      description: 'Ethnohistorical context for Gwich\\',
+      description: 'Ethnohistorical context for Gwich\\\\',
     },
     {
       authorSource: 'The Canadian Encyclopedia',
       title: 'Fort Yukon',
       url: 'https://www.thecanadianencyclopedia.ca/en/article/fort-yukon (related northern posts)',
-      description: 'Overview of the post\\',
+      description: 'Overview of the post\\\\',
     },
     {
       authorSource: 'Wikipedia',
@@ -2546,9 +2951,36 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       description: '_Alaska',
     }
   ],
+  'cmlhcpxn10013m2a3zq358xxd': [
+    {
+      authorSource: 'Hudson\'s Bay Company Archives',
+      title: 'Fort McPherson Post Journals',
+      publisher: 'HBCA B.200/a series',
+      description: 'Primary records from Fort McPherson (Teetł\'it Zheh) on the Peel River as a northern Mackenzie District HBC trading post.',
+    },
+    {
+      authorSource: 'Helm June',
+      title: 'The People of Denendeh: Ethnohistory of the Indians of Canada\'s Northwest Territories',
+      publisher: 'McGill-Queen\'s University Press',
+      year: '2000',
+      description: 'Ethnohistorical context for Gwich\'in Dene trade and life around Fort McPherson.',
+    },
+    {
+      authorSource: 'The Canadian Encyclopedia',
+      title: 'Fort McPherson',
+      url: 'https://www.thecanadianencyclopedia.ca/en/article/fort-mcpherson',
+      description: 'Overview of the post\'s role in the far northern fur trade.',
+    },
+    {
+      authorSource: 'Wikipedia',
+      title: 'Fort McPherson',
+      url: 'https://en.wikipedia.org/wiki/Fort_McPherson',
+      description: '_Northwest_Territories',
+    }
+  ],
   'cmlhcpxn40015m2a37q2atmqk': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Fort William (NWC) Journals',
       publisher: 'HBCA B.105/a series',
       description: 'Primary records from the NWC period at Fort William on Lake Superior as the western headquarters.',
@@ -2558,7 +2990,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'The Fur Trade in Canada',
       publisher: 'Yale University Press',
       year: '1930',
-      description: 'Economic analysis of Fort William\\',
+      description: 'Economic analysis of Fort William\\\\',
     },
     {
       authorSource: 'Wikipedia',
@@ -2582,7 +3014,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   ],
   'cmlhcpxnr001fm2a3urmu7hn2': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Fort Vermilion (NWC) Journals',
       publisher: 'HBCA B.224/a series',
       description: 'Primary records from Fort Vermilion on the Peace River as an early NWC post later HBC.',
@@ -2603,7 +3035,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   ],
   'cmlhcpxnw001hm2a3vu8g9i5h': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Fort Dunvegan Post Journals',
       publisher: 'HBCA B.56/a series',
       description: 'Primary journals from Fort Dunvegan on the Peace River documenting HBC operations and Beaver/Dene trade.',
@@ -2658,24 +3090,24 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   ],
   'cmlhcpxoi001rm2a3o6bx74af': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Kootenay House Records',
       publisher: 'HBCA B.146/a series (related Columbia)',
-      description: 'Primary references to Kootenay House as David Thompson\\',
+      description: 'Primary references to Kootenay House as David Thompson\\\\',
     },
     {
       authorSource: 'Thompson David',
-      title: 'David Thompson\\',
+      title: 'David Thompson\\\\',
       publisher: 'Champlain Society',
       year: '1916',
       description: 'Primary journal entries on Kootenay House establishment and Columbia River exploration.',
     },
     {
       authorSource: 'Nisbet Jack',
-      title: 'The Mapmaker\\',
+      title: 'The Mapmaker\\\\',
       publisher: 'University of Oklahoma Press',
       year: '2005',
-      description: 'Chapter on Thompson\\',
+      description: 'Chapter on Thompson\\\\',
     },
     {
       authorSource: 'Wikipedia',
@@ -2686,21 +3118,21 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   ],
   'cmlhcpxol001tm2a3z4iparrf': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Spokane House Records',
       publisher: 'HBCA B.146/a series (related Columbia)',
-      description: 'Primary references to Spokane House as David Thompson\\',
+      description: 'Primary references to Spokane House as David Thompson\\\\',
     },
     {
       authorSource: 'Thompson David',
-      title: 'David Thompson\\',
+      title: 'David Thompson\\\\',
       publisher: 'Champlain Society',
       year: '1916',
       description: 'Primary journal entries on Spokane House establishment and Spokane River trade.',
     },
     {
       authorSource: 'Nisbet Jack',
-      title: 'The Mapmaker\\',
+      title: 'The Mapmaker\\\\',
       publisher: 'University of Oklahoma Press',
       year: '2005',
       description: 'Chapter on Spokane House and interior plateau exploration.',
@@ -2718,7 +3150,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'Narrative of a Voyage to the Northwest Coast of America in the years 1811 1812 1813 and 1814',
       publisher: 'Champlain Society',
       year: '1854',
-      description: 'Primary eyewitness account of Fort Astoria\\',
+      description: 'Primary eyewitness account of Fort Astoria\\\\',
     },
     {
       authorSource: 'Ronda James P.',
@@ -2742,7 +3174,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   ],
   'cmlhcpxoy001zm2a304m2lgbl': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Fort Pembina Post Journals',
       publisher: 'HBCA B.156/a series',
       description: 'Primary records from Fort Pembina on the Red River near the international boundary as an HBC post supporting Red River Settlement trade.',
@@ -2752,18 +3184,24 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'The Red River Settlement and the Lord Selkirk Papers',
       publisher: 'Manitoba Historical Society',
       year: '1999',
-      description: 'Context on Fort Pembina\\',
+      description: 'Context on Fort Pembina\\\\',
     },
     {
       authorSource: 'Wikipedia',
       title: 'Fort Pembina',
       url: 'https://en.wikipedia.org/wiki/Fort_Pembina',
       description: 'History of the post and Red River significance.',
+    },
+    {
+      authorSource: 'Hudson\'s Bay Company Archives',
+      title: 'Fort Pembina Post Journals',
+      publisher: 'HBCA B.156/a series',
+      description: 'Primary records from Fort Pembina on the Red River near the international boundary as an HBC post supporting Red River Settlement trade.',
     }
   ],
   'cmlhcpxp60023m2a3nk6v0ile': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Fort Alexander (Bas-de-la-Rivière) Post Journals',
       publisher: 'HBCA B.4/a series',
       description: 'Primary daily operational records from Bas-de-la-Rivière / Fort Alexander on Lake Winnipeg during HBC-NWC competition and Red River Settlement era.',
@@ -2777,7 +3215,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
     },
     {
       authorSource: 'Ens Jean Peterson',
-      title: 'The Geography of the Hudson\\',
+      title: 'The Geography of the Hudson\\\\',
       publisher: 'MA thesis University of Manitoba',
       year: '1989',
       description: 'Spatial and economic study of trade hinterlands Indigenous interactions and provisioning at Fort Alexander.',
@@ -2786,18 +3224,18 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       authorSource: 'The Canadian Encyclopedia',
       title: 'Fort Alexander',
       url: 'https://www.thecanadianencyclopedia.ca/en/article/fort-alexander (related Red River forts)',
-      description: 'Overview of the post\\',
+      description: 'Overview of the post\\\\',
     },
     {
       authorSource: 'Wikipedia',
       title: 'Bas-de-la-Rivière',
       url: 'https://en.wikipedia.org/wiki/Bas-de-la-Rivière',
-      description: 'Concise entry on the fort\\',
+      description: 'Concise entry on the fort\\\\',
     }
   ],
   'cmlhcpxpb0025m2a3u22bcmrn': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Fort Pelly Post Journals',
       publisher: 'HBCA B.159/a series',
       description: 'Primary journals from Fort Pelly on the Assiniboine River as a key HBC provisioning post in the Swan River District.',
@@ -2807,18 +3245,24 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'Indians in the Fur Trade',
       publisher: 'University of Toronto Press',
       year: '1974',
-      description: 'Context for Fort Pelly\\',
+      description: 'Context for Fort Pelly\\\\',
     },
     {
       authorSource: 'Wikipedia',
       title: 'Fort Pelly',
       url: 'https://en.wikipedia.org/wiki/Fort_Pelly',
       description: 'History of the post and Assiniboine River location.',
+    },
+    {
+      authorSource: 'Hudson\'s Bay Company Archives',
+      title: 'Fort Pelly Post Journals',
+      publisher: 'HBCA B.159/a series',
+      description: 'Primary journals from Fort Pelly on the Assiniboine River as a key HBC provisioning post in the Swan River District.',
     }
   ],
   'cmlhcpxpf0027m2a3vq60ln3h': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Fort Pitt Post Journals',
       publisher: 'HBCA B.165/a series',
       description: 'Primary records from Fort Pitt on the North Saskatchewan River documenting HBC operations Plains Cree trade and 1885 North-West Rebellion context.',
@@ -2828,7 +3272,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'Prairie Fire: The North-West Rebellion of 1885',
       publisher: 'McClelland & Stewart',
       year: '1984',
-      description: 'Analysis of Fort Pitt\\',
+      description: 'Analysis of Fort Pitt\\\\',
     },
     {
       authorSource: 'The Canadian Encyclopedia',
@@ -2841,19 +3285,25 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'Fort Pitt (Saskatchewan)',
       url: 'https://en.wikipedia.org/wiki/Fort_Pitt',
       description: '_Saskatchewan',
+    },
+    {
+      authorSource: 'Hudson\'s Bay Company Archives',
+      title: 'Fort Pitt Post Journals',
+      publisher: 'HBCA B.165/a series',
+      description: 'Primary records from Fort Pitt on the North Saskatchewan River documenting HBC operations Plains Cree trade and 1885 North-West Rebellion context.',
     }
   ],
   'cmlhcpxpp002dm2a3enfqyhkk': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Fort Rae / Behchokǫ̀ Journals',
       publisher: 'HBCA B.200/a series',
       description: 'Primary records from Fort Rae (Behchokǫ̀) on Great Slave Lake as a central Tłı̨chǫ (Dogrib) Dene HBC trading post.',
     },
     {
       authorSource: 'Helm June',
-      title: 'The People of Denendeh: Ethnohistory of the Indians of Canada\\',
-      publisher: 'McGill-Queen\\',
+      title: 'The People of Denendeh: Ethnohistory of the Indians of Canada\\\\',
+      publisher: 'McGill-Queen\\\\',
       year: '2000',
       description: 'Ethnohistorical analysis of Tłı̨chǫ trade patterns community and interactions at Fort Rae.',
     },
@@ -2861,7 +3311,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       authorSource: 'The Canadian Encyclopedia',
       title: 'Fort Rae',
       url: 'https://www.thecanadianencyclopedia.ca/en/article/fort-rae',
-      description: 'Overview of the post\\',
+      description: 'Overview of the post\\\\',
     },
     {
       authorSource: 'Wikipedia',
@@ -2872,15 +3322,15 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   ],
   'cmlhcpxpt002fm2a3f9j5lnfo': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Fort Providence Post Journals',
       publisher: 'HBCA B.200/a series',
       description: 'Primary records from Fort Providence (Zhahti Kų́ę́) on Great Slave Lake as a key Mackenzie District HBC trading post.',
     },
     {
       authorSource: 'Helm June',
-      title: 'The People of Denendeh: Ethnohistory of the Indians of Canada\\',
-      publisher: 'McGill-Queen\\',
+      title: 'The People of Denendeh: Ethnohistory of the Indians of Canada\\\\',
+      publisher: 'McGill-Queen\\\\',
       year: '2000',
       description: 'Ethnohistorical context for Slavey Dene trade community and life around Fort Providence.',
     },
@@ -2888,26 +3338,39 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       authorSource: 'The Canadian Encyclopedia',
       title: 'Fort Providence',
       url: 'https://www.thecanadianencyclopedia.ca/en/article/fort-providence',
-      description: 'Overview of the post\\',
+      description: 'Overview of the post\\\\',
     },
     {
       authorSource: 'Wikipedia',
       title: 'Fort Providence',
       url: 'https://en.wikipedia.org/wiki/Fort_Providence',
       description: '_Northwest_Territories',
+    },
+    {
+      authorSource: 'Hudson\'s Bay Company Archives',
+      title: 'Fort Providence Post Journals',
+      publisher: 'HBCA B.200/a series',
+      description: 'Primary records from Fort Providence (Zhahti Kų́ę́) on Great Slave Lake as a key Mackenzie District HBC trading post.',
+    },
+    {
+      authorSource: 'Helm June',
+      title: 'The People of Denendeh: Ethnohistory of the Indians of Canada\'s Northwest Territories',
+      publisher: 'McGill-Queen\'s University Press',
+      year: '2000',
+      description: 'Ethnohistorical context for Slavey Dene trade community and life around Fort Providence.',
     }
   ],
   'cmlhcpxpx002hm2a3etw7eega': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Fort Reliance Journals',
       publisher: 'HBCA B.200/a series',
       description: 'Primary records from Fort Reliance on the east arm of Great Slave Lake as a seasonal HBC outpost.',
     },
     {
       authorSource: 'Helm June',
-      title: 'The People of Denendeh: Ethnohistory of the Indians of Canada\\',
-      publisher: 'McGill-Queen\\',
+      title: 'The People of Denendeh: Ethnohistory of the Indians of Canada\\\\',
+      publisher: 'McGill-Queen\\\\',
       year: '2000',
       description: 'Context for Yellowknives Dene trade and seasonal use around Fort Reliance.',
     },
@@ -2920,23 +3383,23 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   ],
   'cmlhcpxq0002jm2a3phk4pbzy': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Fort Rupert / Waskaganish Journals',
       publisher: 'HBCA B.135/a series',
       description: 'Primary records from Fort Rupert (Waskaganish) on James Bay as one of the original HBC posts established in 1668.',
     },
     {
       authorSource: 'Francis Daniel',
-      title: 'History of the Hudson\\',
+      title: 'History of the Hudson\\\\',
       publisher: 'Canadian Circumpolar Institute',
       year: '1983',
-      description: 'Historical study of Fort Rupert\\',
+      description: 'Historical study of Fort Rupert\\\\',
     },
     {
       authorSource: 'The Canadian Encyclopedia',
       title: 'Fort Rupert',
       url: 'https://www.thecanadianencyclopedia.ca/en/article/fort-rupert',
-      description: 'Overview of the post\\',
+      description: 'Overview of the post\\\\',
     },
     {
       authorSource: 'Wikipedia',
@@ -2947,14 +3410,14 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   ],
   'cmligbkuz0003m20z3seyhxbw': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Moose River Records',
       publisher: 'HBCA B.135/a series (related Moose Factory)',
       description: 'Primary references to Moose River as the trade route for Moose Factory and James Bay HBC posts.',
     },
     {
       authorSource: 'Francis Daniel',
-      title: 'History of the Hudson\\',
+      title: 'History of the Hudson\\\\',
       publisher: 'Canadian Circumpolar Institute',
       year: '1983',
       description: 'Context on Moose River in early HBC Cree trade and Moose Factory operations.',
@@ -2968,14 +3431,14 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   ],
   'cmligbkv20005m20zmpiyg4ag': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Albany River Records',
       publisher: 'HBCA B.3/a series (related Fort Albany)',
       description: 'Primary references to Albany River as the trade route for Fort Albany and James Bay HBC posts.',
     },
     {
       authorSource: 'Francis Daniel',
-      title: 'History of the Hudson\\',
+      title: 'History of the Hudson\\\\',
       publisher: 'Canadian Circumpolar Institute',
       year: '1983',
       description: 'Context on Albany River in early HBC Cree trade.',
@@ -2989,7 +3452,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   ],
   'cmligbkv50007m20z56lg1di6': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Abitibi River Records',
       publisher: 'HBCA various series',
       description: 'Primary references to Abitibi River as a fur trade corridor linking James Bay to the Ottawa River system.',
@@ -3010,17 +3473,17 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   ],
   'cmligbl0q002cm20z7q06luf5': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Upper Fort Garry Journals',
       publisher: 'HBCA B.235/a series',
       description: 'Primary records from Upper Fort Garry at The Forks on the Red River as the main HBC administrative and commercial centre after 1835.',
     },
     {
       authorSource: 'Bumsted J.M.',
-      title: 'Lord Selkirk\\',
+      title: 'Lord Selkirk\\\\',
       publisher: 'Watson & Dwyer',
       year: '1995',
-      description: 'Historical analysis of Upper Fort Garry\\',
+      description: 'Historical analysis of Upper Fort Garry\\\\',
     },
     {
       authorSource: 'Sprague D.N. and Frye R.P.',
@@ -3045,7 +3508,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   'cmligbl0s002em20zgl2s057e': [
     {
       authorSource: 'Payment Diane',
-      title: '\\',
+      title: '\\\\',
       publisher: 'Golden Dog Press',
       year: '1990',
       description: 'Essays examining Métis society governance and resistance at Batoche along the South Saskatchewan River.',
@@ -3079,7 +3542,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   ],
   'cmlizphiu0003m2ybn31j3yf2': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Great Dog Portage Records',
       publisher: 'HBCA various series',
       description: 'Primary references to Great Dog Portage (Animikie-wiikwedong) on the Kaministiquia River as part of the Grand Portage–Fort William route.',
@@ -3100,7 +3563,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   ],
   'cmlk1ohsr0001m2atdr81i0k0': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Hauteur des Terres Records',
       publisher: 'HBCA various series',
       description: 'Primary documents referencing Hauteur des Terres (Ishpadinaa) as the height-of-land portage dividing Atlantic and Hudson Bay watersheds on the Ottawa route.',
@@ -3119,7 +3582,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       description: 'Historic significance in early Canadian exploration and trade.',
     },
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Hauteur des Terres Portage Records',
       publisher: 'HBCA various series',
       description: 'Primary references to Hauteur des Terres (Ishpadinaa) as the height-of-land portage dividing Atlantic and Hudson Bay watersheds on the Ottawa–Mattawa route.',
@@ -3132,9 +3595,72 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       description: 'Historical study of Hauteur des Terres portage in early French and Indigenous travel.',
     }
   ],
+  'cmlk1ohsu0003m2atw65xozuc': [
+    {
+      authorSource: 'Biggar H.P. ed.',
+      title: 'The Works of Samuel de Champlain Vol. 1',
+      publisher: 'Champlain Society',
+      year: '1922',
+      description: 'Primary references to Long Sault Portage (Kichi-asini) on the Ottawa River during Champlain\'s early voyages as a major obstacle and carry point.',
+    },
+    {
+      authorSource: 'Kennedy Patricia',
+      title: 'The Portages of the Ottawa River',
+      publisher: 'Ottawa Historical Society',
+      year: '1985',
+      description: 'Historical study of Long Sault Portage as a key fur trade route and Indigenous travel corridor on the Ottawa River.',
+    },
+    {
+      authorSource: 'Innis Harold A.',
+      title: 'The Fur Trade in Canada',
+      publisher: 'Yale University Press',
+      year: '1930',
+      description: 'Economic context for Long Sault Portage in connecting Montreal to the upper Ottawa and Great Lakes systems.',
+    },
+    {
+      authorSource: 'The Canadian Encyclopedia',
+      title: 'Ottawa River',
+      url: 'https://www.thecanadianencyclopedia.ca/en/article/ottawa-river',
+      description: 'Overview of the river\'s portages including Long Sault as part of early trade routes.',
+    },
+    {
+      authorSource: 'Wikipedia',
+      title: 'Long Sault',
+      url: 'https://en.wikipedia.org/wiki/Long_Sault',
+      description: 'Historic rapids and portage significance on the Ottawa River.',
+    }
+  ],
+  'cmlk1ohsy0005m2atetkkpn26': [
+    {
+      authorSource: 'Champlain Samuel de',
+      title: 'The Works of Samuel de Champlain Vol. 2 ed. H.P. Biggar',
+      publisher: 'Champlain Society',
+      year: '1925',
+      description: 'Primary accounts of Champlain\'s Ottawa River travels including Chaudière Portage (Asticou) near the falls.',
+    },
+    {
+      authorSource: 'Kennedy Patricia',
+      title: 'The Portages of the Ottawa River',
+      publisher: 'Ottawa Historical Society',
+      year: '1985',
+      description: 'Local historical account of Chaudière Portage as a vital carry point in the Ottawa River system.',
+    },
+    {
+      authorSource: 'The Canadian Encyclopedia',
+      title: 'Ottawa River',
+      url: 'https://www.thecanadianencyclopedia.ca/en/article/ottawa-river',
+      description: 'Context on Chaudière Portage in Algonquin and early French travel.',
+    },
+    {
+      authorSource: 'Wikipedia',
+      title: 'Chaudière Falls',
+      url: 'https://en.wikipedia.org/wiki/Chaudière_Falls',
+      description: 'Historic portage and cultural significance on the Ottawa River.',
+    }
+  ],
   'cmlk1oht20007m2at0bcedeyz': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Frog Portage Records',
       publisher: 'HBCA various series',
       description: 'Primary references to Frog Portage (Athapapuskow) as the critical watershed divide between Saskatchewan and Churchill River systems.',
@@ -3144,7 +3670,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'The Fur Trade in Canada',
       publisher: 'Yale University Press',
       year: '1930',
-      description: 'Economic analysis of Frog Portage\\',
+      description: 'Economic analysis of Frog Portage\\\\',
     },
     {
       authorSource: 'Ray Arthur J.',
@@ -3160,9 +3686,30 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       description: 'Historic portage significance in Saskatchewan.',
     }
   ],
+  'cmlk1oht50009m2atw1lxbena': [
+    {
+      authorSource: 'Hudson\'s Bay Company Archives',
+      title: 'Rat Portage Records',
+      publisher: 'HBCA various series',
+      description: 'Primary references to Rat Portage (Waazhushk-onigaming) on Lake Winnipeg as a key HBC/NWC transshipment and portage point.',
+    },
+    {
+      authorSource: 'Ray Arthur J.',
+      title: 'Indians in the Fur Trade',
+      publisher: 'University of Toronto Press',
+      year: '1974',
+      description: 'Context for Ojibwe/Cree use of Rat Portage in Lake Winnipeg trade networks.',
+    },
+    {
+      authorSource: 'Wikipedia',
+      title: 'Rat Portage',
+      url: 'https://en.wikipedia.org/wiki/Rat_Portage (historical name)',
+      description: 'Historic portage significance on Lake Winnipeg.',
+    }
+  ],
   'cmlk1oht8000bm2atj8bjogev': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Echimamish Portage Records',
       publisher: 'HBCA various series',
       description: 'Primary references to Echimamish Portage as a vital link in the Hudson Bay–Lake Winnipeg–Saskatchewan River canoe route.',
@@ -3172,7 +3719,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'The Fur Trade in Canada',
       publisher: 'Yale University Press',
       year: '1930',
-      description: 'Economic analysis of Echimamish Portage\\',
+      description: 'Economic analysis of Echimamish Portage\\\\',
     },
     {
       authorSource: 'Ray Arthur J.',
@@ -3194,7 +3741,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'The Works of Samuel de Champlain Vol. 2 ed. H.P. Biggar',
       publisher: 'Champlain Society',
       year: '1925',
-      description: 'Primary accounts of Champlain\\',
+      description: 'Primary accounts of Champlain\\\\',
     },
     {
       authorSource: 'Kennedy Patricia',
@@ -3216,9 +3763,30 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       description: 'Description of the river and associated portages.',
     }
   ],
+  'cmlk1ohte000fm2at6rkrfsdz': [
+    {
+      authorSource: 'Hudson\'s Bay Company Archives',
+      title: 'La Vase Portages Records',
+      publisher: 'HBCA various series',
+      description: 'Primary references to La Vase Portages (Waabitigweyang) on the Ottawa River as a series of short carries near Mattawa.',
+    },
+    {
+      authorSource: 'Kennedy Patricia',
+      title: 'The Portages of the Ottawa River',
+      publisher: 'Ottawa Historical Society',
+      year: '1985',
+      description: 'Historical account of La Vase Portages in the Ottawa River canoe system.',
+    },
+    {
+      authorSource: 'Wikipedia',
+      title: 'Ottawa River',
+      url: 'https://en.wikipedia.org/wiki/Ottawa_River',
+      description: 'Context on La Vase Portages in the historic fur trade corridor.',
+    }
+  ],
   'cmlk1ohth000hm2atid2o0cto': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'The Pas Portage Records',
       publisher: 'HBCA various series',
       description: 'Primary documents referencing The Pas Portage (Opaskwayak) on the Saskatchewan River as a key carry in northern Manitoba trade routes.',
@@ -3239,7 +3807,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   ],
   'cmlk1ohtm000jm2atwndo0iu1': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Slave Falls Portage Records',
       publisher: 'HBCA various series',
       description: 'Primary references to Slave Falls Portage (Awakanish) on Lake Winnipeg as part of the northern Manitoba canoe route system.',
@@ -3314,7 +3882,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'The Voyages of William Baffin 1612-1622',
       publisher: 'Hakluyt Society',
       year: '1881',
-      description: 'Primary accounts referencing Cumberland Sound (Tiniqqivik) during Baffin\\',
+      description: 'Primary accounts referencing Cumberland Sound (Tiniqqivik) during Baffin\\\\',
     },
     {
       authorSource: 'Mancall Peter C.',
@@ -3342,7 +3910,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'The Voyages of William Baffin 1612-1622',
       publisher: 'Hakluyt Society',
       year: '1881',
-      description: 'Primary accounts of Baffin\\',
+      description: 'Primary accounts of Baffin\\\\',
     },
     {
       authorSource: 'Mancall Peter C.',
@@ -3370,26 +3938,26 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'Voyages from Montreal on the River St. Laurence through the Continent of North America to the Frozen and Pacific Oceans',
       publisher: 'T. Cadell & W. Davies',
       year: '1801',
-      description: 'Primary narrative of Mackenzie\\',
+      description: 'Primary narrative of Mackenzie\\\\',
     },
     {
       authorSource: 'Nisbet Jack',
-      title: 'The Mapmaker\\',
+      title: 'The Mapmaker\\\\',
       publisher: 'University of Oklahoma Press',
       year: '2005',
-      description: 'Context on Mackenzie\\',
+      description: 'Context on Mackenzie\\\\',
     },
     {
       authorSource: 'Parks Canada',
-      title: 'Mackenzie\\',
+      title: 'Mackenzie\\\\',
       url: 'https://www.pc.gc.ca (related Mackenzie sites)',
-      description: 'Interpretive information on the cultural site and Mackenzie\\',
+      description: 'Interpretive information on the cultural site and Mackenzie\\\\',
     },
     {
       authorSource: 'Wikipedia',
       title: 'Dean Channel',
       url: 'https://en.wikipedia.org/wiki/Dean_Channel',
-      description: 'Historic significance as Mackenzie\\',
+      description: 'Historic significance as Mackenzie\\\\',
     }
   ],
   'fort_st_charles_location': [
@@ -3426,7 +3994,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'The Voyages of Captain Luke Foxe of Hull and Captain Thomas James of Bristol',
       publisher: 'Hakluyt Society',
       year: '1894',
-      description: 'Primary accounts of Foxe\\',
+      description: 'Primary accounts of Foxe\\\\',
     },
     {
       authorSource: 'The Canadian Encyclopedia',
@@ -3447,7 +4015,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'The Works of Samuel de Champlain Vol. 2 ed. H.P. Biggar',
       publisher: 'Champlain Society',
       year: '1925',
-      description: 'Primary accounts of Champlain\\',
+      description: 'Primary accounts of Champlain\\\\',
     },
     {
       authorSource: 'Innis Harold A.',
@@ -3467,9 +4035,9 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
     {
       authorSource: 'McGhee Robert',
       title: 'The Arctic Voyages of Martin Frobisher: An Elizabethan Adventure',
-      publisher: 'Canadian Museum of Civilization / McGill-Queen\\',
+      publisher: 'Canadian Museum of Civilization / McGill-Queen\\\\',
       year: '2001',
-      description: 'Definitive scholarly account of Martin Frobisher\\',
+      description: 'Definitive scholarly account of Martin Frobisher\\\\',
     },
     {
       authorSource: 'Best George',
@@ -3483,7 +4051,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'England and the Discovery of America 1481–1620',
       publisher: 'Alfred A. Knopf',
       year: '1974',
-      description: 'Scholarly chapter on Frobisher\\',
+      description: 'Scholarly chapter on Frobisher\\\\',
     },
     {
       authorSource: 'McGhee Robert',
@@ -3496,13 +4064,20 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       authorSource: 'The Canadian Encyclopedia',
       title: 'Martin Frobisher',
       url: 'https://www.thecanadianencyclopedia.ca/en/article/martin-frobisher',
-      description: 'Overview of Frobisher\\',
+      description: 'Overview of Frobisher\\\\',
     },
     {
       authorSource: 'Wikipedia',
       title: 'Martin Frobisher',
       url: 'https://en.wikipedia.org/wiki/Martin_Frobisher',
       description: 'Timeline and references to voyages and Frobisher Bay discovery.',
+    },
+    {
+      authorSource: 'McGhee Robert',
+      title: 'The Arctic Voyages of Martin Frobisher: An Elizabethan Adventure',
+      publisher: 'Canadian Museum of Civilization / McGill-Queen\'s University Press',
+      year: '2001',
+      description: 'Definitive scholarly account of Martin Frobisher\'s 1576–1578 voyages to what is now Frobisher Bay, including primary source analysis, maps, and Inuit oral history correlations.',
     }
   ],
   'lancaster-sound-waterway': [
@@ -3511,7 +4086,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'Journal of a Voyage for the Discovery of a North-West Passage from the Atlantic to the Pacific',
       publisher: 'John Murray',
       year: '1821',
-      description: 'Primary narrative of Parry\\',
+      description: 'Primary narrative of Parry\\\\',
     },
     {
       authorSource: 'The Canadian Encyclopedia',
@@ -3560,7 +4135,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'The Discovery of the North-West Passage by H.M.S. Investigator ed. Sherard Osborn',
       publisher: 'Longman Brown Green Longmans & Roberts',
       year: '1856',
-      description: 'Primary narrative of McClure\\',
+      description: 'Primary narrative of McClure\\\\',
     },
     {
       authorSource: 'The Canadian Encyclopedia',
@@ -3588,7 +4163,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       title: 'Journal of a Voyage for the Discovery of a North-West Passage from the Atlantic to the Pacific',
       publisher: 'John Murray',
       year: '1821',
-      description: 'Primary narrative of Parry\\',
+      description: 'Primary narrative of Parry\\\\',
     },
     {
       authorSource: 'The Canadian Encyclopedia',
@@ -3606,10 +4181,10 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   'queen-maud-gulf-waterway': [
     {
       authorSource: 'Amundsen Roald',
-      title: 'The North West Passage: Being the Record of a Voyage of Exploration of the Ship \\',
+      title: 'The North West Passage: Being the Record of a Voyage of Exploration of the Ship \\\\',
       publisher: 'A. Constable',
       year: '1908',
-      description: 'Primary narrative referencing Queen Maud Gulf (Uquqtuuq) during Amundsen\\',
+      description: 'Primary narrative referencing Queen Maud Gulf (Uquqtuuq) during Amundsen\\\\',
     },
     {
       authorSource: 'The Canadian Encyclopedia',
@@ -3641,7 +4216,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   ],
   'seine-river-ontario-waterway': [
     {
-      authorSource: 'Hudson\\',
+      authorSource: 'Hudson\\\\',
       title: 'Seine River Area Records',
       publisher: 'HBCA various series',
       description: 'Primary references to Seine River as part of the Rainy Lake–Lake Superior watershed in early fur trade canoe routes.',
@@ -3672,7 +4247,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       authorSource: 'The Canadian Encyclopedia',
       title: 'Souris River',
       url: 'https://www.thecanadianencyclopedia.ca/en/article/souris-river',
-      description: 'Overview of the river\\',
+      description: 'Overview of the river\\\\',
     },
     {
       authorSource: 'Wikipedia',
@@ -3684,10 +4259,10 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
   'terror-bay-waterway': [
     {
       authorSource: 'Amundsen Roald',
-      title: 'The North West Passage: Being the Record of a Voyage of Exploration of the Ship \\',
+      title: 'The North West Passage: Being the Record of a Voyage of Exploration of the Ship \\\\',
       publisher: 'A. Constable',
       year: '1908',
-      description: 'Primary narrative referencing Terror Bay during Amundsen\\',
+      description: 'Primary narrative referencing Terror Bay during Amundsen\\\\',
     },
     {
       authorSource: 'The Canadian Encyclopedia',
