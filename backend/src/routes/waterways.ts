@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { prisma } from "../prisma";
-import { requireSuperAdmin } from "../lib/admin-middleware";
+import { requireAdmin, requireSuperAdmin } from "../lib/admin-middleware";
 
 const waterwaysRouter = new Hono();
 
@@ -113,7 +113,7 @@ waterwaysRouter.get("/search/:query", async (c) => {
 });
 
 // Get KML status for all waterways (superadmin only)
-waterwaysRouter.get("/admin/kml-status", requireSuperAdmin, async (c) => {
+waterwaysRouter.get("/admin/kml-status", requireAdmin, requireSuperAdmin, async (c) => {
   const waterways = await prisma.waterway.findMany({
     select: {
       id: true,
@@ -170,7 +170,7 @@ waterwaysRouter.get("/:id", async (c) => {
 });
 
 // Upload KML data for a waterway (superadmin only)
-waterwaysRouter.post("/:id/kml", requireSuperAdmin, async (c) => {
+waterwaysRouter.post("/:id/kml", requireAdmin, requireSuperAdmin, async (c) => {
   const id = c.req.param("id");
 
   const waterway = await prisma.waterway.findUnique({ where: { id } });
@@ -201,7 +201,7 @@ waterwaysRouter.post("/:id/kml", requireSuperAdmin, async (c) => {
 });
 
 // Delete KML data for a waterway (superadmin only)
-waterwaysRouter.delete("/:id/kml", requireSuperAdmin, async (c) => {
+waterwaysRouter.delete("/:id/kml", requireAdmin, requireSuperAdmin, async (c) => {
   const id = c.req.param("id");
 
   const updated = await prisma.waterway.update({
