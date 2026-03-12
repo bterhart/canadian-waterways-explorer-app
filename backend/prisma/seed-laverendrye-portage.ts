@@ -32,7 +32,7 @@ The river was crucial to the fur trade, serving as the gateway from Lake Superio
 Fort William at the river's mouth was the grand depot where thousands of voyageurs gathered each summer to exchange furs from the interior for trade goods from Montreal. The route required several challenging portages, including the infamous Great Dog Portage (Height of Land), before reaching the chain of waterways leading to Lake Winnipeg and the western interior.
 
 The river gave its name to Kam House, one of the original North West Company posts, and the entire Kaministiquia route became legendary in voyageur lore.`,
-  boundaryCoordinates: JSON.stringify([
+  kmlData: JSON.stringify([
     [48.38, -89.25],
     [48.45, -89.35],
     [48.55, -89.50],

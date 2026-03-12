@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KML Upload Manager</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0f0f0f;
+      --surface: #1a1a1a;
+      --surface2: #222222;
+      --border: #2a2a2a;
+      --border2: #333333;
+      --text: #f0f0f0;
+      --text-muted: #888888;
+      --text-dim: #555555;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --error: #ef4444;
+      --river: #3b82f6;
+      --lake: #06b6d4;
+      --bay: #8b5cf6;
+      --strait: #ec4899;
+      --creek: #10b981;
+      --sound: #f97316;
+      --other: #6b7280;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    /* ---- Login ---- */
+    #login-screen {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    .login-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 40px;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .login-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+
+    .login-logo svg {
+      width: 40px;
+      height: 40px;
+      color: var(--accent);
+    }
+
+    .login-logo h1 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .login-logo span {
+      display: block;
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+    }
+
+    input[type="email"], input[type="password"], input[type="text"] {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 8px;
+      color: var(--text);
+      padding: 10px 14px;
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    input:focus {
+      border-color: var(--accent);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      border: none;
+      transition: background 0.15s, opacity 0.15s, transform 0.1s;
+      text-decoration: none;
+    }
+
+    .btn:active { transform: scale(0.98); }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      width: 100%;
+    }
+
+    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border2);
+    }
+
+    .btn-ghost:hover { background: var(--surface2); color: var(--text); }
+
+    .btn-danger {
+      background: transparent;
+      color: var(--error);
+      border: 1px solid #3a1a1a;
+      font-size: 12px;
+      padding: 6px 12px;
+    }
+
+    .btn-danger:hover { background: #3a1a1a; }
+
+    .error-msg {
+      background: #3a1a1a;
+      border: 1px solid #5a2a2a;
+      color: var(--error);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 13px;
+      margin-top: 16px;
+    }
+
+    /* ---- Dashboard ---- */
+    #dashboard {
+      display: none;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .header-left svg {
+      width: 28px;
+      height: 28px;
+      color: var(--accent);
+    }
+
+    .header-left h1 {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .admin-badge {
+      background: #1e2a3a;
+      border: 1px solid #2a3a5a;
+      color: var(--accent);
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    /* Stats bar */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      padding: 20px 24px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 20px;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .stat-value.success { color: var(--success); }
+    .stat-value.warning { color: var(--warning); }
+    .stat-value.accent { color: var(--accent); }
+
+    /* Main content */
+    .main {
+      padding: 0 24px 24px;
+      flex: 1;
+    }
+
+    /* Bulk drop zone */
+    .bulk-zone {
+      background: var(--surface);
+      border: 2px dashed var(--border2);
+      border-radius: 16px;
+      padding: 32px;
+      text-align: center;
+      margin-bottom: 20px;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      position: relative;
+    }
+
+    .bulk-zone.drag-over {
+      border-color: var(--accent);
+      background: #1a1f2e;
+    }
+
+    .bulk-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+
+    .bulk-zone-icon {
+      font-size: 40px;
+      margin-bottom: 12px;
+      line-height: 1;
+    }
+
+    .bulk-zone-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .bulk-zone-sub {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* Match preview */
+    #match-preview {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .match-preview-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .match-preview-title {
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .match-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 300px;
+      overflow-y: auto;
+      margin-bottom: 16px;
+    }
+
+    .match-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface2);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 13px;
+    }
+
+    .match-item.matched { border-left: 3px solid var(--success); }
+    .match-item.unmatched { border-left: 3px solid var(--warning); }
+
+    .match-filename { font-weight: 600; }
+    .match-target { color: var(--text-muted); }
+    .match-status-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+
+    .match-status-badge.ok { background: #142a1e; color: var(--success); }
+    .match-status-badge.warn { background: #2a2010; color: var(--warning); }
+
+    /* Controls */
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .search-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .search-wrap svg {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      color: var(--text-dim);
+      pointer-events: none;
+    }
+
+    .search-wrap input {
+      padding-left: 38px;
+    }
+
+    .filter-btns {
+      display: flex;
+      gap: 6px;
+    }
+
+    .filter-btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      border: 1px solid var(--border2);
+      background: transparent;
+      color: var(--text-muted);
+      transition: all 0.15s;
+    }
+
+    .filter-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .filter-btn:not(.active):hover { background: var(--surface2); color: var(--text); }
+
+    /* Waterway grid */
+    .waterway-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 12px;
+    }
+
+    .waterway-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      position: relative;
+    }
+
+    .waterway-card:hover {
+      border-color: var(--border2);
+    }
+
+    .waterway-card.drag-over {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+    }
+
+    .waterway-card.drag-over .drop-overlay {
+      opacity: 1;
+    }
+
+    .drop-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(59, 130, 246, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.15s;
+      font-size: 28px;
+      border-radius: 12px;
+    }
+
+    .card-body {
+      padding: 16px;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .card-name {
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .type-badge {
+      flex-shrink: 0;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .type-river { background: #1e2d4a; color: var(--river); }
+    .type-lake { background: #0e2a30; color: var(--lake); }
+    .type-bay { background: #251e40; color: var(--bay); }
+    .type-strait { background: #3a0f25; color: var(--strait); }
+    .type-creek { background: #0e2a20; color: var(--creek); }
+    .type-sound { background: #3a1e0e; color: var(--sound); }
+    .type-other { background: #1a1a1a; color: var(--other); }
+
+    .card-meta {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .kml-status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .kml-status.uploaded { color: var(--success); }
+    .kml-status.missing { color: var(--warning); }
+
+    .kml-status svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .upload-file-input {
+      display: none;
+    }
+
+    .btn-upload {
+      background: #1e2a3a;
+      border: 1px solid #2a3a5a;
+      color: var(--accent);
+      font-size: 12px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 600;
+      transition: background 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .btn-upload:hover { background: #253550; }
+
+    /* Progress bar */
+    .upload-progress {
+      display: none;
+      position: fixed;
+      bottom: 80px;
+      right: 24px;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 12px;
+      padding: 16px 20px;
+      width: 320px;
+      z-index: 1000;
+    }
+
+    .progress-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .progress-bar-wrap {
+      background: var(--border);
+      border-radius: 4px;
+      height: 6px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 4px;
+      transition: width 0.3s;
+      width: 0%;
+    }
+
+    .progress-text {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    /* Toast */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 2000;
+    }
+
+    .toast {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 500;
+      min-width: 260px;
+      max-width: 380px;
+      animation: slide-in 0.2s ease-out;
+      border: 1px solid transparent;
+    }
+
+    @keyframes slide-in {
+      from { transform: translateX(40px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    @keyframes slide-out {
+      from { transform: translateX(0); opacity: 1; }
+      to { transform: translateX(40px); opacity: 0; }
+    }
+
+    .toast.out { animation: slide-out 0.2s ease-in forwards; }
+
+    .toast.success { background: #142a1e; border-color: #1e4a30; color: var(--success); }
+    .toast.error { background: #3a1a1a; border-color: #5a2a2a; color: var(--error); }
+    .toast.info { background: #1e2a3a; border-color: #2a3a5a; color: var(--accent); }
+
+    /* Loading */
+    .loading-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 20px;
+      color: var(--text-muted);
+      gap: 16px;
+    }
+
+    .spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+    }
+
+    .empty-state-icon { font-size: 48px; margin-bottom: 16px; }
+    .empty-state-title { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+
+    /* Uploading overlay on card */
+    .card-uploading::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(15,15,15,0.7);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card-spinner {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 10;
+      width: 28px;
+      height: 28px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @media (max-width: 768px) {
+      .stats-bar { grid-template-columns: repeat(2, 1fr); }
+      .waterway-grid { grid-template-columns: 1fr; }
+      .header-left h1 { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== LOGIN SCREEN ===== -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+        <polyline points="9,22 9,12 15,12 15,22"/>
+      </svg>
+      <div>
+        <h1>Admin Panel</h1>
+        <span>KML Upload Manager</span>
+      </div>
+    </div>
+
+    <form id="login-form">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="admin@example.com" required autocomplete="username" />
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password" />
+      </div>
+      <button type="submit" class="btn btn-primary" id="login-btn">
+        <span id="login-btn-text">Sign In</span>
+      </button>
+    </form>
+
+    <div id="login-error" class="error-msg" style="display:none;"></div>
+  </div>
+</div>
+
+<!-- ===== DASHBOARD ===== -->
+<div id="dashboard">
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+        <polyline points="9,22 9,12 15,12 15,22"/>
+      </svg>
+      <h1>KML Upload Manager</h1>
+    </div>
+    <div class="header-right">
+      <span class="admin-badge" id="admin-name-badge">Super Admin</span>
+      <button class="btn btn-ghost" id="logout-btn" style="padding:8px 14px;font-size:13px;">
+        Sign Out
+      </button>
+    </div>
+  </header>
+
+  <!-- Stats -->
+  <div class="stats-bar" id="stats-bar">
+    <div class="stat-card">
+      <div class="stat-label">Total Waterways</div>
+      <div class="stat-value accent" id="stat-total">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">KML Uploaded</div>
+      <div class="stat-value success" id="stat-uploaded">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Missing KML</div>
+      <div class="stat-value warning" id="stat-missing">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Coverage</div>
+      <div class="stat-value accent" id="stat-pct">—</div>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+
+    <!-- Bulk drop zone -->
+    <div class="bulk-zone" id="bulk-zone">
+      <input type="file" id="bulk-file-input" accept=".kml" multiple />
+      <div class="bulk-zone-icon">📂</div>
+      <div class="bulk-zone-title">Bulk KML Upload</div>
+      <div class="bulk-zone-sub">Drop multiple KML files here, or click to browse.<br/>Files are matched to waterways by filename (e.g. Peace_River.kml → Peace River)</div>
+    </div>
+
+    <!-- Match preview -->
+    <div id="match-preview">
+      <div class="match-preview-header">
+        <span class="match-preview-title" id="match-preview-title">Matching results</span>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-ghost" id="cancel-bulk-btn" style="font-size:12px;padding:6px 12px;">Cancel</button>
+          <button class="btn btn-primary" id="confirm-bulk-btn" style="width:auto;">Upload Matched Files</button>
+        </div>
+      </div>
+      <div class="match-list" id="match-list"></div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+      <div class="search-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input type="text" id="search-input" placeholder="Search waterways..." />
+      </div>
+      <div class="filter-btns">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="uploaded">Uploaded</button>
+        <button class="filter-btn" data-filter="missing">Missing</button>
+      </div>
+    </div>
+
+    <!-- Waterway grid -->
+    <div id="waterway-grid" class="waterway-grid"></div>
+  </div>
+
+</div>
+
+<!-- Upload progress indicator -->
+<div id="upload-progress" class="upload-progress">
+  <div class="progress-title" id="progress-title">Uploading KML files...</div>
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-fill" id="progress-fill"></div>
+  </div>
+  <div class="progress-text" id="progress-text">0 / 0</div>
+</div>
+
+<!-- Toast container -->
+<div class="toast-container" id="toast-container"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  // ---- State ----
+  let token = localStorage.getItem('kml_admin_token') || null;
+  let waterways = [];
+  let filteredWaterways = [];
+  let currentFilter = 'all';
+  let searchQuery = '';
+  let pendingBulkFiles = []; // { file, waterway } pairs
+  let pendingUnmatched = [];
+
+  // ---- DOM refs ----
+  const loginScreen = document.getElementById('login-screen');
+  const dashboard = document.getElementById('dashboard');
+  const loginForm = document.getElementById('login-form');
+  const loginBtn = document.getElementById('login-btn');
+  const loginBtnText = document.getElementById('login-btn-text');
+  const loginError = document.getElementById('login-error');
+  const logoutBtn = document.getElementById('logout-btn');
+  const adminBadge = document.getElementById('admin-name-badge');
+  const waterwayGrid = document.getElementById('waterway-grid');
+  const searchInput = document.getElementById('search-input');
+  const bulkZone = document.getElementById('bulk-zone');
+  const bulkFileInput = document.getElementById('bulk-file-input');
+  const matchPreview = document.getElementById('match-preview');
+  const matchList = document.getElementById('match-list');
+  const matchPreviewTitle = document.getElementById('match-preview-title');
+  const cancelBulkBtn = document.getElementById('cancel-bulk-btn');
+  const confirmBulkBtn = document.getElementById('confirm-bulk-btn');
+  const progressEl = document.getElementById('upload-progress');
+  const progressFill = document.getElementById('progress-fill');
+  const progressTitle = document.getElementById('progress-title');
+  const progressText = document.getElementById('progress-text');
+  const toastContainer = document.getElementById('toast-container');
+
+  // Stats
+  const statTotal = document.getElementById('stat-total');
+  const statUploaded = document.getElementById('stat-uploaded');
+  const statMissing = document.getElementById('stat-missing');
+  const statPct = document.getElementById('stat-pct');
+
+  // ---- Utilities ----
+  function getBaseUrl() {
+    return window.location.origin;
+  }
+
+  function toast(msg, type = 'info', duration = 4000) {
+    const el = document.createElement('div');
+    el.className = `toast ${type}`;
+    const icon = type === 'success' ? '✓' : type === 'error' ? '✕' : 'i';
+    el.innerHTML = `<span style="font-weight:700;font-size:15px;">${icon}</span><span>${msg}</span>`;
+    toastContainer.appendChild(el);
+    setTimeout(() => {
+      el.classList.add('out');
+      el.addEventListener('animationend', () => el.remove());
+    }, duration);
+  }
+
+  function normalizeFilename(filename) {
+    return filename
+      .replace(/\.kml$/i, '')
+      .replace(/[_\-]+/g, ' ')
+      .trim()
+      .toLowerCase();
+  }
+
+  function normalizeWaterwayName(name) {
+    return name.trim().toLowerCase();
+  }
+
+  function matchFilesToWaterways(files) {
+    const matched = [];
+    const unmatched = [];
+
+    for (const file of files) {
+      const normalized = normalizeFilename(file.name);
+      // Exact match first
+      let found = waterways.find(w => normalizeWaterwayName(w.name) === normalized);
+      // Starts-with match
+      if (!found) {
+        found = waterways.find(w => normalizeWaterwayName(w.name).startsWith(normalized));
+      }
+      // Reverse starts-with (filename starts with waterway name)
+      if (!found) {
+        found = waterways.find(w => normalized.startsWith(normalizeWaterwayName(w.name)));
+      }
+      if (found) {
+        matched.push({ file, waterway: found });
+      } else {
+        unmatched.push(file);
+      }
+    }
+    return { matched, unmatched };
+  }
+
+  function getTypeClass(type) {
+    if (!type) return 'type-other';
+    const t = type.toLowerCase();
+    if (t.includes('river')) return 'type-river';
+    if (t.includes('lake')) return 'type-lake';
+    if (t.includes('bay')) return 'type-bay';
+    if (t.includes('strait')) return 'type-strait';
+    if (t.includes('creek')) return 'type-creek';
+    if (t.includes('sound')) return 'type-sound';
+    return 'type-other';
+  }
+
+  function getTypeLabel(type) {
+    if (!type) return 'Waterway';
+    const t = type.toLowerCase();
+    if (t.includes('river')) return 'River';
+    if (t.includes('lake')) return 'Lake';
+    if (t.includes('bay')) return 'Bay';
+    if (t.includes('strait')) return 'Strait';
+    if (t.includes('creek')) return 'Creek';
+    if (t.includes('sound')) return 'Sound';
+    return type.charAt(0).toUpperCase() + type.slice(1);
+  }
+
+  // ---- Auth ----
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    loginError.style.display = 'none';
+    loginBtn.disabled = true;
+    loginBtnText.textContent = 'Signing in...';
+
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+
+    try {
+      const res = await fetch(`${getBaseUrl()}/api/admin/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      const body = await res.json();
+
+      if (!res.ok) {
+        throw new Error(body.error?.message || 'Login failed');
+      }
+
+      const { data } = body;
+      if (data.admin.role !== 'super_admin') {
+        throw new Error('Super-admin access required for this panel.');
+      }
+
+      token = data.accessToken;
+      localStorage.setItem('kml_admin_token', token);
+      adminBadge.textContent = data.admin.name || data.admin.email;
+      showDashboard();
+    } catch (err) {
+      loginError.textContent = err.message;
+      loginError.style.display = 'block';
+    } finally {
+      loginBtn.disabled = false;
+      loginBtnText.textContent = 'Sign In';
+    }
+  });
+
+  logoutBtn.addEventListener('click', () => {
+    token = null;
+    localStorage.removeItem('kml_admin_token');
+    dashboard.style.display = 'none';
+    loginScreen.style.display = 'flex';
+    loginError.style.display = 'none';
+  });
+
+  // ---- API helpers ----
+  async function apiFetch(path, options = {}) {
+    const res = await fetch(`${getBaseUrl()}${path}`, {
+      ...options,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        ...options.headers,
+      },
+    });
+    if (res.status === 401) {
+      token = null;
+      localStorage.removeItem('kml_admin_token');
+      dashboard.style.display = 'none';
+      loginScreen.style.display = 'flex';
+      throw new Error('Session expired. Please sign in again.');
+    }
+    return res;
+  }
+
+  // ---- Load data ----
+  async function loadKmlStatus() {
+    waterwayGrid.innerHTML = `<div class="loading-state" style="grid-column:1/-1"><div class="spinner"></div><span>Loading waterways...</span></div>`;
+    try {
+      const res = await apiFetch('/api/waterways/admin/kml-status');
+      const body = await res.json();
+      if (!res.ok) throw new Error(body.error?.message || 'Failed to load data');
+      waterways = body.data || [];
+      updateStats();
+      applyFilters();
+    } catch (err) {
+      waterwayGrid.innerHTML = `<div class="loading-state" style="grid-column:1/-1"><span style="color:var(--error);">${err.message}</span></div>`;
+    }
+  }
+
+  function updateStats() {
+    const total = waterways.length;
+    const uploaded = waterways.filter(w => w.hasKml).length;
+    const missing = total - uploaded;
+    const pct = total > 0 ? Math.round((uploaded / total) * 100) : 0;
+    statTotal.textContent = total;
+    statUploaded.textContent = uploaded;
+    statMissing.textContent = missing;
+    statPct.textContent = pct + '%';
+  }
+
+  function applyFilters() {
+    let result = waterways;
+
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      result = result.filter(w =>
+        w.name.toLowerCase().includes(q) ||
+        (w.region && w.region.toLowerCase().includes(q)) ||
+        (w.type && w.type.toLowerCase().includes(q))
+      );
+    }
+
+    if (currentFilter === 'uploaded') {
+      result = result.filter(w => w.hasKml);
+    } else if (currentFilter === 'missing') {
+      result = result.filter(w => !w.hasKml);
+    }
+
+    filteredWaterways = result;
+    renderGrid();
+  }
+
+  function renderGrid() {
+    if (filteredWaterways.length === 0) {
+      waterwayGrid.innerHTML = `
+        <div class="empty-state" style="grid-column:1/-1">
+          <div class="empty-state-icon">🔍</div>
+          <div class="empty-state-title">No waterways found</div>
+          <p>Try adjusting your search or filter.</p>
+        </div>`;
+      return;
+    }
+
+    waterwayGrid.innerHTML = '';
+    for (const w of filteredWaterways) {
+      waterwayGrid.appendChild(renderCard(w));
+    }
+  }
+
+  function renderCard(w) {
+    const card = document.createElement('div');
+    card.className = 'waterway-card';
+    card.dataset.id = w.id;
+
+    const typeClass = getTypeClass(w.type);
+    const typeLabel = getTypeLabel(w.type);
+    const statusHtml = w.hasKml
+      ? `<span class="kml-status uploaded">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="20,6 9,17 4,12"/>
+          </svg>Uploaded</span>`
+      : `<span class="kml-status missing">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>Missing</span>`;
+
+    const removeBtn = w.hasKml
+      ? `<button class="btn btn-danger remove-kml-btn" data-id="${w.id}">Remove</button>`
+      : '';
+
+    card.innerHTML = `
+      <div class="drop-overlay">📎</div>
+      <div class="card-body">
+        <div class="card-header">
+          <div class="card-name">${escapeHtml(w.name)}</div>
+          <span class="type-badge ${typeClass}">${typeLabel}</span>
+        </div>
+        <div class="card-meta">${escapeHtml(w.region || 'Unknown region')}</div>
+        <div class="card-footer">
+          ${statusHtml}
+          <div class="card-actions">
+            ${removeBtn}
+            <label class="btn-upload" title="Upload KML for this waterway">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="17,8 12,3 7,8"/>
+                <line x1="12" y1="3" x2="12" y2="15"/>
+              </svg>
+              Upload
+              <input type="file" accept=".kml" class="upload-file-input" data-id="${w.id}" />
+            </label>
+          </div>
+        </div>
+      </div>`;
+
+    // Drag and drop on card
+    card.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      card.classList.add('drag-over');
+    });
+    card.addEventListener('dragleave', () => card.classList.remove('drag-over'));
+    card.addEventListener('drop', async (e) => {
+      e.preventDefault();
+      card.classList.remove('drag-over');
+      const files = Array.from(e.dataTransfer.files).filter(f => f.name.endsWith('.kml'));
+      if (files.length === 0) { toast('Please drop a .kml file', 'error'); return; }
+      await uploadKmlForWaterway(w.id, files[0], card);
+    });
+
+    // File input on card
+    const fileInput = card.querySelector('.upload-file-input');
+    fileInput.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      await uploadKmlForWaterway(w.id, file, card);
+      e.target.value = '';
+    });
+
+    // Remove button
+    const removeEl = card.querySelector('.remove-kml-btn');
+    if (removeEl) {
+      removeEl.addEventListener('click', () => removeKml(w.id, card));
+    }
+
+    return card;
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  // ---- Single card upload ----
+  async function uploadKmlForWaterway(waterwayId, file, cardEl) {
+    cardEl.classList.add('card-uploading');
+    const spinner = document.createElement('div');
+    spinner.className = 'card-spinner';
+    cardEl.appendChild(spinner);
+
+    const formData = new FormData();
+    formData.append('kml', file);
+
+    try {
+      const res = await apiFetch(`/api/waterways/${waterwayId}/kml`, {
+        method: 'POST',
+        body: formData,
+      });
+      const body = await res.json();
+      if (!res.ok) throw new Error(body.error?.message || 'Upload failed');
+
+      // Update local state
+      const idx = waterways.findIndex(w => w.id === waterwayId);
+      if (idx !== -1) waterways[idx].hasKml = true;
+      updateStats();
+
+      toast(`KML uploaded for "${waterways.find(w => w.id === waterwayId)?.name || waterwayId}"`, 'success');
+      applyFilters();
+    } catch (err) {
+      toast(err.message, 'error');
+    } finally {
+      cardEl.classList.remove('card-uploading');
+      spinner.remove();
+    }
+  }
+
+  // ---- Remove KML ----
+  async function removeKml(waterwayId, cardEl) {
+    if (!confirm('Remove KML file for this waterway?')) return;
+
+    cardEl.classList.add('card-uploading');
+    const spinner = document.createElement('div');
+    spinner.className = 'card-spinner';
+    cardEl.appendChild(spinner);
+
+    try {
+      const res = await apiFetch(`/api/waterways/${waterwayId}/kml`, { method: 'DELETE' });
+      if (!res.ok) {
+        const body = await res.json();
+        throw new Error(body.error?.message || 'Delete failed');
+      }
+
+      const idx = waterways.findIndex(w => w.id === waterwayId);
+      if (idx !== -1) waterways[idx].hasKml = false;
+      updateStats();
+      toast('KML removed', 'success');
+      applyFilters();
+    } catch (err) {
+      toast(err.message, 'error');
+    } finally {
+      cardEl.classList.remove('card-uploading');
+      spinner.remove();
+    }
+  }
+
+  // ---- Bulk upload ----
+  bulkZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    bulkZone.classList.add('drag-over');
+  });
+
+  bulkZone.addEventListener('dragleave', (e) => {
+    if (!bulkZone.contains(e.relatedTarget)) {
+      bulkZone.classList.remove('drag-over');
+    }
+  });
+
+  bulkZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    bulkZone.classList.remove('drag-over');
+    const files = Array.from(e.dataTransfer.files).filter(f => f.name.endsWith('.kml'));
+    if (files.length === 0) { toast('No .kml files found in drop', 'error'); return; }
+    handleBulkFiles(files);
+  });
+
+  bulkFileInput.addEventListener('change', (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length === 0) return;
+    handleBulkFiles(files);
+    e.target.value = '';
+  });
+
+  function handleBulkFiles(files) {
+    if (waterways.length === 0) {
+      toast('Waterways not loaded yet. Please wait.', 'error');
+      return;
+    }
+    const { matched, unmatched } = matchFilesToWaterways(files);
+    pendingBulkFiles = matched;
+    pendingUnmatched = unmatched;
+    showMatchPreview(matched, unmatched);
+  }
+
+  function showMatchPreview(matched, unmatched) {
+    matchList.innerHTML = '';
+
+    const total = matched.length + unmatched.length;
+    matchPreviewTitle.textContent = `${total} file(s): ${matched.length} matched, ${unmatched.length} unmatched`;
+
+    for (const { file, waterway } of matched) {
+      const item = document.createElement('div');
+      item.className = 'match-item matched';
+      item.innerHTML = `
+        <span class="match-filename">${escapeHtml(file.name)}</span>
+        <span class="match-target">→ ${escapeHtml(waterway.name)}</span>
+        <span class="match-status-badge ok">Matched</span>`;
+      matchList.appendChild(item);
+    }
+
+    for (const file of unmatched) {
+      const item = document.createElement('div');
+      item.className = 'match-item unmatched';
+      item.innerHTML = `
+        <span class="match-filename">${escapeHtml(file.name)}</span>
+        <span class="match-target">No waterway found</span>
+        <span class="match-status-badge warn">Unmatched</span>`;
+      matchList.appendChild(item);
+    }
+
+    confirmBulkBtn.disabled = matched.length === 0;
+    matchPreview.style.display = 'block';
+  }
+
+  cancelBulkBtn.addEventListener('click', () => {
+    matchPreview.style.display = 'none';
+    pendingBulkFiles = [];
+    pendingUnmatched = [];
+  });
+
+  confirmBulkBtn.addEventListener('click', async () => {
+    if (pendingBulkFiles.length === 0) return;
+    matchPreview.style.display = 'none';
+
+    progressEl.style.display = 'block';
+    progressTitle.textContent = 'Uploading KML files...';
+
+    let done = 0;
+    const total = pendingBulkFiles.length;
+    const errors = [];
+
+    for (const { file, waterway } of pendingBulkFiles) {
+      progressText.textContent = `${done} / ${total} — ${waterway.name}`;
+      progressFill.style.width = `${Math.round((done / total) * 100)}%`;
+
+      const formData = new FormData();
+      formData.append('kml', file);
+
+      try {
+        const res = await apiFetch(`/api/waterways/${waterway.id}/kml`, {
+          method: 'POST',
+          body: formData,
+        });
+        const body = await res.json();
+        if (!res.ok) throw new Error(body.error?.message || 'Upload failed');
+
+        const idx = waterways.findIndex(w => w.id === waterway.id);
+        if (idx !== -1) waterways[idx].hasKml = true;
+      } catch (err) {
+        errors.push(`${waterway.name}: ${err.message}`);
+      }
+
+      done++;
+    }
+
+    progressFill.style.width = '100%';
+    progressText.textContent = `${done} / ${total} complete`;
+
+    setTimeout(() => { progressEl.style.display = 'none'; }, 1500);
+
+    updateStats();
+    applyFilters();
+
+    if (errors.length === 0) {
+      toast(`${done} KML file(s) uploaded successfully`, 'success', 5000);
+    } else {
+      toast(`${done - errors.length} uploaded, ${errors.length} failed`, 'error', 6000);
+    }
+
+    pendingBulkFiles = [];
+    pendingUnmatched = [];
+  });
+
+  // ---- Search & filter ----
+  searchInput.addEventListener('input', (e) => {
+    searchQuery = e.target.value;
+    applyFilters();
+  });
+
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentFilter = btn.dataset.filter;
+      applyFilters();
+    });
+  });
+
+  // ---- Navigation ----
+  function showDashboard() {
+    loginScreen.style.display = 'none';
+    dashboard.style.display = 'flex';
+    loadKmlStatus();
+  }
+
+  // ---- Init ----
+  (async function init() {
+    if (token) {
+      // Validate token by trying to load data
+      try {
+        dashboard.style.display = 'flex';
+        loginScreen.style.display = 'none';
+        await loadKmlStatus();
+      } catch (err) {
+        // Token may be expired; loadKmlStatus handles redirect to login
+      }
+    }
+  })();
+
+})();
+</script>
+
+</body>
+</html>

@@ -55,7 +55,7 @@ async function main() {
       regionName: "Quebec/New Brunswick",
       typeId: bayType!.id,
       historicalSignificance: "Site of first recorded contact between Jacques Cartier and the Mi'kmaq people on July 7, 1534. Cartier wrote of the Mi'kmaq waving furs on sticks, initiating trade. The bay later became important for the cod fishery and Acadian settlement.",
-      boundaryCoordinates: JSON.stringify([
+      kmlData: JSON.stringify([
         [48.1, -66.3], [48.0, -65.8], [47.9, -65.3], [47.8, -64.8],
         [47.7, -64.5], [47.5, -64.3], [47.3, -64.5], [47.2, -65.0],
         [47.4, -65.5], [47.6, -66.0], [47.8, -66.2], [48.1, -66.3]
@@ -71,7 +71,7 @@ async function main() {
       regionName: "Quebec",
       typeId: bayType!.id,
       historicalSignificance: "On July 24, 1534, Jacques Cartier erected a 30-foot wooden cross at Gaspé, claiming the land for King Francis I of France. Chief Donnacona of the Stadaconans (St. Lawrence Iroquoians) protested this claim, beginning a complex relationship that would shape New France.",
-      boundaryCoordinates: JSON.stringify([
+      kmlData: JSON.stringify([
         [48.9, -64.6], [48.85, -64.4], [48.8, -64.3], [48.75, -64.4],
         [48.8, -64.5], [48.85, -64.55], [48.9, -64.6]
       ]),
@@ -86,7 +86,7 @@ async function main() {
       regionName: "Newfoundland and Labrador",
       typeId: straitTypeId!,
       historicalSignificance: "Used by Norse explorers around 1000 AD and later by Basque whalers in the 1500s. John Cabot likely passed through here in 1497. The strait was a major route for European fishing fleets accessing the rich Grand Banks.",
-      boundaryCoordinates: JSON.stringify([
+      kmlData: JSON.stringify([
         [52.0, -55.5], [51.8, -55.8], [51.5, -56.5], [51.2, -57.2],
         [51.0, -57.5], [51.2, -57.8], [51.5, -57.5], [51.8, -56.8],
         [52.0, -56.0], [52.0, -55.5]
@@ -102,7 +102,7 @@ async function main() {
       regionName: "Newfoundland and Labrador",
       typeId: bayType!.id,
       historicalSignificance: "Traditional site of John Cabot's North American landfall on June 24, 1497. His voyage for Henry VII of England established English claims to North America and revealed the rich cod fisheries of the Grand Banks.",
-      boundaryCoordinates: JSON.stringify([
+      kmlData: JSON.stringify([
         [49.2, -53.0], [49.0, -53.2], [48.8, -53.5], [48.6, -53.8],
         [48.4, -54.0], [48.3, -53.6], [48.5, -53.2], [48.7, -53.0],
         [49.0, -52.8], [49.2, -53.0]
@@ -118,7 +118,7 @@ async function main() {
       regionName: "Newfoundland and Labrador",
       typeId: bayType!.id,
       historicalSignificance: "French established Plaisance as their capital in Newfoundland (1662-1713). Site of the Atlantic Charter meeting between Churchill and Roosevelt in 1941. The bay's strategic position made it crucial for controlling access to the Gulf of St. Lawrence.",
-      boundaryCoordinates: JSON.stringify([
+      kmlData: JSON.stringify([
         [47.8, -53.8], [47.5, -54.0], [47.2, -54.3], [46.9, -54.5],
         [46.7, -54.2], [46.9, -53.8], [47.2, -53.6], [47.5, -53.7],
         [47.8, -53.8]
@@ -135,7 +135,7 @@ async function main() {
       regionName: "British Columbia",
       typeId: soundType.id,
       historicalSignificance: "First point of European contact on Canada's Pacific coast when Spanish explorer Juan Pérez arrived in 1774. Captain James Cook landed in 1778 and spent a month trading with the Nuu-chah-nulth. The 'Nootka Crisis' (1789-1794) nearly caused war between Britain and Spain.",
-      boundaryCoordinates: JSON.stringify([
+      kmlData: JSON.stringify([
         [49.7, -126.5], [49.65, -126.55], [49.6, -126.65], [49.55, -126.7],
         [49.5, -126.65], [49.52, -126.55], [49.58, -126.5], [49.65, -126.48],
         [49.7, -126.5]
@@ -151,7 +151,7 @@ async function main() {
       regionName: "British Columbia",
       typeId: inletType.id,
       historicalSignificance: "Explored by Captain George Vancouver in June 1792. Spanish explorers Galiano and Valdés met Vancouver here, sharing charts and information. The inlet became the site of the Hastings Mill (1867) and later the city of Vancouver.",
-      boundaryCoordinates: JSON.stringify([
+      kmlData: JSON.stringify([
         [49.35, -123.3], [49.32, -123.2], [49.3, -123.1], [49.28, -123.0],
         [49.3, -122.9], [49.32, -122.95], [49.33, -123.05], [49.34, -123.15],
         [49.35, -123.3]
@@ -167,7 +167,7 @@ async function main() {
       regionName: "British Columbia",
       typeId: bayType!.id,
       historicalSignificance: "Site where Captain George Vancouver met Spanish explorers Dionisio Alcalá Galiano and Cayetano Valdés on June 22, 1792. Vancouver named the beaches 'Spanish Banks' to commemorate this friendly meeting between rival imperial powers.",
-      boundaryCoordinates: JSON.stringify([
+      kmlData: JSON.stringify([
         [49.3, -123.25], [49.28, -123.2], [49.27, -123.15], [49.26, -123.12],
         [49.28, -123.1], [49.29, -123.15], [49.3, -123.2], [49.3, -123.25]
       ]),
@@ -182,7 +182,7 @@ async function main() {
       regionName: "British Columbia",
       typeId: bayType!.id,
       historicalSignificance: "Captain Cook named it 'Friendly Cove' in 1778 due to the welcoming reception from Chief Maquinna. Spain established a fort here in 1789, leading to the Nootka Crisis. The Convention of 1794 opened the coast to British trade and settlement.",
-      boundaryCoordinates: JSON.stringify([
+      kmlData: JSON.stringify([
         [49.595, -126.62], [49.59, -126.615], [49.585, -126.61],
         [49.588, -126.605], [49.593, -126.608], [49.595, -126.62]
       ]),
@@ -197,7 +197,7 @@ async function main() {
       regionName: "British Columbia/Washington",
       typeId: straitTypeId!,
       historicalSignificance: "Explored by Spanish, British, and American expeditions in the late 18th century. The boundary through the strait was disputed until 1872. The strait remains a major shipping channel for vessels heading to Vancouver, Seattle, and other Pacific ports.",
-      boundaryCoordinates: JSON.stringify([
+      kmlData: JSON.stringify([
         [48.5, -124.8], [48.4, -124.5], [48.3, -124.0], [48.2, -123.5],
         [48.15, -123.2], [48.2, -123.0], [48.3, -123.3], [48.4, -123.8],
         [48.5, -124.3], [48.5, -124.8]
@@ -213,7 +213,7 @@ async function main() {
       regionName: "British Columbia",
       typeId: straitTypeId!,
       historicalSignificance: "Named by Captain George Vancouver in 1792 in honor of King George III. Spanish explorer José María Narváez was the first European to sail through (1791). The strait became the main shipping route to the mainland and the focus of colonial settlement.",
-      boundaryCoordinates: JSON.stringify([
+      kmlData: JSON.stringify([
         [50.0, -125.0], [49.7, -124.5], [49.3, -123.8], [49.0, -123.5],
         [48.8, -123.3], [49.0, -123.0], [49.3, -123.3], [49.7, -124.0],
         [50.0, -124.5], [50.0, -125.0]
@@ -229,7 +229,7 @@ async function main() {
       regionName: "British Columbia",
       typeId: soundType.id,
       historicalSignificance: "Named by Captain George Vancouver in 1792 after the ship HMS Queen Charlotte. The sound was traversed by Spanish, British, and Russian expeditions seeking the Northwest Passage and trade opportunities.",
-      boundaryCoordinates: JSON.stringify([
+      kmlData: JSON.stringify([
         [52.0, -129.0], [51.7, -128.5], [51.5, -128.0], [51.3, -127.5],
         [51.0, -127.3], [51.2, -128.0], [51.5, -128.5], [51.8, -129.0],
         [52.0, -129.0]
@@ -245,7 +245,7 @@ async function main() {
       regionName: "Alaska (visited from Canada expeditions)",
       typeId: bayType!.id,
       historicalSignificance: "La Pérouse landed here in July 1786 during his global expedition. Tragically, 21 French sailors drowned when their boats were caught in tidal currents. A cenotaph was erected on the island in the bay's center to commemorate them.",
-      boundaryCoordinates: JSON.stringify([
+      kmlData: JSON.stringify([
         [58.7, -137.7], [58.65, -137.65], [58.6, -137.6], [58.58, -137.55],
         [58.6, -137.5], [58.65, -137.55], [58.68, -137.6], [58.7, -137.7]
       ]),

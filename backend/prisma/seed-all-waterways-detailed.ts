@@ -765,7 +765,7 @@ async function updateAllWaterwayBoundaries(): Promise<void> {
       if (existing) {
         await prisma.waterway.update({
           where: { id: existing.id },
-          data: { boundaryCoordinates: JSON.stringify(update.coords) }
+          data: { kmlData: JSON.stringify(update.coords) }
         });
         console.log(`  Updated: ${update.name} (${update.coords.length} points)`);
         successCount++;

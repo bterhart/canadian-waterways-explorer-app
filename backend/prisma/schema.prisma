@@ -27,7 +27,7 @@ model Waterway {
   historicalSignificance String?
   createdAt              DateTime                  @default(now())
   updatedAt              DateTime                  @updatedAt
-  boundaryCoordinates    String?
+  kmlData                String?
   imageUrl               String?                   // Primary image
   galleryImages          String?                   // JSON array: [{url, caption, credit}]
   videoUrl               String?                   // YouTube or video URL

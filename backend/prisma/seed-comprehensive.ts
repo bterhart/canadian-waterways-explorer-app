@@ -27,7 +27,7 @@ interface RiverData {
   longitude: number;
   regionName: string;
   historicalSignificance: string;
-  boundaryCoordinates?: string;
+  kmlData?: string;
 }
 
 const missingRivers: RiverData[] = [
@@ -40,7 +40,7 @@ const missingRivers: RiverData[] = [
     longitude: -92.5,
     regionName: "Manitoba",
     historicalSignificance: "The Nelson River was a major Hudson's Bay Company route connecting the interior fur trade to York Factory at its mouth. York Factory, established at the mouth of the Nelson and Hayes Rivers, was the HBC's most important trading post for over a century. The river provided direct access from Lake Winnipeg to Hudson Bay, making it crucial for transporting furs and trade goods.",
-    boundaryCoordinates: JSON.stringify([
+    kmlData: JSON.stringify([
       [50.4, -96.8], [51.5, -95.5], [52.5, -94.5], [53.5, -94.0],
       [54.5, -93.5], [55.5, -93.0], [56.5, -92.8], [57.0, -92.5]
     ])
@@ -54,7 +54,7 @@ const missingRivers: RiverData[] = [
     longitude: -92.2,
     regionName: "Manitoba",
     historicalSignificance: "The Hayes River was the primary route for Hudson's Bay Company brigades traveling between York Factory and the interior. Unlike the more powerful Nelson River with its dangerous rapids, the Hayes offered a more navigable passage for the York boats that carried furs and supplies. The Hayes River brigade route connected York Factory to Norway House at the northern outlet of Lake Winnipeg.",
-    boundaryCoordinates: JSON.stringify([
+    kmlData: JSON.stringify([
       [53.9, -97.8], [54.5, -96.5], [55.0, -95.5], [55.5, -94.5],
       [56.0, -93.5], [56.5, -93.0], [57.0, -92.2]
     ])
@@ -68,7 +68,7 @@ const missingRivers: RiverData[] = [
     longitude: -80.5,
     regionName: "Ontario",
     historicalSignificance: "Moose Factory, established in 1673 at the mouth of the Moose River, is the second oldest English settlement in Canada. It was a key Hudson's Bay Company post for trading with the Cree peoples of the James Bay region. The river provided access to the rich fur lands of the interior and remained an important trading route for centuries.",
-    boundaryCoordinates: JSON.stringify([
+    kmlData: JSON.stringify([
       [49.5, -82.5], [50.0, -81.5], [50.5, -81.0], [51.0, -80.8], [51.3, -80.5]
     ])
   },
@@ -81,7 +81,7 @@ const missingRivers: RiverData[] = [
     longitude: -81.5,
     regionName: "Ontario",
     historicalSignificance: "Fort Albany, established at the mouth of the Albany River in 1679, was one of the original Hudson's Bay Company posts and the oldest English settlement in Ontario. The river served as a major trade route into the interior, connecting James Bay to the rich fur lands of the Canadian Shield. Fort Albany was frequently contested between the English and French during the colonial wars.",
-    boundaryCoordinates: JSON.stringify([
+    kmlData: JSON.stringify([
       [50.0, -85.0], [50.5, -84.0], [51.0, -83.0], [51.5, -82.5],
       [52.0, -82.0], [52.2, -81.5]
     ])
@@ -95,7 +95,7 @@ const missingRivers: RiverData[] = [
     longitude: -81.0,
     regionName: "Ontario/Quebec",
     historicalSignificance: "The Abitibi River was an important route connecting the Great Lakes watershed to James Bay via a series of portages and connecting waterways. Indigenous peoples used this route for millennia before Europeans arrived. French traders used the Abitibi route to compete with the English at James Bay, and it remained significant throughout the fur trade era as an alternative to the longer St. Lawrence route.",
-    boundaryCoordinates: JSON.stringify([
+    kmlData: JSON.stringify([
       [48.5, -79.5], [49.0, -80.0], [49.5, -80.5], [50.0, -80.8], [50.3, -81.0]
     ])
   },
@@ -108,7 +108,7 @@ const missingRivers: RiverData[] = [
     longitude: -97.1,
     regionName: "Manitoba",
     historicalSignificance: "The Red River is central to Metis history and identity. The Red River Settlement, established in 1812 by Lord Selkirk, became the heart of the Metis nation. The Forks, where the Red and Assiniboine rivers meet at present-day Winnipeg, was a gathering place for Indigenous peoples for 6,000 years. Louis Riel led the Red River Resistance of 1869-70 here, which resulted in Manitoba becoming a Canadian province. The river valley was home to the distinctive Metis culture, including the Red River cart and the buffalo hunt.",
-    boundaryCoordinates: JSON.stringify([
+    kmlData: JSON.stringify([
       [46.0, -96.8], [47.0, -97.0], [48.0, -97.1], [49.0, -97.0],
       [49.5, -97.1], [50.0, -97.1]
     ])
@@ -122,7 +122,7 @@ const missingRivers: RiverData[] = [
     longitude: -97.1,
     regionName: "Manitoba/Saskatchewan",
     historicalSignificance: "The Assiniboine River was a vital fur trade route connecting the prairies to the Red River and ultimately to Hudson Bay or Montreal. The junction with the Red River at The Forks was a strategic location, and Fort Garry was built nearby. Trading posts like Brandon House and Fort Ellice were established along its length. The river gave its name to the Assiniboine people, who were important trading partners and intermediaries in the fur trade.",
-    boundaryCoordinates: JSON.stringify([
+    kmlData: JSON.stringify([
       [51.0, -106.0], [50.5, -104.0], [50.0, -102.0], [49.8, -100.0],
       [49.9, -98.5], [49.9, -97.1]
     ])

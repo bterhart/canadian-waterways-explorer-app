@@ -36,6 +36,8 @@ import { nearbyHistoryRouter } from "./routes/nearby-history";
 import { notableFiguresRouter } from "./routes/notable-figures";
 import { authRouter } from "./routes/auth";
 import { logger } from "hono/logger";
+import { readFileSync } from "fs";
+import { join } from "path";
 
 const app = new Hono();
 
@@ -60,6 +62,12 @@ app.use("*", logger());
 
 // Health check endpoint
 app.get("/health", (c) => c.json({ status: "ok" }));
+
+// Serve KML admin panel
+app.get("/admin/kml", (c) => {
+  const html = readFileSync(join(import.meta.dir, "admin-panel.html"), "utf-8");
+  return c.html(html);
+});
 
 // Routes
 app.route("/api/sample", sampleRouter);

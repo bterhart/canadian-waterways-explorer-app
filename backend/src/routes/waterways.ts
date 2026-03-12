@@ -1,5 +1,6 @@
 import { Hono } from "hono";
 import { prisma } from "../prisma";
+import { requireSuperAdmin } from "../lib/admin-middleware";
 
 const waterwaysRouter = new Hono();
 
@@ -13,7 +14,7 @@ waterwaysRouter.get("/", async (c) => {
       latitude: true,
       longitude: true,
       regionName: true,
-      boundaryCoordinates: true,
+      kmlData: true,
       type: {
         select: { name: true }
       }
@@ -41,7 +42,7 @@ waterwaysRouter.get("/region/:regionName", async (c) => {
       latitude: true,
       longitude: true,
       regionName: true,
-      boundaryCoordinates: true,
+      kmlData: true,
       type: {
         select: { name: true }
       }
@@ -71,7 +72,7 @@ waterwaysRouter.get("/type/:typeName", async (c) => {
       latitude: true,
       longitude: true,
       regionName: true,
-      boundaryCoordinates: true,
+      kmlData: true,
       type: {
         select: { name: true }
       }
@@ -80,6 +81,59 @@ waterwaysRouter.get("/type/:typeName", async (c) => {
   });
 
   return c.json({ data: waterways });
+});
+
+// Search waterways by name
+waterwaysRouter.get("/search/:query", async (c) => {
+  const query = c.req.param("query");
+
+  const waterways = await prisma.waterway.findMany({
+    where: {
+      OR: [
+        { name: { contains: query } },
+        { indigenousName: { contains: query } }
+      ]
+    },
+    select: {
+      id: true,
+      name: true,
+      indigenousName: true,
+      latitude: true,
+      longitude: true,
+      regionName: true,
+      kmlData: true,
+      type: {
+        select: { name: true }
+      }
+    },
+    orderBy: { name: "asc" }
+  });
+
+  return c.json({ data: waterways });
+});
+
+// Get KML status for all waterways (superadmin only)
+waterwaysRouter.get("/admin/kml-status", requireSuperAdmin, async (c) => {
+  const waterways = await prisma.waterway.findMany({
+    select: {
+      id: true,
+      name: true,
+      regionName: true,
+      kmlData: true,
+      type: { select: { name: true } }
+    },
+    orderBy: { name: "asc" }
+  });
+
+  const result = waterways.map(w => ({
+    id: w.id,
+    name: w.name,
+    regionName: w.regionName,
+    type: w.type.name,
+    hasKml: !!w.kmlData
+  }));
+
+  return c.json({ data: result });
 });
 
 // Get single waterway with full details
@@ -115,33 +169,48 @@ waterwaysRouter.get("/:id", async (c) => {
   return c.json({ data: waterway });
 });
 
-// Search waterways by name
-waterwaysRouter.get("/search/:query", async (c) => {
-  const query = c.req.param("query");
+// Upload KML data for a waterway (superadmin only)
+waterwaysRouter.post("/:id/kml", requireSuperAdmin, async (c) => {
+  const id = c.req.param("id");
 
-  const waterways = await prisma.waterway.findMany({
-    where: {
-      OR: [
-        { name: { contains: query } },
-        { indigenousName: { contains: query } }
-      ]
-    },
-    select: {
-      id: true,
-      name: true,
-      indigenousName: true,
-      latitude: true,
-      longitude: true,
-      regionName: true,
-      boundaryCoordinates: true,
-      type: {
-        select: { name: true }
-      }
-    },
-    orderBy: { name: "asc" }
+  const waterway = await prisma.waterway.findUnique({ where: { id } });
+  if (!waterway) {
+    return c.json({ error: { message: "Waterway not found", code: "NOT_FOUND" } }, 404);
+  }
+
+  const body = await c.req.parseBody();
+  const file = body["kml"];
+
+  if (!file || typeof file === "string") {
+    return c.json({ error: { message: "No KML file provided", code: "BAD_REQUEST" } }, 400);
+  }
+
+  const kmlText = await (file as File).text();
+
+  if (!kmlText.includes("<kml") && !kmlText.includes("<KML")) {
+    return c.json({ error: { message: "Invalid KML file", code: "BAD_REQUEST" } }, 400);
+  }
+
+  const updated = await prisma.waterway.update({
+    where: { id },
+    data: { kmlData: kmlText },
+    select: { id: true, name: true }
   });
 
-  return c.json({ data: waterways });
+  return c.json({ data: { ...updated, kmlUploaded: true } });
+});
+
+// Delete KML data for a waterway (superadmin only)
+waterwaysRouter.delete("/:id/kml", requireSuperAdmin, async (c) => {
+  const id = c.req.param("id");
+
+  const updated = await prisma.waterway.update({
+    where: { id },
+    data: { kmlData: null },
+    select: { id: true, name: true }
+  });
+
+  return c.json({ data: { ...updated, kmlUploaded: false } });
 });
 
 export { waterwaysRouter };

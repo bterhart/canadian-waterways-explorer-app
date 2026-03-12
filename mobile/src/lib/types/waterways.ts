@@ -15,7 +15,7 @@ export interface Waterway {
   latitude: number;
   longitude: number;
   regionName: string;
-  boundaryCoordinates: string | null;
+  kmlData: string | null;
   type: {
     name: string;
   };
@@ -91,7 +91,7 @@ export interface WaterwayDetail {
   regionName: string;
   typeId: string;
   historicalSignificance: string | null;
-  boundaryCoordinates: string | null;
+  kmlData: string | null;
   imageUrl: string | null;
   galleryImages: string | null;
   videoUrl: string | null;

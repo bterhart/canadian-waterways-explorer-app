@@ -52,13 +52,38 @@ const getGoogleEarthUrl = (latitude: number, longitude: number): string => {
   return `https://earth.google.com/web/@${latitude},${longitude},500a,5000d,35y,0h,45t,0r`;
 };
 
-// Parse boundary coordinates from JSON string
-const parseBoundaryCoordinates = (coordsString: string | null): { latitude: number; longitude: number }[] => {
-  if (!coordsString) return [];
+// Parse KML text and extract all coordinate paths
+const parseKmlCoordinates = (kmlData: string): Array<{ lat: number; lng: number }[]> => {
   try {
-    const coords = JSON.parse(coordsString) as [number, number][];
-    return coords.map(([lat, lng]) => ({ latitude: lat, longitude: lng }));
-  } catch {
+    const paths: Array<{ lat: number; lng: number }[]> = [];
+
+    // Extract all <coordinates> blocks from the KML
+    const coordRegex = /<coordinates[^>]*>([\s\S]*?)<\/coordinates>/gi;
+    let match;
+
+    while ((match = coordRegex.exec(kmlData)) !== null) {
+      const coordText = match[1].trim();
+      const coords = coordText
+        .split(/\s+/)
+        .map(triplet => triplet.trim())
+        .filter(triplet => triplet.length > 0)
+        .map(triplet => {
+          const parts = triplet.split(',');
+          if (parts.length < 2) return null;
+          const lng = parseFloat(parts[0]);
+          const lat = parseFloat(parts[1]);
+          if (isNaN(lat) || isNaN(lng)) return null;
+          return { lat, lng };
+        })
+        .filter((c): c is { lat: number; lng: number } => c !== null);
+
+      if (coords.length > 0) {
+        paths.push(coords);
+      }
+    }
+
+    return paths;
+  } catch (e) {
     return [];
   }
 };
@@ -290,12 +315,6 @@ export default function MapScreen() {
     return waterways?.find(w => w.id === visibleCalloutMarker.id) || null;
   }, [visibleCalloutMarker, waterways]);
 
-  // Parse boundary coordinates for the selected waterway
-  const boundaryCoordinates = useMemo(() => {
-    if (!selectedWaterway?.boundaryCoordinates) return [];
-    return parseBoundaryCoordinates(selectedWaterway.boundaryCoordinates);
-  }, [selectedWaterway]);
-
   // Get coordinates for the visible callout marker (for floating icons)
   const visibleMarkerCoords = useMemo(() => {
     if (!visibleCalloutMarker) return null;
@@ -310,10 +329,24 @@ export default function MapScreen() {
 
   // Animate to waterway when callout becomes visible
   useEffect(() => {
-    if (visibleCalloutMarker?.type === 'waterway' && boundaryCoordinates.length > 0) {
-      const region = getRegionForCoordinates(boundaryCoordinates);
-      if (region && mapRef.current) {
-        mapRef.current.animateToRegion(region, 500);
+    if (visibleCalloutMarker?.type === 'waterway') {
+      if (selectedWaterway?.kmlData) {
+        const paths = parseKmlCoordinates(selectedWaterway.kmlData);
+        const allCoords = paths.flat().map(c => ({ latitude: c.lat, longitude: c.lng }));
+        const region = getRegionForCoordinates(allCoords);
+        if (region && mapRef.current) {
+          mapRef.current.animateToRegion(region, 500);
+          return;
+        }
+      }
+      // Fall back to animating to the waterway center point
+      if (selectedWaterway && mapRef.current) {
+        mapRef.current.animateToRegion({
+          latitude: selectedWaterway.latitude,
+          longitude: selectedWaterway.longitude,
+          latitudeDelta: 2,
+          longitudeDelta: 2,
+        }, 500);
       }
     } else if (visibleCalloutMarker?.type === 'location') {
       const location = locations?.find(l => l.id === visibleCalloutMarker.id);
@@ -326,7 +359,7 @@ export default function MapScreen() {
         }, 500);
       }
     }
-  }, [visibleCalloutMarker, boundaryCoordinates, locations]);
+  }, [visibleCalloutMarker, selectedWaterway, locations]);
 
   // Function to update screen position of callout icons
   const updateCalloutScreenPosition = useCallback(async () => {
@@ -522,31 +555,38 @@ export default function MapScreen() {
         {/* Location markers */}
         {filteredLocations.map(renderLocationMarker)}
 
-        {/* Boundary highlight for selected waterway */}
-        {boundaryCoordinates.length > 0 && selectedWaterway ? (
-          selectedWaterway.type?.name === 'Lake' || selectedWaterway.type?.name === 'Bay' ? (
-            // Lakes and bays use polygon (closed shape with fill)
-            <Polygon
-              key={`polygon-${selectedWaterway.id}`}
-              coordinates={boundaryCoordinates}
-              strokeColor={getMarkerColor(selectedWaterway.type?.name || 'Lake')}
-              strokeWidth={4}
-              fillColor={`${getMarkerColor(selectedWaterway.type?.name || 'Lake')}30`}
-              tappable={false}
-            />
-          ) : (
-            // Rivers use polyline (path without fill)
-            <Polyline
-              key={`polyline-${selectedWaterway.id}`}
-              coordinates={boundaryCoordinates}
-              strokeColor={getMarkerColor(selectedWaterway.type?.name || 'River')}
-              strokeWidth={6}
-              lineCap="round"
-              lineJoin="round"
-              tappable={false}
-            />
-          )
-        ) : null}
+        {/* KML overlay for selected waterway */}
+        {selectedWaterway?.kmlData ? (() => {
+          const paths = parseKmlCoordinates(selectedWaterway.kmlData!);
+          const isArea = selectedWaterway.type?.name === 'Lake' || selectedWaterway.type?.name === 'Bay';
+          const color = selectedWaterway.type?.name === 'River' ? '#3B82F6'
+            : selectedWaterway.type?.name === 'Lake' ? '#06B6D4'
+            : selectedWaterway.type?.name === 'Bay' ? '#10B981'
+            : '#0EA5E9';
+
+          return paths.map((coords, index) => {
+            const latLngs = coords.map(c => ({ latitude: c.lat, longitude: c.lng }));
+            if (isArea) {
+              return (
+                <Polygon
+                  key={`kml-poly-${index}`}
+                  coordinates={latLngs}
+                  strokeColor={color}
+                  fillColor={`${color}30`}
+                  strokeWidth={2}
+                />
+              );
+            }
+            return (
+              <Polyline
+                key={`kml-line-${index}`}
+                coordinates={latLngs}
+                strokeColor={color}
+                strokeWidth={3}
+              />
+            );
+          });
+        })() : null}
       </MapView>
 
       {/* Floating Icons Above Callout */}

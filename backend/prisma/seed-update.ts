@@ -174,7 +174,7 @@ async function main() {
     if (coords) {
       await prisma.waterway.update({
         where: { id: waterway.id },
-        data: { boundaryCoordinates: JSON.stringify(coords) }
+        data: { kmlData: JSON.stringify(coords) }
       });
       console.log(`  ✅ Updated ${waterway.name} with ${coords.length} coordinate points`);
     }
@@ -202,7 +202,7 @@ async function main() {
       regionName: "Manitoba",
       typeId: riverType.id,
       historicalSignificance: "Key route for the Hudson's Bay Company connecting the interior to York Factory. Samuel Hearne traveled portions in 1774.",
-      boundaryCoordinates: JSON.stringify([
+      kmlData: JSON.stringify([
         [50.4, -96.8], [51.0, -96.0], [52.0, -95.0], [53.0, -94.0], [54.0, -93.5],
         [55.0, -93.0], [56.0, -93.5], [57.0, -92.5]
       ])
@@ -217,7 +217,7 @@ async function main() {
       regionName: "Alberta",
       typeId: riverType.id,
       historicalSignificance: "Major fur trade route. Peter Pond used this route to reach the Athabasca region in 1778.",
-      boundaryCoordinates: JSON.stringify([
+      kmlData: JSON.stringify([
         [52.2, -117.2], [53.0, -117.5], [54.0, -116.5], [55.0, -114.5], [56.0, -112.5],
         [57.0, -111.5], [58.0, -111.0], [58.7, -111.0]
       ])
@@ -232,7 +232,7 @@ async function main() {
       regionName: "Alberta / British Columbia",
       typeId: riverType.id,
       historicalSignificance: "Alexander Mackenzie ascended this river in 1793 on his journey to the Pacific Ocean. Key fur trade corridor.",
-      boundaryCoordinates: JSON.stringify([
+      kmlData: JSON.stringify([
         [55.0, -122.0], [55.5, -120.5], [56.0, -118.5], [56.5, -117.5], [57.0, -117.0],
         [57.5, -116.5], [58.0, -115.5], [58.5, -114.5], [59.0, -112.0]
       ])
@@ -247,7 +247,7 @@ async function main() {
       regionName: "Manitoba",
       typeId: riverType.id,
       historicalSignificance: "Site of the Red River Settlement (1812) and the Métis homeland. Central to the 1869-70 Red River Resistance.",
-      boundaryCoordinates: JSON.stringify([
+      kmlData: JSON.stringify([
         [46.0, -96.8], [47.0, -97.0], [48.0, -97.1], [49.0, -97.0], [49.9, -97.1],
         [50.3, -96.8]
       ])
@@ -262,7 +262,7 @@ async function main() {
       regionName: "Manitoba / Saskatchewan",
       typeId: riverType.id,
       historicalSignificance: "Named after the Assiniboine people. Important trading route with posts like Brandon House and Fort Ellice.",
-      boundaryCoordinates: JSON.stringify([
+      kmlData: JSON.stringify([
         [51.0, -106.0], [50.5, -104.0], [50.0, -102.0], [49.8, -100.0], [49.9, -98.5],
         [49.9, -97.3]
       ])
@@ -277,7 +277,7 @@ async function main() {
       regionName: "Yukon",
       typeId: riverType.id,
       historicalSignificance: "Highway of the Klondike Gold Rush (1896-99). Traditional territory of numerous First Nations.",
-      boundaryCoordinates: JSON.stringify([
+      kmlData: JSON.stringify([
         [59.5, -134.5], [60.5, -135.0], [61.5, -136.0], [62.5, -137.0], [63.5, -139.0],
         [64.0, -140.5], [64.5, -141.0]
       ])
@@ -292,7 +292,7 @@ async function main() {
       regionName: "Northwest Territories / Nunavut",
       typeId: riverType.id,
       historicalSignificance: "Samuel Hearne became the first European to reach the Arctic Ocean overland via this river in 1771.",
-      boundaryCoordinates: JSON.stringify([
+      kmlData: JSON.stringify([
         [64.8, -113.0], [65.2, -114.0], [65.8, -115.0], [66.2, -116.0], [66.8, -116.5],
         [67.5, -115.8], [67.8, -115.1]
       ])
@@ -307,7 +307,7 @@ async function main() {
       regionName: "Northwest Territories / Nunavut",
       typeId: riverType.id,
       historicalSignificance: "Traditional caribou hunting grounds for Inuit peoples. The Thelon Wildlife Sanctuary was established in 1927.",
-      boundaryCoordinates: JSON.stringify([
+      kmlData: JSON.stringify([
         [63.5, -108.0], [64.0, -106.0], [64.3, -104.0], [64.5, -102.0], [64.3, -100.0],
         [64.0, -98.0], [64.2, -96.0]
       ])
@@ -322,7 +322,7 @@ async function main() {
       regionName: "Quebec",
       typeId: riverType.id,
       historicalSignificance: "Trading route for the Innu people. The first European trading post in Quebec was established at Tadoussac in 1600.",
-      boundaryCoordinates: JSON.stringify([
+      kmlData: JSON.stringify([
         [48.5, -72.0], [48.4, -71.5], [48.3, -71.0], [48.3, -70.5], [48.2, -70.0],
         [48.1, -69.7]
       ])
@@ -337,7 +337,7 @@ async function main() {
       regionName: "New Brunswick",
       typeId: riverType.id,
       historicalSignificance: "Central to Wolastoqiyik (Maliseet) culture for thousands of years. Named by Samuel de Champlain on Saint John the Baptist Day, 1604.",
-      boundaryCoordinates: JSON.stringify([
+      kmlData: JSON.stringify([
         [47.5, -69.2], [47.0, -68.5], [46.5, -67.8], [46.0, -67.0], [45.5, -66.5],
         [45.3, -66.1]
       ])
@@ -364,7 +364,7 @@ async function main() {
       regionName: "Ontario",
       typeId: lakeType.id,
       historicalSignificance: "Scene of naval battles in the War of 1812. The Erie Canal (1825) connected it to the Atlantic.",
-      boundaryCoordinates: JSON.stringify([
+      kmlData: JSON.stringify([
         [41.4, -82.8], [41.6, -82.0], [42.0, -81.0], [42.4, -80.0], [42.8, -79.0],
         [42.6, -79.5], [42.2, -80.5], [41.8, -81.5], [41.4, -82.5], [41.4, -82.8]
       ])
@@ -379,7 +379,7 @@ async function main() {
       regionName: "Shared (US/Canada border area)",
       typeId: lakeType.id,
       historicalSignificance: "Jean Nicolet was the first European to explore its shores in 1634, seeking a route to China.",
-      boundaryCoordinates: JSON.stringify([
+      kmlData: JSON.stringify([
         [41.8, -87.5], [42.5, -87.0], [43.5, -86.5], [44.5, -86.0], [45.5, -85.5],
         [46.0, -86.0], [45.5, -87.0], [44.5, -87.5], [43.5, -87.5], [42.5, -87.5], [41.8, -87.5]
       ])
@@ -394,7 +394,7 @@ async function main() {
       regionName: "Saskatchewan / Manitoba",
       typeId: lakeType.id,
       historicalSignificance: "Traditional territory of the Woodland Cree. Named for the woodland caribou that migrate through the area.",
-      boundaryCoordinates: JSON.stringify([
+      kmlData: JSON.stringify([
         [56.5, -102.5], [57.0, -102.0], [57.5, -101.5], [58.0, -102.0], [57.8, -103.0],
         [57.3, -103.5], [56.8, -103.0], [56.5, -102.5]
       ])
@@ -409,7 +409,7 @@ async function main() {
       regionName: "Ontario",
       typeId: lakeType.id,
       historicalSignificance: "Site of Fort Nipigon, a French trading post established in 1678. Important link between the Great Lakes and northern fur trade.",
-      boundaryCoordinates: JSON.stringify([
+      kmlData: JSON.stringify([
         [49.3, -89.0], [49.5, -88.5], [49.8, -88.0], [50.2, -88.0], [50.5, -88.5],
         [50.3, -89.0], [49.8, -89.5], [49.3, -89.0]
       ])
@@ -424,7 +424,7 @@ async function main() {
       regionName: "Alberta",
       typeId: lakeType.id,
       historicalSignificance: "Site of Treaty 8 signing in 1899. Named 'Slave' by the Cree for the Slavey Dene people who lived to the north.",
-      boundaryCoordinates: JSON.stringify([
+      kmlData: JSON.stringify([
         [55.2, -116.0], [55.4, -115.5], [55.6, -115.0], [55.8, -114.5], [55.6, -114.0],
         [55.3, -114.5], [55.2, -115.5], [55.2, -116.0]
       ])
