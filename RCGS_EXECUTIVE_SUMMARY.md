@@ -234,11 +234,63 @@ The application supports pagination on all list endpoints via offset and limit p
 
 ---
 
-## 6. Educational Positioning
+## 6. Developmental Roadmap
+
+The application as deployed represents a complete and functional educational platform. The following enhancements are identified as the highest-impact directions for continued development, ordered by the depth of new capability each would introduce. Each builds on infrastructure already present in the platform and addresses a documented limitation in how students currently engage with Canadian history and geography.
+
+### 6.1 Historical Cartographic Layers
+
+The application currently renders waterways as they exist geographically today. The highest-impact near-term enhancement is the addition of historical overlay layers: documented fur trade canoe routes, surveyed explorer traversal paths, and Indigenous trade and travel networks drawn from the Hudson's Bay Company Archives, Library and Archives Canada, and peer-reviewed historical cartography.
+
+The technical infrastructure for this is already implied by the existing architecture. Each waterway record holds KML boundary coordinate data; the same mechanism can render arbitrary polyline paths on the map surface. A student viewing the Columbia River could toggle a layer showing David Thompson's 1811 route as a distinct path overlaid on the river's modern geography—with waypoints at Fort Kootenay, Kettle Falls, and the Pacific terminus at Astoria, each linked to the expedition notes already in the document repository. The same overlay system could render the Métis cart trail network, the voyageur brigade routes connecting Montreal to the Athabasca Country, and the Indigenous Grease Trail networks that preceded and enabled European overland travel.
+
+Source materials exist and are accessible. The HBCA holds route survey maps for most of the major inland waterway systems. Parks Canada has digitized the historical cartography of many fur trade routes. The Champlain Society's published journal volumes contain route reconstructions with modern coordinates. A content import pipeline could ingest this material and expose it through the same administrative interface already governing other content types.
+
+For educators, historical overlays would transform the map from a reference tool into a comparative analysis instrument. Displaying Mackenzie's 1789 route to the Arctic alongside Hearne's 1770-1772 route on the same river system makes the question of how successive expeditions built on prior Indigenous knowledge visible and discussable in a way that no static diagram achieves.
+
+### 6.2 Longitudinal Waterway Timeline
+
+The application presents history through a single moment of interaction: a student taps a waterway and receives its current state of documentation. A longitudinal timeline view would allow students to step through the historical life of a single waterway across centuries—observing when a river first appears in European records, when a trading post was established on its banks, when it was surveyed and mapped, when Indigenous title was negotiated or contested, and what its current status and name are under both English and Indigenous designations.
+
+This feature would integrate directly with the platform's existing data. The application already holds the founding years of 99 historic locations, the expedition years of 91 explorers, the dates of 18 major timeline events, the signing dates of relevant treaties, and the discovery years of 8 archaeological findings. A per-waterway timeline view would aggregate these existing records into a chronological visualization specific to each river or lake—the St. Lawrence River presenting a very different timeline shape than the Back River, and both illuminating something meaningful about the nature of Canadian exploration that a list of facts does not.
+
+Integration with external digital archives—the Champlain Society's published journals, digitized HBC trading post records on the HBCA Online portal, Parks Canada's National Historic Sites documentation—would add evidentiary depth and create a pathway for citing archival sources directly from within the student-facing interface. This positions the application as a research entry point, not merely an educational consumer product, and makes it relevant to secondary and post-secondary educators alongside the core K-12 audience.
+
+### 6.3 Expanded and Teacher-Authored Voyageur Journeys
+
+The Voyageur Journey Simulator currently offers two complete interactive experiences. The architecture supporting these journeys—branching node trees with story, choice, challenge, song, and ending node types, all georeferenced and linked to the waterway and location database—is generic and capable of supporting any number of additional journeys without structural changes.
+
+The most immediate opportunity is expanding the journey library: additional routes spanning different historical periods, geographic regions, and narrative perspectives. The Mackenzie River route to the Arctic in 1789, with the party's documented near-mutiny and Dene guide assistance, provides a natural Grade 7-9 journey. The Fraser Canyon descent of 1808 offers a shorter, more dramatic experience. A journey told from the perspective of a Cree or Ojibwe trader rather than a European explorer would be both pedagogically distinctive and directly supportable by the application's existing Indigenous knowledge content.
+
+The higher-impact enhancement, however, is opening journey authoring to the teacher community. A journey-creation interface within the Teacher Portal—allowing teachers to assemble node sequences, write narrative text, attach historical images, assign challenge questions drawn from the quiz bank, and define branching logic—would enable educators to create custom journeys for local history content beyond the national scope of the pre-loaded material. A teacher in Winnipeg could build a Red River Settlement journey; a teacher in British Columbia could build a New Caledonia fur trade route. These teacher-created journeys would follow the same content visibility workflow as lesson plans and documents: private by default, requestable for global publication, with super-admin approval before wider distribution.
+
+Audio narration—professional or teacher-recorded—for each journey node would complete the simulator's sensory depth. The data model already includes an `audioUrl` field on each journey node; this field is not yet populated for the production journeys and represents a near-zero-effort content extension once recordings are produced.
+
+### 6.4 Audio Integration and Oral History
+
+The application is built almost entirely around written text. For Indigenous content in particular—languages, traditional stories, the accounts of guides and intermediaries whose knowledge was transmitted orally before it was recorded in European journals—this creates a gap between the medium of the platform and the medium of the knowledge it seeks to convey.
+
+A targeted audio integration would address this across three content areas. First, the Indigenous Language Learning Module already stores a `phonetic` field and an `audioUrl` field for each of the 298 vocabulary words; populating those audio fields with recordings by fluent speakers from the relevant language communities would transform the module from a reading exercise into an actual language-learning tool. Second, the Pronunciation Guide's 33 entries—covering place names, nation names, and fur trade terms—would benefit from the same treatment; a student hearing "Kisiskatchewan" or "Haudenosaunee" pronounced correctly once retains it in a way that a phonetic spelling alone does not achieve. Third, the Primary Source Document viewer could offer audio readings of selected documents, making the collection accessible to younger readers and students for whom English is a second language.
+
+The `audioUrl` infrastructure is already present in the data model for words, pronunciation entries, field trip stops, and journey nodes. Content production—not engineering—is the limiting factor. Partnerships with Indigenous language programs at Canadian universities, or with CBC's Indigenous language archives, could provide authenticated recordings without requiring the development team to source and produce audio independently.
+
+### 6.5 Learning Management System Integration
+
+The Teacher Portal currently operates as a self-contained classroom management environment. The majority of Canadian schools conduct their digital classroom administration through established LMS platforms—Google Classroom in the elementary sector, D2L Brightspace and Schoology in secondary and post-secondary. A teacher who assigns content in this application must track it separately from their other classroom activities.
+
+LMS integration via the open LTI (Learning Tools Interoperability) standard would allow the application to appear as an integrated tool within an existing Google Classroom or Brightspace course, with assignments, due dates, and completion data flowing between systems. For the teacher, this eliminates the need to manage a separate platform. For the student, work done in the application appears alongside all other coursework in the LMS they already use daily.
+
+A more immediate, lower-complexity step toward this is a structured data export: a teacher-facing function that produces a CSV or PDF report of class performance data—quiz scores, assignment completion rates, badges earned, documents read—formatted for import into a school's existing grade management or reporting workflow. This requires no external API dependency and delivers meaningful administrative value with modest development effort.
+
+---
+
+## 7. Educational Positioning
 
 The Canadian Interactive Waterways Initiative occupies a position in the Canadian K-12 educational market that no existing digital tool currently holds: a single, mobile-native application that integrates primary source documents, interactive geography, Indigenous language learning, curriculum-aligned lesson plans, virtual field trips, classroom management tools, and student gamification into a coherent pedagogical experience.
 
 Its closest analogues—national parks digital guides, provincial curriculum portals, historical society websites—are either geographically limited, browser-dependent, non-interactive, or designed for adult audiences. This application is built specifically for the mobile device already in a student's hand, designed to be as engaging in independent exploration as in directed classroom use, and structured to grow: the content visibility workflow, teacher content creation tools, and community contribution system ensure the platform can expand its resource base as its user community grows.
+
+The developmental roadmap described above reflects the application's architectural readiness for each of these enhancements. Historical cartographic layers leverage the existing KML coordinate infrastructure. The longitudinal timeline aggregates data already present in the database. Journey expansion and teacher authoring extend a node system already designed for it. Audio integration populates `audioUrl` fields already defined in the data model. LMS integration builds on the existing assignment and progress-tracking framework. None of these directions require a rearchitecture of the platform; each represents a focused content or feature extension on a foundation that is already in place.
 
 The Royal Canadian Geographical Society partnership positions the application as an authoritative educational resource backed by Canada's leading geography organization, providing credibility with curriculum directors, school boards, and educators making adoption decisions.
 
