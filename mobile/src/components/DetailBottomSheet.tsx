@@ -426,18 +426,21 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                 </View>
               ) : null}
 
-              {/* Gallery Images Section */}
+              {/* Media Gallery — images and videos combined */}
               {(() => {
                 const galleryJson = markerType === 'waterway' ? waterwayData?.galleryImages : locationData?.galleryImages;
                 const galleryImages = parseGalleryImages(galleryJson ?? null);
-                if (galleryImages.length === 0) return null;
+                const videoUrlField = markerType === 'waterway' ? waterwayData?.videoUrl : locationData?.videoUrl;
+                const videos = parseVideoData(videoUrlField ?? null);
+                if (galleryImages.length === 0 && videos.length === 0) return null;
+
                 return (
                   <View className="mb-4">
                     <Text
                       className="text-lg font-bold mb-2"
                       style={{ color: colors.waterBlue }}
                     >
-                      Photo Gallery
+                      Media Gallery
                     </Text>
                     <ScrollView
                       horizontal
@@ -469,34 +472,6 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                           ) : null}
                         </Pressable>
                       ))}
-                    </ScrollView>
-                  </View>
-                );
-              })()}
-
-              {/* Video Section */}
-              {(() => {
-                const videoUrlField = markerType === 'waterway' ? waterwayData?.videoUrl : locationData?.videoUrl;
-                const videos = parseVideoData(videoUrlField ?? null);
-                if (videos.length === 0) return null;
-
-                return (
-                  <View className="mb-4">
-                    <View className="flex-row items-center mb-2">
-                      <Play size={20} color={colors.forestGreen} />
-                      <Text
-                        className="text-lg font-bold ml-2"
-                        style={{ color: colors.forestGreen }}
-                      >
-                        Video{videos.length > 1 ? 's' : ''}
-                      </Text>
-                    </View>
-                    <ScrollView
-                      horizontal
-                      showsHorizontalScrollIndicator={false}
-                      contentContainerStyle={{ paddingRight: 16 }}
-                      style={{ flexGrow: 0 }}
-                    >
                       {videos.map((video, index) => {
                         const videoId = getYouTubeVideoId(video.url);
                         const thumbnailUrl = videoId
@@ -514,7 +489,7 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                               <View style={{ position: 'relative' }}>
                                 <Image
                                   source={{ uri: thumbnailUrl }}
-                                  style={{ width: 280, height: 160 }}
+                                  style={{ width: 280, height: 150 }}
                                   resizeMode="cover"
                                 />
                                 <View
@@ -547,7 +522,7 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                               <View
                                 style={{
                                   width: 280,
-                                  height: 160,
+                                  height: 150,
                                   backgroundColor: colors.section,
                                   alignItems: 'center',
                                   justifyContent: 'center',

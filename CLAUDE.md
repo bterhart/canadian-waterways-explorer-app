@@ -63,6 +63,18 @@ This workspace contains a mobile app and backend server.
   - expo-docs: Use this skill when the user asks you to use an Expo SDK module or package that you might not know much about.
 </skills>
 
+<database>
+  CRITICAL: There is ONE database. It is the external Turso database (libsql).
+  - URL: TURSO_DATABASE_URL in backend/.env
+  - The local file backend/prisma/prisma/dev.db is EMPTY and NEVER used.
+  - NEVER query or update the local SQLite file. It has no data.
+  - ALL database access must go through the backend Prisma client (backend/src/prisma.ts or backend/src/db.ts)
+    which uses the @prisma/adapter-libsql Turso adapter.
+  - To run a script against the real database, write a TS script in backend/prisma/ and run it with:
+    cd backend && bun run prisma/your-script.ts
+  - The DATABASE_URL env var points to the empty local file — ignore it. Use TURSO_DATABASE_URL.
+</database>
+
 <environment>
   System manages git and dev servers. DO NOT manage these.
   The user views the app through Vibecode App.
