@@ -20,7 +20,7 @@
     "@hono/zod-validator": "^0.7.6",
     "@libsql/client": "^0.17.0",
     "@prisma/adapter-libsql": "^7.4.0",
-    "@prisma/client": "6",
+    "@prisma/client": "^7.5.0",
     "@types/jsonwebtoken": "^9.0.10",
     "@vibecodeapp/backend-sdk": "^1.0.1",
     "@vibecodeapp/cloud-studio": "^0.2.4",
