@@ -57,8 +57,9 @@ function extFromUrl(url: string): string {
   }
 }
 
-/** Small delay between downloads to avoid Wikimedia rate-limiting. */
+/** Delay between downloads — 1.5s base to stay under Wikimedia rate limits. */
 const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
+const REQUEST_DELAY = 1500;
 
 /**
  * Attempts to migrate one URL to the CDN.

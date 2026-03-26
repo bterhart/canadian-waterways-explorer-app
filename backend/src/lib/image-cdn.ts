@@ -52,14 +52,28 @@ export async function uploadImageFromUrl(
   }
 
   // Download the image, following redirects (Wikimedia Special:FilePath uses 302)
-  const response = await fetch(sourceUrl, {
-    headers: { "User-Agent": "CanadianWaterwaysExplorer/1.0 (image-migration)" },
-    signal: AbortSignal.timeout(30_000),
-    redirect: "follow",
-  });
+  // Retry up to 3 times on 429 (rate limited) with exponential backoff.
+  const RETRY_DELAYS = [30_000, 60_000, 120_000];
+  let response: Response | null = null;
 
-  if (!response.ok) {
-    throw new Error(`HTTP ${response.status} downloading ${sourceUrl}`);
+  for (let attempt = 0; attempt <= RETRY_DELAYS.length; attempt++) {
+    response = await fetch(sourceUrl, {
+      headers: { "User-Agent": "CanadianWaterwaysExplorer/1.0 (image-migration)" },
+      signal: AbortSignal.timeout(30_000),
+      redirect: "follow",
+    });
+
+    if (response.status !== 429) break;
+
+    if (attempt < RETRY_DELAYS.length) {
+      const waitMs = RETRY_DELAYS[attempt]!;
+      console.log(`    [rate-limited] waiting ${waitMs / 1000}s before retry ${attempt + 1}…`);
+      await new Promise((r) => setTimeout(r, waitMs));
+    }
+  }
+
+  if (!response || !response.ok) {
+    throw new Error(`HTTP ${response?.status ?? "unknown"} downloading ${sourceUrl}`);
   }
 
   const buffer = Buffer.from(await response.arrayBuffer());
