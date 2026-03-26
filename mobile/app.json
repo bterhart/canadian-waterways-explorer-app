@@ -3,14 +3,14 @@
     "name": "Canada Waterways Explorer",
     "slug": "canada-waterways-explorer",
     "scheme": "vibecode",
-    "version": "3.3.2",
+    "version": "3.4.0",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.bterhart.canadianwaterwaysexplorer",
-      "buildNumber": "26",
+      "bundleIdentifier": "ca.canadianwaterways.explorer",
+      "buildNumber": "27",
       "infoPlist": {
         "NSMicrophoneUsageDescription": "Canada Waterways Explorer uses the microphone to record audio tracks that the app attaches to your creations.",
         "NSLocationWhenInUseUsageDescription": "Canada Waterways Explorer uses your location to display your position on in-app maps and surface nearby points of interest."
