@@ -1,13 +1,13 @@
 // Fix 2 genuine 404 URLs for Quebec City in Turso
 // Uses API-confirmed Wikimedia URLs — verified to exist via Wikimedia Commons API
 import { PrismaClient } from "@prisma/client";
-import { PrismaLibSql } from "@prisma/adapter-libsql";
+import { PrismaLibSQL } from "@prisma/adapter-libsql";
 
 const tursoUrl = process.env.TURSO_DATABASE_URL;
 const tursoToken = process.env.TURSO_AUTH_TOKEN;
 if (!tursoUrl) throw new Error("TURSO_DATABASE_URL not set");
 
-const adapter = new PrismaLibSql({ url: tursoUrl, authToken: tursoToken });
+const adapter = new PrismaLibSQL({ url: tursoUrl, authToken: tursoToken });
 const prisma = new PrismaClient({ adapter } as any);
 
 interface GalleryImage { url: string; caption?: string; credit?: string; }

@@ -1,13 +1,13 @@
 // Fix broken Google Places API image URLs by replacing with Wikimedia Commons URLs
 import { PrismaClient } from "@prisma/client";
-import { PrismaLibSql } from "@prisma/adapter-libsql";
+import { PrismaLibSQL } from "@prisma/adapter-libsql";
 
 const tursoUrl = process.env.TURSO_DATABASE_URL;
 const tursoToken = process.env.TURSO_AUTH_TOKEN;
 
 if (!tursoUrl) throw new Error("TURSO_DATABASE_URL not set");
 
-const adapter = new PrismaLibSql({ url: tursoUrl, authToken: tursoToken });
+const adapter = new PrismaLibSQL({ url: tursoUrl, authToken: tursoToken });
 const prisma = new PrismaClient({ adapter });
 
 // Comprehensive mapping of location names to Wikimedia Commons public domain images
