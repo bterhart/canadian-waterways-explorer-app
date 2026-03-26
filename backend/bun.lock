@@ -7,8 +7,8 @@
         "@hono/node-server": "1.12.0",
         "@hono/zod-validator": "^0.7.6",
         "@libsql/client": "^0.17.0",
-        "@prisma/adapter-libsql": "6",
-        "@prisma/client": "6",
+        "@prisma/adapter-libsql": "6.19.2",
+        "@prisma/client": "6.19.2",
         "@types/jsonwebtoken": "^9.0.10",
         "@vibecodeapp/backend-sdk": "^1.0.1",
         "@vibecodeapp/cloud-studio": "^0.2.4",
@@ -22,7 +22,7 @@
       "devDependencies": {
         "@types/bcryptjs": "^3.0.0",
         "@types/bun": "latest",
-        "prisma": "6",
+        "prisma": "6.19.2",
         "typescript": "5.8.3",
       },
     },
@@ -72,7 +72,7 @@
 
     "@prisma/adapter-libsql": ["@prisma/adapter-libsql@6.19.2", "", { "dependencies": { "@libsql/client": "^0.3.5 || ^0.4.0 || ^0.5.0 || ^0.6.0 || ^0.7.0 || ^0.8.0", "@prisma/driver-adapter-utils": "6.19.2", "async-mutex": "0.5.0" } }, "sha512-eZnpnp0k5wl61+X/hmqPODzdWiCUDjR9g3zd597y5DHTxMRr77j3LNuaWV2Qrleq0z7EnjL+njHvtItP5oBzvA=="],
 
-    "@prisma/client": ["@prisma/client@6.19.1", "", { "peerDependencies": { "prisma": "*", "typescript": ">=5.1.0" }, "optionalPeers": ["prisma", "typescript"] }, "sha512-4SXj4Oo6HyQkLUWT8Ke5R0PTAfVOKip5Roo+6+b2EDTkFg5be0FnBWiuRJc0BC0sRQIWGMLKW1XguhVfW/z3/A=="],
+    "@prisma/client": ["@prisma/client@6.19.2", "", { "peerDependencies": { "prisma": "*", "typescript": ">=5.1.0" }, "optionalPeers": ["prisma", "typescript"] }, "sha512-gR2EMvfK/aTxsuooaDA32D8v+us/8AAet+C3J1cc04SW35FPdZYgLF+iN4NDLUgAaUGTKdAB0CYenu1TAgGdMg=="],
 
     "@prisma/config": ["@prisma/config@6.19.2", "", { "dependencies": { "c12": "3.1.0", "deepmerge-ts": "7.1.5", "effect": "3.18.4", "empathic": "2.0.0" } }, "sha512-kadBGDl+aUswv/zZMk9Mx0C8UZs1kjao8H9/JpI4Wh4SHZaM7zkTwiKn/iFLfRg+XtOAo/Z/c6pAYhijKl0nzQ=="],
 
@@ -339,6 +339,8 @@
     "@prisma/adapter-libsql/@libsql/client": ["@libsql/client@0.8.1", "", { "dependencies": { "@libsql/core": "^0.8.1", "@libsql/hrana-client": "^0.6.2", "js-base64": "^3.7.5", "libsql": "^0.3.10", "promise-limit": "^2.7.0" } }, "sha512-xGg0F4iTDFpeBZ0r4pA6icGsYa5rG6RAG+i/iLDnpCAnSuTqEWMDdPlVseiq4Z/91lWI9jvvKKiKpovqJ1kZWA=="],
 
     "@vibecodeapp/cloud-studio/@hono/node-server": ["@hono/node-server@1.19.7", "", { "peerDependencies": { "hono": "^4" } }, "sha512-vUcD0uauS7EU2caukW8z5lJKtoGMokxNbJtBiwHgpqxEXokaHCBkQUmCHhjFB1VUTWdqj25QoMkMKzgjq+uhrw=="],
+
+    "@vibecodeapp/cloud-studio/@prisma/client": ["@prisma/client@6.19.1", "", { "peerDependencies": { "prisma": "*", "typescript": ">=5.1.0" }, "optionalPeers": ["prisma", "typescript"] }, "sha512-4SXj4Oo6HyQkLUWT8Ke5R0PTAfVOKip5Roo+6+b2EDTkFg5be0FnBWiuRJc0BC0sRQIWGMLKW1XguhVfW/z3/A=="],
 
     "@vibecodeapp/cloud-studio/hono": ["hono@4.11.1", "", {}, "sha512-KsFcH0xxHes0J4zaQgWbYwmz3UPOOskdqZmItstUG93+Wk1ePBLkLGwbP9zlmh1BFUiL8Qp+Xfu9P7feJWpGNg=="],
 
