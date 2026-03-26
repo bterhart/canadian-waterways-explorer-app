@@ -112,6 +112,7 @@ export interface Location {
   latitude: number;
   longitude: number;
   locationType: string;
+  yearEstablished: number | null;
   imageUrl: string | null;
   waterway: {
     id: string;

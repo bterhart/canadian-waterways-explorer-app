@@ -229,6 +229,24 @@ export default function MapScreen() {
     return TIME_PERIODS.find(p => p.id === filterValue) || null;
   }, [filterType, filterValue]);
 
+  // Derive which waterway IDs contain locations established within the selected era.
+  // Locations with no yearEstablished are treated as timeless and included in all eras.
+  const eraWaterwayIds = useMemo(() => {
+    if (filterType !== 'period' || !selectedPeriod || !locations) return null;
+    const { minYear, maxYear } = selectedPeriod;
+    const relevantLocations = locations.filter(l => {
+      if (l.yearEstablished === null) return true;
+      if (minYear !== null && l.yearEstablished < minYear) return false;
+      if (maxYear !== null && l.yearEstablished > maxYear) return false;
+      return true;
+    });
+    return new Set(
+      relevantLocations
+        .map(l => l.waterway?.id)
+        .filter((id): id is string => !!id)
+    );
+  }, [filterType, selectedPeriod, locations]);
+
   // Filter waterways based on active filter
   const filteredWaterways = useMemo(() => {
     if (!waterways) return [];
@@ -254,18 +272,20 @@ export default function MapScreen() {
     }
 
     // Filter by explorer - show waterways they explored
-    if (filterType === 'explorer' && explorerWaterwayIds.size > 0) {
+    if (filterType === 'explorer') {
+      // While explorerDetail is loading, show nothing rather than all markers
+      if (explorerWaterwayIds.size === 0) return [];
       return waterways.filter(w => explorerWaterwayIds.has(w.id));
     }
 
-    // Filter by time period - we would need year data on waterways
-    // For now, show all waterways when period filter is active
+    // Filter by time period - show only waterways that have era-relevant locations
     if (filterType === 'period') {
-      return waterways;
+      if (eraWaterwayIds === null) return waterways;
+      return waterways.filter(w => eraWaterwayIds.has(w.id));
     }
 
     return waterways;
-  }, [waterways, activeFilter, filterType, filterValue, explorerWaterwayIds]);
+  }, [waterways, activeFilter, filterType, filterValue, explorerWaterwayIds, eraWaterwayIds]);
 
   // Filter locations based on active filter
   const filteredLocations = useMemo(() => {
@@ -292,17 +312,20 @@ export default function MapScreen() {
     }
 
     // Filter by explorer - show locations along their waterways
-    if (filterType === 'explorer' && explorerWaterwayIds.size > 0) {
+    if (filterType === 'explorer') {
+      // While explorerDetail is loading, show nothing rather than all markers
+      if (explorerWaterwayIds.size === 0) return [];
       return locations.filter(l => l.waterway && explorerWaterwayIds.has(l.waterway.id));
     }
 
-    // Filter by time period - filter by yearEstablished
+    // Filter by time period - filter locations by yearEstablished
     if (filterType === 'period' && selectedPeriod) {
+      const { minYear, maxYear } = selectedPeriod;
       return locations.filter(l => {
-        // We need to check location's year - using waterway relationship or other data
-        // For now, we filter based on historical context
-        // Locations without years are included in all periods
-        return true; // Show all locations for now - would need yearEstablished data
+        if (l.yearEstablished === null) return true;
+        if (minYear !== null && l.yearEstablished < minYear) return false;
+        if (maxYear !== null && l.yearEstablished > maxYear) return false;
+        return true;
       });
     }
 
@@ -546,6 +569,7 @@ export default function MapScreen() {
           // Only dismiss callout and close bottom sheet when tapping empty map area
           if (e.nativeEvent.action === 'press') {
             handleCalloutDismiss();
+            setLegendVisible(false);
           }
         }}
       >
