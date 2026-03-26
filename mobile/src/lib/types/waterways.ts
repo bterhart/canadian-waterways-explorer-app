@@ -149,6 +149,8 @@ export interface LocationDetail {
     id: string;
     name: string;
     type: WaterwayTypeInfo;
+    explorers: ExplorerWaterway[];
+    furTradeInfo: FurTradeInfo | null;
   };
   cartographer: Cartographer | null;
 }

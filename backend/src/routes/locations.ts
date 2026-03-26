@@ -62,7 +62,12 @@ locationsRouter.get("/:id", async (c) => {
     include: {
       waterway: {
         include: {
-          type: true
+          type: true,
+          explorers: {
+            include: { explorer: true },
+            orderBy: { yearExplored: 'asc' }
+          },
+          furTradeInfo: true
         }
       },
       cartographer: true

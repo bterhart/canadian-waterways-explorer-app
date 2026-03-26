@@ -4,8 +4,9 @@ import { View, Text, ActivityIndicator, Image, Pressable, Linking, ScrollView, M
 import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import MapView, { Marker, PROVIDER_DEFAULT } from 'react-native-maps';
 import { Plus, MessageSquare, Camera, BookOpen, History, Compass, Globe, Play, X, ImageIcon, ChevronLeft, MapPin } from 'lucide-react-native';
-import { useWaterwayDetail, useLocationDetail, useWaterwayContributions, useLocationContributions } from '@/lib/api/waterways-api';
+import { useWaterwayDetail, useLocationDetail, useWaterwayContributions, useLocationContributions, useExplorerDetail } from '@/lib/api/waterways-api';
 import ContributeModal from './ContributeModal';
+import ExplorerDetailModal from './ExplorerDetailModal';
 import type { MarkerType, WaterwayDetail, LocationDetail, UserContribution, ArchaeologicalDiscovery } from '@/lib/types/waterways';
 import { locationReadingGuideData } from '@/data/locationReadingGuideData';
 
@@ -142,6 +143,7 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
     const snapPoints = useMemo(() => ['50%', '85%'], []);
     const [showContributeModal, setShowContributeModal] = useState(false);
     const [selectedGalleryImage, setSelectedGalleryImage] = useState<GalleryImage | null>(null);
+    const [selectedExplorerId, setSelectedExplorerId] = useState<string | null>(null);
 
     // Fetch data based on marker type
     const { data: waterwayData, isLoading: waterwayLoading } = useWaterwayDetail(
@@ -160,6 +162,9 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
     );
 
     const contributions = markerType === 'waterway' ? waterwayContributions : locationContributions;
+
+    // Fetch selected explorer detail for bio modal
+    const { data: selectedExplorerDetail, isLoading: explorerDetailLoading } = useExplorerDetail(selectedExplorerId);
 
     const isLoading = waterwayLoading || locationLoading;
     const data: WaterwayDetail | LocationDetail | undefined = markerType === 'waterway' ? waterwayData : locationData;
@@ -330,7 +335,7 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                 {(markerType === 'waterway' && waterwayData?.imageUrl) || (markerType === 'location' && locationData?.imageUrl) ? (
                   <Image
                     source={{ uri: markerType === 'waterway' ? waterwayData?.imageUrl! : locationData?.imageUrl! }}
-                    className="w-full h-48 rounded-xl mb-4"
+                    style={{ width: '100%', height: 192, borderRadius: 12, marginBottom: 16 }}
                     resizeMode="cover"
                   />
                 ) : null}
@@ -454,13 +459,11 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                           onPress={() => setSelectedGalleryImage(image)}
                           className="mr-3"
                         >
-                          <View className="rounded-xl overflow-hidden" style={{ width: 200, height: 150 }}>
-                            <Image
-                              source={{ uri: image.url }}
-                              style={{ width: 200, height: 150 }}
-                              resizeMode="cover"
-                            />
-                          </View>
+                          <Image
+                            source={{ uri: image.url }}
+                            style={{ width: 200, height: 150, borderRadius: 12 }}
+                            resizeMode="cover"
+                          />
                           {image.caption ? (
                             <Text
                               className="text-xs mt-1 text-gray-600"
@@ -598,7 +601,11 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                               ) : null}
                             </View>
                             {/* Explorer info */}
-                            <View className="flex-1 flex-row items-start">
+                            <Pressable
+                              className="flex-1 flex-row items-start"
+                              onPress={() => setSelectedExplorerId(explorerWaterway.explorer?.id ?? null)}
+                              style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
+                            >
                               {explorerWaterway.explorer?.imageUrl ? (
                                 <Image
                                   source={{ uri: explorerWaterway.explorer.imageUrl }}
@@ -629,8 +636,11 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                                     {explorerWaterway.expeditionNotes}
                                   </Text>
                                 ) : null}
+                                <Text className="text-xs mt-1" style={{ color: colors.waterBlue }}>
+                                  Tap for biography
+                                </Text>
                               </View>
-                            </View>
+                            </Pressable>
                           </View>
                         ))}
                       </View>
@@ -909,6 +919,145 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                     </View>
                   ) : null}
 
+                  {/* Explorers Who Visited (from parent waterway) */}
+                  {locationData.waterway.explorers && locationData.waterway.explorers.length > 0 ? (
+                    <View className="mb-4">
+                      <Text
+                        className="text-lg font-bold mb-2"
+                        style={{ color: colors.forestGreen }}
+                      >
+                        Explorers Who Visited
+                      </Text>
+                      <View className="p-4 rounded-xl" style={{ backgroundColor: '#E6F3F8' }}>
+                        {locationData.waterway.explorers.map((explorerWaterway, index) => (
+                          <View key={explorerWaterway.id} className="flex-row mb-4 last:mb-0">
+                            {/* Timeline indicator */}
+                            <View className="items-center mr-3">
+                              {explorerWaterway.yearExplored ? (
+                                <View
+                                  className="px-2 py-1 rounded-lg mb-2"
+                                  style={{ backgroundColor: colors.gold }}
+                                >
+                                  <Text className="text-white text-xs font-bold">
+                                    {explorerWaterway.yearExplored}
+                                  </Text>
+                                </View>
+                              ) : (
+                                <View
+                                  className="px-2 py-1 rounded-lg mb-2"
+                                  style={{ backgroundColor: colors.earthBrown }}
+                                >
+                                  <Text className="text-white text-xs font-bold">N/A</Text>
+                                </View>
+                              )}
+                              {index < locationData.waterway.explorers.length - 1 ? (
+                                <View
+                                  className="w-0.5 flex-1"
+                                  style={{ backgroundColor: colors.forestGreen, minHeight: 40 }}
+                                />
+                              ) : null}
+                            </View>
+                            {/* Explorer info — tappable */}
+                            <Pressable
+                              className="flex-1 flex-row items-start"
+                              onPress={() => setSelectedExplorerId(explorerWaterway.explorer?.id ?? null)}
+                              style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
+                            >
+                              {explorerWaterway.explorer?.imageUrl ? (
+                                <Image
+                                  source={{ uri: explorerWaterway.explorer.imageUrl }}
+                                  className="w-12 h-12 rounded-full mr-3"
+                                />
+                              ) : (
+                                <View
+                                  className="w-12 h-12 rounded-full mr-3 items-center justify-center"
+                                  style={{ backgroundColor: colors.waterBlue }}
+                                >
+                                  <Text className="text-white font-bold text-lg">
+                                    {explorerWaterway.explorer?.name?.charAt(0) || '?'}
+                                  </Text>
+                                </View>
+                              )}
+                              <View className="flex-1">
+                                <Text className="font-semibold" style={{ color: '#333' }}>
+                                  {explorerWaterway.explorer?.name || 'Unknown Explorer'}
+                                </Text>
+                                <Text className="text-sm text-gray-600">
+                                  {explorerWaterway.explorer?.nationality || ''}
+                                  {explorerWaterway.explorer?.birthYear && explorerWaterway.explorer?.deathYear
+                                    ? ` (${explorerWaterway.explorer.birthYear}-${explorerWaterway.explorer.deathYear})`
+                                    : ''}
+                                </Text>
+                                {explorerWaterway.expeditionNotes ? (
+                                  <Text className="text-xs italic text-gray-500 mt-1">
+                                    {explorerWaterway.expeditionNotes}
+                                  </Text>
+                                ) : null}
+                                <Text className="text-xs mt-1" style={{ color: colors.waterBlue }}>
+                                  Tap for biography
+                                </Text>
+                              </View>
+                            </Pressable>
+                          </View>
+                        ))}
+                      </View>
+                    </View>
+                  ) : null}
+
+                  {/* Fur Trade History (from parent waterway) */}
+                  {locationData.waterway.furTradeInfo ? (
+                    <View className="mb-4">
+                      <Text
+                        className="text-lg font-bold mb-2"
+                        style={{ color: colors.earthBrown }}
+                      >
+                        Fur Trade History
+                      </Text>
+                      <View className="p-4 rounded-xl" style={{ backgroundColor: '#F5EBE0' }}>
+                        {locationData.waterway.furTradeInfo.tradingCompany ? (
+                          <View className="mb-2">
+                            <Text className="text-sm font-semibold" style={{ color: colors.earthBrown }}>
+                              Trading Company
+                            </Text>
+                            <Text className="text-base" style={{ color: '#333' }}>
+                              {locationData.waterway.furTradeInfo.tradingCompany}
+                            </Text>
+                          </View>
+                        ) : null}
+                        {locationData.waterway.furTradeInfo.peakTradePeriod ? (
+                          <View className="mb-2">
+                            <Text className="text-sm font-semibold" style={{ color: colors.earthBrown }}>
+                              Peak Trading Period
+                            </Text>
+                            <Text className="text-base" style={{ color: '#333' }}>
+                              {locationData.waterway.furTradeInfo.peakTradePeriod}
+                            </Text>
+                          </View>
+                        ) : null}
+                        {locationData.waterway.furTradeInfo.primaryFurs ? (
+                          <View className="mb-2">
+                            <Text className="text-sm font-semibold" style={{ color: colors.earthBrown }}>
+                              Primary Furs Traded
+                            </Text>
+                            <Text className="text-base" style={{ color: '#333' }}>
+                              {locationData.waterway.furTradeInfo.primaryFurs}
+                            </Text>
+                          </View>
+                        ) : null}
+                        {locationData.waterway.furTradeInfo.tradeRouteNotes ? (
+                          <View>
+                            <Text className="text-sm font-semibold" style={{ color: colors.earthBrown }}>
+                              Trade Route Notes
+                            </Text>
+                            <Text className="text-base" style={{ color: '#333' }}>
+                              {locationData.waterway.furTradeInfo.tradeRouteNotes}
+                            </Text>
+                          </View>
+                        ) : null}
+                      </View>
+                    </View>
+                  ) : null}
+
                   {/* Related Waterway */}
                   {locationData.waterway ? (
                     <View className="mb-4">
@@ -1110,6 +1259,21 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
           waterwayName={markerType === 'waterway' ? data?.name : undefined}
           locationName={markerType === 'location' ? data?.name : undefined}
         />
+
+        {/* Explorer Bio Modal */}
+        <Modal
+          visible={selectedExplorerId !== null && selectedExplorerDetail !== undefined && !explorerDetailLoading}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setSelectedExplorerId(null)}
+        >
+          {selectedExplorerDetail ? (
+            <ExplorerDetailModal
+              explorer={selectedExplorerDetail}
+              onClose={() => setSelectedExplorerId(null)}
+            />
+          ) : null}
+        </Modal>
 
         {/* Gallery Image Modal */}
         <Modal
