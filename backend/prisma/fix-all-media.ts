@@ -1,4 +1,25 @@
 /**
+ * ⛔️ DEPRECATED — DO NOT RUN
+ *
+ * This script has been superseded by migrate-images-to-cdn.ts.
+ *
+ * Running this script would overwrite the CDN-hosted image URLs in the database
+ * with Wikimedia Commons URLs, many of which are broken (404) or unstable.
+ *
+ * To re-seed image data:
+ *   1. Update migrate-images-to-cdn.ts with any new waterway/location entries
+ *   2. Run: cd backend && bun run prisma/migrate-images-to-cdn.ts
+ *
+ * For URL health monitoring, see: src/jobs/image-health-check.ts
+ */
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const _DEPRECATED = true;
+export {};
+
+/**
+ * ORIGINAL SCRIPT PRESERVED BELOW FOR REFERENCE ONLY
+ * ─────────────────────────────────────────────────────────────────────────────
  * DEFINITIVE MEDIA FIX
  * Rebuilds imageUrl and galleryImages for EVERY Location and Waterway.
  *
@@ -9,7 +30,7 @@
  *  - No duplicates anywhere in the gallery
  *  - All non-hero gallery entries are different from the hero
  */
-import { prisma } from "../src/prisma";
+// import { prisma } from "../src/prisma";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // VERIFIED WIKIMEDIA COMMONS POOL
@@ -647,48 +668,7 @@ function defaultWaterwayMedia(name: string): EntityMedia {
 }
 
 async function main() {
-  console.log("=== DEFINITIVE MEDIA FIX ===\n");
-
-  // ── UPDATE WATERWAYS ──
-  const waterways = await prisma.waterway.findMany({ select: { id: true, name: true } });
-  console.log(`Processing ${waterways.length} waterways...`);
-  let wFixed = 0;
-  for (const w of waterways) {
-    const media = WATERWAY_MEDIA[w.name] || defaultWaterwayMedia(w.name);
-    const gallery = makeGallery(media.context, media.hero);
-    await prisma.waterway.update({
-      where: { id: w.id },
-      data: {
-        imageUrl: media.hero.url,
-        galleryImages: JSON.stringify(gallery),
-      },
-    });
-    wFixed++;
-    process.stdout.write(`  ✓ ${w.name}\n`);
-  }
-
-  // ── UPDATE LOCATIONS ──
-  const locations = await prisma.location.findMany({ select: { id: true, name: true, locationType: true } });
-  console.log(`\nProcessing ${locations.length} locations...`);
-  let lFixed = 0;
-  for (const loc of locations) {
-    const media = LOCATION_MEDIA[loc.name] || defaultLocationMedia(loc.name, loc.locationType);
-    const gallery = makeGallery(media.context, media.hero);
-    await prisma.location.update({
-      where: { id: loc.id },
-      data: {
-        imageUrl: media.hero.url,
-        galleryImages: JSON.stringify(gallery),
-      },
-    });
-    lFixed++;
-    process.stdout.write(`  ✓ ${loc.name}\n`);
-  }
-
-  console.log(`\n=== COMPLETE ===`);
-  console.log(`Waterways fixed: ${wFixed}`);
-  console.log(`Locations fixed: ${lFixed}`);
-  console.log(`Total: ${wFixed + lFixed}`);
+  throw new Error("fix-all-media.ts is deprecated. Run migrate-images-to-cdn.ts instead.");
 }
 
-main().catch(console.error).finally(() => prisma.$disconnect());
+main().catch(console.error);

@@ -18,6 +18,15 @@ const envSchema = z.object({
   // JWT Configuration
   JWT_ACCESS_SECRET: z.string().min(32, "JWT_ACCESS_SECRET must be at least 32 characters").default("dev-access-secret-change-in-production-min32chars"),
   JWT_REFRESH_SECRET: z.string().min(32, "JWT_REFRESH_SECRET must be at least 32 characters").default("dev-refresh-secret-change-in-production-min32chars"),
+
+  // Cloudflare R2 — required for CDN image migration and future uploads
+  // Set via the ENV tab: R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY,
+  // R2_BUCKET_NAME, R2_PUBLIC_URL
+  R2_ACCOUNT_ID: z.string().optional(),
+  R2_ACCESS_KEY_ID: z.string().optional(),
+  R2_SECRET_ACCESS_KEY: z.string().optional(),
+  R2_BUCKET_NAME: z.string().optional(),
+  R2_PUBLIC_URL: z.string().optional(), // e.g. https://pub-xxxx.r2.dev or custom domain
 });
 
 /**

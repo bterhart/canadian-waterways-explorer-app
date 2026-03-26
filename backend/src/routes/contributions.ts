@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { prisma } from "../prisma";
+import { validateImageUrl } from "../lib/validate-image-url";
 
 const contributionsRouter = new Hono();
 
@@ -54,6 +55,22 @@ contributionsRouter.post(
         return c.json(
           { error: { message: "Location not found", code: "NOT_FOUND" } },
           404
+        );
+      }
+    }
+
+    // Verify the imageUrl is reachable before persisting it
+    if (data.imageUrl) {
+      const check = await validateImageUrl(data.imageUrl);
+      if (!check.ok) {
+        return c.json(
+          {
+            error: {
+              message: "The provided image URL is not reachable. Please check the URL and try again.",
+              code: "IMAGE_URL_UNREACHABLE",
+            },
+          },
+          400
         );
       }
     }

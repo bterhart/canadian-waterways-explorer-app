@@ -862,6 +862,23 @@ model MapNote {
   annotation      UserMapAnnotation @relation(fields: [annotationId], references: [id], onDelete: Cascade)
 }
 
+// Tracks the result of each URL checked by the nightly image health job.
+// Used by GET /api/admin/image-health to surface broken links.
+model ImageHealthLog {
+  id          String   @id @default(cuid())
+  checkedAt   DateTime @default(now())
+  model       String   // e.g. "Waterway", "Explorer", "UserContribution"
+  recordId    String
+  field       String   // e.g. "imageUrl", "galleryImages[0]"
+  url         String
+  status      String   // "healthy" | "broken" | "rate_limited" | "unreachable" | "repaired"
+  resolvedUrl String?  // populated when status == "repaired"
+
+  @@index([checkedAt])
+  @@index([status])
+  @@index([model, recordId])
+}
+
 model NotableFigure {
   id                  String   @id @default(cuid())
   name                String

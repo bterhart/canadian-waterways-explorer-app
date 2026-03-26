@@ -35,6 +35,8 @@ import { mapAnnotationsRouter } from "./routes/map-annotations";
 import { nearbyHistoryRouter } from "./routes/nearby-history";
 import { notableFiguresRouter } from "./routes/notable-figures";
 import { authRouter } from "./routes/auth";
+import { adminImageHealthRouter } from "./routes/admin-image-health";
+import { scheduleImageHealthCheck } from "./jobs/image-health-check";
 import { logger } from "hono/logger";
 import { readFileSync } from "fs";
 import { join } from "path";
@@ -105,6 +107,10 @@ app.route("/api/voyageur-journeys", voyageurJourneyRouter);
 app.route("/api/map-annotations", mapAnnotationsRouter);
 app.route("/api/nearby-history", nearbyHistoryRouter);
 app.route("/api/notable-figures", notableFiguresRouter);
+app.route("/api/admin/image-health", adminImageHealthRouter);
+
+// Schedule daily image URL health check (runs at 02:00 server time)
+scheduleImageHealthCheck();
 
 const port = Number(process.env.PORT) || 3000;
 
