@@ -2,12 +2,11 @@ import { PrismaClient } from '@prisma/client';
 import { PrismaLibSQL } from '@prisma/adapter-libsql';
 import { createClient } from '@libsql/client';
 
-const libsql = createClient({
-  url: 'libsql://canadian-waterways-weston-r.turso.io',
-  authToken: process.env.TURSO_AUTH_TOKEN || '',
-});
+const TURSO_URL = 'libsql://canadian-waterways-weston-r.turso.io';
+const TURSO_AUTH = process.env.TURSO_AUTH_TOKEN || '';
 
-const adapter = new PrismaLibSQL(libsql);
+const libsql = createClient({ url: TURSO_URL, authToken: TURSO_AUTH });
+const adapter = new PrismaLibSQL({ url: TURSO_URL, authToken: TURSO_AUTH });
 const prisma = new PrismaClient({ adapter } as any);
 
 async function main() {
