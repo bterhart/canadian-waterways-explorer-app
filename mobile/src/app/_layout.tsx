@@ -16,7 +16,16 @@ export const unstable_settings = {
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000,   // data stays fresh for 5 minutes
+      gcTime: 30 * 60 * 1000,     // keep unused cache for 30 minutes
+      refetchOnWindowFocus: false, // don't refetch just because the app comes to foreground
+      retry: 1,
+    },
+  },
+});
 
 function RootLayoutNav({ colorScheme }: { colorScheme: 'light' | 'dark' | null | undefined }) {
   return (
