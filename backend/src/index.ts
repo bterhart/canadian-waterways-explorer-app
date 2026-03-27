@@ -65,6 +65,18 @@ app.use("*", logger());
 // Health check endpoint
 app.get("/health", (c) => c.json({ status: "ok" }));
 
+// Temporary: download image export CSV
+app.get("/admin/image-export-csv", (c) => {
+  try {
+    const csv = readFileSync(join(import.meta.dir, "../prisma/image-export.csv"), "utf-8");
+    c.header("Content-Type", "text/csv");
+    c.header("Content-Disposition", "attachment; filename=\"image-export.csv\"");
+    return c.body(csv);
+  } catch {
+    return c.json({ error: "CSV not found" }, 404);
+  }
+});
+
 // Serve KML admin panel
 app.get("/admin/kml", (c) => {
   const html = readFileSync(join(import.meta.dir, "admin-panel.html"), "utf-8");
