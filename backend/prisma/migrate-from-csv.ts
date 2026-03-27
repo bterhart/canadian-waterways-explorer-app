@@ -9,7 +9,8 @@
  * The database is committed after each sequence completes.
  *
  * Safety:
- *   - 2.1 s delay between downloads (Wikimedia rate-limit safe)
+ *   - Random 17–63 s delay between downloads (Wikimedia rate-limit safe)
+ *   - On 429: retry with rand(20–40 s) + 30 s, then rand(20–40 s) + 60 s
  *   - DB saved per-sequence: a crash mid-run preserves all completed sequences
  *   - On download/upload failure: effective CSV URL is preserved in DB (not wiped)
  *   - Resume-safe: R2 HEAD check skips already-uploaded images
@@ -31,8 +32,29 @@ const R2_SECRET_ACCESS_KEY = process.env.R2_SECRET_ACCESS_KEY!;
 const R2_BUCKET_NAME = process.env.R2_BUCKET_NAME!;
 const R2_PUBLIC_URL = process.env.R2_PUBLIC_URL!;
 
-const REQUEST_DELAY_MS = 2100;
 const CSV_PATH = "/tmp/cleaned-urls.csv";
+
+// ── Timing helpers ─────────────────────────────────────────────────────────
+
+/** Returns a random integer in [min, max] (inclusive). */
+function randMs(minMs: number, maxMs: number): number {
+  return Math.floor(Math.random() * (maxMs - minMs + 1)) + minMs;
+}
+
+/** Inter-request delay: random 17–63 s. */
+function requestDelayMs(): number {
+  return randMs(17_000, 63_000);
+}
+
+/**
+ * Retry delays on 429.
+ * Attempt 1: rand(20–40 s) + 30 s
+ * Attempt 2: rand(20–40 s) + 60 s
+ */
+function retryDelayMs(attempt: number): number {
+  const base = attempt === 0 ? 30_000 : 60_000;
+  return base + randMs(20_000, 40_000);
+}
 
 // ── S3 / R2 client ─────────────────────────────────────────────────────────
 
@@ -174,7 +196,7 @@ type ImageResult =
   | { status: "skipped";  url: string }
   | { status: "failed";   url: string; error: string };
 
-const RETRY_WAIT_MS = [30_000, 60_000, 120_000];
+const MAX_RETRIES = 2;
 
 async function processImage(sourceUrl: string, key: string): Promise<ImageResult> {
   // Resume: if object already in R2, return its public URL immediately
@@ -184,7 +206,7 @@ async function processImage(sourceUrl: string, key: string): Promise<ImageResult
 
   let response: Response | null = null;
 
-  for (let attempt = 0; attempt <= RETRY_WAIT_MS.length; attempt++) {
+  for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
     try {
       response = await fetch(sourceUrl, {
         headers: { "User-Agent": "CanadianWaterwaysExplorer/1.0 (image-migration)" },
@@ -198,9 +220,9 @@ async function processImage(sourceUrl: string, key: string): Promise<ImageResult
 
     if (response.status !== 429) break;
 
-    if (attempt < RETRY_WAIT_MS.length) {
-      const wait = RETRY_WAIT_MS[attempt]!;
-      console.log(`    [rate-limited] waiting ${wait / 1000}s before retry ${attempt + 1}…`);
+    if (attempt < MAX_RETRIES) {
+      const wait = retryDelayMs(attempt);
+      console.log(`    [rate-limited] waiting ${(wait / 1000).toFixed(1)}s before retry ${attempt + 1}…`);
       await sleep(wait);
     }
   }
@@ -287,7 +309,7 @@ async function runScalarSequence(
   let first = true;
 
   for (const row of rows) {
-    if (!first) await sleep(REQUEST_DELAY_MS);
+    if (!first) await sleep(requestDelayMs());
     first = false;
 
     const srcUrl = effectiveUrl(row);
@@ -345,7 +367,7 @@ async function runGallerySequence(
     const entries: GalleryEntry[] = [];
 
     for (let i = 0; i < groupRows.length; i++) {
-      if (!first) await sleep(REQUEST_DELAY_MS);
+      if (!first) await sleep(requestDelayMs());
       first = false;
 
       const row    = groupRows[i]!;
@@ -412,7 +434,7 @@ async function main() {
   console.log(`  CSV rows       : ${rows.length}`);
   console.log(`  R2 bucket      : ${R2_BUCKET_NAME}`);
   console.log(`  R2 public URL  : ${R2_PUBLIC_URL}`);
-  console.log(`  Request delay  : ${REQUEST_DELAY_MS} ms`);
+  console.log(`  Request delay  : 17–63 s (randomised)`);
   console.log(`  Started at     : ${new Date().toISOString()}`);
   console.log("═══════════════════════════════════════════════════");
 
