@@ -306,12 +306,8 @@ async function runScalarSequence(
   console.log(`\n╔══ ${label} (${rows.length} images) ══╗`);
 
   const pending: Array<{ id: string; url: string }> = [];
-  let first = true;
 
   for (const row of rows) {
-    if (!first) await sleep(requestDelayMs());
-    first = false;
-
     const srcUrl = effectiveUrl(row);
     const ext    = extFromUrl(srcUrl);
     const key    = buildR2Key(row.table, row.field, row.id, 0, ext);
@@ -322,6 +318,9 @@ async function runScalarSequence(
     const result = await processImage(srcUrl, key);
     recordResult(result, row, srcUrl);
     pending.push({ id: row.id, url: result.url });
+
+    // Only delay when we actually downloaded from Wikimedia
+    if (result.status === "migrated") await sleep(requestDelayMs());
   }
 
   // ── Commit this sequence ───────────────────────────────────────────────
@@ -361,15 +360,11 @@ async function runGallerySequence(
 
   type GalleryEntry = { url: string; caption: string; credit: string };
   const pending: Array<{ id: string; entries: GalleryEntry[] }> = [];
-  let first = true;
 
   for (const [id, groupRows] of grouped) {
     const entries: GalleryEntry[] = [];
 
     for (let i = 0; i < groupRows.length; i++) {
-      if (!first) await sleep(requestDelayMs());
-      first = false;
-
       const row    = groupRows[i]!;
       const srcUrl = effectiveUrl(row);
       const ext    = extFromUrl(srcUrl);
@@ -380,8 +375,10 @@ async function runGallerySequence(
 
       const result = await processImage(srcUrl, key);
       recordResult(result, row, srcUrl);
-
       entries.push({ url: result.url, caption: row.caption, credit: row.credit });
+
+      // Only delay when we actually downloaded from Wikimedia
+      if (result.status === "migrated") await sleep(requestDelayMs());
     }
 
     pending.push({ id, entries });
