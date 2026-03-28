@@ -30,12 +30,6 @@ if [ -f "prisma/schema.prisma" ]; then
   fi
 fi
 
-# Launch migration monitor in background if CSV exists and migration not yet complete
-if [ -f "/home/user/workspace/backend/prisma/cleaned-urls.csv" ] && [ ! -f "/tmp/migration-complete" ]; then
-  echo "Starting migration monitor in background..."
-  bash /home/user/workspace/backend/prisma/migration-monitor.sh &
-fi
-
 # Start server based on environment
 # Use bun directly (not "bun run") so signals propagate correctly
 if [[ "${ENVIRONMENT}" == "production" ]]; then
