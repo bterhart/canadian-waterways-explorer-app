@@ -43,7 +43,7 @@ const R2_SECRET_ACCESS_KEY = process.env.R2_SECRET_ACCESS_KEY!;
 const R2_BUCKET_NAME = process.env.R2_BUCKET_NAME!;
 const R2_PUBLIC_URL = process.env.R2_PUBLIC_URL!;
 
-const CSV_PATH = "/tmp/cleaned-urls.csv";
+const CSV_PATH = "/tmp/cleaned_urls_final.csv";
 
 /** Allowed image content-type prefixes. Anything else is rejected. */
 const VALID_IMAGE_TYPES = [

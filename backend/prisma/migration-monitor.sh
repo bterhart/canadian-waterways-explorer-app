@@ -3,8 +3,8 @@
 # Keeps migrate-from-csv.ts running until it exits 0 (completion).
 # Re-copies the CSV from the persistent repo location to /tmp on each start.
 
-PERSISTENT_CSV="/home/user/workspace/backend/prisma/cleaned-urls.csv"
-TMP_CSV="/tmp/cleaned-urls.csv"
+PERSISTENT_CSV="/home/user/workspace/backend/prisma/cleaned_urls_final.csv"
+TMP_CSV="/tmp/cleaned_urls_final.csv"
 LOG="/tmp/migration.log"
 SCRIPT_DIR="/home/user/workspace/backend"
 
