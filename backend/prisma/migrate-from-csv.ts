@@ -8,12 +8,22 @@
  * A "sequence" = all images for one (table, field) pair.
  * The database is committed after each sequence completes.
  *
- * Safety:
- *   - Random 17–63 s delay between downloads (Wikimedia rate-limit safe)
- *   - On 429: retry with rand(20–40 s) + 30 s, then rand(20–40 s) + 60 s
- *   - DB saved per-sequence: a crash mid-run preserves all completed sequences
- *   - On download/upload failure: row is SKIPPED in DB (not written with source URL)
+ * Performance:
+ *   - Parallel downloads within each sequence (default 6 workers)
+ *   - 3 s inter-request delay per worker (~18 req/min aggregate)
+ *   - Duplicate source URLs downloaded once, R2 object reused
+ *   - TIFF images auto-converted to JPEG before upload
+ *
+ * Rate-limit safety:
+ *   - Per-request: 2 retries on 429 with escalating backoff (50–70 s, 80–100 s)
+ *   - Circuit breaker: 3+ 429s in 60 s → all workers pause 120 s, delays double
+ *   - Sustained throttle: 3 breaker trips in one sequence → drop to 2 workers, 15 s delay
+ *   - Sequence abort: 10+ consecutive failures → commit partial, move on
+ *
+ * Crash safety:
+ *   - DB committed per-sequence: a crash preserves all completed sequences
  *   - Resume-safe: R2 HEAD check skips already-uploaded images
+ *   - Failed images NOT written to DB
  *
  * Usage:
  *   cd backend && bun run prisma/migrate-from-csv.ts
@@ -22,6 +32,7 @@
 import { S3Client, PutObjectCommand, HeadObjectCommand } from "@aws-sdk/client-s3";
 import * as fs from "fs";
 import * as path from "path";
+import sharp from "sharp";
 import { prisma } from "../src/prisma";
 
 // ── Config ─────────────────────────────────────────────────────────────────
@@ -50,26 +61,33 @@ const KNOWN_IMAGE_EXTS = new Set([
   ".jpg", ".jpeg", ".png", ".gif", ".webp", ".svg", ".tiff", ".tif", ".bmp",
 ]);
 
+// ── Concurrency & timing defaults ──────────────────────────────────────────
+
+let CONCURRENCY = 6;
+let INTER_REQUEST_DELAY_MS = 3_000;
+const MAX_RETRIES = 2;
+const R2_UPLOAD_TIMEOUT_MS = 60_000;
+
+// Circuit breaker state (global, shared across workers)
+const rateLimitHits: number[] = [];              // timestamps of recent 429s
+let circuitBreakerTrips = 0;                     // trips within current sequence
+let consecutiveFailures = 0;                     // consecutive failures across workers
+const BREAKER_WINDOW_MS = 60_000;                // 60 s window for 429 counting
+const BREAKER_THRESHOLD = 3;                     // 429s in window to trip breaker
+const BREAKER_PAUSE_MS = 120_000;                // 120 s global pause on trip
+const SEQUENCE_ABORT_THRESHOLD = 10;             // consecutive failures to abort sequence
+const SUSTAINED_THROTTLE_TRIPS = 3;              // breaker trips to enter degraded mode
+let breakerPausePromise: Promise<void> | null = null; // shared pause lock
+
 // ── Timing helpers ─────────────────────────────────────────────────────────
 
-/** Returns a random integer in [min, max] (inclusive). */
 function randMs(minMs: number, maxMs: number): number {
   return Math.floor(Math.random() * (maxMs - minMs + 1)) + minMs;
 }
 
-/** Inter-request delay: random 17–63 s. */
-function requestDelayMs(): number {
-  return randMs(17_000, 63_000);
-}
-
-/**
- * Retry delays on 429.
- * Attempt 1: rand(20–40 s) + 30 s
- * Attempt 2: rand(20–40 s) + 60 s
- */
 function retryDelayMs(attempt: number): number {
-  const base = attempt === 0 ? 30_000 : 60_000;
-  return base + randMs(20_000, 40_000);
+  const base = attempt === 0 ? 50_000 : 80_000;
+  return base + randMs(0, 20_000);
 }
 
 // ── S3 / R2 client ─────────────────────────────────────────────────────────
@@ -94,26 +112,20 @@ function getS3(): S3Client {
 
 const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 
-/**
- * Extract a file extension from a URL.
- * Strips query strings and fragments before extracting.
- * Falls back to .jpg only if the extracted extension isn't a known image type.
- */
 function extFromUrl(url: string): string {
   try {
     const urlObj = new URL(url);
-    const pathname = urlObj.pathname;
-    const lastSegment = pathname.split("/").pop() ?? "";
+    const lastSegment = urlObj.pathname.split("/").pop() ?? "";
     const ext = path.extname(lastSegment).toLowerCase();
-
-    if (ext && KNOWN_IMAGE_EXTS.has(ext)) {
-      return ext;
-    }
-    // Unknown or missing extension — default to .jpg
+    if (ext && KNOWN_IMAGE_EXTS.has(ext)) return ext;
     return ".jpg";
   } catch {
     return ".jpg";
   }
+}
+
+function isTiff(ext: string): boolean {
+  return ext === ".tif" || ext === ".tiff";
 }
 
 async function existsInR2(key: string): Promise<boolean> {
@@ -123,6 +135,60 @@ async function existsInR2(key: string): Promise<boolean> {
   } catch {
     return false;
   }
+}
+
+// ── Circuit breaker ────────────────────────────────────────────────────────
+
+function record429(): void {
+  const now = Date.now();
+  rateLimitHits.push(now);
+  while (rateLimitHits.length > 0 && rateLimitHits[0]! < now - BREAKER_WINDOW_MS) {
+    rateLimitHits.shift();
+  }
+}
+
+function shouldTripBreaker(): boolean {
+  const now = Date.now();
+  const recent = rateLimitHits.filter((t) => t > now - BREAKER_WINDOW_MS);
+  return recent.length >= BREAKER_THRESHOLD;
+}
+
+async function tripBreaker(): Promise<void> {
+  if (breakerPausePromise) {
+    await breakerPausePromise;
+    return;
+  }
+
+  circuitBreakerTrips++;
+  INTER_REQUEST_DELAY_MS = Math.min(INTER_REQUEST_DELAY_MS * 2, 30_000);
+
+  if (circuitBreakerTrips >= SUSTAINED_THROTTLE_TRIPS) {
+    CONCURRENCY = 2;
+    INTER_REQUEST_DELAY_MS = 15_000;
+    console.warn(
+      `\n  ⚠️  SUSTAINED THROTTLE: ${circuitBreakerTrips} breaker trips. ` +
+      `Dropping to ${CONCURRENCY} workers, ${INTER_REQUEST_DELAY_MS / 1000}s delay.\n`
+    );
+    console.warn(`  Pausing 5 minutes before resuming…\n`);
+    breakerPausePromise = sleep(300_000);
+  } else {
+    console.warn(
+      `\n  ⚠️  CIRCUIT BREAKER TRIPPED (#${circuitBreakerTrips}). ` +
+      `Pausing all workers ${BREAKER_PAUSE_MS / 1000}s. ` +
+      `New delay: ${INTER_REQUEST_DELAY_MS / 1000}s/worker.\n`
+    );
+    breakerPausePromise = sleep(BREAKER_PAUSE_MS);
+  }
+
+  await breakerPausePromise;
+  breakerPausePromise = null;
+  rateLimitHits.length = 0;
+}
+
+function resetBreakerForSequence(): void {
+  circuitBreakerTrips = 0;
+  consecutiveFailures = 0;
+  rateLimitHits.length = 0;
 }
 
 // ── CSV types and parser ───────────────────────────────────────────────────
@@ -145,15 +211,11 @@ interface CsvRow {
   is_hero_norm: string;
 }
 
-/**
- * RFC 4180–aware CSV parser.
- * Handles doubled quotes ("") as escaped literal quotes inside quoted fields.
- */
 function parseCSV(content: string): CsvRow[] {
   const lines = content.split("\n").filter((l) => l.trim());
   const headers = lines[0]!
     .split(",")
-    .map((h) => h.trim().replace(/^\uFEFF/, ""));
+    .map((h) => h.trim().replace(/^\uFEFF/, "").replace(/\r$/, ""));
 
   const rows: CsvRow[] = [];
 
@@ -166,16 +228,13 @@ function parseCSV(content: string): CsvRow[] {
 
     while (j < line.length) {
       const ch = line[j]!;
-
       if (inQuote) {
         if (ch === '"') {
-          // Look ahead: doubled quote = escaped literal quote
           if (j + 1 < line.length && line[j + 1] === '"') {
             current += '"';
             j += 2;
             continue;
           }
-          // Single quote = end of quoted field
           inQuote = false;
           j++;
           continue;
@@ -183,17 +242,8 @@ function parseCSV(content: string): CsvRow[] {
         current += ch;
         j++;
       } else {
-        if (ch === '"') {
-          inQuote = true;
-          j++;
-          continue;
-        }
-        if (ch === ",") {
-          vals.push(current);
-          current = "";
-          j++;
-          continue;
-        }
+        if (ch === '"') { inQuote = true; j++; continue; }
+        if (ch === ",") { vals.push(current); current = ""; j++; continue; }
         current += ch;
         j++;
       }
@@ -202,7 +252,7 @@ function parseCSV(content: string): CsvRow[] {
 
     const row: Record<string, string> = {};
     headers.forEach((h, idx) => {
-      row[h] = (vals[idx] ?? "").trim();
+      row[h] = (vals[idx] ?? "").trim().replace(/\r$/, "");
     });
     rows.push(row as unknown as CsvRow);
   }
@@ -210,9 +260,42 @@ function parseCSV(content: string): CsvRow[] {
   return rows;
 }
 
-/** Effective URL = final_url_converted if non-empty, else final_url */
 function effectiveUrl(row: CsvRow): string {
   return row.final_url_converted.trim() || row.final_url.trim();
+}
+
+// ── BAC-LAC flagging ───────────────────────────────────────────────────────
+
+function flagBacLacUrls(rows: CsvRow[]): void {
+  const bacLac = rows.filter((r) => {
+    const url = effectiveUrl(r);
+    return url.includes("bac-lac.gc.ca");
+  });
+
+  if (bacLac.length === 0) return;
+
+  console.log("\n╔══════════════════════════════════════════════════════╗");
+  console.log("║  ⚠️  BAC-LAC URLs — MANUAL VERIFICATION NEEDED      ║");
+  console.log("╚══════════════════════════════════════════════════════╝");
+
+  for (const r of bacLac) {
+    const url = effectiveUrl(r);
+    const isSearch = url.includes("recherche-collection-search");
+    const severity = isSearch ? "🔴 LIKELY HTML" : "🟡 VERIFY";
+    console.log(`  ${severity} ${r.table}.${r.field} [${r.id}]`);
+    console.log(`    name: ${r.name}`);
+    console.log(`    url:  ${url}`);
+    if (isSearch) {
+      console.log(`    ↑ This is a search/record page, almost certainly serves HTML`);
+    } else {
+      console.log(`    ↑ Has &op=img — may serve image directly, but verify`);
+    }
+    console.log();
+  }
+
+  console.log(`  Total BAC-LAC URLs: ${bacLac.length}`);
+  console.log(`  These will go through the pipeline — content-type check`);
+  console.log(`  will reject any that serve HTML. Check failures list at end.\n`);
 }
 
 // ── R2 key naming ──────────────────────────────────────────────────────────
@@ -246,23 +329,30 @@ function buildR2Key(
     console.warn(`  [WARN] Unknown table "${table}" — using lowercase fallback`);
   }
   const prefix = slug ?? table.toLowerCase();
-  const isGall = GALLERY_FIELDS.has(field);
 
-  if (isGall) {
-    return `${prefix}/${id}/gallery-${galleryIndex}${ext}`;
+  // TIFF → convert to JPEG, so key should use .jpg
+  const finalExt = isTiff(ext) ? ".jpg" : ext;
+
+  if (GALLERY_FIELDS.has(field)) {
+    return `${prefix}/${id}/gallery-${galleryIndex}${finalExt}`;
   }
 
-  // Use is_hero_norm from CSV if available, else infer from table
   let suffix: string;
-  if (isHeroNorm === "portrait") {
-    suffix = "portrait";
-  } else if (isHeroNorm === "hero") {
-    suffix = "hero";
-  } else {
-    suffix = PORTRAIT_TABLES.has(table) ? "portrait" : "hero";
-  }
-  return `${prefix}/${id}/${suffix}${ext}`;
+  if (isHeroNorm === "portrait") suffix = "portrait";
+  else if (isHeroNorm === "hero") suffix = "hero";
+  else suffix = PORTRAIT_TABLES.has(table) ? "portrait" : "hero";
+
+  return `${prefix}/${id}/${suffix}${finalExt}`;
 }
+
+// ── Duplicate URL cache ────────────────────────────────────────────────────
+
+interface DownloadedImage {
+  buffer: Buffer;
+  contentType: string;
+}
+
+const downloadCache = new Map<string, DownloadedImage>();
 
 // ── Image processing ───────────────────────────────────────────────────────
 
@@ -271,72 +361,98 @@ type ImageResult =
   | { status: "skipped";  r2Url: string }
   | { status: "failed";   sourceUrl: string; error: string };
 
-const MAX_RETRIES = 2;
-const R2_UPLOAD_TIMEOUT_MS = 60_000;
-
-async function processImage(sourceUrl: string, key: string): Promise<ImageResult> {
-  // Resume: if object already in R2, return its public URL immediately
-  if (await existsInR2(key)) {
-    return { status: "skipped", r2Url: `${R2_PUBLIC_URL}/${key}` };
-  }
+async function downloadImage(sourceUrl: string): Promise<DownloadedImage | { error: string }> {
+  const cached = downloadCache.get(sourceUrl);
+  if (cached) return cached;
 
   let response: Response | null = null;
 
   for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
     try {
       response = await fetch(sourceUrl, {
-        headers: { "User-Agent": "CanadianWaterwaysExplorer/1.0 (image-migration)" },
+        headers: {
+          "User-Agent": "CanadianWaterwaysExplorer/1.0 (image-migration; contact@example.com)",
+          "Api-User-Agent": "CanadianWaterwaysExplorer/1.0 (image-migration; contact@example.com)",
+        },
         signal: AbortSignal.timeout(30_000),
         redirect: "follow",
       });
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
-      return { status: "failed", sourceUrl, error: `Fetch error: ${msg}` };
+      return { error: `Fetch error: ${msg}` };
+    }
+
+    if (response.status === 429) {
+      record429();
+
+      if (shouldTripBreaker()) {
+        await tripBreaker();
+      }
+
+      if (attempt < MAX_RETRIES) {
+        const wait = retryDelayMs(attempt);
+        console.log(`    [429] retry ${attempt + 1} in ${(wait / 1000).toFixed(0)}s…`);
+        await sleep(wait);
+        continue;
+      }
     }
 
     if (response.status !== 429) break;
-
-    if (attempt < MAX_RETRIES) {
-      const wait = retryDelayMs(attempt);
-      console.log(`    [rate-limited] waiting ${(wait / 1000).toFixed(1)}s before retry ${attempt + 1}…`);
-      await sleep(wait);
-    }
   }
 
   if (!response || !response.ok) {
-    return {
-      status: "failed",
-      sourceUrl,
-      error: `HTTP ${response?.status ?? "unknown"} from ${sourceUrl}`,
-    };
+    return { error: `HTTP ${response?.status ?? "unknown"} from ${sourceUrl}` };
   }
 
-  // Validate content-type is actually an image
   const contentType = response.headers.get("content-type") ?? "";
   const isImage = VALID_IMAGE_TYPES.some((t) => contentType.startsWith(t));
   if (!isImage) {
-    // Drain the body to avoid connection leak
-    try { await response.arrayBuffer(); } catch { /* ignore */ }
-    return {
-      status: "failed",
-      sourceUrl,
-      error: `Non-image content-type: "${contentType}"`,
-    };
+    try { await response.arrayBuffer(); } catch { /* drain */ }
+    return { error: `Non-image content-type: "${contentType}"` };
+  }
+
+  let buffer = Buffer.from(await response.arrayBuffer());
+
+  // Convert TIFF → JPEG
+  if (contentType.startsWith("image/tiff")) {
+    try {
+      console.log(`    [TIFF→JPEG] converting…`);
+      buffer = Buffer.from(await sharp(buffer).jpeg({ quality: 90 }).toBuffer());
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      return { error: `TIFF conversion error: ${msg}` };
+    }
+  }
+
+  const result: DownloadedImage = {
+    buffer,
+    contentType: contentType.startsWith("image/tiff") ? "image/jpeg" : contentType,
+  };
+
+  downloadCache.set(sourceUrl, result);
+  return result;
+}
+
+async function processImage(sourceUrl: string, key: string): Promise<ImageResult> {
+  if (await existsInR2(key)) {
+    return { status: "skipped", r2Url: `${R2_PUBLIC_URL}/${key}` };
+  }
+
+  const downloaded = await downloadImage(sourceUrl);
+  if ("error" in downloaded) {
+    return { status: "failed", sourceUrl, error: downloaded.error };
   }
 
   try {
-    const buffer = Buffer.from(await response.arrayBuffer());
-
     await getS3().send(
       new PutObjectCommand({
         Bucket:      R2_BUCKET_NAME,
         Key:         key,
-        Body:        buffer,
-        ContentType: contentType,
+        Body:        downloaded.buffer,
+        ContentType: downloaded.contentType,
       }),
       { requestTimeout: R2_UPLOAD_TIMEOUT_MS }
     );
-
     return { status: "migrated", r2Url: `${R2_PUBLIC_URL}/${key}` };
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
@@ -360,22 +476,74 @@ const stats = { migrated: 0, skipped: 0, failed: 0, failures: [] as Failure[] };
 function recordResult(result: ImageResult, row: CsvRow) {
   if (result.status === "migrated") {
     stats.migrated++;
+    consecutiveFailures = 0;
     console.log(`    → [OK]   ${result.r2Url}`);
   } else if (result.status === "skipped") {
     stats.skipped++;
-    console.log(`    → [SKIP] already in R2: ${result.r2Url}`);
+    consecutiveFailures = 0;
+    console.log(`    → [SKIP] ${result.r2Url}`);
   } else {
     stats.failed++;
+    consecutiveFailures++;
     stats.failures.push({
-      table:     row.table,
-      field:     row.field,
-      id:        row.id,
-      name:      row.name,
-      sourceUrl: result.sourceUrl,
-      error:     result.error,
+      table: row.table, field: row.field, id: row.id,
+      name: row.name, sourceUrl: result.sourceUrl, error: result.error,
     });
     console.error(`    → [FAIL] ${result.error}`);
   }
+}
+
+// ── Parallel worker pool ───────────────────────────────────────────────────
+
+interface WorkItem<T> {
+  row: CsvRow;
+  sourceUrl: string;
+  key: string;
+  galleryIndex: number;
+  context: T;
+}
+
+async function runPool<T>(
+  items: WorkItem<T>[],
+  onResult: (item: WorkItem<T>, result: ImageResult) => void
+): Promise<boolean /* aborted */> {
+  let nextIndex = 0;
+  let aborted = false;
+
+  async function worker(): Promise<void> {
+    while (!aborted) {
+      const idx = nextIndex++;
+      if (idx >= items.length) return;
+
+      const item = items[idx]!;
+      console.log(`  ${item.row.name} [${item.row.id}]${item.galleryIndex >= 0 ? ` gallery[${item.galleryIndex}]` : ""}`);
+      console.log(`    src: ${item.sourceUrl.substring(0, 100)}`);
+
+      if (breakerPausePromise) await breakerPausePromise;
+
+      const result = await processImage(item.sourceUrl, item.key);
+      recordResult(result, item.row);
+      onResult(item, result);
+
+      if (consecutiveFailures >= SEQUENCE_ABORT_THRESHOLD) {
+        console.error(`\n  🛑 ${consecutiveFailures} consecutive failures — aborting sequence early.\n`);
+        aborted = true;
+        return;
+      }
+
+      if (result.status === "migrated") {
+        await sleep(INTER_REQUEST_DELAY_MS);
+      }
+    }
+  }
+
+  const workers: Promise<void>[] = [];
+  for (let i = 0; i < CONCURRENCY; i++) {
+    workers.push(worker());
+  }
+  await Promise.all(workers);
+
+  return aborted;
 }
 
 // ── Sequence runners ───────────────────────────────────────────────────────
@@ -383,70 +551,65 @@ function recordResult(result: ImageResult, row: CsvRow) {
 type UpdateScalarFn = (id: string, url: string) => Promise<void>;
 type UpdateGalleryFn = (id: string, gallery: string) => Promise<void>;
 
-/**
- * Scalar field sequence (imageUrl / heroImageUrl / coverImageUrl).
- * One row per record; writes a plain string to the DB field.
- * Failed images are NOT written to the DB.
- */
 async function runScalarSequence(
   rows: CsvRow[],
   label: string,
   updateFn: UpdateScalarFn
 ) {
+  if (rows.length === 0) {
+    console.log(`\n╔══ ${label} (0 images — skipping) ══╗`);
+    return;
+  }
+
   console.log(`\n╔══ ${label} (${rows.length} images) ══╗`);
+  resetBreakerForSequence();
 
-  const pending: Array<{ id: string; r2Url: string }> = [];
+  const pending = new Map<string, string>(); // id → r2Url
 
-  for (const row of rows) {
+  const items: WorkItem<void>[] = rows.map((row) => {
     const srcUrl = effectiveUrl(row);
     const ext    = extFromUrl(srcUrl);
     const key    = buildR2Key(row.table, row.field, row.id, 0, ext, row.is_hero_norm);
+    return { row, sourceUrl: srcUrl, key, galleryIndex: -1, context: undefined };
+  });
 
-    console.log(`  ${row.name} [${row.id}]`);
-    console.log(`    src: ${srcUrl.substring(0, 100)}`);
-
-    const result = await processImage(srcUrl, key);
-    recordResult(result, row);
-
-    // Only queue successful results for DB write
+  const aborted = await runPool(items, (item, result) => {
     if (result.status === "migrated" || result.status === "skipped") {
-      pending.push({ id: row.id, r2Url: result.r2Url });
+      pending.set(item.row.id, result.r2Url);
     }
+  });
 
-    // Only delay when we actually downloaded from upstream
-    if (result.status === "migrated") await sleep(requestDelayMs());
+  if (aborted) {
+    console.log(`  Sequence aborted early. Committing ${pending.size} successful records…`);
   }
 
-  // ── Commit this sequence ───────────────────────────────────────────────
-  console.log(`\n  Committing ${pending.length} records to database…`);
+  console.log(`\n  Committing ${pending.size} records to database…`);
   let saved = 0;
-  for (const { id, r2Url } of pending) {
+  for (const [id, r2Url] of pending) {
     try {
       await updateFn(id, r2Url);
       saved++;
     } catch (err) {
-      console.error(
-        `  [DB ERROR] id=${id}: ${err instanceof Error ? err.message : err}`
-      );
+      console.error(`  [DB ERROR] id=${id}: ${err instanceof Error ? err.message : err}`);
     }
   }
-  console.log(`  ✓ ${saved}/${pending.length} records saved`);
+  console.log(`  ✓ ${saved}/${pending.size} records saved`);
   console.log(`╚══ ${label} done ══╝`);
 }
 
-/**
- * Gallery field sequence (galleryImages / images).
- * Multiple rows share the same id; writes a JSON array to the DB field.
- * Failed images are excluded from the gallery array.
- */
 async function runGallerySequence(
   rows: CsvRow[],
   label: string,
   updateFn: UpdateGalleryFn
 ) {
-  console.log(`\n╔══ ${label} (${rows.length} images) ══╗`);
+  if (rows.length === 0) {
+    console.log(`\n╔══ ${label} (0 images — skipping) ══╗`);
+    return;
+  }
 
-  // Group rows by id, preserving CSV order within each group
+  console.log(`\n╔══ ${label} (${rows.length} images) ══╗`);
+  resetBreakerForSequence();
+
   const grouped = new Map<string, CsvRow[]>();
   for (const row of rows) {
     if (!grouped.has(row.id)) grouped.set(row.id, []);
@@ -454,39 +617,47 @@ async function runGallerySequence(
   }
 
   type GalleryEntry = { url: string; caption: string; credit: string };
-  const pending: Array<{ id: string; entries: GalleryEntry[] }> = [];
+  const entryMap = new Map<string, GalleryEntry>();
 
+  const items: WorkItem<{ id: string; galleryIndex: number }>[] = [];
   for (const [id, groupRows] of grouped) {
-    const entries: GalleryEntry[] = [];
-
     for (let i = 0; i < groupRows.length; i++) {
       const row    = groupRows[i]!;
       const srcUrl = effectiveUrl(row);
       const ext    = extFromUrl(srcUrl);
       const key    = buildR2Key(row.table, row.field, id, i, ext, row.is_hero_norm);
-
-      console.log(`  ${row.name} [${id}] gallery[${i}]`);
-      console.log(`    src: ${srcUrl.substring(0, 100)}`);
-
-      const result = await processImage(srcUrl, key);
-      recordResult(result, row);
-
-      // Only include successfully migrated/skipped images in gallery
-      if (result.status === "migrated" || result.status === "skipped") {
-        entries.push({ url: result.r2Url, caption: row.caption, credit: row.credit });
-      }
-
-      // Only delay when we actually downloaded from upstream
-      if (result.status === "migrated") await sleep(requestDelayMs());
+      items.push({ row, sourceUrl: srcUrl, key, galleryIndex: i, context: { id, galleryIndex: i } });
     }
+  }
 
-    // Only queue if at least one image succeeded
+  const aborted = await runPool(items, (item, result) => {
+    if (result.status === "migrated" || result.status === "skipped") {
+      entryMap.set(`${item.context.id}:${item.context.galleryIndex}`, {
+        url: result.r2Url,
+        caption: item.row.caption,
+        credit: item.row.credit,
+      });
+    }
+  });
+
+  if (aborted) {
+    console.log(`  Sequence aborted early. Committing successful gallery records…`);
+  }
+
+  type PendingGallery = { id: string; entries: GalleryEntry[] };
+  const pending: PendingGallery[] = [];
+
+  for (const [id, groupRows] of grouped) {
+    const entries: GalleryEntry[] = [];
+    for (let i = 0; i < groupRows.length; i++) {
+      const entry = entryMap.get(`${id}:${i}`);
+      if (entry) entries.push(entry);
+    }
     if (entries.length > 0) {
       pending.push({ id, entries });
     }
   }
 
-  // ── Commit this sequence ───────────────────────────────────────────────
   console.log(`\n  Committing ${pending.length} gallery records to database…`);
   let saved = 0;
   for (const { id, entries } of pending) {
@@ -494,9 +665,7 @@ async function runGallerySequence(
       await updateFn(id, JSON.stringify(entries));
       saved++;
     } catch (err) {
-      console.error(
-        `  [DB ERROR] id=${id}: ${err instanceof Error ? err.message : err}`
-      );
+      console.error(`  [DB ERROR] id=${id}: ${err instanceof Error ? err.message : err}`);
     }
   }
   console.log(`  ✓ ${saved}/${pending.length} records saved`);
@@ -506,13 +675,9 @@ async function runGallerySequence(
 // ── Main ───────────────────────────────────────────────────────────────────
 
 async function main() {
-  // Validate R2 env
   const missing = [
-    "R2_ACCOUNT_ID",
-    "R2_ACCESS_KEY_ID",
-    "R2_SECRET_ACCESS_KEY",
-    "R2_BUCKET_NAME",
-    "R2_PUBLIC_URL",
+    "R2_ACCOUNT_ID", "R2_ACCESS_KEY_ID", "R2_SECRET_ACCESS_KEY",
+    "R2_BUCKET_NAME", "R2_PUBLIC_URL",
   ].filter((k) => !process.env[k]);
 
   if (missing.length > 0) {
@@ -530,106 +695,95 @@ async function main() {
   console.log("═══════════════════════════════════════════════════");
   console.log("  migrate-from-csv.ts — R2 image migration");
   console.log("═══════════════════════════════════════════════════");
-  console.log(`  CSV rows       : ${rows.length}`);
-  console.log(`  R2 bucket      : ${R2_BUCKET_NAME}`);
-  console.log(`  R2 public URL  : ${R2_PUBLIC_URL}`);
-  console.log(`  Request delay  : 17–63 s (randomised, downloads only)`);
-  console.log(`  Started at     : ${new Date().toISOString()}`);
+  console.log(`  CSV rows        : ${rows.length}`);
+  console.log(`  R2 bucket       : ${R2_BUCKET_NAME}`);
+  console.log(`  R2 public URL   : ${R2_PUBLIC_URL}`);
+  console.log(`  Concurrency     : ${CONCURRENCY} workers`);
+  console.log(`  Worker delay    : ${INTER_REQUEST_DELAY_MS / 1000}s`);
+  console.log(`  Started at      : ${new Date().toISOString()}`);
   console.log("═══════════════════════════════════════════════════");
+
+  flagBacLacUrls(rows);
+
+  const tiffRows = rows.filter((r) => {
+    const ext = extFromUrl(effectiveUrl(r));
+    return isTiff(ext);
+  });
+  if (tiffRows.length > 0) {
+    console.log(`\n  ℹ️  ${tiffRows.length} TIFF image(s) will be auto-converted to JPEG:\n`);
+    for (const r of tiffRows) {
+      console.log(`    ${r.table}.${r.field} [${r.id}] ${r.name}`);
+    }
+    console.log();
+  }
 
   const filter = (table: string, field: string) =>
     rows.filter((r) => r.table === table && r.field === field);
 
   // ── 13 sequences, DB committed after each ─────────────────────────────
 
-  // 1. Waterway.imageUrl
   await runScalarSequence(
-    filter("Waterway", "imageUrl"),
-    "Waterway.imageUrl",
+    filter("Waterway", "imageUrl"), "Waterway.imageUrl",
     async (id, url) => { await prisma.waterway.update({ where: { id }, data: { imageUrl: url } }); }
   );
 
-  // 2. Waterway.galleryImages
   await runGallerySequence(
-    filter("Waterway", "galleryImages"),
-    "Waterway.galleryImages",
+    filter("Waterway", "galleryImages"), "Waterway.galleryImages",
     async (id, gallery) => { await prisma.waterway.update({ where: { id }, data: { galleryImages: gallery } }); }
   );
 
-  // 3. Location.imageUrl
   await runScalarSequence(
-    filter("Location", "imageUrl"),
-    "Location.imageUrl",
+    filter("Location", "imageUrl"), "Location.imageUrl",
     async (id, url) => { await prisma.location.update({ where: { id }, data: { imageUrl: url } }); }
   );
 
-  // 4. Location.galleryImages
   await runGallerySequence(
-    filter("Location", "galleryImages"),
-    "Location.galleryImages",
+    filter("Location", "galleryImages"), "Location.galleryImages",
     async (id, gallery) => { await prisma.location.update({ where: { id }, data: { galleryImages: gallery } }); }
   );
 
-  // 5. Explorer.imageUrl
   await runScalarSequence(
-    filter("Explorer", "imageUrl"),
-    "Explorer.imageUrl",
+    filter("Explorer", "imageUrl"), "Explorer.imageUrl",
     async (id, url) => { await prisma.explorer.update({ where: { id }, data: { imageUrl: url } }); }
   );
 
-  // 6. FieldTripStop.imageUrl
   await runScalarSequence(
-    filter("FieldTripStop", "imageUrl"),
-    "FieldTripStop.imageUrl",
+    filter("FieldTripStop", "imageUrl"), "FieldTripStop.imageUrl",
     async (id, url) => { await prisma.fieldTripStop.update({ where: { id }, data: { imageUrl: url } }); }
   );
 
-  // 7. HistoricalEvent.imageUrl
   await runScalarSequence(
-    filter("HistoricalEvent", "imageUrl"),
-    "HistoricalEvent.imageUrl",
+    filter("HistoricalEvent", "imageUrl"), "HistoricalEvent.imageUrl",
     async (id, url) => { await prisma.historicalEvent.update({ where: { id }, data: { imageUrl: url } }); }
   );
 
-  // 8. LessonPlan.heroImageUrl
   await runScalarSequence(
-    filter("LessonPlan", "heroImageUrl"),
-    "LessonPlan.heroImageUrl",
+    filter("LessonPlan", "heroImageUrl"), "LessonPlan.heroImageUrl",
     async (id, url) => { await prisma.lessonPlan.update({ where: { id }, data: { heroImageUrl: url } }); }
   );
 
-  // 9. LessonPlan.images
   await runGallerySequence(
-    filter("LessonPlan", "images"),
-    "LessonPlan.images",
+    filter("LessonPlan", "images"), "LessonPlan.images",
     async (id, gallery) => { await prisma.lessonPlan.update({ where: { id }, data: { images: gallery } }); }
   );
 
-  // 10. NotableFigure.imageUrl
   await runScalarSequence(
-    filter("NotableFigure", "imageUrl"),
-    "NotableFigure.imageUrl",
+    filter("NotableFigure", "imageUrl"), "NotableFigure.imageUrl",
     async (id, url) => { await prisma.notableFigure.update({ where: { id }, data: { imageUrl: url } }); }
   );
 
-  // 11. PrimarySourceDocument.imageUrl
   await runScalarSequence(
-    filter("PrimarySourceDocument", "imageUrl"),
-    "PrimarySourceDocument.imageUrl",
+    filter("PrimarySourceDocument", "imageUrl"), "PrimarySourceDocument.imageUrl",
     async (id, url) => { await prisma.primarySourceDocument.update({ where: { id }, data: { imageUrl: url } }); }
   );
 
-  // 12. UserContribution.imageUrl
   await runScalarSequence(
-    filter("UserContribution", "imageUrl"),
-    "UserContribution.imageUrl",
+    filter("UserContribution", "imageUrl"), "UserContribution.imageUrl",
     async (id, url) => { await prisma.userContribution.update({ where: { id }, data: { imageUrl: url } }); }
   );
 
-  // 13. VirtualFieldTrip.coverImageUrl
   await runScalarSequence(
-    filter("VirtualFieldTrip", "coverImageUrl"),
-    "VirtualFieldTrip.coverImageUrl",
+    filter("VirtualFieldTrip", "coverImageUrl"), "VirtualFieldTrip.coverImageUrl",
     async (id, url) => { await prisma.virtualFieldTrip.update({ where: { id }, data: { coverImageUrl: url } }); }
   );
 
@@ -644,6 +798,7 @@ async function main() {
   console.log(`  Uploaded to R2       : ${stats.migrated}`);
   console.log(`  Already in R2        : ${stats.skipped}`);
   console.log(`  Failed               : ${stats.failed}`);
+  console.log(`  Download cache hits  : ${downloadCache.size} unique URLs cached`);
 
   if (stats.failures.length > 0) {
     console.log("\n  Failed images (NOT written to DB — re-run to retry):");
