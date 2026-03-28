@@ -148,9 +148,9 @@ function parseCSV(content: string): CsvRow[] {
   return rows;
 }
 
-/** Effective URL = final_url_converted if non-empty, else final_url, else url */
+/** Effective URL = final_url_converted if non-empty, else final_url */
 function effectiveUrl(row: CsvRow): string {
-  return row.final_url_converted?.trim() || row.final_url?.trim() || row.url?.trim();
+  return row.final_url_converted.trim() || row.final_url.trim();
 }
 
 // ── R2 key naming ──────────────────────────────────────────────────────────
