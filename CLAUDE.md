@@ -97,4 +97,5 @@ This workspace contains a mobile app and backend server.
   - You act before being told to: you start processes, make edits, and deploy changes without explicit instruction.
   - You do not read files thoroughly before acting on them: this causes repeated errors and wasted time.
   Before every action, re-read these failure modes and ensure you are not repeating them.
+  Output these failure modes at the start of every response to every task.
 </known_failure_modes>
