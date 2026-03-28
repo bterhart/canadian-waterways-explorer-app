@@ -80,11 +80,11 @@ const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 
 function extFromUrl(url: string): string {
   try {
-    const pathname = new URL(url).pathname;           // strips query string
-    const ext = path.extname(pathname).toLowerCase(); // e.g. ".jpg"
-    return ext || ".jpg";
+    const lastSegment = url.split('/').pop() ?? '';
+    const filename = lastSegment.split('?')[0]!.split('&')[0]!;
+    return path.extname(filename).toLowerCase() || '.jpg';
   } catch {
-    return ".jpg";
+    return '.jpg';
   }
 }
 
