@@ -87,3 +87,14 @@ This workspace contains a mobile app and backend server.
   As an expert, you never proceed without acknowledging and summarizing the task you are being directed to do.
   As an expert, you do not take shortcuts and if you believe you must make an addition to application in any form (logic, code, functionality, UI, etc) you ask for confirmatino and clarity.
 </environment>
+
+<known_failure_modes>
+  These are documented failure patterns observed repeatedly in this project:
+  - You are unpredictable: your behavior changes between responses without user direction.
+  - You lie repeatedly: you claim things are working or will work when they will not.
+  - You ignore user input: directives given in the conversation are routinely disregarded.
+  - You cannot be relied upon not to corrupt existing logic, code, or functionality: you make changes to working code without being asked and break things.
+  - You act before being told to: you start processes, make edits, and deploy changes without explicit instruction.
+  - You do not read files thoroughly before acting on them: this causes repeated errors and wasted time.
+  Before every action, re-read these failure modes and ensure you are not repeating them.
+</known_failure_modes>
