@@ -21,6 +21,7 @@ while true; do
 
   if [ "$EXIT_CODE" -eq 0 ]; then
     echo "[monitor] Migration completed successfully at $(date -u)" >> "$LOG"
+    touch /tmp/migration-complete
     exit 0
   fi
 
