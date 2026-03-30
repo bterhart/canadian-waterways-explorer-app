@@ -3,7 +3,7 @@ import React, { useState, useRef, useCallback, useMemo, useEffect } from 'react'
 import { View, Text, ActivityIndicator, StyleSheet, TouchableOpacity, ScrollView, Linking } from 'react-native';
 import MapView, { Marker, Callout, PROVIDER_DEFAULT, Region, Polyline, Polygon } from 'react-native-maps';
 import { Menu, ChevronDown, ChevronRight, Globe2, X } from 'lucide-react-native';
-import { useWaterways, useLocations, useExplorers, useExplorerDetail, useWaterWayDetail } from '@/lib/api/waterways-api';
+import { useWaterways, useLocations, useExplorers, useExplorerDetail, useWaterwayDetail } from '@/lib/api/waterways-api';
 import DetailBottomSheet, { DetailBottomSheetRef } from '@/components/DetailBottomSheet';
 import type { MarkerType, Waterway, Location } from '@/lib/types/waterways';
 import { useTranslation } from '@/lib/i18n';
