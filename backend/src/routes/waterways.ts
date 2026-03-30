@@ -14,7 +14,6 @@ waterwaysRouter.get("/", async (c) => {
       latitude: true,
       longitude: true,
       regionName: true,
-      kmlData: true,
       type: {
         select: { name: true }
       }
@@ -42,7 +41,6 @@ waterwaysRouter.get("/region/:regionName", async (c) => {
       latitude: true,
       longitude: true,
       regionName: true,
-      kmlData: true,
       type: {
         select: { name: true }
       }
@@ -72,7 +70,6 @@ waterwaysRouter.get("/type/:typeName", async (c) => {
       latitude: true,
       longitude: true,
       regionName: true,
-      kmlData: true,
       type: {
         select: { name: true }
       }
@@ -101,7 +98,6 @@ waterwaysRouter.get("/search/:query", async (c) => {
       latitude: true,
       longitude: true,
       regionName: true,
-      kmlData: true,
       type: {
         select: { name: true }
       }

@@ -3,7 +3,7 @@ import React, { useState, useRef, useCallback, useMemo, useEffect } from 'react'
 import { View, Text, ActivityIndicator, StyleSheet, TouchableOpacity, ScrollView, Linking } from 'react-native';
 import MapView, { Marker, Callout, PROVIDER_DEFAULT, Region, Polyline, Polygon } from 'react-native-maps';
 import { Menu, ChevronDown, ChevronRight, Globe2, X } from 'lucide-react-native';
-import { useWaterways, useLocations, useExplorers, useExplorerDetail } from '@/lib/api/waterways-api';
+import { useWaterways, useLocations, useExplorers, useExplorerDetail, useWaterWayDetail } from '@/lib/api/waterways-api';
 import DetailBottomSheet, { DetailBottomSheetRef } from '@/components/DetailBottomSheet';
 import type { MarkerType, Waterway, Location } from '@/lib/types/waterways';
 import { useTranslation } from '@/lib/i18n';
@@ -155,6 +155,11 @@ export default function MapScreen() {
   const { data: locations, isLoading: locationsLoading, isError: locationsError } = useLocations();
   const { data: explorers, isLoading: explorersLoading } = useExplorers();
   const { data: explorerDetail } = useExplorerDetail(selectedExplorerId);
+
+  // Fetch KML lazily only when a waterway callout is visible — keeps list payload small
+  const visibleWaterwayId = visibleCalloutMarker?.type === 'waterway' ? visibleCalloutMarker.id : null;
+  const { data: waterwayKmlDetail } = useWaterwayDetail(visibleWaterwayId);
+
 
   const bottomSheetRef = useRef<DetailBottomSheetRef>(null);
   const mapRef = useRef<MapView>(null);
@@ -580,8 +585,8 @@ export default function MapScreen() {
         {filteredLocations.map(renderLocationMarker)}
 
         {/* KML overlay for selected waterway */}
-        {selectedWaterway?.kmlData ? (() => {
-          const paths = parseKmlCoordinates(selectedWaterway.kmlData!);
+        {waterwayKmlDetail?.kmlData ? (() => {
+          const paths = parseKmlCoordinates(waterwayKmlDetail.kmlData!);
           const isArea = selectedWaterway.type?.name === 'Lake' || selectedWaterway.type?.name === 'Bay';
           const color = selectedWaterway.type?.name === 'River' ? '#3B82F6'
             : selectedWaterway.type?.name === 'Lake' ? '#06B6D4'
