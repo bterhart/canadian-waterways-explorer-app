@@ -570,12 +570,9 @@ export default function MapScreen() {
         showsScale={true}
         mapType="terrain"
         onRegionChange={handleRegionChange}
-        onPress={(e) => {
-          // Only dismiss callout and close bottom sheet when tapping empty map area
-          if (e.nativeEvent.action === 'press') {
-            handleCalloutDismiss();
-            setLegendVisible(false);
-          }
+        onPress={() => {
+          handleCalloutDismiss();
+          setLegendVisible(false);
         }}
       >
         {/* Waterway markers */}
