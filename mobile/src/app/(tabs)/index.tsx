@@ -165,6 +165,8 @@ export default function MapScreen() {
   const mapRef = useRef<MapView>(null);
   // Store marker refs to allow programmatic callout dismissal
   const markerRefs = useRef<Record<string, any>>({});
+  // Suppress map press when it was triggered by a callout tap bubbling up
+  const suppressNextMapPressRef = useRef(false);
 
   const isLoading = waterwaysLoading || locationsLoading;
   const isError = waterwaysError || locationsError;
@@ -428,6 +430,17 @@ export default function MapScreen() {
     }
   }, [visibleMarkerCoords, updateCalloutScreenPosition]);
 
+  // Open the bottom sheet only after it has mounted
+  useEffect(() => {
+    if (!selectedMarker) return;
+
+    const frame = requestAnimationFrame(() => {
+      bottomSheetRef.current?.expand();
+    });
+
+    return () => cancelAnimationFrame(frame);
+  }, [selectedMarker]);
+
   // Called when marker is tapped (callout appears) - show boundary
   const handleMarkerSelect = useCallback((id: string, type: MarkerType) => {
     setVisibleCalloutMarker({ id, type });
@@ -435,10 +448,8 @@ export default function MapScreen() {
 
   // Called when "Tap for details" is pressed in callout - show bottom sheet
   const handleCalloutPress = useCallback((id: string, type: MarkerType) => {
+    suppressNextMapPressRef.current = true;
     setSelectedMarker({ id, type });
-    setTimeout(() => {
-      bottomSheetRef.current?.expand();
-    }, 100);
   }, []);
 
   // Called when bottom sheet is closed - only closes sheet, leaves callout and boundary visible
@@ -461,6 +472,16 @@ export default function MapScreen() {
     setSelectedMarker(null);
     bottomSheetRef.current?.close();
   }, [visibleCalloutMarker]);
+
+  const handleMapPress = useCallback(() => {
+    if (suppressNextMapPressRef.current) {
+      suppressNextMapPressRef.current = false;
+      return;
+    }
+
+    handleCalloutDismiss();
+    setLegendVisible(false);
+  }, [handleCalloutDismiss]);
 
   const renderWaterwayMarker = (waterway: Waterway) => {
     const typeName = waterway.type?.name || 'River';
@@ -570,10 +591,7 @@ export default function MapScreen() {
         showsScale={true}
         mapType="terrain"
         onRegionChange={handleRegionChange}
-        onPress={() => {
-          handleCalloutDismiss();
-          setLegendVisible(false);
-        }}
+        onPress={handleMapPress}
       >
         {/* Waterway markers */}
         {filteredWaterways.map(renderWaterwayMarker)}
@@ -582,7 +600,7 @@ export default function MapScreen() {
         {filteredLocations.map(renderLocationMarker)}
 
         {/* KML overlay for selected waterway */}
-        {waterwayKmlDetail?.kmlData ? (() => {
+        {waterwayKmlDetail?.kmlData && selectedWaterway ? (() => {
           const paths = parseKmlCoordinates(waterwayKmlDetail.kmlData!);
           const isArea = selectedWaterway.type?.name === 'Lake' || selectedWaterway.type?.name === 'Bay';
           const color = selectedWaterway.type?.name === 'River' ? '#3B82F6'
