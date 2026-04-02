@@ -165,8 +165,11 @@ export default function MapScreen() {
   const mapRef = useRef<MapView>(null);
   // Store marker refs to allow programmatic callout dismissal
   const markerRefs = useRef<Record<string, any>>({});
-  // Suppress map press when it was triggered by a callout tap bubbling up
-  const suppressNextMapPressRef = useRef(false);
+  // Ignore only map presses that occur immediately after a callout tap
+  const lastCalloutPressAtRef = useRef(0);
+  // Keep floating callout icon positioning smooth and reject stale async point lookups
+  const calloutPositionFrameRef = useRef<number | null>(null);
+  const calloutPositionRequestIdRef = useRef(0);
 
   const isLoading = waterwaysLoading || locationsLoading;
   const isError = waterwaysError || locationsError;
@@ -345,6 +348,11 @@ export default function MapScreen() {
     return waterways?.find(w => w.id === visibleCalloutMarker.id) || null;
   }, [visibleCalloutMarker, waterways]);
 
+  const selectedWaterwayKml = useMemo(() => {
+    if (visibleCalloutMarker?.type !== 'waterway') return null;
+    return waterwayKmlDetail?.kmlData || selectedWaterway?.kmlData || null;
+  }, [visibleCalloutMarker, waterwayKmlDetail, selectedWaterway]);
+
   // Get coordinates for the visible callout marker (for floating icons)
   const visibleMarkerCoords = useMemo(() => {
     if (!visibleCalloutMarker) return null;
@@ -360,8 +368,8 @@ export default function MapScreen() {
   // Animate to waterway when callout becomes visible
   useEffect(() => {
     if (visibleCalloutMarker?.type === 'waterway') {
-      if (selectedWaterway?.kmlData) {
-        const paths = parseKmlCoordinates(selectedWaterway.kmlData);
+      if (selectedWaterwayKml) {
+        const paths = parseKmlCoordinates(selectedWaterwayKml);
         const allCoords = paths.flat().map(c => ({ latitude: c.lat, longitude: c.lng }));
         const region = getRegionForCoordinates(allCoords);
         if (region && mapRef.current) {
@@ -389,7 +397,7 @@ export default function MapScreen() {
         }, 500);
       }
     }
-  }, [visibleCalloutMarker, selectedWaterway, locations]);
+  }, [visibleCalloutMarker, selectedWaterway, selectedWaterwayKml, locations]);
 
   // Function to update screen position of callout icons
   const updateCalloutScreenPosition = useCallback(async () => {
@@ -397,11 +405,15 @@ export default function MapScreen() {
       setCalloutScreenPosition(null);
       return;
     }
+    const requestId = ++calloutPositionRequestIdRef.current;
     try {
       const point = await mapRef.current.pointForCoordinate({
         latitude: visibleMarkerCoords.latitude,
         longitude: visibleMarkerCoords.longitude,
       });
+      if (requestId !== calloutPositionRequestIdRef.current) {
+        return;
+      }
       if (point) {
         setCalloutScreenPosition({ x: point.x, y: point.y });
       }
@@ -410,25 +422,49 @@ export default function MapScreen() {
     }
   }, [visibleMarkerCoords]);
 
-  // Update screen position for callout icons after animation
-  useEffect(() => {
+  const scheduleCalloutScreenPositionUpdate = useCallback(() => {
     if (!visibleMarkerCoords) {
       setCalloutScreenPosition(null);
       return;
     }
-    // Wait for animation to complete, then get screen position
-    const timer = setTimeout(() => {
+
+    if (calloutPositionFrameRef.current !== null) {
+      cancelAnimationFrame(calloutPositionFrameRef.current);
+    }
+
+    calloutPositionFrameRef.current = requestAnimationFrame(() => {
+      calloutPositionFrameRef.current = null;
       updateCalloutScreenPosition();
-    }, 600); // Wait for animation (500ms) + buffer
-    return () => clearTimeout(timer);
+    });
   }, [visibleMarkerCoords, updateCalloutScreenPosition]);
+
+  // Update screen position immediately when the visible marker changes
+  useEffect(() => {
+    if (!visibleMarkerCoords) {
+      if (calloutPositionFrameRef.current !== null) {
+        cancelAnimationFrame(calloutPositionFrameRef.current);
+        calloutPositionFrameRef.current = null;
+      }
+      calloutPositionRequestIdRef.current += 1;
+      setCalloutScreenPosition(null);
+      return;
+    }
+    scheduleCalloutScreenPositionUpdate();
+
+    return () => {
+      if (calloutPositionFrameRef.current !== null) {
+        cancelAnimationFrame(calloutPositionFrameRef.current);
+        calloutPositionFrameRef.current = null;
+      }
+    };
+  }, [visibleMarkerCoords, scheduleCalloutScreenPositionUpdate]);
 
   // Update callout icon position when map region changes (drag/zoom)
   const handleRegionChange = useCallback(() => {
     if (visibleMarkerCoords) {
-      updateCalloutScreenPosition();
+      scheduleCalloutScreenPositionUpdate();
     }
-  }, [visibleMarkerCoords, updateCalloutScreenPosition]);
+  }, [visibleMarkerCoords, scheduleCalloutScreenPositionUpdate]);
 
   // Open the bottom sheet only after it has mounted
   useEffect(() => {
@@ -448,7 +484,7 @@ export default function MapScreen() {
 
   // Called when "Tap for details" is pressed in callout - show bottom sheet
   const handleCalloutPress = useCallback((id: string, type: MarkerType) => {
-    suppressNextMapPressRef.current = true;
+    lastCalloutPressAtRef.current = Date.now();
     setSelectedMarker({ id, type });
   }, []);
 
@@ -467,6 +503,12 @@ export default function MapScreen() {
         markerRef.hideCallout();
       }
     }
+    if (calloutPositionFrameRef.current !== null) {
+      cancelAnimationFrame(calloutPositionFrameRef.current);
+      calloutPositionFrameRef.current = null;
+    }
+    calloutPositionRequestIdRef.current += 1;
+    setCalloutScreenPosition(null);
     setVisibleCalloutMarker(null);
     // Also close bottom sheet if open
     setSelectedMarker(null);
@@ -474,8 +516,7 @@ export default function MapScreen() {
   }, [visibleCalloutMarker]);
 
   const handleMapPress = useCallback(() => {
-    if (suppressNextMapPressRef.current) {
-      suppressNextMapPressRef.current = false;
+    if (Date.now() - lastCalloutPressAtRef.current < 300) {
       return;
     }
 
@@ -591,6 +632,7 @@ export default function MapScreen() {
         showsScale={true}
         mapType="terrain"
         onRegionChange={handleRegionChange}
+        onRegionChangeComplete={handleRegionChange}
         onPress={handleMapPress}
       >
         {/* Waterway markers */}
@@ -600,8 +642,8 @@ export default function MapScreen() {
         {filteredLocations.map(renderLocationMarker)}
 
         {/* KML overlay for selected waterway */}
-        {waterwayKmlDetail?.kmlData && selectedWaterway ? (() => {
-          const paths = parseKmlCoordinates(waterwayKmlDetail.kmlData!);
+        {selectedWaterwayKml && selectedWaterway ? (() => {
+          const paths = parseKmlCoordinates(selectedWaterwayKml);
           const isArea = selectedWaterway.type?.name === 'Lake' || selectedWaterway.type?.name === 'Bay';
           const color = selectedWaterway.type?.name === 'River' ? '#3B82F6'
             : selectedWaterway.type?.name === 'Lake' ? '#06B6D4'
