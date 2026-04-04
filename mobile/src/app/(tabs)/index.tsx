@@ -201,6 +201,9 @@ export default function MapScreen() {
   // Track screen position of the callout icons
   const [calloutScreenPosition, setCalloutScreenPosition] = useState<{ x: number; y: number } | null>(null);
   const [mapRegion, setMapRegion] = useState<Region>(CANADA_CENTER);
+  const [overviewPreviewRiverId, setOverviewPreviewRiverId] = useState<string | null>(null);
+  const [overviewPreviewScreenPosition, setOverviewPreviewScreenPosition] = useState<{ x: number; y: number } | null>(null);
+  const [showFloatingCalloutControls, setShowFloatingCalloutControls] = useState(false);
 
   const [legendVisible, setLegendVisible] = useState(false);
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
@@ -243,9 +246,29 @@ export default function MapScreen() {
   // Keep floating callout icon positioning smooth and reject stale async point lookups
   const calloutPositionFrameRef = useRef<number | null>(null);
   const calloutPositionRequestIdRef = useRef(0);
+  const overviewPreviewPositionRequestIdRef = useRef(0);
+  const calloutControlsTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const isLoading = waterwaysLoading || locationsLoading;
   const isError = waterwaysError || locationsError;
+  const clearCalloutControlsTimer = useCallback(() => {
+    if (calloutControlsTimeoutRef.current !== null) {
+      clearTimeout(calloutControlsTimeoutRef.current);
+      calloutControlsTimeoutRef.current = null;
+    }
+  }, []);
+
+  const resetOverviewPreview = useCallback(() => {
+    overviewPreviewPositionRequestIdRef.current += 1;
+    setOverviewPreviewRiverId(null);
+    setOverviewPreviewScreenPosition(null);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      clearCalloutControlsTimer();
+    };
+  }, [clearCalloutControlsTimer]);
 
   const toggleLegend = useCallback(() => {
     setLegendVisible(prev => !prev);
@@ -253,6 +276,10 @@ export default function MapScreen() {
 
   // Legacy legend filter handler (for map legend items)
   const handleLegendFilterPress = useCallback((legendType: string) => {
+    resetOverviewPreview();
+    clearCalloutControlsTimer();
+    setShowFloatingCalloutControls(false);
+
     if (activeFilter === legendType) {
       // Clear filter if same item tapped
       setActiveFilter(null);
@@ -263,39 +290,55 @@ export default function MapScreen() {
       setFilterType('legend');
       setFilterValue(legendType);
     }
-  }, [activeFilter]);
+  }, [activeFilter, resetOverviewPreview, clearCalloutControlsTimer]);
 
   // Handler for waterway filter selection
   const handleWaterwayFilterSelect = useCallback((waterwayId: string) => {
+    resetOverviewPreview();
+    clearCalloutControlsTimer();
+    setShowFloatingCalloutControls(false);
+
     setFilterType('waterway');
     setFilterValue(waterwayId);
     setActiveFilter(null);
     setSelectedExplorerId(null);
-  }, []);
+  }, [resetOverviewPreview, clearCalloutControlsTimer]);
 
   // Handler for explorer filter selection
   const handleExplorerFilterSelect = useCallback((explorerId: string) => {
+    resetOverviewPreview();
+    clearCalloutControlsTimer();
+    setShowFloatingCalloutControls(false);
+
     setFilterType('explorer');
     setFilterValue(explorerId);
     setSelectedExplorerId(explorerId);
     setActiveFilter(null);
-  }, []);
+  }, [resetOverviewPreview, clearCalloutControlsTimer]);
 
   // Handler for time period filter selection
   const handlePeriodFilterSelect = useCallback((periodId: string) => {
+    resetOverviewPreview();
+    clearCalloutControlsTimer();
+    setShowFloatingCalloutControls(false);
+
     setFilterType('period');
     setFilterValue(periodId);
     setActiveFilter(null);
     setSelectedExplorerId(null);
-  }, []);
+  }, [resetOverviewPreview, clearCalloutControlsTimer]);
 
   // Clear all filters
   const clearAllFilters = useCallback(() => {
+    resetOverviewPreview();
+    clearCalloutControlsTimer();
+    setShowFloatingCalloutControls(false);
+
     setActiveFilter(null);
     setFilterType(null);
     setFilterValue(null);
     setSelectedExplorerId(null);
-  }, []);
+  }, [resetOverviewPreview, clearCalloutControlsTimer]);
 
   // Check if any filter is active
   const hasActiveFilter = filterType !== null || activeFilter !== null;
@@ -321,6 +364,24 @@ export default function MapScreen() {
     if (!explorerDetail?.waterways) return new Set<string>();
     return new Set(explorerDetail.waterways.map(ew => ew.waterway.id));
   }, [explorerDetail]);
+
+  const overviewPreviewRiverRecord = useMemo(() => {
+    if (!overviewPreviewRiverId || !riverOverviewData?.waterways) return null;
+    return riverOverviewData.waterways.find((record) => record.id === overviewPreviewRiverId) || null;
+  }, [overviewPreviewRiverId, riverOverviewData]);
+
+  const overviewPreviewRiverWaterway = useMemo(() => {
+    if (!overviewPreviewRiverId) return null;
+    return waterways?.find((waterway) => waterway.id === overviewPreviewRiverId) || null;
+  }, [overviewPreviewRiverId, waterways]);
+
+  const overviewPreviewCoords = useMemo(() => {
+    if (!overviewPreviewRiverRecord) return null;
+    return {
+      latitude: overviewPreviewRiverRecord.labelPoint.lat,
+      longitude: overviewPreviewRiverRecord.labelPoint.lng,
+    };
+  }, [overviewPreviewRiverRecord]);  
 
   // Get time period for filtering
   const selectedPeriod = useMemo(() => {
@@ -515,6 +576,29 @@ export default function MapScreen() {
     }
   }, [visibleMarkerCoords]);
 
+  const updateOverviewPreviewScreenPosition = useCallback(async () => {
+    if (!overviewPreviewCoords || !mapRef.current) {
+      setOverviewPreviewScreenPosition(null);
+      return;
+    }
+
+    const requestId = ++overviewPreviewPositionRequestIdRef.current;
+      try {
+        const point = await mapRef.current.pointForCoordinate({
+          latitude: overviewPreviewCoords.latitude,
+          longitude: overviewPreviewCoords.longitude,
+        });  
+        if (requestId !== overviewPreviewPositionRequestIdRef.current) {
+          return;
+        }  
+        if (point) {
+          setOverviewPreviewScreenPosition({ x: point.x, y: point.y });
+        }
+      } catch {
+        // Ignore errors - map may not be ready
+      }
+  }, [overviewPreviewCoords]);
+
   const scheduleCalloutScreenPositionUpdate = useCallback(() => {
     if (!visibleMarkerCoords) {
       setCalloutScreenPosition(null);
@@ -552,17 +636,53 @@ export default function MapScreen() {
     };
   }, [visibleMarkerCoords, scheduleCalloutScreenPositionUpdate]);
 
+  useEffect(() => {
+    if (!overviewPreviewCoords) {
+      overviewPreviewPositionRequestIdRef.current += 1;
+      setOverviewPreviewScreenPosition(null);
+      return;
+    }
+    void updateOverviewPreviewScreenPosition();
+  }, [overviewPreviewCoords, updateOverviewPreviewScreenPosition]);  
+
   // Update callout icon position when map region changes (drag/zoom)
   const handleRegionChange = useCallback(() => {
     if (visibleMarkerCoords) {
+      clearCalloutControlsTimer();
+      setShowFloatingCalloutControls(false);
       scheduleCalloutScreenPositionUpdate();
     }
-  }, [visibleMarkerCoords, scheduleCalloutScreenPositionUpdate]);
+  }, [visibleMarkerCoords, scheduleCalloutScreenPositionUpdate, clearCalloutControlsTimer]);
 
   const handleRegionChangeComplete = useCallback((region: Region) => {
     setMapRegion(region);
-    handleRegionChange();
-  }, [handleRegionChange]);
+
+    if (overviewPreviewCoords) {
+      void updateOverviewPreviewScreenPosition();
+    }
+
+    if (visibleMarkerCoords) {
+      clearCalloutControlsTimer();
+      setShowFloatingCalloutControls(false);
+      scheduleCalloutScreenPositionUpdate();
+
+      calloutControlsTimeoutRef.current = setTimeout(() => {
+        void updateCalloutScreenPosition().finally(() => {
+          setShowFloatingCalloutControls(true);
+        });
+      }, 150);
+    } else {
+      clearCalloutControlsTimer();
+      setShowFloatingCalloutControls(false);
+    }
+  }, [
+    overviewPreviewCoords,
+    updateOverviewPreviewScreenPosition,
+    visibleMarkerCoords,
+    clearCalloutControlsTimer,
+    scheduleCalloutScreenPositionUpdate,
+    updateCalloutScreenPosition,
+  ]);
 
   // Open the bottom sheet only after it has mounted
   useEffect(() => {
@@ -577,21 +697,36 @@ export default function MapScreen() {
 
   // Called when marker is tapped (callout appears) - show boundary
   const handleMarkerSelect = useCallback((id: string, type: MarkerType) => {
+    resetOverviewPreview();
+    clearCalloutControlsTimer();
+    setShowFloatingCalloutControls(false);
     setVisibleCalloutMarker({ id, type });
-  }, []);
+  }, [resetOverviewPreview, clearCalloutControlsTimer]);
 
   // Called when "Tap for details" is pressed in callout - show bottom sheet
   const handleCalloutPress = useCallback((id: string, type: MarkerType) => {
     lastCalloutPressAtRef.current = Date.now();
+    resetOverviewPreview();
     setSelectedMarker({ id, type });
-  }, []);
+  }, [resetOverviewPreview]);
 
-  // Called when a river overview line is pressed at local zoom - open river details directly
+  // Called when a river overview line is pressed at local zoom - show lightweight river preview first
   const handleRiverOverviewPress = useCallback((waterwayId: string) => {
     lastCalloutPressAtRef.current = Date.now();
+    clearCalloutControlsTimer();
+    setShowFloatingCalloutControls(false);
     setVisibleCalloutMarker(null);
-    setSelectedMarker({ id: waterwayId, type: 'waterway' });
-  }, []);
+    setSelectedMarker(null);
+    setOverviewPreviewRiverId(waterwayId);
+  }, [clearCalloutControlsTimer]);
+
+  const handleOverviewPreviewDetailsPress = useCallback(() => {
+    if (!overviewPreviewRiverId) return;
+
+    lastCalloutPressAtRef.current = Date.now();
+    setOverviewPreviewRiverId(null);
+    setSelectedMarker({ id: overviewPreviewRiverId, type: 'waterway' });
+  }, [overviewPreviewRiverId]);
 
   // Called when bottom sheet is closed - only closes sheet, leaves callout and boundary visible
   const handleBottomSheetClose = useCallback(() => {
@@ -608,23 +743,26 @@ export default function MapScreen() {
         markerRef.hideCallout();
       }
     }
+    clearCalloutControlsTimer();
+    setShowFloatingCalloutControls(false);
     if (calloutPositionFrameRef.current !== null) {
       cancelAnimationFrame(calloutPositionFrameRef.current);
       calloutPositionFrameRef.current = null;
     }
     calloutPositionRequestIdRef.current += 1;
     setCalloutScreenPosition(null);
+    resetOverviewPreview();
     setVisibleCalloutMarker(null);
+
     // Also close bottom sheet if open
     setSelectedMarker(null);
     bottomSheetRef.current?.close();
-  }, [visibleCalloutMarker]);
+  }, [visibleCalloutMarker, clearCalloutControlsTimer, resetOverviewPreview]);
 
   const handleMapPress = useCallback(() => {
     if (Date.now() - lastCalloutPressAtRef.current < 300) {
       return;
     }
-
     handleCalloutDismiss();
     setLegendVisible(false);
   }, [handleCalloutDismiss]);
@@ -819,8 +957,64 @@ export default function MapScreen() {
         })() : null}
       </MapView>
 
+      {/* Lightweight preview card for overview river taps */}
+      {overviewPreviewRiverRecord && overviewPreviewScreenPosition ? (
+        <View style={styles.overviewPreviewOverlay} pointerEvents="box-none">
+          <View
+            style={[
+              styles.overviewPreviewCard,
+              {
+                left: overviewPreviewScreenPosition.x - 100,
+                top: overviewPreviewScreenPosition.y - 155,
+              },
+            ]}
+          >
+            <View
+              style={[
+                styles.typeBadge,
+                {
+                  backgroundColor: getMarkerColor(
+                    overviewPreviewRiverWaterway?.type?.name ||
+                      overviewPreviewRiverRecord.typeName ||
+                      'River',
+                  ),
+                },
+              ]}
+            >
+              <Text style={styles.typeBadgeText}>
+                {overviewPreviewRiverWaterway?.type?.name ||
+                  overviewPreviewRiverRecord.typeName ||
+                  'River'}
+              </Text>
+            </View>
+
+            <Text style={styles.calloutTitle}>
+              {overviewPreviewRiverWaterway?.name || overviewPreviewRiverRecord.name}
+            </Text>
+
+            {(overviewPreviewRiverWaterway?.indigenousName ||
+              overviewPreviewRiverRecord.indigenousName) ? (
+              <Text style={styles.calloutIndigenous}>
+                "
+                {overviewPreviewRiverWaterway?.indigenousName ||
+                  overviewPreviewRiverRecord.indigenousName}
+                "
+              </Text>
+            ) : null}
+
+            <TouchableOpacity
+              style={styles.calloutDetailButton}
+              onPress={handleOverviewPreviewDetailsPress}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.calloutDetailButtonText}>{t('tapForDetails')}</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      ) : null}
+      
       {/* Floating Icons Above Callout */}
-      {visibleCalloutMarker && visibleMarkerCoords && calloutScreenPosition ? (
+      {showFloatingCalloutControls && visibleCalloutMarker && visibleMarkerCoords && calloutScreenPosition ? (
         <View style={styles.calloutIconsOverlay} pointerEvents="box-none">
           {/* Google Earth Button - Left aligned with callout left edge */}
           <TouchableOpacity
@@ -1145,6 +1339,25 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
   },
+  overviewPreviewOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+  overviewPreviewCard: {
+    position: 'absolute',
+    width: 200,
+    padding: 12,
+    backgroundColor: '#FFFEF7',
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.18,
+    shadowRadius: 6,
+    elevation: 4,
+  },  
   calloutEarthButton: {
     width: 56,
     height: 28,
