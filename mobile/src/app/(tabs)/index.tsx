@@ -220,14 +220,19 @@ export default function MapScreen() {
 
   // Data fetching hooks (after state declarations)
   const { data: waterways, isLoading: waterwaysLoading, isError: waterwaysError } = useWaterways();
-  const { data: riverOverviewData } = useRiverOverview();
+  const { data: riverOverviewData, isLoading: riverOverviewLoading } = useRiverOverview();
   const { data: locations, isLoading: locationsLoading, isError: locationsError } = useLocations();
   const { data: explorers, isLoading: explorersLoading } = useExplorers();
   const { data: explorerDetail } = useExplorerDetail(selectedExplorerId);
 
-  // Fetch KML lazily only when a waterway callout is visible — keeps list payload small
-  const visibleWaterwayId = visibleCalloutMarker?.type === 'waterway' ? visibleCalloutMarker.id : null;
-  const { data: waterwayKmlDetail } = useWaterwayDetail(visibleWaterwayId);
+  // Fetch KML for either a visible waterway callout or a waterway selected directly from the overview layer
+  const detailWaterwayId =
+    visibleCalloutMarker?.type === 'waterway'
+      ? visibleCalloutMarker.id
+      : selectedMarker?.type === 'waterway'
+        ? selectedMarker.id
+        : null;
+  const { data: waterwayKmlDetail } = useWaterwayDetail(detailWaterwayId);
 
   const bottomSheetRef = useRef<DetailBottomSheetRef>(null);
   const mapRef = useRef<MapView>(null);
@@ -294,8 +299,11 @@ export default function MapScreen() {
 
   // Check if any filter is active
   const hasActiveFilter = filterType !== null || activeFilter !== null;
-
-  const shouldShowRiverOverview = !hasActiveFilter && !visibleCalloutMarker && !selectedMarker;
+  const hasRiverOverviewData = !!riverOverviewData?.waterways?.length;
+  const shouldPreferRiverOverviewMode = !hasActiveFilter && !visibleCalloutMarker;
+  const shouldShowRiverOverview = shouldPreferRiverOverviewMode && !selectedMarker && hasRiverOverviewData;
+  const shouldSuppressMarkersForOverview = shouldPreferRiverOverviewMode && (riverOverviewLoading || hasRiverOverviewData);
+  const shouldRenderMarkers = !shouldSuppressMarkersForOverview;
   const riverOverviewTier = useMemo(() => getOverviewTier(mapRegion), [mapRegion]);
   const isRiverOverviewInteractive = riverOverviewTier === 'local';
   const riverOverviewStrokeWidth = OVERVIEW_STROKE_WIDTH[riverOverviewTier];
@@ -423,16 +431,16 @@ export default function MapScreen() {
     return locations;
   }, [locations, activeFilter, filterType, filterValue, explorerWaterwayIds, selectedPeriod]);
 
-  // Find waterway for boundary highlighting (based on visible callout)
+  // Find waterway for boundary highlighting (from either a visible callout or a direct overview selection)
   const selectedWaterway = useMemo(() => {
-    if (!visibleCalloutMarker || visibleCalloutMarker.type !== 'waterway') return null;
-    return waterways?.find(w => w.id === visibleCalloutMarker.id) || null;
-  }, [visibleCalloutMarker, waterways]);
+    if (!detailWaterwayId) return null;
+    return waterways?.find(w => w.id === detailWaterwayId) || null;
+  }, [detailWaterwayId, waterways]);
 
   const selectedWaterwayKml = useMemo(() => {
-    if (visibleCalloutMarker?.type !== 'waterway') return null;
+    if (!detailWaterwayId) return null;
     return waterwayKmlDetail?.kmlData || selectedWaterway?.kmlData || null;
-  }, [visibleCalloutMarker, waterwayKmlDetail, selectedWaterway]);
+  }, [detailWaterwayId, waterwayKmlDetail, selectedWaterway]);
 
   // Get coordinates for the visible callout marker (for floating icons)
   const visibleMarkerCoords = useMemo(() => {
@@ -446,9 +454,9 @@ export default function MapScreen() {
     }
   }, [visibleCalloutMarker, waterways, locations]);
 
-  // Animate to waterway when callout becomes visible
+  // Animate to waterway when a waterway is focused through either a callout or direct overview selection
   useEffect(() => {
-    if (visibleCalloutMarker?.type === 'waterway') {
+    if (detailWaterwayId && selectedWaterway) {
       if (selectedWaterwayKml) {
         const paths = parseKmlCoordinates(selectedWaterwayKml);
         const allCoords = paths.flat().map(c => ({ latitude: c.lat, longitude: c.lng }));
@@ -458,8 +466,8 @@ export default function MapScreen() {
           return;
         }
       }
-      // Fall back to animating to the waterway center point
-      if (selectedWaterway && mapRef.current) {
+
+      if (mapRef.current) {
         mapRef.current.animateToRegion({
           latitude: selectedWaterway.latitude,
           longitude: selectedWaterway.longitude,
@@ -467,7 +475,11 @@ export default function MapScreen() {
           longitudeDelta: 2,
         }, 500);
       }
-    } else if (visibleCalloutMarker?.type === 'location') {
+
+      return;
+    }
+
+    if (visibleCalloutMarker?.type === 'location') {
       const location = locations?.find(l => l.id === visibleCalloutMarker.id);
       if (location && mapRef.current) {
         mapRef.current.animateToRegion({
@@ -478,7 +490,7 @@ export default function MapScreen() {
         }, 500);
       }
     }
-  }, [visibleCalloutMarker, selectedWaterway, selectedWaterwayKml, locations]);
+  }, [detailWaterwayId, selectedWaterway, selectedWaterwayKml, visibleCalloutMarker, locations]);
 
   // Function to update screen position of callout icons
   const updateCalloutScreenPosition = useCallback(async () => {
@@ -574,17 +586,11 @@ export default function MapScreen() {
     setSelectedMarker({ id, type });
   }, []);
 
+  // Called when a river overview line is pressed at local zoom - open river details directly
   const handleRiverOverviewPress = useCallback((waterwayId: string) => {
     lastCalloutPressAtRef.current = Date.now();
-    setSelectedMarker(null);
-    setVisibleCalloutMarker({ id: waterwayId, type: 'waterway' });
-
-    requestAnimationFrame(() => {
-      const markerRef = markerRefs.current[`waterway-${waterwayId}`];
-      if (markerRef?.showCallout) {
-        markerRef.showCallout();
-      }
-    });
+    setVisibleCalloutMarker(null);
+    setSelectedMarker({ id: waterwayId, type: 'waterway' });
   }, []);
 
   // Called when bottom sheet is closed - only closes sheet, leaves callout and boundary visible
@@ -740,6 +746,8 @@ export default function MapScreen() {
               const tierData = record.tiers[riverOverviewTier];
               const strokeColor = getMarkerColor(record.typeName || 'River');
 
+              if (!tierData?.paths?.length) return null;
+
               return tierData.paths.map((path, index) => {
                 const coordinates = overviewPathToCoordinates(path);
 
@@ -772,10 +780,10 @@ export default function MapScreen() {
           : null}
 
         {/* Waterway markers */}
-        {filteredWaterways.map(renderWaterwayMarker)}
+        {shouldRenderMarkers ? filteredWaterways.map(renderWaterwayMarker) : null}
 
         {/* Location markers */}
-        {filteredLocations.map(renderLocationMarker)}
+        {shouldRenderMarkers ? filteredLocations.map(renderLocationMarker) : null}
 
         {/* KML overlay for selected waterway */}
         {selectedWaterwayKml && selectedWaterway ? (() => {
