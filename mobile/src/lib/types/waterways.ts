@@ -102,6 +102,55 @@ export interface WaterwayDetail {
   discoveries: ArchaeologicalDiscovery[];
 }
 
+// Waterway overview geometry types
+export type OverviewTierName = 'nation' | 'region' | 'local';
+export type OverviewGeometryKind = 'line' | 'area';
+export type OverviewLngLat = [number, number];
+
+export interface WaterwayOverviewTier {
+  toleranceDeg: number;
+  pathCount: number;
+  pointCount: number;
+  paths: OverviewLngLat[][];
+}
+
+export interface WaterwayOverviewRecord {
+  id: string;
+  name: string;
+  indigenousName: string | null;
+  regionName: string;
+  typeName: string;
+  labelPoint: {
+    lng: number;
+    lat: number;
+  };
+  bbox: [number, number, number, number] | null;
+  geometryKind: OverviewGeometryKind;
+  hasKml: boolean;
+  original: {
+    pathCount: number;
+    pointCount: number;
+  };
+  tiers: Record<OverviewTierName, WaterwayOverviewTier>;
+}
+
+export interface WaterwayOverviewDataset {
+  generatedAt: string;
+  source: string;
+  filters: {
+    typeFilter: string[] | null;
+    onlyWithKml: boolean;
+  };
+  tolerancesDeg: Record<OverviewTierName, number>;
+  stats: {
+    totalWaterwaysRead: number;
+    totalWaterwaysWritten: number;
+    skippedNoKml: number;
+    skippedNoGeometry: number;
+  };
+  waterways: WaterwayOverviewRecord[];
+}
+
 // Location types
 export type LocationType = 'fort' | 'trading_post' | 'portage' | 'settlement';
 
