@@ -3,9 +3,22 @@ import React, { useState, useRef, useCallback, useMemo, useEffect } from 'react'
 import { View, Text, ActivityIndicator, StyleSheet, TouchableOpacity, ScrollView, Linking } from 'react-native';
 import MapView, { Marker, Callout, PROVIDER_DEFAULT, Region, Polyline, Polygon } from 'react-native-maps';
 import { Menu, ChevronDown, ChevronRight, Globe2, X } from 'lucide-react-native';
-import { useWaterways, useLocations, useExplorers, useExplorerDetail, useWaterwayDetail } from '@/lib/api/waterways-api';
+import {
+  useWaterways,
+  useRiverOverview,
+  useLocations,
+  useExplorers,
+  useExplorerDetail,
+  useWaterwayDetail,
+} from '@/lib/api/waterways-api';
 import DetailBottomSheet, { DetailBottomSheetRef } from '@/components/DetailBottomSheet';
-import type { MarkerType, Waterway, Location } from '@/lib/types/waterways';
+import type {
+  MarkerType,
+  Waterway,
+  Location,
+  OverviewTierName,
+  WaterwayOverviewRecord,
+} from '@/lib/types/waterways';
 import { useTranslation } from '@/lib/i18n';
 
 // Filter types
@@ -27,6 +40,19 @@ const CANADA_CENTER: Region = {
   latitudeDelta: 30,
   longitudeDelta: 30,
 };
+
+const OVERVIEW_TIER_THRESHOLDS = {
+  nationMinDelta: 12,
+  regionMinDelta: 4,
+};
+
+const OVERVIEW_STROKE_WIDTH: Record<OverviewTierName, number> = {
+  nation: 2,
+  region: 3,
+  local: 4,
+};
+
+const OVERVIEW_VIEWPORT_PADDING_FACTOR = 0.2;
 
 // Marker colors based on type
 const markerColors: Record<string, string> = {
@@ -83,7 +109,7 @@ const parseKmlCoordinates = (kmlData: string): Array<{ lat: number; lng: number 
     }
 
     return paths;
-  } catch (e) {
+  } catch {
     return [];
   }
 };
@@ -115,6 +141,47 @@ const getRegionForCoordinates = (coordinates: { latitude: number; longitude: num
   };
 };
 
+const getOverviewTier = (region: Region): OverviewTierName => {
+  const maxDelta = Math.max(region.latitudeDelta, region.longitudeDelta);
+
+  if (maxDelta >= OVERVIEW_TIER_THRESHOLDS.nationMinDelta) {
+    return 'nation';
+  }
+
+  if (maxDelta >= OVERVIEW_TIER_THRESHOLDS.regionMinDelta) {
+    return 'region';
+  }
+
+  return 'local';
+};
+
+const bboxIntersectsRegion = (
+  bbox: [number, number, number, number] | null,
+  region: Region,
+  paddingFactor: number = 0,
+): boolean => {
+  if (!bbox) return true;
+
+  const [minLng, minLat, maxLng, maxLat] = bbox;
+  const latPadding = region.latitudeDelta * paddingFactor;
+  const lngPadding = region.longitudeDelta * paddingFactor;
+
+  const regionMinLat = region.latitude - region.latitudeDelta / 2 - latPadding;
+  const regionMaxLat = region.latitude + region.latitudeDelta / 2 + latPadding;
+  const regionMinLng = region.longitude - region.longitudeDelta / 2 - lngPadding;
+  const regionMaxLng = region.longitude + region.longitudeDelta / 2 + lngPadding;
+
+  return !(
+    maxLat < regionMinLat ||
+    minLat > regionMaxLat ||
+    maxLng < regionMinLng ||
+    minLng > regionMaxLng
+  );
+};
+
+const overviewPathToCoordinates = (path: [number, number][]) =>
+  path.map(([longitude, latitude]) => ({ latitude, longitude }));
+
 export default function MapScreen() {
   const { t } = useTranslation();
 
@@ -133,6 +200,7 @@ export default function MapScreen() {
 
   // Track screen position of the callout icons
   const [calloutScreenPosition, setCalloutScreenPosition] = useState<{ x: number; y: number } | null>(null);
+  const [mapRegion, setMapRegion] = useState<Region>(CANADA_CENTER);
 
   const [legendVisible, setLegendVisible] = useState(false);
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
@@ -152,6 +220,7 @@ export default function MapScreen() {
 
   // Data fetching hooks (after state declarations)
   const { data: waterways, isLoading: waterwaysLoading, isError: waterwaysError } = useWaterways();
+  const { data: riverOverviewData } = useRiverOverview();
   const { data: locations, isLoading: locationsLoading, isError: locationsError } = useLocations();
   const { data: explorers, isLoading: explorersLoading } = useExplorers();
   const { data: explorerDetail } = useExplorerDetail(selectedExplorerId);
@@ -159,7 +228,6 @@ export default function MapScreen() {
   // Fetch KML lazily only when a waterway callout is visible — keeps list payload small
   const visibleWaterwayId = visibleCalloutMarker?.type === 'waterway' ? visibleCalloutMarker.id : null;
   const { data: waterwayKmlDetail } = useWaterwayDetail(visibleWaterwayId);
-
 
   const bottomSheetRef = useRef<DetailBottomSheetRef>(null);
   const mapRef = useRef<MapView>(null);
@@ -226,6 +294,19 @@ export default function MapScreen() {
 
   // Check if any filter is active
   const hasActiveFilter = filterType !== null || activeFilter !== null;
+
+  const shouldShowRiverOverview = !hasActiveFilter && !visibleCalloutMarker && !selectedMarker;
+  const riverOverviewTier = useMemo(() => getOverviewTier(mapRegion), [mapRegion]);
+  const isRiverOverviewInteractive = riverOverviewTier === 'local';
+  const riverOverviewStrokeWidth = OVERVIEW_STROKE_WIDTH[riverOverviewTier];
+
+  const visibleRiverOverviewRecords = useMemo(() => {
+    if (!shouldShowRiverOverview || !riverOverviewData?.waterways) return [];
+
+    return riverOverviewData.waterways.filter((record) =>
+      bboxIntersectsRegion(record.bbox, mapRegion, OVERVIEW_VIEWPORT_PADDING_FACTOR),
+    );
+  }, [shouldShowRiverOverview, riverOverviewData, mapRegion]);
 
   // Get explorer's waterway IDs for filtering
   const explorerWaterwayIds = useMemo(() => {
@@ -466,6 +547,11 @@ export default function MapScreen() {
     }
   }, [visibleMarkerCoords, scheduleCalloutScreenPositionUpdate]);
 
+  const handleRegionChangeComplete = useCallback((region: Region) => {
+    setMapRegion(region);
+    handleRegionChange();
+  }, [handleRegionChange]);
+
   // Open the bottom sheet only after it has mounted
   useEffect(() => {
     if (!selectedMarker) return;
@@ -486,6 +572,19 @@ export default function MapScreen() {
   const handleCalloutPress = useCallback((id: string, type: MarkerType) => {
     lastCalloutPressAtRef.current = Date.now();
     setSelectedMarker({ id, type });
+  }, []);
+
+  const handleRiverOverviewPress = useCallback((waterwayId: string) => {
+    lastCalloutPressAtRef.current = Date.now();
+    setSelectedMarker(null);
+    setVisibleCalloutMarker({ id: waterwayId, type: 'waterway' });
+
+    requestAnimationFrame(() => {
+      const markerRef = markerRefs.current[`waterway-${waterwayId}`];
+      if (markerRef?.showCallout) {
+        markerRef.showCallout();
+      }
+    });
   }, []);
 
   // Called when bottom sheet is closed - only closes sheet, leaves callout and boundary visible
@@ -632,9 +731,46 @@ export default function MapScreen() {
         showsScale={true}
         mapType="terrain"
         onRegionChange={handleRegionChange}
-        onRegionChangeComplete={handleRegionChange}
+        onRegionChangeComplete={handleRegionChangeComplete}
         onPress={handleMapPress}
       >
+        {/* River overview layer for the initial home map */}
+        {shouldShowRiverOverview
+          ? visibleRiverOverviewRecords.map((record: WaterwayOverviewRecord) => {
+              const tierData = record.tiers[riverOverviewTier];
+              const strokeColor = getMarkerColor(record.typeName || 'River');
+
+              return tierData.paths.map((path, index) => {
+                const coordinates = overviewPathToCoordinates(path);
+
+                if (record.geometryKind === 'area') {
+                  return (
+                    <Polygon
+                      key={`overview-area-${riverOverviewTier}-${record.id}-${index}`}
+                      coordinates={coordinates}
+                      strokeColor={strokeColor}
+                      fillColor={`${strokeColor}20`}
+                      strokeWidth={2}
+                      tappable={isRiverOverviewInteractive}
+                      onPress={isRiverOverviewInteractive ? () => handleRiverOverviewPress(record.id) : undefined}
+                    />
+                  );
+                }
+
+                return (
+                  <Polyline
+                    key={`overview-line-${riverOverviewTier}-${record.id}-${index}`}
+                    coordinates={coordinates}
+                    strokeColor={strokeColor}
+                    strokeWidth={riverOverviewStrokeWidth}
+                    tappable={isRiverOverviewInteractive}
+                    onPress={isRiverOverviewInteractive ? () => handleRiverOverviewPress(record.id) : undefined}
+                  />
+                );
+              });
+            })
+          : null}
+
         {/* Waterway markers */}
         {filteredWaterways.map(renderWaterwayMarker)}
 
