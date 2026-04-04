@@ -4,6 +4,7 @@ import { api } from '@/lib/api/api';
 import type {
   Waterway,
   WaterwayDetail,
+  WaterwayOverviewDataset,
   Location,
   LocationDetail,
   Explorer,
@@ -24,6 +25,8 @@ export const waterwaysKeys = {
   list: () => [...waterwaysKeys.lists()] as const,
   details: () => [...waterwaysKeys.all, 'detail'] as const,
   detail: (id: string) => [...waterwaysKeys.details(), id] as const,
+  overview: () => [...waterwaysKeys.all, 'overview'] as const,
+  riverOverview: () => [...waterwaysKeys.overview(), 'rivers'] as const,
 };
 
 export const locationsKeys = {
@@ -61,6 +64,16 @@ export function useWaterways() {
   return useQuery({
     queryKey: waterwaysKeys.list(),
     queryFn: () => api.get<Waterway[]>('/api/waterways'),
+  });
+}
+
+export function useRiverOverview() {
+  return useQuery({
+    queryKey: waterwaysKeys.riverOverview(),
+    queryFn: () => api.get<WaterwayOverviewDataset>('/api/waterways/overview/rivers'),
+    staleTime: 24 * 60 * 60 * 1000,
+    gcTime: 24 * 60 * 60 * 1000,
+    retry: false,
   });
 }
 
