@@ -12,7 +12,13 @@
       }
     },
     "preview": {
-      "distribution": "internal"
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_BACKEND_URL": "https://canadian-waterways-explorer-app-preview.up.railway.app",
+        "EXPO_PUBLIC_VIBECODE_BACKEND_URL": "https://canadian-waterways-explorer-app-preview.up.railway.app",
+        "EXPO_PUBLIC_EXAMPLE_ENV_VAR": "test",
+        "BACKEND_URL": "https://canadian-waterways-explorer-app-preview.up.railway.app"
+      }      
     },
     "production": {
       "autoIncrement": true,
