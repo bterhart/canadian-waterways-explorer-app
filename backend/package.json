@@ -7,7 +7,11 @@
     "dev": "bun run --hot src/index.ts",
     "start": "bun run src/index.ts",
     "typecheck": "tsc --noEmit",
-		"build:waterway-overview": "bun run scripts/build-waterway-overview.ts"
+	"build:waterway-overview": "bun run scripts/build-waterway-overview.ts",
+	"audit:entity": "bun run scripts/audit-entity-duplicates.ts",
+	"audit:waterway": "bun run scripts/audit-entity-duplicates.ts --entity=waterway",
+	"audit:location": "bun run scripts/audit-entity-duplicates.ts --entity=location",
+	"audit:explorer": "bun run scripts/audit-entity-duplicates.ts --entity=explorer"	  
   },
   "devDependencies": {
     "@types/bcryptjs": "^3.0.0",
