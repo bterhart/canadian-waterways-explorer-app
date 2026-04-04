@@ -28,5 +28,8 @@
     "nanoid": "^5.1.6",
     "sharp": "^0.34.5",
     "zod": "4.1.11"
-  }
+  },
+   "scripts": {
+    "build:waterway-overview": "bun run scripts/build-waterway-overview.ts"
+  } 
 }
