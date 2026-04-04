@@ -1,7 +1,7 @@
 /**
  * migrate-from-csv.ts
  *
- * ONE-TIME migration: reads /tmp/cleaned-urls.csv as the authoritative image map,
+ * ONE-TIME migration: reads cleaned_urls_final.csv as the authoritative image map,
  * downloads each image from its effective URL, uploads it to Cloudflare R2,
  * and updates the database one sequence at a time.
  *
@@ -43,29 +43,34 @@ const R2_SECRET_ACCESS_KEY = process.env.R2_SECRET_ACCESS_KEY!;
 const R2_BUCKET_NAME = process.env.R2_BUCKET_NAME!;
 const R2_PUBLIC_URL = process.env.R2_PUBLIC_URL!;
 
-const CSV_PATH = "/tmp/cleaned_urls_final.csv";
+const CSV_PATH = "cleaned_urls_final.csv";
 
-/** Allowed image content-type prefixes. Anything else is rejected. */
+/** Enable this for safer, slower migration when dealing with Wikimedia Commons */
+const WIKIMEDIA_SLOW_MODE = true;   // ← SET TO TRUE for set-and-forget
+
+/** Allowed image content-type prefixes. */
 const VALID_IMAGE_TYPES = [
-  "image/jpeg",
-  "image/png",
-  "image/gif",
-  "image/webp",
-  "image/svg+xml",
-  "image/tiff",
-  "image/bmp",
+  "image/jpeg", "image/png", "image/gif", "image/webp",
+  "image/svg+xml", "image/tiff", "image/bmp",
 ];
 
-/** Known image extensions for validation. */
+/** Known image extensions */
 const KNOWN_IMAGE_EXTS = new Set([
   ".jpg", ".jpeg", ".png", ".gif", ".webp", ".svg", ".tiff", ".tif", ".bmp",
 ]);
 
-// ── Concurrency & timing defaults ──────────────────────────────────────────
+// ── Concurrency & timing ───────────────────────────────────────────────────
 
 let CONCURRENCY = 6;
 let INTER_REQUEST_DELAY_MS = 3_000;
-const MAX_RETRIES = 2;
+
+if (WIKIMEDIA_SLOW_MODE) {
+  CONCURRENCY = 2;
+  INTER_REQUEST_DELAY_MS = 10_000;        // 10 seconds between requests
+  console.log("⚠️  WIKIMEDIA_SLOW_MODE ENABLED → Using conservative settings (2 workers, 10s delay)");
+}
+
+const MAX_RETRIES = 3;                    // increased slightly
 const R2_UPLOAD_TIMEOUT_MS = 60_000;
 
 // Circuit breaker state (global, shared across workers)
@@ -365,29 +370,59 @@ async function downloadImage(sourceUrl: string): Promise<DownloadedImage | { err
   const cached = downloadCache.get(sourceUrl);
   if (cached) return cached;
 
+  const isWikimedia = sourceUrl.includes("wikimedia.org");
+
   let response: Response | null = null;
 
   for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
     try {
+      const headers: HeadersInit = {
+        "User-Agent": "CanadianWaterwaysExplorer/1.0 (https://canadianwaterways.ca; bert@canadianwaterways.ca) image-migration-bot",
+        "Api-User-Agent": "CanadianWaterwaysExplorer/1.0 (https://canadianwaterways.ca; bert@canadianwaterways.ca) image-migration-bot",
+      };
+
       response = await fetch(sourceUrl, {
-        headers: {
-          "User-Agent": "CanadianWaterwaysExplorer/1.0 (image-migration; contact@example.com)",
-          "Api-User-Agent": "CanadianWaterwaysExplorer/1.0 (image-migration; contact@example.com)",
-        },
-        signal: AbortSignal.timeout(30_000),
+        headers,
+        signal: AbortSignal.timeout(60_000),
         redirect: "follow",
       });
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
-      return { error: `Fetch error: ${msg}` };
+      if (attempt === MAX_RETRIES) {
+        return { error: `Fetch timeout/network error: ${msg}` };
+      }
+      await sleep(8000);
+      continue;
     }
 
+    // ── Wikimedia-specific smart handling ─────────────────────────────────
+    if (isWikimedia) {
+      if (response.status === 403) {
+        record429();
+        console.warn(`    [WIKI 403 BLOCKED] Attempt ${attempt + 1}/${MAX_RETRIES + 1}`);
+
+        if (attempt < MAX_RETRIES) {
+          const wait = retryDelayMs(attempt) * 2;   // extra long backoff on 403
+          console.log(`    → Waiting ${(wait / 1000).toFixed(0)}s before retry...`);
+          await sleep(wait);
+          continue;
+        }
+      }
+
+      if (response.status === 429) {
+        record429();
+        if (shouldTripBreaker()) await tripBreaker();
+      }
+
+      if (response.status === 404) {
+        return { error: `HTTP 404 - Image not found (likely bad/truncated URL)` };
+      }
+    }
+
+    // General rate limit handling
     if (response.status === 429) {
       record429();
-
-      if (shouldTripBreaker()) {
-        await tripBreaker();
-      }
+      if (shouldTripBreaker()) await tripBreaker();
 
       if (attempt < MAX_RETRIES) {
         const wait = retryDelayMs(attempt);
@@ -397,7 +432,7 @@ async function downloadImage(sourceUrl: string): Promise<DownloadedImage | { err
       }
     }
 
-    if (response.status !== 429) break;
+    if (response.status !== 429 && response.status !== 403) break;
   }
 
   if (!response || !response.ok) {
@@ -406,8 +441,8 @@ async function downloadImage(sourceUrl: string): Promise<DownloadedImage | { err
 
   const contentType = response.headers.get("content-type") ?? "";
   const isImage = VALID_IMAGE_TYPES.some((t) => contentType.startsWith(t));
+
   if (!isImage) {
-    try { await response.arrayBuffer(); } catch { /* drain */ }
     return { error: `Non-image content-type: "${contentType}"` };
   }
 
@@ -419,8 +454,7 @@ async function downloadImage(sourceUrl: string): Promise<DownloadedImage | { err
       console.log(`    [TIFF→JPEG] converting…`);
       buffer = Buffer.from(await sharp(buffer).jpeg({ quality: 90 }).toBuffer());
     } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err);
-      return { error: `TIFF conversion error: ${msg}` };
+      return { error: `TIFF conversion error: ${err}` };
     }
   }
 

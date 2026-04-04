@@ -9,22 +9,32 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "ca.canadianwaterways.explorer",
+      "bundleIdentifier": "com.bterhart.canadianwaterwaysexplorer",
       "buildNumber": "27",
       "infoPlist": {
         "NSMicrophoneUsageDescription": "Canada Waterways Explorer uses the microphone to record audio tracks that the app attaches to your creations.",
-        "NSLocationWhenInUseUsageDescription": "Canada Waterways Explorer uses your location to display your position on in-app maps and surface nearby points of interest."
+        "NSLocationWhenInUseUsageDescription": "Canada Waterways Explorer uses your location to display your position on in-app maps and surface nearby points of interest.",
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
       "edgeToEdgeEnabled": true
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      "expo-asset",
+      "expo-web-browser",
+      "react-native-edge-to-edge"
     ],
     "experiments": {
       "typedRoutes": true
     },
-    "icon": "./icon.png"
+    "icon": "./icon.png",
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "02e390e1-1ee4-468f-ada8-b6946d17c87c"
+      }
+    }
   }
 }

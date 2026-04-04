@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "bun run --hot src/index.ts",
     "start": "bun run src/index.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+		"build:waterway-overview": "bun run scripts/build-waterway-overview.ts"
   },
   "devDependencies": {
     "@types/bcryptjs": "^3.0.0",
@@ -28,8 +29,5 @@
     "nanoid": "^5.1.6",
     "sharp": "^0.34.5",
     "zod": "4.1.11"
-  },
-   "scripts": {
-    "build:waterway-overview": "bun run scripts/build-waterway-overview.ts"
-  } 
+  }
 }
