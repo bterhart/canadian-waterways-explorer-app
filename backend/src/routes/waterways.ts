@@ -1,8 +1,21 @@
 import { Hono } from "hono";
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 import { prisma } from "../prisma";
 import { requireAdmin, requireSuperAdmin } from "../lib/admin-middleware";
 
 const waterwaysRouter = new Hono();
+
+const RIVER_OVERVIEW_PATH = join(import.meta.dir, "../../generated/river-overview.json");
+let riverOverviewCache: unknown | null = null;
+
+async function getRiverOverviewDataset() {
+  if (riverOverviewCache) return riverOverviewCache;
+
+  const raw = await readFile(RIVER_OVERVIEW_PATH, "utf-8");
+  riverOverviewCache = JSON.parse(raw);
+  return riverOverviewCache;
+}
 
 // Get all waterways with basic info for map markers
 waterwaysRouter.get("/", async (c) => {
@@ -22,6 +35,27 @@ waterwaysRouter.get("/", async (c) => {
   });
 
   return c.json({ data: waterways });
+});
+
+// Get precomputed nationwide river overview geometry for the home map
+waterwaysRouter.get("/overview/rivers", async (c) => {
+  try {
+    const dataset = await getRiverOverviewDataset();
+    c.header("Cache-Control", "public, max-age=3600");
+    return c.json({ data: dataset });
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException)?.code === "ENOENT") {
+      return c.json(
+        { error: { message: "River overview dataset not found", code: "NOT_FOUND" } },
+        404
+      );
+    }
+
+    return c.json(
+      { error: { message: "Failed to load river overview dataset", code: "INTERNAL_ERROR" } },
+      500
+    );
+  }
 });
 
 // Get waterways by region/province
