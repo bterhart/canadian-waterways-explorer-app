@@ -925,7 +925,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       authorSource: 'Hudson\\\\',
       title: 'Fort Good Hope Post Journals',
       publisher: 'HBCA B.80/a series',
-      description: 'Primary daily records from Fort Good Hope (Rádeyı̨lı̨kǫ́ę́) on the Mackenzie River documenting HBC operations in the far north and Dene (Slavey) trade.',
+      description: 'Primary daily records from Fort Good Hope (Rádeyı̨lı̨kǫ́ę́) on the  River documenting HBC operations in the far north and Dene (Slavey) trade.',
     },
     {
       authorSource: 'Helm June',
@@ -950,7 +950,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       authorSource: 'Hudson\'s Bay Company Archives',
       title: 'Fort Good Hope Post Journals',
       publisher: 'HBCA B.80/a series',
-      description: 'Primary daily records from Fort Good Hope (Rádeyı̨lı̨kǫ́ę́) on the Mackenzie River documenting HBC operations in the far north and Dene (Slavey) trade.',
+      description: 'Primary daily records from Fort Good Hope (Rádeyı̨lı̨kǫ́ę́) on the  River documenting HBC operations in the far north and Dene (Slavey) trade.',
     },
     {
       authorSource: 'Helm June',
@@ -1059,7 +1059,7 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       authorSource: 'Hudson\\\\',
       title: 'Athabasca River Records',
       publisher: 'HBCA B.39/a series (related Fort Chipewyan)',
-      description: 'Primary references to Athabasca River (Ayaskatawa-sipi) as a key corridor linking Lake Athabasca to the Mackenzie system and fur trade posts.',
+      description: 'Primary references to Athabasca River (Ayaskatawa-sipi) as a key corridor linking Lake Athabasca to the  system and fur trade posts.',
     },
     {
       authorSource: 'Helm June',
@@ -4199,6 +4199,31 @@ export const locationReadingGuideData: Record<string, LocationReadingGuideEntry[
       description: 'Historic significance in Canadian Arctic.',
     }
   ],
+  'mackenzie-river-ontario-waterway': [
+    {
+      authorSource: 'Library and Archives Canada',
+      title: 'The Mackenzie River, Thunder Bay with Indian Burial',
+      publisher: 'William Armstrong fonds',
+      description: 'Nineteenth-century visual record of the Mackenzie River / Thunder Bay landscape and Indigenous presence.',
+    },
+    {
+      authorSource: 'Dictionary of Canadian Biography',
+      title: 'McKENZIE, RODERICK',
+      publisher: 'University of Toronto / Université Laval',
+      year: '1985',
+      description: 'Biography of the North West Company and Hudson’s Bay Company trader associated with Fort William and the broader Thunder Bay region.',
+    },
+    {
+      authorSource: 'Lakehead Region Conservation Authority',
+      title: 'MacKenzie Point',
+      description: 'Official conservation-area background on MacKenzie Point and its Lake Superior setting east of Thunder Bay.',
+    },
+    {
+      authorSource: 'Superior Country',
+      title: 'Mackenzie Falls',
+      description: 'Contemporary overview of MacKenzie Falls as a short hiking destination on the local river in Shuniah.',
+    },
+  ],  
   'red-deer-river-alberta-waterway': [
     {
       authorSource: 'Ray Arthur J.',
