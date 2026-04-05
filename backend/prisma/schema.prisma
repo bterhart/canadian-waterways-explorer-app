@@ -33,6 +33,7 @@ model Waterway {
   videoUrl               String?                   // YouTube or video URL
   discoveries            ArchaeologicalDiscovery[]
   explorers              ExplorerWaterway[]
+  notableFigures         NotableFigureWaterway[]
   furTradeInfo           FurTradeInfo?
   locations              Location[]
   contributions          UserContribution[]
@@ -97,6 +98,20 @@ model ExplorerWaterway {
   explorer        Explorer @relation(fields: [explorerId], references: [id], onDelete: Cascade)
 
   @@unique([explorerId, waterwayId])
+}
+
+model NotableFigureWaterway {
+  id              String        @id @default(cuid())
+  notableFigureId String
+  waterwayId      String
+  relationship    String?
+  notes           String?
+  notableFigure   NotableFigure @relation(fields: [notableFigureId], references: [id], onDelete: Cascade)
+  waterway        Waterway      @relation(fields: [waterwayId], references: [id], onDelete: Cascade)
+
+  @@unique([notableFigureId, waterwayId])
+  @@index([waterwayId])
+  @@index([notableFigureId])
 }
 
 model FurTradeInfo {
@@ -900,6 +915,7 @@ model NotableFigure {
   isFeatured          Boolean  @default(false)
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
+  waterways           NotableFigureWaterway[]
 
   @@index([figureType])
   @@index([nation])
