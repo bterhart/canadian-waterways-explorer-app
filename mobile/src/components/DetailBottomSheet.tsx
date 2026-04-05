@@ -647,6 +647,48 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                     </View>
                   ) : null}
 
+                  {/* Notable Figures Connected to This Waterway */}
+                  {waterwayData.notableFigures && waterwayData.notableFigures.length > 0 ? (
+                    <View className="mb-4">
+                      <Text
+                        className="text-lg font-bold mb-2"
+                        style={{ color: colors.forestGreen }}
+                      >
+                        Notable Figures Connected to This Waterway
+                      </Text>
+                      <View className="p-4 rounded-xl" style={{ backgroundColor: '#F7F0FF' }}>
+                        {[...waterwayData.notableFigures]
+                          .sort((a, b) => a.notableFigure.name.localeCompare(b.notableFigure.name))
+                          .map((figureLink) => (
+                            <View
+                              key={figureLink.id}
+                              className="mb-4 last:mb-0 pb-4 border-b border-gray-200 last:border-b-0 last:pb-0"
+                            >
+                              <Text className="font-semibold" style={{ color: '#333' }}>
+                                {figureLink.notableFigure.name}
+                              </Text>
+                              <Text className="text-sm text-gray-600">
+                                {figureLink.notableFigure.role}
+                                {figureLink.notableFigure.birthYear && figureLink.notableFigure.deathYear
+                                  ? ` (${figureLink.notableFigure.birthYear}-${figureLink.notableFigure.deathYear})`
+                                  : ''}
+                              </Text>
+                              {figureLink.relationship ? (
+                                <Text className="text-xs mt-1 font-semibold" style={{ color: colors.forestGreen }}>
+                                  {figureLink.relationship}
+                                </Text>
+                              ) : null}
+                              {figureLink.notes ? (
+                                <Text className="text-xs italic text-gray-500 mt-1">
+                                  {figureLink.notes}
+                                </Text>
+                              ) : null}
+                            </View>
+                          ))}
+                      </View>
+                    </View>
+                  ) : null}                  
+
                   {/* Archaeological Discoveries Section */}
                   {waterwayData.discoveries && waterwayData.discoveries.length > 0 ? (
                     <View className="mb-4">
@@ -1003,6 +1045,48 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                       </View>
                     </View>
                   ) : null}
+
+                  {/* Notable Figures Connected to This Waterway */}
+                  {locationData.waterway.notableFigures && locationData.waterway.notableFigures.length > 0 ? (
+                    <View className="mb-4">
+                      <Text
+                        className="text-lg font-bold mb-2"
+                        style={{ color: colors.forestGreen }}
+                      >
+                        Notable Figures Connected to This Waterway
+                      </Text>
+                      <View className="p-4 rounded-xl" style={{ backgroundColor: '#F7F0FF' }}>
+                        {[...locationData.waterway.notableFigures]
+                          .sort((a, b) => a.notableFigure.name.localeCompare(b.notableFigure.name))
+                          .map((figureLink) => (
+                            <View
+                              key={figureLink.id}
+                              className="mb-4 last:mb-0 pb-4 border-b border-gray-200 last:border-b-0 last:pb-0"
+                            >
+                              <Text className="font-semibold" style={{ color: '#333' }}>
+                                {figureLink.notableFigure.name}
+                              </Text>
+                              <Text className="text-sm text-gray-600">
+                                {figureLink.notableFigure.role}
+                                {figureLink.notableFigure.birthYear && figureLink.notableFigure.deathYear
+                                  ? ` (${figureLink.notableFigure.birthYear}-${figureLink.notableFigure.deathYear})`
+                                  : ''}
+                              </Text>
+                              {figureLink.relationship ? (
+                                <Text className="text-xs mt-1 font-semibold" style={{ color: colors.forestGreen }}>
+                                  {figureLink.relationship}
+                                </Text>
+                              ) : null}
+                              {figureLink.notes ? (
+                                <Text className="text-xs italic text-gray-500 mt-1">
+                                  {figureLink.notes}
+                                </Text>
+                              ) : null}
+                            </View>
+                          ))}
+                      </View>
+                    </View>
+                  ) : null}                  
 
                   {/* Fur Trade History (from parent waterway) */}
                   {locationData.waterway.furTradeInfo ? (
