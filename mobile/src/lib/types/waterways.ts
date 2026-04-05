@@ -39,24 +39,18 @@ export interface ExplorerWaterway {
   };
 }
 
-export interface NotableFigureWaterway {
+export interface RelatedNotableFigure {
   id: string;
-  notableFigureId: string;
-  waterwayId: string;
-  relationship: string | null;
-  notes: string | null;
-  notableFigure: {
-    id: string;
-    name: string;
-    alternateNames: string | null;
-    birthYear: number | null;
-    deathYear: number | null;
-    nation: string | null;
-    figureType: string;
-    role: string;
-    imageUrl: string | null;
-    isFeatured: boolean;
-  };
+  name: string;
+  alternateNames: string | null;
+  birthYear: number | null;
+  deathYear: number | null;
+  nation: string | null;
+  figureType: string;
+  role: string;
+  imageUrl: string | null;
+  isFeatured: boolean;
+  associatedLocations: string[] | null;
 }
 
 export interface FurTradeInfo {
@@ -117,7 +111,7 @@ export interface WaterwayDetail {
   videoUrl: string | null;
   type: WaterwayTypeInfo;
   explorers: ExplorerWaterway[];
-  notableFigures: NotableFigureWaterway[];
+  notableFigures: RelatedNotableFigure[];
   furTradeInfo: FurTradeInfo | null;
   locations: WaterwayLocation[];
   discoveries: ArchaeologicalDiscovery[];
@@ -221,7 +215,7 @@ export interface LocationDetail {
     name: string;
     type: WaterwayTypeInfo;
     explorers: ExplorerWaterway[];
-    notableFigures: NotableFigureWaterway[];
+    notableFigures: RelatedNotableFigure[];
     furTradeInfo: FurTradeInfo | null;
   };
   cartographer: Cartographer | null;
