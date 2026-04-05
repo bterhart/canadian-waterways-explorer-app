@@ -225,7 +225,7 @@ export default function LearnHubScreen() {
         <View style={styles.cardsGrid}>
           <FeatureCard
             title="Notable Figures"
-            description="Women and Indigenous leaders who shaped Canadian history"
+            description="Traders, guides, interpreters, Indigenous leaders, women, and others who shaped Canadian history"
             icon={<Users size={28} color="white" />}
             gradientColors={['#8B5CF6', '#6D28D9'] as const}
             onPress={() => router.push('/notable-figures')}
