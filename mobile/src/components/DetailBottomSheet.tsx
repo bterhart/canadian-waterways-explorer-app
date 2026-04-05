@@ -9,6 +9,7 @@ import ContributeModal from './ContributeModal';
 import ExplorerDetailModal from './ExplorerDetailModal';
 import type { MarkerType, WaterwayDetail, LocationDetail, UserContribution, ArchaeologicalDiscovery } from '@/lib/types/waterways';
 import { locationReadingGuideData } from '@/data/locationReadingGuideData';
+import { useRouter } from 'expo-router';
 
 // Generate Google Earth Web URL
 const getGoogleEarthUrl = (latitude: number, longitude: number, name?: string): string => {
@@ -144,6 +145,7 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
     const [showContributeModal, setShowContributeModal] = useState(false);
     const [selectedGalleryImage, setSelectedGalleryImage] = useState<GalleryImage | null>(null);
     const [selectedExplorerId, setSelectedExplorerId] = useState<string | null>(null);
+    const router = useRouter();
 
     // Fetch data based on marker type
     const { data: waterwayData, isLoading: waterwayLoading } = useWaterwayDetail(
@@ -658,36 +660,45 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                       </Text>
                       <View className="p-4 rounded-xl" style={{ backgroundColor: '#F7F0FF' }}>
                         {[...waterwayData.notableFigures]
-                          .sort((a, b) => a.notableFigure.name.localeCompare(b.notableFigure.name))
-                          .map((figureLink) => (
-                            <View
-                              key={figureLink.id}
-                              className="mb-4 last:mb-0 pb-4 border-b border-gray-200 last:border-b-0 last:pb-0"
+                          .sort((a, b) => a.name.localeCompare(b.name))
+                          .map((figure) => (
+                            <Pressable
+                              key={figure.id}
+                              className="flex-row items-start mb-4 last:mb-0 pb-4 border-b border-gray-200 last:border-b-0 last:pb-0"
+                              onPress={() => router.push(`/notable-figures/${figure.id}`)}
+                              style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
                             >
-                              <Text className="font-semibold" style={{ color: '#333' }}>
-                                {figureLink.notableFigure.name}
-                              </Text>
-                              <Text className="text-sm text-gray-600">
-                                {figureLink.notableFigure.role}
-                                {figureLink.notableFigure.birthYear && figureLink.notableFigure.deathYear
-                                  ? ` (${figureLink.notableFigure.birthYear}-${figureLink.notableFigure.deathYear})`
-                                  : ''}
-                              </Text>
-                              {figureLink.relationship ? (
-                                <Text className="text-xs mt-1 font-semibold" style={{ color: colors.forestGreen }}>
-                                  {figureLink.relationship}
+                              {figure.imageUrl ? (
+                                <Image source={{ uri: figure.imageUrl }} className="w-12 h-12 rounded-full mr-3" />
+                              ) : (
+                                <View
+                                  className="w-12 h-12 rounded-full mr-3 items-center justify-center"
+                                  style={{ backgroundColor: '#A855F7' }}
+                                >
+                                  <Text className="text-white font-bold text-lg">
+                                    {figure.name?.charAt(0) || '?'}
+                                  </Text>
+                                </View>
+                              )}
+                              <View className="flex-1">
+                                <Text className="font-semibold" style={{ color: '#333' }}>
+                                  {figure.name}
                                 </Text>
-                              ) : null}
-                              {figureLink.notes ? (
-                                <Text className="text-xs italic text-gray-500 mt-1">
-                                  {figureLink.notes}
+                                <Text className="text-sm text-gray-600">
+                                  {figure.role}
+                                  {figure.birthYear && figure.deathYear
+                                    ? ` (${figure.birthYear}-${figure.deathYear})`
+                                    : ''}
                                 </Text>
-                              ) : null}
-                            </View>
+                                <Text className="text-xs mt-1" style={{ color: '#A855F7' }}>
+                                  Tap for biography
+                                </Text>
+                              </View>
+                            </Pressable>
                           ))}
                       </View>
                     </View>
-                  ) : null}                  
+                  ) : null}                 
 
                   {/* Archaeological Discoveries Section */}
                   {waterwayData.discoveries && waterwayData.discoveries.length > 0 ? (
@@ -1057,36 +1068,45 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                       </Text>
                       <View className="p-4 rounded-xl" style={{ backgroundColor: '#F7F0FF' }}>
                         {[...locationData.waterway.notableFigures]
-                          .sort((a, b) => a.notableFigure.name.localeCompare(b.notableFigure.name))
-                          .map((figureLink) => (
-                            <View
-                              key={figureLink.id}
-                              className="mb-4 last:mb-0 pb-4 border-b border-gray-200 last:border-b-0 last:pb-0"
+                          .sort((a, b) => a.name.localeCompare(b.name))
+                          .map((figure) => (
+                            <Pressable
+                              key={figure.id}
+                              className="flex-row items-start mb-4 last:mb-0 pb-4 border-b border-gray-200 last:border-b-0 last:pb-0"
+                              onPress={() => router.push(`/notable-figures/${figure.id}`)}
+                              style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
                             >
-                              <Text className="font-semibold" style={{ color: '#333' }}>
-                                {figureLink.notableFigure.name}
-                              </Text>
-                              <Text className="text-sm text-gray-600">
-                                {figureLink.notableFigure.role}
-                                {figureLink.notableFigure.birthYear && figureLink.notableFigure.deathYear
-                                  ? ` (${figureLink.notableFigure.birthYear}-${figureLink.notableFigure.deathYear})`
-                                  : ''}
-                              </Text>
-                              {figureLink.relationship ? (
-                                <Text className="text-xs mt-1 font-semibold" style={{ color: colors.forestGreen }}>
-                                  {figureLink.relationship}
+                              {figure.imageUrl ? (
+                                <Image source={{ uri: figure.imageUrl }} className="w-12 h-12 rounded-full mr-3" />
+                              ) : (
+                                <View
+                                  className="w-12 h-12 rounded-full mr-3 items-center justify-center"
+                                  style={{ backgroundColor: '#A855F7' }}
+                                >
+                                  <Text className="text-white font-bold text-lg">
+                                    {figure.name?.charAt(0) || '?'}
+                                  </Text>
+                                </View>
+                              )}
+                              <View className="flex-1">
+                                <Text className="font-semibold" style={{ color: '#333' }}>
+                                  {figure.name}
                                 </Text>
-                              ) : null}
-                              {figureLink.notes ? (
-                                <Text className="text-xs italic text-gray-500 mt-1">
-                                  {figureLink.notes}
+                                <Text className="text-sm text-gray-600">
+                                  {figure.role}
+                                  {figure.birthYear && figure.deathYear
+                                    ? ` (${figure.birthYear}-${figure.deathYear})`
+                                    : ''}
                                 </Text>
-                              ) : null}
-                            </View>
+                                <Text className="text-xs mt-1" style={{ color: '#A855F7' }}>
+                                  Tap for biography
+                                </Text>
+                              </View>
+                            </Pressable>
                           ))}
                       </View>
                     </View>
-                  ) : null}                  
+                  ) : null}                
 
                   {/* Fur Trade History (from parent waterway) */}
                   {locationData.waterway.furTradeInfo ? (
