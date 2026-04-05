@@ -389,7 +389,7 @@ export default function NotableFiguresScreen() {
               <View style={styles.featuredSection}>
                 <Text style={styles.sectionTitle}>Featured Figures</Text>
                 <Text style={styles.sectionSubtitle}>
-                  Important women and Indigenous leaders in Canadian history
+                  Traders, guides, interpreters, Indigenous leaders, women, and others connected to Canadian history
                 </Text>
                 <ScrollView
                   horizontal
