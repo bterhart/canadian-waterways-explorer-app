@@ -237,14 +237,15 @@ const notableFigures = notableFigureRows
     isFeatured: figure.isFeatured,
     associatedLocations: parseAssociatedLocations(figure.associatedLocations),
   }))
-.filter((figure) => figure.associatedLocations.includes(waterway.name));
+  .filter((figure) => figure.associatedLocations.includes(waterway.name));
 
-return c.json({
-  data: {
-    ...waterway,
-    notableFigures,
-  }
-});
+  return c.json({
+    data: {
+      ...waterway,
+      notableFigures,
+    }
+  });
+});  
 
 // Upload KML data for a waterway (superadmin only)
 waterwaysRouter.post("/:id/kml", requireAdmin, requireSuperAdmin, async (c) => {
