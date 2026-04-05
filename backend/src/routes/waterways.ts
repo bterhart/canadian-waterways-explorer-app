@@ -182,6 +182,24 @@ waterwaysRouter.get("/:id", async (c) => {
           yearExplored: "asc"
         }
       },
+      notableFigures: {
+        include: {
+          notableFigure: {
+            select: {
+              id: true,
+              name: true,
+              alternateNames: true,
+              birthYear: true,
+              deathYear: true,
+              nation: true,
+              figureType: true,
+              role: true,
+              imageUrl: true,
+              isFeatured: true,
+            }
+          }
+        }
+      },
       furTradeInfo: true,
       locations: {
         include: {
