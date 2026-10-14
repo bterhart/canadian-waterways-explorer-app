@@ -1,6 +1,7 @@
 // Comprehensive seed file for early Canadian fur traders, explorers, adventurers, and cartographers
 // Covers HBC, NWC/XY Company, French explorers, Indigenous leaders, women, Metis leaders
 
+// NOTE: "Prisma" is only the name of the query library (@prisma/client), not a database. The database is Turso.
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();

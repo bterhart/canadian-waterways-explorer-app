@@ -1,3 +1,5 @@
+// NOTE: "Prisma" is only the name of the query library (@prisma/client). It is NOT a
+// database. The one and only database is Turso, reached through the libsql adapter below.
 import { PrismaClient } from "@prisma/client";
 import { PrismaLibSQL } from "@prisma/adapter-libsql";
 

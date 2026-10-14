@@ -1,3 +1,4 @@
+// NOTE: "Prisma" is only the name of the query library (@prisma/client), not a database. The database is Turso.
 import type { PrismaClient } from "@prisma/client";
 import type { AuditArgs, AuditEntityType, AuditMatchMode } from "./audit-args";
 

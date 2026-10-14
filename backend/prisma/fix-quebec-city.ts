@@ -1,5 +1,6 @@
 // Fix 2 genuine 404 URLs for Quebec City in Turso
 // Uses API-confirmed Wikimedia URLs — verified to exist via Wikimedia Commons API
+// NOTE: "Prisma" is only the name of the query library (@prisma/client), not a database. The database is Turso.
 import { PrismaClient } from "@prisma/client";
 import { PrismaLibSQL } from "@prisma/adapter-libsql";
 
