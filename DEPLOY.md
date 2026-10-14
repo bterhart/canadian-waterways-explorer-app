@@ -1,104 +1,181 @@
-# Deploying — backend (Railway) and mobile (EAS / TestFlight)
+# Deploying from a fresh Windows 11 machine — step by step
 
-Written 2026-10-14 for a Windows 11 workstation (PowerShell). Facts marked
-**[check]** could not be verified from the repo and must be confirmed once in the
-respective dashboard; after that this file can be corrected.
+Written 2026-10-14. Assumes **nothing** is installed: no Git, no Node, no clone.
+Everything below is done in **Windows PowerShell** (Start → type "PowerShell" → open).
+Lines starting with `#` are comments, not commands. Things marked **[check]** could not
+be verified from the repository and are confirmed once in the relevant web dashboard.
 
-## 0. Branch flow (how changes reach `main`)
+There are three independent deliveries. You can stop after any of them:
 
-Work lands on a feature branch; you merge it yourself. Current state:
+| # | What | Where it runs | Needs local tools? |
+|---|------|---------------|--------------------|
+| A | Merge the fix branch into `main` | GitHub website | **No** |
+| B | Deploy the backend | Railway website (or CLI) | **No** if Railway is connected to GitHub |
+| C | Build + submit the iOS app to TestFlight | EAS (Expo cloud) | **Yes** — Git, Node, Bun, EAS CLI |
 
-- `claude/fix-map-filter-hide-hs4mz` = `feat/river-overview-home-layer` + the audit/fix commits.
-- `feat/river-overview-home-layer` is 28 commits ahead of `main`; `main` has nothing `feat` lacks.
-  The 28 commits touch `mobile/` and docs only — `backend/` is identical between `main` and `feat`.
+---
+
+## Part A — Merge on the GitHub website (no installs)
+
+The repo is `https://github.com/bterhart/canadian-waterways-explorer-app`. Branches:
+
+- `claude/fix-map-filter-hide-hs4mz` — your `feat/river-overview-home-layer` plus the 17 audit/fix commits.
+- `feat/river-overview-home-layer` — your latest work, 28 commits ahead of `main`.
+- `main` — contains nothing the other two lack.
+
+1. Open **https://github.com/bterhart/canadian-waterways-explorer-app/compare/feat/river-overview-home-layer...claude/fix-map-filter-hide-hs4mz**
+   (base = `feat/river-overview-home-layer`, compare = `claude/fix-map-filter-hide-hs4mz`).
+2. Click **Create pull request**, give it any title, click **Create pull request** again.
+3. On the PR page click the green merge button. Use the dropdown arrow to choose
+   **Rebase and merge** (keeps history linear; "Create a merge commit" is also fine). Confirm.
+4. Now bring `main` up to date. Open
+   **https://github.com/bterhart/canadian-waterways-explorer-app/compare/main...feat/river-overview-home-layer**,
+   **Create pull request** → merge the same way.
+5. Verify: **https://github.com/bterhart/canadian-waterways-explorer-app/commits/main** should show
+   "docs: add DEPLOY.md…", "fix(mobile): teacher lesson-plan detail crashed…", etc. at the top.
+
+If GitHub says "Can't automatically merge", stop and tell me — it means something was pushed
+to one of these branches from somewhere else.
+
+---
+
+## Part B — Backend to Railway
+
+Known from the previous session: Railway service with Root Directory `backend`, Start Command
+`bun run src/index.ts`, 13 environment variables already set (Turso URL/token, JWT secrets,
+R2, BACKEND_URL). Production URL: `https://canadian-waterways-explorer-app-production.up.railway.app`.
+
+1. Log in at **https://railway.app**, open the project, click the **production** service.
+2. **Settings → Source.** **[check]** One of two things is true:
+
+   **B-1. It shows the GitHub repo and a branch (most likely `main`).**
+   Auto-deploy is on. Part A already triggered the deploy. Click the **Deployments** tab and wait
+   until the top entry says **Active** (2–5 minutes).
+
+   **B-2. Source is empty / "No source connected".**
+   Click **Connect Repo**, pick `bterhart/canadian-waterways-explorer-app`, branch `main`.
+   Make sure **Settings → Root Directory** is `backend`. Railway deploys immediately and
+   on every future push to `main`. (No CLI needed.)
+
+3. Verify from PowerShell — this is the proof the new code is live:
+   ```powershell
+   curl.exe -s https://canadian-waterways-explorer-app-production.up.railway.app/health
+   # expect: {"status":"ok"}
+
+   curl.exe -s -o NUL -w "%{http_code}`n" https://canadian-waterways-explorer-app-production.up.railway.app/api/admin/contributions
+   # expect: 401   (before this release it returned 200 with data — that was the security hole)
+   ```
+   If the second line prints `200`, the old code is still running — wait for the deployment to finish.
+
+The **database** needs nothing for this release: the one schema change (`ImageHealthLog` table)
+was already applied to Turso on 2026-10-14. For future schema changes see Part D.
+
+---
+
+## Part C — iOS app to TestFlight (installs required)
+
+The app has no over-the-air updates (`expo-updates` is not installed), so the mobile fixes
+(teacher lesson-plan crash, contribution review) only reach phones through a new TestFlight build.
+
+### C-1. Install the tools (once, ~10 minutes)
+
+Open PowerShell and run one line at a time. `winget` is built into Windows 11.
 
 ```powershell
-cd <your clone>
-git fetch origin
-git checkout feat/river-overview-home-layer
-git merge --ff-only origin/claude/fix-map-filter-hide-hs4mz   # fast-forward; no merge commit
-git push origin feat/river-overview-home-layer
+winget install --id Git.Git -e --source winget
+winget install --id OpenJS.NodeJS.LTS -e --source winget
+```
+**Close PowerShell and open a new one** (so the PATH picks up the installs), then:
 
-git checkout main
-git merge --ff-only feat/river-overview-home-layer            # main has no divergent commits
-git push origin main
+```powershell
+git --version        # expect: git version 2.x
+node --version       # expect: v22.x or v20.x
+npm --version
+
+# Bun (the project uses bun.lock, so EAS builds with Bun):
+powershell -c "irm bun.sh/install.ps1 | iex"
+```
+**Close and reopen PowerShell again**, then:
+
+```powershell
+bun --version        # expect: 1.x
+npm install -g eas-cli
+eas --version        # expect: eas-cli/16.x or newer (eas.json requires >= 16.17.4)
 ```
 
-If `--ff-only` refuses, stop: something was pushed to that branch outside this flow —
-inspect with `git log --oneline --graph origin/main origin/feat/river-overview-home-layer -20`.
-
-## 1. Backend → Railway
-
-Railway service facts from the previous session: Root Directory `backend`, Start Command
-`bun run src/index.ts`, 13 environment variables set in Railway (Turso URL/token, JWT
-secrets, R2, BACKEND_URL). Two services/environments exist (URLs in `mobile/eas.json`):
-`…-production.up.railway.app` and `…-preview.up.railway.app`.
-
-**[check] once:** Railway dashboard → the production service → *Settings → Source*. It will
-show either a connected GitHub repo + branch, or nothing.
-
-### 1a. If Source shows GitHub + a branch (auto-deploy)
-Pushing to that branch deploys. If the branch is `main`, step 0 above is the deploy.
-Watch *Deployments* until the new one is **Active**, then verify:
+### C-2. Get the code
 
 ```powershell
-curl.exe -s https://canadian-waterways-explorer-app-production.up.railway.app/health
-# expect {"status":"ok"}
-curl.exe -s -o NUL -w "%{http_code}`n" https://canadian-waterways-explorer-app-production.up.railway.app/api/admin/contributions
-# expect 401 (was 200 before the auth fix) — this is the proof the new code is live
+mkdir C:\dev
+cd C:\dev
+git clone https://github.com/bterhart/canadian-waterways-explorer-app.git
+cd canadian-waterways-explorer-app
+git checkout main      # only after Part A is done; otherwise use: git checkout claude/fix-map-filter-hide-hs4mz
+cd mobile
+bun install            # ~1–2 min; installs node_modules from bun.lock
 ```
+(The repo is public, so cloning asks for no password. Pushing later would — Git for Windows
+opens a browser login the first time.)
 
-### 1b. If Source is empty (manual deploy with the Railway CLI)
-```powershell
-npm install -g @railway/cli        # once
-railway login                       # opens a browser
-cd <your clone>\backend
-railway link                        # pick the project, then the production service
-railway up                          # uploads backend/ and deploys it
-```
-Then run the two `curl.exe` checks above.
-
-### 1c. The database schema (only when `schema.prisma` gains a table/column)
-Turso is never touched by deploys. New DDL goes in a file under
-`backend/prisma/turso-migrations/` and is applied by hand:
+### C-3. Log in to Expo and build
 
 ```powershell
-cd <your clone>\backend
-bun run scripts/push-turso-schema.ts prisma/turso-migrations/<file>.sql
-```
-`TURSO_DATABASE_URL` / `TURSO_AUTH_TOKEN` must be in `backend/.env` (they are). The
-script is CREATE-only and skips "already exists"; ALTERs must be written explicitly.
-The `ImageHealthLog` table was applied this way on 2026-10-14.
-
-## 2. Mobile → TestFlight (iOS)
-
-The app has no `expo-updates`, so every mobile change needs a new store build.
-`eas.json` production profile: `appVersionSource: remote`, `autoIncrement: true`
-(EAS bumps the build number itself — do **not** edit `buildNumber`/`version` in
-`app.json`), iOS distribution `store`, ASC App ID `6759135663`.
-
-```powershell
-npm install -g eas-cli              # once; eas.json requires >= 16.17.4
-eas login                           # Expo account that owns the project
-cd <your clone>\mobile
-bun install                         # or npm install — match what the lockfile was made with (bun.lock exists)
+eas login              # the Expo account that owns project "canada-waterways-explorer"
+eas whoami             # confirms it
 
 eas build --platform ios --profile production
-# builds in the cloud; ~15–25 min. Answer "yes" to letting EAS manage credentials if asked.
-
-eas submit --platform ios --profile production --latest
-# uploads the build just made to App Store Connect / TestFlight.
 ```
-Then in App Store Connect → TestFlight the build appears after processing (10–30 min);
-add it to the tester group if it is not inherited.
+What happens / what to answer:
+- It may ask to **log in to your Apple Developer account** and whether EAS should manage
+  credentials (certificates, provisioning profile). Answer **yes**; the credentials are
+  stored on Expo's servers from the previous TestFlight release and are reused.
+- The build runs in Expo's cloud (15–25 min). The terminal prints a link like
+  `https://expo.dev/accounts/<you>/projects/canada-waterways-explorer/builds/<id>` — you can
+  close PowerShell and watch it there.
+- The build number is bumped automatically (`autoIncrement: true`, version source `remote`).
+  **Do not** edit `version` or `buildNumber` in `app.json`.
 
-Android: the production profile also declares `android.distribution: store`, but there
-is **no Google Maps API key in `app.json`** — every map screen renders blank on Android
-until one is added (`expo.android.config.googleMaps.apiKey`). Do not ship an Android
-build before that is fixed.
+### C-4. Submit to TestFlight
 
-## 3. Order for this release
-1. Step 0 (merge to `main`).
-2. Step 1a or 1b (backend). Confirm `/api/admin/contributions` → 401.
-3. Step 2 (iOS build + submit). The teacher lesson-plan crash fix and the contribution
-   review fix only reach devices with this build.
+When the build is **Finished**:
+```powershell
+eas submit --platform ios --profile production --latest
+```
+(`--latest` picks the build you just made; ASC App ID `6759135663` is already in `eas.json`.)
+It asks for an App Store Connect login or an API key the first time; the browser flow is fine.
+
+Then: **App Store Connect → My Apps → Canada Waterways Explorer → TestFlight**. The build
+appears after Apple processes it (10–30 min). If your tester group doesn't inherit new builds
+automatically, add it to the group.
+
+**Alternative without any local installs:** every step of C-3/C-4 can also be done from
+**https://expo.dev** → the project → *Builds* → *Create a build* (choose the GitHub repo
+and branch when prompted) and, when finished, *Submit to App Store* on the build page.
+This requires linking the GitHub repo in the project's settings once.
+
+### Android
+`eas.json` also defines a store Android build, but `app.json` has **no Google Maps API key**
+(`expo.android.config.googleMaps.apiKey`) — every map screen renders blank on Android.
+Do not build or ship Android until that is fixed.
+
+---
+
+## Part D — Future database schema changes (reference only)
+
+Turso is never touched by a deploy. When `schema.prisma` gains a table or column:
+1. Put the DDL in a new file under `backend/prisma/turso-migrations/` (see the
+   2026-10-14 example there).
+2. From the clone, with `backend/.env` present (it holds `TURSO_DATABASE_URL`/`TURSO_AUTH_TOKEN`):
+   ```powershell
+   cd C:\dev\canadian-waterways-explorer-app\backend
+   bun install
+   bun run scripts/push-turso-schema.ts prisma/turso-migrations/<file>.sql
+   ```
+   The script is CREATE-only and skips "already exists"; ALTERs must be written explicitly.
+
+---
+
+## Release order for 2026-10-14
+1. **Part A** (merge) — 5 minutes, browser only.
+2. **Part B** (backend) — mostly waiting; confirm the `401`.
+3. **Part C** (iOS) — the only part that needs the installs; ~45 minutes end to end, mostly waiting.
