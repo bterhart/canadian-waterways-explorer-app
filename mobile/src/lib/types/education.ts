@@ -36,14 +36,15 @@ export interface DeepDiveTimelineEvent {
   description: string;
 }
 
-// Shape as stored in Turso (LessonPlan.activities): 24/26 lessons use `name`,
-// one uses `title`, one stores plain strings. Both keys are accepted.
+// Shape as stored in Turso (LessonPlan.activities / teacherActivities):
+// 24/26 lessons use `name`, one uses `title`, one stores plain strings.
+// `materials` is a plain string in 96 of 201 live activities and an array in 4.
 export interface LessonPlanActivity {
   title?: string;
   name?: string;
   duration?: string;
   description: string;
-  materials?: string[];
+  materials?: string[] | string;
 }
 
 // Shape as stored in Turso (LessonPlan.curriculumConnections) and written by the

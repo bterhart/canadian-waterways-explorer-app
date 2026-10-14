@@ -173,7 +173,10 @@ export default function TeacherLessonPlanDetailScreen() {
                   <View style={styles.activityMaterials}>
                     <Text style={styles.activityMaterialsLabel}>Materials:</Text>
                     <Text style={styles.activityMaterialsText}>
-                      {activity.materials.join(', ')}
+                      {/* 96 of 201 live activities store materials as a plain string */}
+                      {Array.isArray(activity.materials)
+                        ? activity.materials.join(', ')
+                        : activity.materials}
                     </Text>
                   </View>
                 ) : null}

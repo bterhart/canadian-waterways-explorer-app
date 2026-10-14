@@ -283,7 +283,7 @@ export default function LearnHubScreen() {
             title={t('teacherPortal')}
             icon={<GraduationCap size={20} color="#3B82F6" />}
             color="#3B82F6"
-            onPress={() => router.push('/teacher/login')}
+            onPress={() => router.push('/teacher/dashboard')}
           />
           <QuickLink
             title={t('printableResources')}
