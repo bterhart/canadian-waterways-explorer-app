@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import "./env";
+import { requireAdmin } from "./lib/admin-middleware";
 import { sampleRouter } from "./routes/sample";
 import { waterwaysRouter } from "./routes/waterways";
 import { locationsRouter } from "./routes/locations";
@@ -63,8 +64,8 @@ app.use("*", logger());
 // Health check endpoint
 app.get("/health", (c) => c.json({ status: "ok" }));
 
-// Temporary: download image export CSV
-app.get("/admin/image-export-csv", (c) => {
+// Download image export CSV (admin token required: curl -H "Authorization: Bearer <accessToken>")
+app.get("/admin/image-export-csv", requireAdmin, (c) => {
   try {
     const csv = readFileSync(join(import.meta.dir, "../prisma/image-export.csv"), "utf-8");
     c.header("Content-Type", "text/csv");
