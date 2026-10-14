@@ -1,4 +1,4 @@
-import { db } from "../src/db";
+import { db } from "../../src/db";
 
 const WATERWAY_ID = "mackenzie-river-ontario-waterway";
 const WATERWAY_NAME = "Mackenzie River (Ontario)";

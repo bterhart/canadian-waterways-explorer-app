@@ -1,4 +1,4 @@
-import { db } from "../src/db";
+import { db } from "../../src/db";
 
 async function main() {
   // Get a waterway with R2 hero (correct state)

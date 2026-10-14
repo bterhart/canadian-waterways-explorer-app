@@ -1,4 +1,4 @@
-import { db } from "../src/db";
+import { db } from "../../src/db";
 
 const R2_DOMAIN = 'pub-376806a1556549999cfff53a786882dd.r2.dev';
 

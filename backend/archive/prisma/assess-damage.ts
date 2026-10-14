@@ -1,4 +1,4 @@
-import { db } from "../src/db";
+import { db } from "../../src/db";
 
 async function main() {
   const locations = await db.location.findMany({

@@ -1,5 +1,5 @@
 // Update Fort William to connect to Kaministiquia River as well as Lake Superior
-import { db } from './src/db';
+import { db } from '../../src/db';
 
 const FORT_WILLIAM_ID = 'cmlhbjrr2000vm2mb4xb3au6o';
 

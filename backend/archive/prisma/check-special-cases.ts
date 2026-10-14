@@ -1,4 +1,4 @@
-import { db } from "../src/db";
+import { db } from "../../src/db";
 
 async function main() {
   const specialNames = ['Port-Royal (Habitation)', 'Quebec City', 'Saint John River', 'Strait of Belle Isle'];

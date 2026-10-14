@@ -12,7 +12,7 @@
  * Does NOT touch the imageUrl (hero) field — only galleryImages JSON.
  */
 
-import { db } from "../src/db";
+import { db } from "../../src/db";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Known broken thumbnail URLs → confirmed working replacements

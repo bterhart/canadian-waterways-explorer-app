@@ -1,5 +1,11 @@
 # Backend script inventory — `backend/*.ts`, `backend/prisma/**/*.ts`, `backend/scripts/**`
 
+> **Status after cleanup (2026-10-14):** paths below are the *pre-cleanup* locations.
+> DEAD (38), VIBECODE (3) and the 19 ONE-OFF files carrying embedded secrets or
+> password resets were **deleted**. The remaining 90 ONE-OFF files were **moved to
+> `backend/archive/{root,prisma,scripts}/`** (see `backend/archive/README.md`).
+> The 20 LIVE-TOOL files stay where they were.
+
 Date: 2026-10-14. Branch: `claude/fix-map-filter-hide-hs4mz`. READ-ONLY audit: every file below was opened and read (small files in full; large seed/update files via header + exhaustive grep of every `prisma.<model>.<op>` / `db.<model>.<op>` / raw-SQL statement in the file). Nothing was run, modified or deleted. No secret values are reproduced here.
 
 ## Legend
