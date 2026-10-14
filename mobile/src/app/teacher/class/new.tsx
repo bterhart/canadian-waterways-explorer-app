@@ -12,8 +12,8 @@ import {
 } from 'react-native';
 import { useRouter, Stack } from 'expo-router';
 import { Users, GraduationCap, Calendar } from 'lucide-react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useCreateClass } from '@/lib/api/education-api';
+import { loadSession } from '@/lib/api/api';
 import { GRADE_LEVELS } from '@/lib/types/education';
 import type { Teacher } from '@/lib/types/education';
 
@@ -22,8 +22,6 @@ const colors = {
   creamWhite: '#FFFEF7',
   darkGreen: '#1A3A24',
 };
-
-const TEACHER_SESSION_KEY = '@waterways_teacher_session';
 
 export default function NewClassScreen() {
   const router = useRouter();
@@ -39,14 +37,10 @@ export default function NewClassScreen() {
   }, []);
 
   const loadTeacher = async () => {
-    try {
-      const stored = await AsyncStorage.getItem(TEACHER_SESSION_KEY);
-      if (stored) {
-        setTeacher(JSON.parse(stored));
-      } else {
-        router.replace('/teacher/login');
-      }
-    } catch {
+    const session = await loadSession();
+    if (session?.kind === 'teacher') {
+      setTeacher(session.profile as Teacher);
+    } else {
       router.replace('/teacher/login');
     }
   };

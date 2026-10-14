@@ -18,8 +18,8 @@ import {
   Target,
   BookOpen,
 } from 'lucide-react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useCreateAssignment, useLessonPlans } from '@/lib/api/education-api';
+import { loadSession } from '@/lib/api/api';
 import type { Teacher } from '@/lib/types/education';
 
 const colors = {
@@ -27,8 +27,6 @@ const colors = {
   creamWhite: '#FFFEF7',
   darkGreen: '#1A3A24',
 };
-
-const TEACHER_SESSION_KEY = '@waterways_teacher_session';
 
 const ASSIGNMENT_TYPES = [
   { id: 'quiz', label: 'Quiz', icon: Target, color: '#3B82F6' },
@@ -54,14 +52,10 @@ export default function NewAssignmentScreen() {
   }, []);
 
   const loadTeacher = async () => {
-    try {
-      const stored = await AsyncStorage.getItem(TEACHER_SESSION_KEY);
-      if (stored) {
-        setTeacher(JSON.parse(stored));
-      } else {
-        router.replace('/teacher/login');
-      }
-    } catch {
+    const session = await loadSession();
+    if (session?.kind === 'teacher') {
+      setTeacher(session.profile as Teacher);
+    } else {
       router.replace('/teacher/login');
     }
   };

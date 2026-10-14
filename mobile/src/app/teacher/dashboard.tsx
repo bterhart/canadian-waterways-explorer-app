@@ -21,9 +21,8 @@ import {
   BookOpen,
   Compass,
 } from 'lucide-react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTeacherClasses } from '@/lib/api/education-api';
-import { setAuthToken } from '@/lib/api/api';
+import { loadSession, logoutSession, onSessionExpired } from '@/lib/api/api';
 import type { ClassSummary, Teacher } from '@/lib/types/education';
 
 const colors = {
@@ -31,8 +30,6 @@ const colors = {
   creamWhite: '#FFFEF7',
   darkGreen: '#1A3A24',
 };
-
-const TEACHER_SESSION_KEY = '@waterways_teacher_session';
 
 export default function TeacherDashboardScreen() {
   const router = useRouter();
@@ -45,22 +42,22 @@ export default function TeacherDashboardScreen() {
 
   useEffect(() => {
     loadTeacher();
+    // Refresh failed (refresh token expired/blacklisted/account suspended) → back to login.
+    const unsubscribe = onSessionExpired(() => {
+      Alert.alert('Session Expired', 'Please sign in again.');
+      router.replace('/teacher/login');
+    });
+    return unsubscribe;
   }, []);
 
   const loadTeacher = async () => {
     try {
-      const stored = await AsyncStorage.getItem(TEACHER_SESSION_KEY);
-      if (stored) {
-        const data = JSON.parse(stored);
-        if (data.accessToken) {
-          setAuthToken(data.accessToken);
-        }
-        setTeacher(data);
+      const session = await loadSession();
+      if (session?.kind === 'teacher') {
+        setTeacher(session.profile as Teacher);
       } else {
         router.replace('/teacher/login');
       }
-    } catch {
-      router.replace('/teacher/login');
     } finally {
       setLoading(false);
     }
@@ -73,7 +70,7 @@ export default function TeacherDashboardScreen() {
         text: 'Sign Out',
         style: 'destructive',
         onPress: async () => {
-          await AsyncStorage.removeItem(TEACHER_SESSION_KEY);
+          await logoutSession();
           router.replace('/teacher/login');
         },
       },

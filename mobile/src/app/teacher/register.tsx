@@ -24,7 +24,6 @@ import {
   EyeOff,
   CheckCircle,
 } from 'lucide-react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTeacherRegister } from '@/lib/api/education-api';
 
 const colors = {
@@ -32,8 +31,6 @@ const colors = {
   creamWhite: '#FFFEF7',
   darkGreen: '#1A3A24',
 };
-
-const TEACHER_SESSION_KEY = '@waterways_teacher_session';
 
 const PROVINCES = [
   'Alberta',
