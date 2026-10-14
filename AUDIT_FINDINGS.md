@@ -238,7 +238,8 @@ Entire `discoveries.ts` (3 routes), `sample.ts`; `explorers/search/:q`; `waterwa
 ### 7.1 Schema delivery to Turso (HIGH)
 `backend/scripts/push-turso-schema.ts` is the only mechanism found: reads a hand-made `/tmp/turso_schema.sql` (line 10), splits on `;\n`, executes via raw `@libsql/client`, **skips** any error containing "already exists" (56-60), logs-and-continues on other errors. → CREATE-only (new columns are never ALTERed in), ephemeral SQL source not in repo, non-fatal errors. `backend/prisma/migrations/` does not exist. 78 files use raw `@libsql/client`; `backend/src` uses `@prisma/client`+`PrismaLibSQL`. Two access patterns, no shared source of truth. **Declared-vs-live drift check is blocked (needs Turso access).** `backend/check-auth-tables.ts` / `check-better-auth-tables.ts` imply Better Auth tables (`user/session/account`) may exist in Turso undeclared by `schema.prisma` — UNVERIFIED.
 
-### 7.2 Dead / pre-Turso scripts (decision needed)
+### 7.2 Dead / pre-Turso scripts — superseded by `backend/SCRIPT_INVENTORY.md` and §11.6
+(Original text kept for history; the full per-file inventory with evidence is in `backend/SCRIPT_INVENTORY.md`. The 38 DEAD + 3 Vibecode files were deleted after the proof in §11.6; the 109 ONE-OFF scripts await the owner's ruling.)
 - 37 scripts construct `new PrismaClient()` **without** the libsql adapter and therefore never targeted Turso: 34 in `backend/prisma/` (`seed*.ts` ×32, `fix-all-wikimedia-urls.ts`, `fix-image-urls-final.ts`), 3 in `backend/scripts/` (`add-location-images`, `fix-database-duplicates`, `populate-all-lesson-hero-images`). With `DATABASE_URL` now removed from `backend/.env` they fail at startup.
 - 17 ad-hoc probes at `backend/*.ts` root (`check-*`, `fix-teacher-password`, `hash-and-update-teacher`, `migrate-marble-island`, …). Three of them (`get_location_details.ts`, `migrate-marble-island.ts`, `check-fort-william.ts`) are the only importers of `backend/src/db.ts` (duplicate of `src/prisma.ts`).
 - `backend/tsconfig.json` has no include/exclude → `tsc` checks all of the above → backend typecheck has 17 pre-existing errors, **0 in `src/`** (`scripts/bootstrap-mackenzie-ontario.ts:129` references non-existent model `notableFigureWaterway`; `scripts/build-waterway-overview.ts` ×10; `scripts/lib/audit-loaders.ts:358-361`; `prisma/migrate-from-csv.ts:379`). Typecheck cannot pass while they remain.
@@ -361,3 +362,21 @@ Also: 30 `DailyChallenge` rows exist (so the daily challenge is not permanently 
 
 ### 11.5 KML payload size (R3 / MAP-1 escalated to HIGH)
 66 of 70 waterways have `kmlData`; **17 exceed 1 MB**; the largest are Lake Huron **12.68 MB**, Lake of the Woods 10.35 MB, Hudson Bay 8.42 MB, Great Slave Lake 8.34 MB, Lake Superior 5.45 MB (81.8 MB total). `GET /api/waterways/:id` (`waterways.ts:186-247`) returns the whole string inside the JSON envelope, and the map screen (`(tabs)/index.tsx:927-957`) regex-parses it on every render while the waterway is selected. Tapping Lake Huron on a phone therefore downloads ~13 MB and re-parses it continuously. This is the most likely cause of any map slowness and needs a server-side simplification/tiling or a separate cached endpoint — design decision.
+
+### 11.6 Script inventory and dead-code proof (see `backend/SCRIPT_INVENTORY.md`, 170 files, every one read)
+| verdict | count | meaning |
+|---|---|---|
+| DEAD | 38 | `new PrismaClient()` with no libsql adapter → resolves `datasource sqlite url=env("DATABASE_URL")` → cannot open a Turso connection as written; referenced by no code or `package.json` script. 32 seeds + 6 fixers. |
+| VIBECODE | 3 | `scripts/start`, `scripts/studio`, `scripts/env.sh` (local-file `DATABASE_URL`, `prisma db push --accept-data-loss`, api.vibecodeapp.com). Railway starts `bun run src/index.ts`. |
+| ONE-OFF | 109 | Reach Turso (libsql-raw / adapter) but are single historical fixes or probes (hardcoded ids, one lesson, one portrait map, credential resets). Functional, not operational. **Owner decision pending.** |
+| LIVE-TOOL | 20 | `audit-entity-duplicates` + 5 `lib/` helpers (in `package.json`), `build-waterway-overview` (in `package.json`), `fix-waterway-kml`, `push-turso-schema`, the export→test→delete image pipeline, `audit-fix-urls`, `audit-media`, `verify-urls`, 5 read-only LessonPlan reports. Keep. |
+
+**Dead proof for the 38** (beyond "cannot connect"): every table they would create or upsert is already populated in live Turso, in every case with at least as many rows as the seed contains (e.g. `seed.ts` 16 waterways → live 70; `seed-quizzes.ts` 6 → live 13; `seed-educational-content.ts` 8 printables → live 8). The tracked `backend/prisma/prisma/dev.db` (766 KB) — the only file those scripts could ever have written — holds **one** `AdminUser` row (not present in Turso) and nothing else, so it is not a staging copy of anything live. Porting is not only unnecessary but dangerous: `seed-historical-events.ts` begins with `historicalEvent.deleteMany({})`, and the field-trip seeds `deleteMany` stops. Deleted: the 38, the 3 Vibecode shells, and the three tracked `dev.db` files.
+
+**Secrets embedded in script source (all tracked; rotation is the only fix — owner has deferred rotation to end of development):**
+- Turso URL **and auth token as string literals** in 12 files (`SCRIPT_INVENTORY.md` §6a) — the same token as `backend/.env`.
+- A Google Maps/Places API key literal in 6 `scripts/populate-*`/`replace-*` files (§6b). Note: this is a Places/Street-View key used for image population; whether it is also enabled for the Maps SDK for Android (the key `app.json` lacks, §3.9) is UNVERIFIED.
+- Email + password pairs in 5 files (§6c), including `prisma/seed-update.ts:602` which stores the **plaintext** password in `passwordHash` (deleted with the DEAD set; still in git history).
+- `prisma/get-all-explorer-ids.ts:6` hardcodes a **different** Turso host (`canadian-waterways-weston-r…`) — a second database, provenance unknown.
+
+Other: `scripts/bootstrap-mackenzie-ontario.ts` calls `db.notableFigureWaterway`, a model that does not exist → cannot run (it is also 1 of the 17 pre-existing tsc errors). `fix-all-media.ts` referenced a `migrate-images-to-cdn.ts` that exists nowhere. `check-teacher-credentials.ts` queries a `User` table that does not exist in Turso (confirmed by §11.1).
