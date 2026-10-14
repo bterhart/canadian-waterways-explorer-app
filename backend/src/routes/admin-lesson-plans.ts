@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
-import { prisma } from "../prisma";
+import { db } from "../db";
 import { requireAdmin } from "../lib/admin-middleware";
 
 const adminLessonPlansRouter = new Hono();
@@ -65,7 +65,7 @@ const updateLessonPlanSchema = z.object({
 
 // GET / - List all lesson plans (including unpublished)
 adminLessonPlansRouter.get("/", async (c) => {
-  const lessonPlans = await prisma.lessonPlan.findMany({
+  const lessonPlans = await db.lessonPlan.findMany({
     select: {
       id: true,
       title: true,
@@ -88,7 +88,7 @@ adminLessonPlansRouter.get("/", async (c) => {
 adminLessonPlansRouter.get("/:id", async (c) => {
   const id = c.req.param("id");
 
-  const lessonPlan = await prisma.lessonPlan.findUnique({
+  const lessonPlan = await db.lessonPlan.findUnique({
     where: { id },
   });
 
@@ -135,7 +135,7 @@ adminLessonPlansRouter.post(
   async (c) => {
     const data = c.req.valid("json");
 
-    const lessonPlan = await prisma.lessonPlan.create({
+    const lessonPlan = await db.lessonPlan.create({
       data: {
         title: data.title,
         description: data.description,
@@ -184,7 +184,7 @@ adminLessonPlansRouter.patch(
     const id = c.req.param("id");
     const data = c.req.valid("json");
 
-    const existingLessonPlan = await prisma.lessonPlan.findUnique({
+    const existingLessonPlan = await db.lessonPlan.findUnique({
       where: { id },
     });
 
@@ -195,7 +195,7 @@ adminLessonPlansRouter.patch(
       );
     }
 
-    const lessonPlan = await prisma.lessonPlan.update({
+    const lessonPlan = await db.lessonPlan.update({
       where: { id },
       data: {
         ...(data.title !== undefined && { title: data.title }),
@@ -260,7 +260,7 @@ adminLessonPlansRouter.patch(
 adminLessonPlansRouter.delete("/:id", async (c) => {
   const id = c.req.param("id");
 
-  const existingLessonPlan = await prisma.lessonPlan.findUnique({
+  const existingLessonPlan = await db.lessonPlan.findUnique({
     where: { id },
   });
 
@@ -271,7 +271,7 @@ adminLessonPlansRouter.delete("/:id", async (c) => {
     );
   }
 
-  await prisma.lessonPlan.delete({
+  await db.lessonPlan.delete({
     where: { id },
   });
 

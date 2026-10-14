@@ -13,7 +13,7 @@
  * All errors are caught internally; the job never crashes the server.
  */
 
-import { prisma } from "../prisma";
+import { db } from "../db";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -72,7 +72,7 @@ async function collectUrls(): Promise<UrlRecord[]> {
   };
 
   // Waterway
-  const waterways = await prisma.waterway.findMany({
+  const waterways = await db.waterway.findMany({
     select: { id: true, imageUrl: true, galleryImages: true },
   });
   for (const w of waterways) {
@@ -81,7 +81,7 @@ async function collectUrls(): Promise<UrlRecord[]> {
   }
 
   // Location
-  const locations = await prisma.location.findMany({
+  const locations = await db.location.findMany({
     select: { id: true, imageUrl: true, galleryImages: true },
   });
   for (const l of locations) {
@@ -90,13 +90,13 @@ async function collectUrls(): Promise<UrlRecord[]> {
   }
 
   // Explorer
-  const explorers = await prisma.explorer.findMany({ select: { id: true, imageUrl: true } });
+  const explorers = await db.explorer.findMany({ select: { id: true, imageUrl: true } });
   for (const e of explorers) {
     if (e.imageUrl) push({ model: "Explorer", recordId: e.id, field: "imageUrl", url: e.imageUrl });
   }
 
   // UserContribution (UGC — check only, never auto-repair)
-  const contributions = await prisma.userContribution.findMany({
+  const contributions = await db.userContribution.findMany({
     select: { id: true, imageUrl: true },
     where: { imageUrl: { not: null } },
   });
@@ -105,7 +105,7 @@ async function collectUrls(): Promise<UrlRecord[]> {
   }
 
   // LessonPlan
-  const lessonPlans = await prisma.lessonPlan.findMany({
+  const lessonPlans = await db.lessonPlan.findMany({
     select: { id: true, heroImageUrl: true, images: true },
   });
   for (const lp of lessonPlans) {
@@ -114,55 +114,55 @@ async function collectUrls(): Promise<UrlRecord[]> {
   }
 
   // TimelineEvent
-  const timelineEvents = await prisma.timelineEvent.findMany({ select: { id: true, imageUrl: true } });
+  const timelineEvents = await db.timelineEvent.findMany({ select: { id: true, imageUrl: true } });
   for (const t of timelineEvents) {
     if (t.imageUrl) push({ model: "TimelineEvent", recordId: t.id, field: "imageUrl", url: t.imageUrl });
   }
 
   // VirtualFieldTrip
-  const fieldTrips = await prisma.virtualFieldTrip.findMany({ select: { id: true, coverImageUrl: true } });
+  const fieldTrips = await db.virtualFieldTrip.findMany({ select: { id: true, coverImageUrl: true } });
   for (const ft of fieldTrips) {
     if (ft.coverImageUrl) push({ model: "VirtualFieldTrip", recordId: ft.id, field: "coverImageUrl", url: ft.coverImageUrl });
   }
 
   // FieldTripStop
-  const tripStops = await prisma.fieldTripStop.findMany({ select: { id: true, imageUrl: true } });
+  const tripStops = await db.fieldTripStop.findMany({ select: { id: true, imageUrl: true } });
   for (const s of tripStops) {
     if (s.imageUrl) push({ model: "FieldTripStop", recordId: s.id, field: "imageUrl", url: s.imageUrl });
   }
 
   // PrimarySourceDocument
-  const documents = await prisma.primarySourceDocument.findMany({ select: { id: true, imageUrl: true } });
+  const documents = await db.primarySourceDocument.findMany({ select: { id: true, imageUrl: true } });
   for (const d of documents) {
     if (d.imageUrl) push({ model: "PrimarySourceDocument", recordId: d.id, field: "imageUrl", url: d.imageUrl });
   }
 
   // PrintableResource
-  const printables = await prisma.printableResource.findMany({ select: { id: true, previewImageUrl: true } });
+  const printables = await db.printableResource.findMany({ select: { id: true, previewImageUrl: true } });
   for (const p of printables) {
     if (p.previewImageUrl) push({ model: "PrintableResource", recordId: p.id, field: "previewImageUrl", url: p.previewImageUrl });
   }
 
   // VoyageurJourney
-  const journeys = await prisma.voyageurJourney.findMany({ select: { id: true, coverImageUrl: true } });
+  const journeys = await db.voyageurJourney.findMany({ select: { id: true, coverImageUrl: true } });
   for (const j of journeys) {
     if (j.coverImageUrl) push({ model: "VoyageurJourney", recordId: j.id, field: "coverImageUrl", url: j.coverImageUrl });
   }
 
   // JourneyNode
-  const nodes = await prisma.journeyNode.findMany({ select: { id: true, imageUrl: true } });
+  const nodes = await db.journeyNode.findMany({ select: { id: true, imageUrl: true } });
   for (const n of nodes) {
     if (n.imageUrl) push({ model: "JourneyNode", recordId: n.id, field: "imageUrl", url: n.imageUrl });
   }
 
   // HistoricalEvent
-  const histEvents = await prisma.historicalEvent.findMany({ select: { id: true, imageUrl: true } });
+  const histEvents = await db.historicalEvent.findMany({ select: { id: true, imageUrl: true } });
   for (const h of histEvents) {
     if (h.imageUrl) push({ model: "HistoricalEvent", recordId: h.id, field: "imageUrl", url: h.imageUrl });
   }
 
   // NotableFigure
-  const figures = await prisma.notableFigure.findMany({ select: { id: true, imageUrl: true } });
+  const figures = await db.notableFigure.findMany({ select: { id: true, imageUrl: true } });
   for (const f of figures) {
     if (f.imageUrl) push({ model: "NotableFigure", recordId: f.id, field: "imageUrl", url: f.imageUrl });
   }
@@ -284,15 +284,15 @@ async function repairUrl(record: UrlRecord, newUrl: string): Promise<void> {
 async function fetchGalleryField(model: string, id: string, _field: string): Promise<string | null> {
   switch (model) {
     case "Waterway": {
-      const r = await prisma.waterway.findUnique({ where: { id }, select: { galleryImages: true } });
+      const r = await db.waterway.findUnique({ where: { id }, select: { galleryImages: true } });
       return r?.galleryImages ?? null;
     }
     case "Location": {
-      const r = await prisma.location.findUnique({ where: { id }, select: { galleryImages: true } });
+      const r = await db.location.findUnique({ where: { id }, select: { galleryImages: true } });
       return r?.galleryImages ?? null;
     }
     case "LessonPlan": {
-      const r = await prisma.lessonPlan.findUnique({ where: { id }, select: { images: true } });
+      const r = await db.lessonPlan.findUnique({ where: { id }, select: { images: true } });
       return r?.images ?? null;
     }
     default:
@@ -303,18 +303,18 @@ async function fetchGalleryField(model: string, id: string, _field: string): Pro
 async function updateField(model: string, id: string, field: string, value: string): Promise<void> {
   const data = { [field]: value };
   switch (model) {
-    case "Waterway":            await prisma.waterway.update({ where: { id }, data }); break;
-    case "Location":            await prisma.location.update({ where: { id }, data }); break;
-    case "Explorer":            await prisma.explorer.update({ where: { id }, data }); break;
-    case "LessonPlan":          await prisma.lessonPlan.update({ where: { id }, data }); break;
-    case "TimelineEvent":       await prisma.timelineEvent.update({ where: { id }, data }); break;
-    case "VirtualFieldTrip":    await prisma.virtualFieldTrip.update({ where: { id }, data }); break;
-    case "FieldTripStop":       await prisma.fieldTripStop.update({ where: { id }, data }); break;
-    case "PrimarySourceDocument": await prisma.primarySourceDocument.update({ where: { id }, data }); break;
-    case "VoyageurJourney":     await prisma.voyageurJourney.update({ where: { id }, data }); break;
-    case "JourneyNode":         await prisma.journeyNode.update({ where: { id }, data }); break;
-    case "HistoricalEvent":     await prisma.historicalEvent.update({ where: { id }, data }); break;
-    case "NotableFigure":       await prisma.notableFigure.update({ where: { id }, data }); break;
+    case "Waterway":            await db.waterway.update({ where: { id }, data }); break;
+    case "Location":            await db.location.update({ where: { id }, data }); break;
+    case "Explorer":            await db.explorer.update({ where: { id }, data }); break;
+    case "LessonPlan":          await db.lessonPlan.update({ where: { id }, data }); break;
+    case "TimelineEvent":       await db.timelineEvent.update({ where: { id }, data }); break;
+    case "VirtualFieldTrip":    await db.virtualFieldTrip.update({ where: { id }, data }); break;
+    case "FieldTripStop":       await db.fieldTripStop.update({ where: { id }, data }); break;
+    case "PrimarySourceDocument": await db.primarySourceDocument.update({ where: { id }, data }); break;
+    case "VoyageurJourney":     await db.voyageurJourney.update({ where: { id }, data }); break;
+    case "JourneyNode":         await db.journeyNode.update({ where: { id }, data }); break;
+    case "HistoricalEvent":     await db.historicalEvent.update({ where: { id }, data }); break;
+    case "NotableFigure":       await db.notableFigure.update({ where: { id }, data }); break;
     // UserContribution and PrintableResource: never auto-repaired
     default: break;
   }
@@ -391,11 +391,11 @@ export async function runImageHealthCheck(): Promise<void> {
     }
 
     // Batch-insert all log entries
-    await prisma.imageHealthLog.createMany({ data: logs });
+    await db.imageHealthLog.createMany({ data: logs });
 
     // Prune logs older than 30 days to keep the table lean
     const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-    await prisma.imageHealthLog.deleteMany({ where: { checkedAt: { lt: thirtyDaysAgo } } });
+    await db.imageHealthLog.deleteMany({ where: { checkedAt: { lt: thirtyDaysAgo } } });
 
     const elapsed = ((Date.now() - startedAt.getTime()) / 1000).toFixed(1);
     console.log(

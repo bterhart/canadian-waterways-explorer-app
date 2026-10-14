@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
-import { prisma } from "../prisma";
+import { db } from "../db";
 
 const quizzesRouter = new Hono();
 
@@ -30,7 +30,7 @@ quizzesRouter.get("/", async (c) => {
     whereClause.difficulty = difficulty;
   }
 
-  const quizzes = await prisma.quiz.findMany({
+  const quizzes = await db.quiz.findMany({
     where: whereClause,
     select: {
       id: true,
@@ -66,7 +66,7 @@ quizzesRouter.get("/", async (c) => {
 quizzesRouter.get("/:id", async (c) => {
   const id = c.req.param("id");
 
-  const quiz = await prisma.quiz.findUnique({
+  const quiz = await db.quiz.findUnique({
     where: { id, isPublished: true },
     select: {
       id: true,
@@ -131,7 +131,7 @@ quizzesRouter.post(
       c.req.valid("json");
 
     // Get the quiz with questions to validate and calculate score
-    const quiz = await prisma.quiz.findUnique({
+    const quiz = await db.quiz.findUnique({
       where: { id: quizId, isPublished: true },
       include: {
         questions: {
@@ -214,7 +214,7 @@ quizzesRouter.post(
     const percentageScore = maxPoints > 0 ? (totalPoints / maxPoints) * 100 : 0;
 
     // Save the attempt to the database
-    const attempt = await prisma.quizAttempt.create({
+    const attempt = await db.quizAttempt.create({
       data: {
         quizId,
         studentName,

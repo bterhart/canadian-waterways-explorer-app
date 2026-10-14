@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { prisma } from "../prisma";
+import { db } from "../db";
 
 const timelineRouter = new Hono();
 
@@ -35,7 +35,7 @@ timelineRouter.get("/", async (c) => {
     }
   }
 
-  const events = await prisma.timelineEvent.findMany({
+  const events = await db.timelineEvent.findMany({
     where: whereClause,
     select: {
       id: true,
@@ -62,7 +62,7 @@ timelineRouter.get("/", async (c) => {
 
 // GET /themes - Get all unique themes
 timelineRouter.get("/themes", async (c) => {
-  const events = await prisma.timelineEvent.findMany({
+  const events = await db.timelineEvent.findMany({
     select: { theme: true },
     distinct: ["theme"],
   });
@@ -76,7 +76,7 @@ timelineRouter.get("/themes", async (c) => {
 timelineRouter.get("/:id", async (c) => {
   const id = c.req.param("id");
 
-  const event = await prisma.timelineEvent.findUnique({
+  const event = await db.timelineEvent.findUnique({
     where: { id },
   });
 

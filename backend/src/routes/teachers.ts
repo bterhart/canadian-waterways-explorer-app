@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
-import { prisma } from "../prisma";
+import { db } from "../db";
 import { generateAccessToken, generateRefreshToken } from "../lib/jwt-utils";
 import { loginRateLimiter } from "../lib/auth-utils";
 import { requireTeacher } from "../lib/teacher-middleware";
@@ -45,7 +45,7 @@ teachersRouter.post(
     const data = c.req.valid("json");
 
     // Check if email already exists
-    const existingTeacher = await prisma.teacher.findUnique({
+    const existingTeacher = await db.teacher.findUnique({
       where: { email: data.email },
     });
 
@@ -59,7 +59,7 @@ teachersRouter.post(
     // Hash password using Bun's built-in password hashing
     const passwordHash = await Bun.password.hash(data.password);
 
-    const teacher = await prisma.teacher.create({
+    const teacher = await db.teacher.create({
       data: {
         email: data.email,
         name: data.name,
@@ -106,7 +106,7 @@ teachersRouter.post(
       );
     }
 
-    const teacher = await prisma.teacher.findUnique({
+    const teacher = await db.teacher.findUnique({
       where: { email },
     });
 
@@ -182,7 +182,7 @@ teachersRouter.post(
       const failedAttempts = teacher.failedLoginAttempts + 1;
       const shouldLock = failedAttempts >= 5;
 
-      await prisma.teacher.update({
+      await db.teacher.update({
         where: { id: teacher.id },
         data: {
           failedLoginAttempts: failedAttempts,
@@ -206,7 +206,7 @@ teachersRouter.post(
     }
 
     // Reset failed login attempts
-    await prisma.teacher.update({
+    await db.teacher.update({
       where: { id: teacher.id },
       data: {
         failedLoginAttempts: 0,
@@ -259,7 +259,7 @@ teachersRouter.use("*", requireTeacher);
 teachersRouter.get("/:id", async (c) => {
   const id = c.req.param("id");
 
-  const teacher = await prisma.teacher.findUnique({
+  const teacher = await db.teacher.findUnique({
     where: { id },
     select: {
       id: true,
@@ -315,7 +315,7 @@ teachersRouter.patch(
       );
     }
 
-    const existingTeacher = await prisma.teacher.findUnique({
+    const existingTeacher = await db.teacher.findUnique({
       where: { id },
     });
 
@@ -326,7 +326,7 @@ teachersRouter.patch(
       );
     }
 
-    const teacher = await prisma.teacher.update({
+    const teacher = await db.teacher.update({
       where: { id },
       data: {
         ...(data.name !== undefined && { name: data.name }),
@@ -368,7 +368,7 @@ teachersRouter.post(
       );
     }
 
-    const teacher = await prisma.teacher.findUnique({
+    const teacher = await db.teacher.findUnique({
       where: { id },
     });
 
@@ -391,7 +391,7 @@ teachersRouter.post(
     // Hash new password and update within a transaction to ensure atomicity
     const newPasswordHash = await Bun.password.hash(newPassword);
 
-    await prisma.$transaction(async (tx) => {
+    await db.$transaction(async (tx) => {
       await tx.teacher.update({
         where: { id },
         data: { passwordHash: newPasswordHash },
@@ -406,7 +406,7 @@ teachersRouter.post(
 teachersRouter.get("/:id/classes", async (c) => {
   const id = c.req.param("id");
 
-  const teacher = await prisma.teacher.findUnique({
+  const teacher = await db.teacher.findUnique({
     where: { id },
   });
 
@@ -417,7 +417,7 @@ teachersRouter.get("/:id/classes", async (c) => {
     );
   }
 
-  const classes = await prisma.class.findMany({
+  const classes = await db.class.findMany({
     where: { teacherId: id },
     select: {
       id: true,

@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
-import { prisma } from "../prisma";
+import { db } from "../db";
 
 const voyageurJourneyRouter = new Hono();
 
@@ -34,7 +34,7 @@ voyageurJourneyRouter.get("/", async (c) => {
     whereClause.difficulty = difficulty;
   }
 
-  const journeys = await prisma.voyageurJourney.findMany({
+  const journeys = await db.voyageurJourney.findMany({
     where: whereClause,
     select: {
       id: true,
@@ -77,7 +77,7 @@ voyageurJourneyRouter.get("/", async (c) => {
 voyageurJourneyRouter.get("/:id", async (c) => {
   const id = c.req.param("id");
 
-  const journey = await prisma.voyageurJourney.findUnique({
+  const journey = await db.voyageurJourney.findUnique({
     where: { id, isPublished: true },
     include: {
       nodes: {
@@ -118,7 +118,7 @@ voyageurJourneyRouter.get("/:id/start", async (c) => {
   }
 
   // Check journey exists
-  const journey = await prisma.voyageurJourney.findUnique({
+  const journey = await db.voyageurJourney.findUnique({
     where: { id: journeyId, isPublished: true },
     include: {
       nodes: {
@@ -144,7 +144,7 @@ voyageurJourneyRouter.get("/:id/start", async (c) => {
   }
 
   // Create or reset progress
-  const progress = await prisma.userJourneyProgress.upsert({
+  const progress = await db.userJourneyProgress.upsert({
     where: {
       userId_journeyId: {
         userId,
@@ -214,7 +214,7 @@ voyageurJourneyRouter.post(
     const { userId, nodeId, choiceId } = c.req.valid("json");
 
     // Get user's progress
-    const progress = await prisma.userJourneyProgress.findUnique({
+    const progress = await db.userJourneyProgress.findUnique({
       where: {
         userId_journeyId: {
           userId,
@@ -238,7 +238,7 @@ voyageurJourneyRouter.post(
     }
 
     // Get current node to validate the choice
-    const currentNode = await prisma.journeyNode.findUnique({
+    const currentNode = await db.journeyNode.findUnique({
       where: { id: nodeId },
     });
 
@@ -271,7 +271,7 @@ voyageurJourneyRouter.post(
     }
 
     // Get the next node
-    const nextNode = await prisma.journeyNode.findUnique({
+    const nextNode = await db.journeyNode.findUnique({
       where: { id: selectedChoice.nextNodeId },
     });
 
@@ -291,7 +291,7 @@ voyageurJourneyRouter.post(
 
     const isCompleted = nextNode.isEnding;
 
-    const updatedProgress = await prisma.userJourneyProgress.update({
+    const updatedProgress = await db.userJourneyProgress.update({
       where: {
         userId_journeyId: {
           userId,
@@ -349,7 +349,7 @@ voyageurJourneyRouter.get("/:id/progress", async (c) => {
     );
   }
 
-  const progress = await prisma.userJourneyProgress.findUnique({
+  const progress = await db.userJourneyProgress.findUnique({
     where: {
       userId_journeyId: {
         userId,
@@ -383,7 +383,7 @@ voyageurJourneyRouter.get("/:id/progress", async (c) => {
   // Get current node
   let currentNode = null;
   if (progress.currentNodeId) {
-    const node = await prisma.journeyNode.findUnique({
+    const node = await db.journeyNode.findUnique({
       where: { id: progress.currentNodeId },
     });
     if (node) {

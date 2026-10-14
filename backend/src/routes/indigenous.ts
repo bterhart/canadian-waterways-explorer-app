@@ -1,11 +1,11 @@
 import { Hono } from "hono";
-import { prisma } from "../prisma";
+import { db } from "../db";
 
 const indigenousRouter = new Hono();
 
 // Get all indigenous nations
 indigenousRouter.get("/nations", async (c) => {
-  const nations = await prisma.indigenousNation.findMany({
+  const nations = await db.indigenousNation.findMany({
     orderBy: { name: "asc" }
   });
 
@@ -16,7 +16,7 @@ indigenousRouter.get("/nations", async (c) => {
 indigenousRouter.get("/nations/:id", async (c) => {
   const id = c.req.param("id");
 
-  const nation = await prisma.indigenousNation.findUnique({
+  const nation = await db.indigenousNation.findUnique({
     where: { id }
   });
 
@@ -29,7 +29,7 @@ indigenousRouter.get("/nations/:id", async (c) => {
 
 // Get all cartographers
 indigenousRouter.get("/cartographers", async (c) => {
-  const cartographers = await prisma.cartographer.findMany({
+  const cartographers = await db.cartographer.findMany({
     include: {
       _count: {
         select: { locations: true }
@@ -45,7 +45,7 @@ indigenousRouter.get("/cartographers", async (c) => {
 indigenousRouter.get("/cartographers/:id", async (c) => {
   const id = c.req.param("id");
 
-  const cartographer = await prisma.cartographer.findUnique({
+  const cartographer = await db.cartographer.findUnique({
     where: { id },
     include: {
       locations: {
@@ -65,7 +65,7 @@ indigenousRouter.get("/cartographers/:id", async (c) => {
 
 // Get waterway types
 indigenousRouter.get("/waterway-types", async (c) => {
-  const types = await prisma.waterwayType.findMany({
+  const types = await db.waterwayType.findMany({
     include: {
       _count: {
         select: { waterways: true }

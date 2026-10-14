@@ -1,5 +1,5 @@
 import type { Context, Next } from "hono";
-import { prisma } from "../prisma";
+import { db } from "../db";
 // "@prisma/client" below is the query library's generated types, not a database. Data lives in Turso.
 import type { Teacher } from "@prisma/client";
 import { verifyAccessToken } from "./jwt-utils";
@@ -41,7 +41,7 @@ export async function requireTeacher(c: Context, next: Next) {
   }
 
   // Fetch teacher from database
-  const teacher = await prisma.teacher.findUnique({
+  const teacher = await db.teacher.findUnique({
     where: { id: payload.userId },
   });
 
@@ -112,7 +112,7 @@ export async function requireAuth(c: Context, next: Next) {
   }
 
   if (payload.type === "admin") {
-    const admin = await prisma.adminUser.findUnique({
+    const admin = await db.adminUser.findUnique({
       where: { id: payload.userId },
     });
 
@@ -130,7 +130,7 @@ export async function requireAuth(c: Context, next: Next) {
 
     c.set("user", { ...admin, userType: "admin" });
   } else if (payload.type === "teacher") {
-    const teacher = await prisma.teacher.findUnique({
+    const teacher = await db.teacher.findUnique({
       where: { id: payload.userId },
     });
 

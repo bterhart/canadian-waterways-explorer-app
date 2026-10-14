@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
-import { prisma } from "../prisma";
+import { db } from "../db";
 import { requireTeacher } from "../lib/teacher-middleware";
 
 const classesRouter = new Hono();
@@ -72,7 +72,7 @@ classesRouter.post(
   async (c) => {
     const { joinCode, displayName, studentCode } = c.req.valid("json");
 
-    const classToJoin = await prisma.class.findUnique({
+    const classToJoin = await db.class.findUnique({
       where: { joinCode },
     });
 
@@ -91,7 +91,7 @@ classesRouter.post(
     }
 
     // Check if student with same display name already in class
-    const existingStudent = await prisma.classStudent.findFirst({
+    const existingStudent = await db.classStudent.findFirst({
       where: { classId: classToJoin.id, displayName },
     });
 
@@ -102,7 +102,7 @@ classesRouter.post(
       );
     }
 
-    const student = await prisma.classStudent.create({
+    const student = await db.classStudent.create({
       data: {
         classId: classToJoin.id,
         displayName,
@@ -134,7 +134,7 @@ classesRouter.post(
     const data = c.req.valid("json");
 
     // Verify teacher exists
-    const teacher = await prisma.teacher.findUnique({
+    const teacher = await db.teacher.findUnique({
       where: { id: data.teacherId },
     });
 
@@ -149,7 +149,7 @@ classesRouter.post(
     let joinCode = generateJoinCode();
     let attempts = 0;
     while (attempts < 10) {
-      const existing = await prisma.class.findUnique({
+      const existing = await db.class.findUnique({
         where: { joinCode },
       });
       if (!existing) break;
@@ -157,7 +157,7 @@ classesRouter.post(
       attempts++;
     }
 
-    const newClass = await prisma.class.create({
+    const newClass = await db.class.create({
       data: {
         name: data.name,
         gradeLevel: data.gradeLevel,
@@ -175,7 +175,7 @@ classesRouter.post(
 classesRouter.get("/:id", async (c) => {
   const id = c.req.param("id");
 
-  const classData = await prisma.class.findUnique({
+  const classData = await db.class.findUnique({
     where: { id },
     include: {
       teacher: {
@@ -213,7 +213,7 @@ classesRouter.patch(
     const id = c.req.param("id");
     const data = c.req.valid("json");
 
-    const existingClass = await prisma.class.findUnique({
+    const existingClass = await db.class.findUnique({
       where: { id },
     });
 
@@ -224,7 +224,7 @@ classesRouter.patch(
       );
     }
 
-    const updatedClass = await prisma.class.update({
+    const updatedClass = await db.class.update({
       where: { id },
       data: {
         ...(data.name !== undefined && { name: data.name }),
@@ -242,7 +242,7 @@ classesRouter.patch(
 classesRouter.delete("/:id", async (c) => {
   const id = c.req.param("id");
 
-  const existingClass = await prisma.class.findUnique({
+  const existingClass = await db.class.findUnique({
     where: { id },
   });
 
@@ -254,7 +254,7 @@ classesRouter.delete("/:id", async (c) => {
   }
 
   // Delete class within a transaction to ensure atomicity with cascading deletes
-  await prisma.$transaction(async (tx) => {
+  await db.$transaction(async (tx) => {
     await tx.class.delete({
       where: { id },
     });
@@ -267,7 +267,7 @@ classesRouter.delete("/:id", async (c) => {
 classesRouter.post("/:id/regenerate-code", async (c) => {
   const id = c.req.param("id");
 
-  const existingClass = await prisma.class.findUnique({
+  const existingClass = await db.class.findUnique({
     where: { id },
   });
 
@@ -281,7 +281,7 @@ classesRouter.post("/:id/regenerate-code", async (c) => {
   let joinCode = generateJoinCode();
   let attempts = 0;
   while (attempts < 10) {
-    const existing = await prisma.class.findUnique({
+    const existing = await db.class.findUnique({
       where: { joinCode },
     });
     if (!existing) break;
@@ -289,7 +289,7 @@ classesRouter.post("/:id/regenerate-code", async (c) => {
     attempts++;
   }
 
-  const updatedClass = await prisma.class.update({
+  const updatedClass = await db.class.update({
     where: { id },
     data: { joinCode },
   });
@@ -301,7 +301,7 @@ classesRouter.post("/:id/regenerate-code", async (c) => {
 classesRouter.get("/:id/students", async (c) => {
   const id = c.req.param("id");
 
-  const classData = await prisma.class.findUnique({
+  const classData = await db.class.findUnique({
     where: { id },
   });
 
@@ -312,7 +312,7 @@ classesRouter.get("/:id/students", async (c) => {
     );
   }
 
-  const students = await prisma.classStudent.findMany({
+  const students = await db.classStudent.findMany({
     where: { classId: id },
     include: {
       progress: {
@@ -341,7 +341,7 @@ classesRouter.post(
     const id = c.req.param("id");
     const { displayName, studentCode } = c.req.valid("json");
 
-    const classData = await prisma.class.findUnique({
+    const classData = await db.class.findUnique({
       where: { id },
     });
 
@@ -353,7 +353,7 @@ classesRouter.post(
     }
 
     // Check for duplicate name
-    const existingStudent = await prisma.classStudent.findFirst({
+    const existingStudent = await db.classStudent.findFirst({
       where: { classId: id, displayName },
     });
 
@@ -364,7 +364,7 @@ classesRouter.post(
       );
     }
 
-    const student = await prisma.classStudent.create({
+    const student = await db.classStudent.create({
       data: {
         classId: id,
         displayName,
@@ -381,7 +381,7 @@ classesRouter.delete("/:id/students/:studentId", async (c) => {
   const classId = c.req.param("id");
   const studentId = c.req.param("studentId");
 
-  const existingStudent = await prisma.classStudent.findFirst({
+  const existingStudent = await db.classStudent.findFirst({
     where: { id: studentId, classId },
   });
 
@@ -393,7 +393,7 @@ classesRouter.delete("/:id/students/:studentId", async (c) => {
   }
 
   // Delete student within a transaction to ensure atomicity with cascading deletes
-  await prisma.$transaction(async (tx) => {
+  await db.$transaction(async (tx) => {
     await tx.classStudent.delete({
       where: { id: studentId },
     });
@@ -406,7 +406,7 @@ classesRouter.delete("/:id/students/:studentId", async (c) => {
 classesRouter.get("/:id/assignments", async (c) => {
   const id = c.req.param("id");
 
-  const classData = await prisma.class.findUnique({
+  const classData = await db.class.findUnique({
     where: { id },
   });
 
@@ -417,7 +417,7 @@ classesRouter.get("/:id/assignments", async (c) => {
     );
   }
 
-  const assignments = await prisma.classAssignment.findMany({
+  const assignments = await db.classAssignment.findMany({
     where: { classId: id },
     include: {
       lessonPlan: {
@@ -459,7 +459,7 @@ classesRouter.post(
     const classId = c.req.param("id");
     const data = c.req.valid("json");
 
-    const classData = await prisma.class.findUnique({
+    const classData = await db.class.findUnique({
       where: { id: classId },
     });
 
@@ -490,7 +490,7 @@ classesRouter.post(
       );
     }
 
-    const assignment = await prisma.classAssignment.create({
+    const assignment = await db.classAssignment.create({
       data: {
         classId,
         assignmentType: data.assignmentType,
@@ -516,7 +516,7 @@ classesRouter.patch(
     const assignmentId = c.req.param("assignmentId");
     const data = c.req.valid("json");
 
-    const existingAssignment = await prisma.classAssignment.findFirst({
+    const existingAssignment = await db.classAssignment.findFirst({
       where: { id: assignmentId, classId },
     });
 
@@ -527,7 +527,7 @@ classesRouter.patch(
       );
     }
 
-    const assignment = await prisma.classAssignment.update({
+    const assignment = await db.classAssignment.update({
       where: { id: assignmentId },
       data: {
         ...(data.title !== undefined && { title: data.title }),
@@ -548,7 +548,7 @@ classesRouter.delete("/:id/assignments/:assignmentId", async (c) => {
   const classId = c.req.param("id");
   const assignmentId = c.req.param("assignmentId");
 
-  const existingAssignment = await prisma.classAssignment.findFirst({
+  const existingAssignment = await db.classAssignment.findFirst({
     where: { id: assignmentId, classId },
   });
 
@@ -560,7 +560,7 @@ classesRouter.delete("/:id/assignments/:assignmentId", async (c) => {
   }
 
   // Delete assignment within a transaction to ensure atomicity with cascading deletes
-  await prisma.$transaction(async (tx) => {
+  await db.$transaction(async (tx) => {
     await tx.classAssignment.delete({
       where: { id: assignmentId },
     });
@@ -573,7 +573,7 @@ classesRouter.delete("/:id/assignments/:assignmentId", async (c) => {
 classesRouter.get("/:id/progress", async (c) => {
   const id = c.req.param("id");
 
-  const classData = await prisma.class.findUnique({
+  const classData = await db.class.findUnique({
     where: { id },
   });
 
@@ -584,7 +584,7 @@ classesRouter.get("/:id/progress", async (c) => {
     );
   }
 
-  const progress = await prisma.studentProgress.findMany({
+  const progress = await db.studentProgress.findMany({
     where: {
       assignment: { classId: id },
     },
@@ -620,7 +620,7 @@ classesRouter.put(
     const data = c.req.valid("json");
 
     // Verify student belongs to class
-    const student = await prisma.classStudent.findFirst({
+    const student = await db.classStudent.findFirst({
       where: { id: studentId, classId },
     });
 
@@ -632,7 +632,7 @@ classesRouter.put(
     }
 
     // Verify assignment belongs to class
-    const assignment = await prisma.classAssignment.findFirst({
+    const assignment = await db.classAssignment.findFirst({
       where: { id: assignmentId, classId },
     });
 
@@ -644,7 +644,7 @@ classesRouter.put(
     }
 
     // Upsert progress within a transaction to ensure atomicity
-    const progress = await prisma.$transaction(async (tx) => {
+    const progress = await db.$transaction(async (tx) => {
       return await tx.studentProgress.upsert({
         where: {
           studentId_assignmentId: {

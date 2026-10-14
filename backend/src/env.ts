@@ -8,10 +8,9 @@ const envSchema = z.object({
   // Server Configuration
   PORT: z.string().optional().default("3000"),
   NODE_ENV: z.string().optional(),
-  BACKEND_URL: z.url("BACKEND_URL must be a valid URL").default("http://localhost:3000"), // Set via the Vibecode enviroment at run-time
-  DATABASE_URL: z.string().optional(), // Deprecated - app uses Turso via TURSO_DATABASE_URL
+  BACKEND_URL: z.url("BACKEND_URL must be a valid URL").default("http://localhost:3000"), // Public base URL of this backend (set in Railway)
 
-  // Turso Database Configuration
+  // Turso — the one and only database
   TURSO_DATABASE_URL: z.string().min(1, "TURSO_DATABASE_URL is required"),
   TURSO_AUTH_TOKEN: z.string().min(1, "TURSO_AUTH_TOKEN is required"),
 

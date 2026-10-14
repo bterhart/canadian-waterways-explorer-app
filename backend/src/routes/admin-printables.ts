@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
-import { prisma } from "../prisma";
+import { db } from "../db";
 import { requireAdmin } from "../lib/admin-middleware";
 
 const adminPrintablesRouter = new Hono();
@@ -40,7 +40,7 @@ const updatePrintableSchema = z.object({
 
 // GET / - List all printable resources (including unpublished)
 adminPrintablesRouter.get("/", async (c) => {
-  const printables = await prisma.printableResource.findMany({
+  const printables = await db.printableResource.findMany({
     select: {
       id: true,
       title: true,
@@ -63,7 +63,7 @@ adminPrintablesRouter.get("/", async (c) => {
 adminPrintablesRouter.get("/:id", async (c) => {
   const id = c.req.param("id");
 
-  const printable = await prisma.printableResource.findUnique({
+  const printable = await db.printableResource.findUnique({
     where: { id },
   });
 
@@ -84,7 +84,7 @@ adminPrintablesRouter.post(
   async (c) => {
     const data = c.req.valid("json");
 
-    const printable = await prisma.printableResource.create({
+    const printable = await db.printableResource.create({
       data: {
         title: data.title,
         description: data.description,
@@ -112,7 +112,7 @@ adminPrintablesRouter.patch(
     const id = c.req.param("id");
     const data = c.req.valid("json");
 
-    const existingPrintable = await prisma.printableResource.findUnique({
+    const existingPrintable = await db.printableResource.findUnique({
       where: { id },
     });
 
@@ -123,7 +123,7 @@ adminPrintablesRouter.patch(
       );
     }
 
-    const printable = await prisma.printableResource.update({
+    const printable = await db.printableResource.update({
       where: { id },
       data: {
         ...(data.title !== undefined && { title: data.title }),
@@ -148,7 +148,7 @@ adminPrintablesRouter.patch(
 adminPrintablesRouter.delete("/:id", async (c) => {
   const id = c.req.param("id");
 
-  const existingPrintable = await prisma.printableResource.findUnique({
+  const existingPrintable = await db.printableResource.findUnique({
     where: { id },
   });
 
@@ -159,7 +159,7 @@ adminPrintablesRouter.delete("/:id", async (c) => {
     );
   }
 
-  await prisma.printableResource.delete({
+  await db.printableResource.delete({
     where: { id },
   });
 

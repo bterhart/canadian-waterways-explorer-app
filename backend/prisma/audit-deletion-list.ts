@@ -1,12 +1,12 @@
-import { prisma } from "../src/prisma";
+import { db } from "../src/db";
 
 async function main() {
-  const locations = await prisma.location.findMany({
+  const locations = await db.location.findMany({
     select: { id: true, name: true, imageUrl: true, galleryImages: true },
     orderBy: { name: 'asc' }
   });
 
-  const waterways = await prisma.waterway.findMany({
+  const waterways = await db.waterway.findMany({
     select: { id: true, name: true, imageUrl: true, galleryImages: true },
     orderBy: { name: 'asc' }
   });
@@ -97,4 +97,4 @@ async function main() {
   console.log(`Total retained: ${heroRetain + galleryRetain}`);
 }
 
-main().catch(console.error).finally(() => prisma.$disconnect());
+main().catch(console.error).finally(() => db.$disconnect());

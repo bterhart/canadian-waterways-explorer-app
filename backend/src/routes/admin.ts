@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
-import { prisma } from "../prisma";
+import { db } from "../db";
 import { generateAccessToken, generateRefreshToken } from "../lib/jwt-utils";
 import { loginRateLimiter } from "../lib/auth-utils";
 import bcrypt from "bcryptjs";
@@ -44,7 +44,7 @@ adminRouter.post(
       );
     }
 
-    const admin = await prisma.adminUser.findUnique({
+    const admin = await db.adminUser.findUnique({
       where: { email },
     });
 
@@ -79,7 +79,7 @@ adminRouter.post(
       const failedAttempts = admin.failedLoginAttempts + 1;
       const shouldLock = failedAttempts >= 5;
 
-      await prisma.adminUser.update({
+      await db.adminUser.update({
         where: { id: admin.id },
         data: {
           failedLoginAttempts: failedAttempts,
@@ -116,7 +116,7 @@ adminRouter.post(
     }
 
     // Reset failed login attempts and update last login
-    await prisma.adminUser.update({
+    await db.adminUser.update({
       where: { id: admin.id },
       data: {
         lastLoginAt: new Date(),
@@ -167,7 +167,7 @@ adminRouter.post(
 adminRouter.get("/contributions", async (c) => {
   const status = c.req.query("status") || "pending";
 
-  const contributions = await prisma.userContribution.findMany({
+  const contributions = await db.userContribution.findMany({
     where: {
       status: status,
     },
@@ -215,7 +215,7 @@ adminRouter.patch(
     const { status, adminNotes, reviewedBy } = c.req.valid("json");
 
     // Check if contribution exists
-    const existingContribution = await prisma.userContribution.findUnique({
+    const existingContribution = await db.userContribution.findUnique({
       where: { id },
     });
 
@@ -227,7 +227,7 @@ adminRouter.patch(
     }
 
     // Update contribution status within a transaction to ensure atomicity
-    const contribution = await prisma.$transaction(async (tx) => {
+    const contribution = await db.$transaction(async (tx) => {
       return await tx.userContribution.update({
         where: { id },
         data: {

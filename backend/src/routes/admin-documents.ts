@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
-import { prisma } from "../prisma";
+import { db } from "../db";
 import { requireAdmin } from "../lib/admin-middleware";
 
 const adminDocumentsRouter = new Hono();
@@ -62,7 +62,7 @@ const updateDocumentSchema = z.object({
 
 // GET / - List all documents (including unpublished)
 adminDocumentsRouter.get("/", async (c) => {
-  const documents = await prisma.primarySourceDocument.findMany({
+  const documents = await db.primarySourceDocument.findMany({
     select: {
       id: true,
       title: true,
@@ -86,7 +86,7 @@ adminDocumentsRouter.get("/", async (c) => {
 adminDocumentsRouter.get("/:id", async (c) => {
   const id = c.req.param("id");
 
-  const document = await prisma.primarySourceDocument.findUnique({
+  const document = await db.primarySourceDocument.findUnique({
     where: { id },
   });
 
@@ -117,7 +117,7 @@ adminDocumentsRouter.post(
   async (c) => {
     const data = c.req.valid("json");
 
-    const document = await prisma.primarySourceDocument.create({
+    const document = await db.primarySourceDocument.create({
       data: {
         title: data.title,
         documentType: data.documentType,
@@ -153,7 +153,7 @@ adminDocumentsRouter.patch(
     const id = c.req.param("id");
     const data = c.req.valid("json");
 
-    const existingDocument = await prisma.primarySourceDocument.findUnique({
+    const existingDocument = await db.primarySourceDocument.findUnique({
       where: { id },
     });
 
@@ -164,7 +164,7 @@ adminDocumentsRouter.patch(
       );
     }
 
-    const document = await prisma.primarySourceDocument.update({
+    const document = await db.primarySourceDocument.update({
       where: { id },
       data: {
         ...(data.title !== undefined && { title: data.title }),
@@ -205,7 +205,7 @@ adminDocumentsRouter.patch(
 adminDocumentsRouter.delete("/:id", async (c) => {
   const id = c.req.param("id");
 
-  const existingDocument = await prisma.primarySourceDocument.findUnique({
+  const existingDocument = await db.primarySourceDocument.findUnique({
     where: { id },
   });
 
@@ -216,7 +216,7 @@ adminDocumentsRouter.delete("/:id", async (c) => {
     );
   }
 
-  await prisma.primarySourceDocument.delete({
+  await db.primarySourceDocument.delete({
     where: { id },
   });
 

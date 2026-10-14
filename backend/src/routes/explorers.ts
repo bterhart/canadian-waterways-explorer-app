@@ -1,11 +1,11 @@
 import { Hono } from "hono";
-import { prisma } from "../prisma";
+import { db } from "../db";
 
 const explorersRouter = new Hono();
 
 // Get all explorers
 explorersRouter.get("/", async (c) => {
-  const explorers = await prisma.explorer.findMany({
+  const explorers = await db.explorer.findMany({
     select: {
       id: true,
       name: true,
@@ -24,7 +24,7 @@ explorersRouter.get("/", async (c) => {
 explorersRouter.get("/:id", async (c) => {
   const id = c.req.param("id");
 
-  const explorer = await prisma.explorer.findUnique({
+  const explorer = await db.explorer.findUnique({
     where: { id },
     include: {
       waterways: {
@@ -50,7 +50,7 @@ explorersRouter.get("/:id", async (c) => {
 explorersRouter.get("/search/:query", async (c) => {
   const query = c.req.param("query");
 
-  const explorers = await prisma.explorer.findMany({
+  const explorers = await db.explorer.findMany({
     where: {
       name: { contains: query }
     },

@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 import { mkdir, readFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
-import { prisma } from "../src/prisma";
+import { db } from "../src/db";
 
 type Mode = "dry-run" | "write-kml" | "apply" | "clear";
 type FilterName = "none" | "churchill-west";
@@ -231,7 +231,7 @@ async function main(): Promise<void> {
   const options = parseArgs(Bun.argv.slice(2));
 
   if (options.mode === "clear") {
-    const existing = await prisma.waterway.findUnique({
+    const existing = await db.waterway.findUnique({
       where: { id: options.waterwayId },
       select: { id: true, name: true, regionName: true, kmlData: true },
     });
@@ -240,7 +240,7 @@ async function main(): Promise<void> {
       throw new Error(`Waterway not found: ${options.waterwayId}`);
     }
 
-    await prisma.waterway.update({
+    await db.waterway.update({
       where: { id: options.waterwayId },
       data: { kmlData: null },
     });
@@ -296,7 +296,7 @@ async function main(): Promise<void> {
   }
 
   if (options.mode === "apply") {
-    const existing = await prisma.waterway.findUnique({
+    const existing = await db.waterway.findUnique({
       where: { id: options.waterwayId },
       select: { id: true, name: true, regionName: true, kmlData: true },
     });
@@ -309,7 +309,7 @@ async function main(): Promise<void> {
       throw new Error("Filtered KML contains zero placemarks; refusing to apply empty KML.");
     }
 
-    await prisma.waterway.update({
+    await db.waterway.update({
       where: { id: options.waterwayId },
       data: { kmlData: filteredKml },
     });
@@ -335,5 +335,5 @@ main()
     process.exitCode = 1;
   })
   .finally(async () => {
-    await prisma.$disconnect();
+    await db.$disconnect();
   });

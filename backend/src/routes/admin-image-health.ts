@@ -12,7 +12,7 @@
  */
 
 import { Hono } from "hono";
-import { prisma } from "../prisma";
+import { db } from "../db";
 import { requireAdmin } from "../lib/admin-middleware";
 import { runImageHealthCheck } from "../jobs/image-health-check";
 
@@ -23,7 +23,7 @@ adminImageHealthRouter.use("*", requireAdmin);
 // GET /api/admin/image-health
 adminImageHealthRouter.get("/", async (c) => {
   // Find the timestamp of the most recent check run
-  const latest = await prisma.imageHealthLog.findFirst({
+  const latest = await db.imageHealthLog.findFirst({
     orderBy: { checkedAt: "desc" },
     select: { checkedAt: true },
   });
@@ -42,7 +42,7 @@ adminImageHealthRouter.get("/", async (c) => {
   // account for the run duration)
   const windowStart = new Date(latest.checkedAt.getTime() - 10 * 60 * 1000);
 
-  const entries = await prisma.imageHealthLog.findMany({
+  const entries = await db.imageHealthLog.findMany({
     where: { checkedAt: { gte: windowStart } },
     orderBy: { model: "asc" },
   });

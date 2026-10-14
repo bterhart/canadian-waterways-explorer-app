@@ -1,4 +1,4 @@
-import { prisma } from "../src/prisma";
+import { db } from "../src/db";
 
 // These 3 specific Wikimedia file names don't exist — replace with confirmed working alternatives
 const URL_REPLACEMENTS: Record<string, string> = {
@@ -16,8 +16,8 @@ const URL_REPLACEMENTS: Record<string, string> = {
 };
 
 async function main() {
-  const locations = await prisma.location.findMany({ select: { id: true, name: true, imageUrl: true, galleryImages: true } });
-  const waterways = await prisma.waterway.findMany({ select: { id: true, name: true, imageUrl: true, galleryImages: true } });
+  const locations = await db.location.findMany({ select: { id: true, name: true, imageUrl: true, galleryImages: true } });
+  const waterways = await db.waterway.findMany({ select: { id: true, name: true, imageUrl: true, galleryImages: true } });
 
   let fixed = 0;
 
@@ -48,9 +48,9 @@ async function main() {
     if (changed) {
       const update = { imageUrl: newHero ?? null, galleryImages: JSON.stringify(newGallery) };
       if (isLocation) {
-        await prisma.location.update({ where: { id: item.id }, data: update });
+        await db.location.update({ where: { id: item.id }, data: update });
       } else {
-        await prisma.waterway.update({ where: { id: item.id }, data: update });
+        await db.waterway.update({ where: { id: item.id }, data: update });
       }
       console.log(`✓ Fixed: ${item.name}`);
       fixed++;
@@ -60,4 +60,4 @@ async function main() {
   console.log(`\nFixed ${fixed} entities. Done.`);
 }
 
-main().catch(console.error).finally(() => prisma.$disconnect());
+main().catch(console.error).finally(() => db.$disconnect());

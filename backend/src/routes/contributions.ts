@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
-import { prisma } from "../prisma";
+import { db } from "../db";
 import { validateImageUrl } from "../lib/validate-image-url";
 
 const contributionsRouter = new Hono();
@@ -35,7 +35,7 @@ contributionsRouter.post(
 
     // Verify the waterway exists if waterwayId is provided
     if (data.waterwayId) {
-      const waterway = await prisma.waterway.findUnique({
+      const waterway = await db.waterway.findUnique({
         where: { id: data.waterwayId },
       });
       if (!waterway) {
@@ -48,7 +48,7 @@ contributionsRouter.post(
 
     // Verify the location exists if locationId is provided
     if (data.locationId) {
-      const location = await prisma.location.findUnique({
+      const location = await db.location.findUnique({
         where: { id: data.locationId },
       });
       if (!location) {
@@ -75,7 +75,7 @@ contributionsRouter.post(
       }
     }
 
-    const contribution = await prisma.userContribution.create({
+    const contribution = await db.userContribution.create({
       data: {
         title: data.title,
         content: data.content,
@@ -95,7 +95,7 @@ contributionsRouter.post(
 
 // GET / - Get all approved contributions (for public display)
 contributionsRouter.get("/", async (c) => {
-  const contributions = await prisma.userContribution.findMany({
+  const contributions = await db.userContribution.findMany({
     where: { status: "approved" },
     select: {
       id: true,
@@ -131,7 +131,7 @@ contributionsRouter.get("/waterway/:waterwayId", async (c) => {
   const waterwayId = c.req.param("waterwayId");
 
   // Verify the waterway exists
-  const waterway = await prisma.waterway.findUnique({
+  const waterway = await db.waterway.findUnique({
     where: { id: waterwayId },
   });
 
@@ -142,7 +142,7 @@ contributionsRouter.get("/waterway/:waterwayId", async (c) => {
     );
   }
 
-  const contributions = await prisma.userContribution.findMany({
+  const contributions = await db.userContribution.findMany({
     where: {
       waterwayId: waterwayId,
       status: "approved",
@@ -167,7 +167,7 @@ contributionsRouter.get("/location/:locationId", async (c) => {
   const locationId = c.req.param("locationId");
 
   // Verify the location exists
-  const location = await prisma.location.findUnique({
+  const location = await db.location.findUnique({
     where: { id: locationId },
   });
 
@@ -178,7 +178,7 @@ contributionsRouter.get("/location/:locationId", async (c) => {
     );
   }
 
-  const contributions = await prisma.userContribution.findMany({
+  const contributions = await db.userContribution.findMany({
     where: {
       locationId: locationId,
       status: "approved",

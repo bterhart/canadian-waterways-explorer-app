@@ -1,6 +1,6 @@
 import { mkdir } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
-import { prisma } from "../src/prisma";
+import { db } from "../src/db";
 import { parseAuditArgs } from "./lib/audit-args";
 import { formatAuditReport, formatAuditSummary } from "./lib/audit-format";
 import {
@@ -27,12 +27,12 @@ async function main(): Promise<void> {
   let contexts: CandidateContext[] = [];
 
   if (args.entity === "waterway") {
-    const result = await loadWaterwayCandidates(prisma, args);
+    const result = await loadWaterwayCandidates(db, args);
     report = result.report;
     contexts = result.contexts;
 
     if (args.withRelated && contexts.length > 0) {
-      const relations = await loadWaterwayRelations(prisma, contexts.map((context) => context.id));
+      const relations = await loadWaterwayRelations(db, contexts.map((context) => context.id));
       for (const candidate of report.candidates) {
         const relation = relations[candidate.id];
         if (!relation) continue;
@@ -62,12 +62,12 @@ async function main(): Promise<void> {
     report.findings.push(...summary.findings);
     report.recommendations.push(...summary.recommendations);
   } else if (args.entity === "location") {
-    const result = await loadLocationCandidates(prisma, args);
+    const result = await loadLocationCandidates(db, args);
     report = result.report;
     contexts = result.contexts;
 
     if (args.withRelated && contexts.length > 0) {
-      const relations = await loadLocationRelations(prisma, contexts.map((context) => context.id));
+      const relations = await loadLocationRelations(db, contexts.map((context) => context.id));
       for (const candidate of report.candidates) {
         const relation = relations[candidate.id];
         if (!relation) continue;
@@ -80,12 +80,12 @@ async function main(): Promise<void> {
     report.findings.push(...summary.findings);
     report.recommendations.push(...summary.recommendations);
   } else {
-    const result = await loadExplorerCandidates(prisma, args);
+    const result = await loadExplorerCandidates(db, args);
     report = result.report;
     contexts = result.contexts;
 
     if (args.withRelated && contexts.length > 0) {
-      const relations = await loadExplorerRelations(prisma, contexts.map((context) => context.id));
+      const relations = await loadExplorerRelations(db, contexts.map((context) => context.id));
       for (const candidate of report.candidates) {
         const relation = relations[candidate.id];
         if (!relation) continue;
@@ -130,5 +130,5 @@ main()
     process.exitCode = 1;
   })
   .finally(async () => {
-    await prisma.$disconnect();
+    await db.$disconnect();
   });

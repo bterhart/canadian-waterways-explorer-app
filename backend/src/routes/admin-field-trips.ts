@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
-import { prisma } from "../prisma";
+import { db } from "../db";
 import { requireAdmin } from "../lib/admin-middleware";
 
 const adminFieldTripsRouter = new Hono();
@@ -60,7 +60,7 @@ const updateStopSchema = z.object({
 
 // GET / - List all field trips (including unpublished)
 adminFieldTripsRouter.get("/", async (c) => {
-  const fieldTrips = await prisma.virtualFieldTrip.findMany({
+  const fieldTrips = await db.virtualFieldTrip.findMany({
     select: {
       id: true,
       title: true,
@@ -100,7 +100,7 @@ adminFieldTripsRouter.get("/", async (c) => {
 adminFieldTripsRouter.get("/:id", async (c) => {
   const id = c.req.param("id");
 
-  const fieldTrip = await prisma.virtualFieldTrip.findUnique({
+  const fieldTrip = await db.virtualFieldTrip.findUnique({
     where: { id },
     include: {
       stops: {
@@ -126,7 +126,7 @@ adminFieldTripsRouter.post(
   async (c) => {
     const data = c.req.valid("json");
 
-    const fieldTrip = await prisma.virtualFieldTrip.create({
+    const fieldTrip = await db.virtualFieldTrip.create({
       data: {
         title: data.title,
         description: data.description,
@@ -150,7 +150,7 @@ adminFieldTripsRouter.patch(
     const id = c.req.param("id");
     const data = c.req.valid("json");
 
-    const existingTrip = await prisma.virtualFieldTrip.findUnique({
+    const existingTrip = await db.virtualFieldTrip.findUnique({
       where: { id },
     });
 
@@ -161,7 +161,7 @@ adminFieldTripsRouter.patch(
       );
     }
 
-    const fieldTrip = await prisma.virtualFieldTrip.update({
+    const fieldTrip = await db.virtualFieldTrip.update({
       where: { id },
       data: {
         ...(data.title !== undefined && { title: data.title }),
@@ -186,7 +186,7 @@ adminFieldTripsRouter.patch(
 adminFieldTripsRouter.delete("/:id", async (c) => {
   const id = c.req.param("id");
 
-  const existingTrip = await prisma.virtualFieldTrip.findUnique({
+  const existingTrip = await db.virtualFieldTrip.findUnique({
     where: { id },
   });
 
@@ -197,7 +197,7 @@ adminFieldTripsRouter.delete("/:id", async (c) => {
     );
   }
 
-  await prisma.virtualFieldTrip.delete({
+  await db.virtualFieldTrip.delete({
     where: { id },
   });
 
@@ -212,7 +212,7 @@ adminFieldTripsRouter.post(
     const tripId = c.req.param("tripId");
     const data = c.req.valid("json");
 
-    const trip = await prisma.virtualFieldTrip.findUnique({
+    const trip = await db.virtualFieldTrip.findUnique({
       where: { id: tripId },
     });
 
@@ -223,7 +223,7 @@ adminFieldTripsRouter.post(
       );
     }
 
-    const stop = await prisma.fieldTripStop.create({
+    const stop = await db.fieldTripStop.create({
       data: {
         tripId,
         orderIndex: data.orderIndex,
@@ -253,7 +253,7 @@ adminFieldTripsRouter.patch(
     const stopId = c.req.param("stopId");
     const data = c.req.valid("json");
 
-    const existingStop = await prisma.fieldTripStop.findFirst({
+    const existingStop = await db.fieldTripStop.findFirst({
       where: { id: stopId, tripId },
     });
 
@@ -264,7 +264,7 @@ adminFieldTripsRouter.patch(
       );
     }
 
-    const stop = await prisma.fieldTripStop.update({
+    const stop = await db.fieldTripStop.update({
       where: { id: stopId },
       data: {
         ...(data.orderIndex !== undefined && { orderIndex: data.orderIndex }),
@@ -290,7 +290,7 @@ adminFieldTripsRouter.delete("/:tripId/stops/:stopId", async (c) => {
   const tripId = c.req.param("tripId");
   const stopId = c.req.param("stopId");
 
-  const existingStop = await prisma.fieldTripStop.findFirst({
+  const existingStop = await db.fieldTripStop.findFirst({
     where: { id: stopId, tripId },
   });
 
@@ -301,7 +301,7 @@ adminFieldTripsRouter.delete("/:tripId/stops/:stopId", async (c) => {
     );
   }
 
-  await prisma.fieldTripStop.delete({
+  await db.fieldTripStop.delete({
     where: { id: stopId },
   });
 

@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { prisma } from "../prisma";
+import { db } from "../db";
 
 const documentsRouter = new Hono();
 
@@ -23,7 +23,7 @@ documentsRouter.get("/", async (c) => {
     whereClause.gradeLevel = gradeLevel;
   }
 
-  const documents = await prisma.primarySourceDocument.findMany({
+  const documents = await db.primarySourceDocument.findMany({
     where: whereClause,
     select: {
       id: true,
@@ -44,7 +44,7 @@ documentsRouter.get("/", async (c) => {
 
 // GET /types - Get all unique document types
 documentsRouter.get("/types", async (c) => {
-  const documents = await prisma.primarySourceDocument.findMany({
+  const documents = await db.primarySourceDocument.findMany({
     where: { isPublished: true },
     select: { documentType: true },
     distinct: ["documentType"],
@@ -59,7 +59,7 @@ documentsRouter.get("/types", async (c) => {
 documentsRouter.get("/:id", async (c) => {
   const id = c.req.param("id");
 
-  const document = await prisma.primarySourceDocument.findUnique({
+  const document = await db.primarySourceDocument.findUnique({
     where: { id, isPublished: true },
   });
 

@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { prisma } from "../prisma";
+import { db } from "../db";
 
 const lessonPlansRouter = new Hono();
 
@@ -23,7 +23,7 @@ lessonPlansRouter.get("/", async (c) => {
     whereClause.topic = topic;
   }
 
-  const lessonPlans = await prisma.lessonPlan.findMany({
+  const lessonPlans = await db.lessonPlan.findMany({
     where: whereClause,
     select: {
       id: true,
@@ -46,7 +46,7 @@ lessonPlansRouter.get("/", async (c) => {
 lessonPlansRouter.get("/:id", async (c) => {
   const id = c.req.param("id");
 
-  const lessonPlan = await prisma.lessonPlan.findUnique({
+  const lessonPlan = await db.lessonPlan.findUnique({
     where: { id, isPublished: true },
   });
 

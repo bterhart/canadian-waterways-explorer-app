@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { prisma } from "../prisma";
+import { db } from "../db";
 
 const pronunciationsRouter = new Hono();
 
@@ -20,7 +20,7 @@ pronunciationsRouter.get("/", async (c) => {
     whereClause.language = language;
   }
 
-  const pronunciations = await prisma.pronunciationGuide.findMany({
+  const pronunciations = await db.pronunciationGuide.findMany({
     where: whereClause,
     select: {
       id: true,
@@ -39,7 +39,7 @@ pronunciationsRouter.get("/", async (c) => {
 
 // GET /term-types - Get all unique term types
 pronunciationsRouter.get("/term-types", async (c) => {
-  const guides = await prisma.pronunciationGuide.findMany({
+  const guides = await db.pronunciationGuide.findMany({
     select: { termType: true },
     distinct: ["termType"],
   });
@@ -51,7 +51,7 @@ pronunciationsRouter.get("/term-types", async (c) => {
 
 // GET /languages - Get all unique languages
 pronunciationsRouter.get("/languages", async (c) => {
-  const guides = await prisma.pronunciationGuide.findMany({
+  const guides = await db.pronunciationGuide.findMany({
     where: { language: { not: null } },
     select: { language: true },
     distinct: ["language"],
@@ -66,7 +66,7 @@ pronunciationsRouter.get("/languages", async (c) => {
 pronunciationsRouter.get("/by-term/:term", async (c) => {
   const term = decodeURIComponent(c.req.param("term"));
 
-  const pronunciation = await prisma.pronunciationGuide.findFirst({
+  const pronunciation = await db.pronunciationGuide.findFirst({
     where: { term: { equals: term } },
   });
 
@@ -84,7 +84,7 @@ pronunciationsRouter.get("/by-term/:term", async (c) => {
 pronunciationsRouter.get("/:id", async (c) => {
   const id = c.req.param("id");
 
-  const pronunciation = await prisma.pronunciationGuide.findUnique({
+  const pronunciation = await db.pronunciationGuide.findUnique({
     where: { id },
   });
 

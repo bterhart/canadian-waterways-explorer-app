@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { prisma } from "../prisma";
+import { db } from "../db";
 
 const printablesRouter = new Hono();
 
@@ -28,7 +28,7 @@ printablesRouter.get("/", async (c) => {
     whereClause.gradeLevel = gradeLevel;
   }
 
-  const printables = await prisma.printableResource.findMany({
+  const printables = await db.printableResource.findMany({
     where: whereClause,
     select: {
       id: true,
@@ -48,7 +48,7 @@ printablesRouter.get("/", async (c) => {
 
 // GET /types - Get all unique resource types
 printablesRouter.get("/types", async (c) => {
-  const resources = await prisma.printableResource.findMany({
+  const resources = await db.printableResource.findMany({
     where: { isPublished: true },
     select: { resourceType: true },
     distinct: ["resourceType"],
@@ -61,7 +61,7 @@ printablesRouter.get("/types", async (c) => {
 
 // GET /topics - Get all unique topics
 printablesRouter.get("/topics", async (c) => {
-  const resources = await prisma.printableResource.findMany({
+  const resources = await db.printableResource.findMany({
     where: { isPublished: true },
     select: { topic: true },
     distinct: ["topic"],
@@ -76,7 +76,7 @@ printablesRouter.get("/topics", async (c) => {
 printablesRouter.get("/:id", async (c) => {
   const id = c.req.param("id");
 
-  const printable = await prisma.printableResource.findUnique({
+  const printable = await db.printableResource.findUnique({
     where: { id, isPublished: true },
   });
 

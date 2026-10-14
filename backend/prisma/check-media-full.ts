@@ -1,8 +1,8 @@
-import { prisma } from "../src/prisma";
+import { db } from "../src/db";
 
 async function main() {
   // Check waterways too
-  const waterways = await prisma.waterway.findMany({
+  const waterways = await db.waterway.findMany({
     select: { id: true, name: true, imageUrl: true, galleryImages: true },
     orderBy: { name: 'asc' }
   });
@@ -31,4 +31,4 @@ async function main() {
   }
 }
 
-main().catch(console.error).finally(() => prisma.$disconnect());
+main().catch(console.error).finally(() => db.$disconnect());

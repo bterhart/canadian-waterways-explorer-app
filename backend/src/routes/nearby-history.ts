@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
-import { prisma } from "../prisma";
+import { db } from "../db";
 
 const nearbyHistoryRouter = new Hono();
 
@@ -74,7 +74,7 @@ nearbyHistoryRouter.get(
       );
     }
 
-    const allWaterways = await prisma.waterway.findMany({
+    const allWaterways = await db.waterway.findMany({
       select: {
         id: true,
         name: true,
@@ -125,7 +125,7 @@ nearbyHistoryRouter.get(
       );
     }
 
-    const allLocations = await prisma.location.findMany({
+    const allLocations = await db.location.findMany({
       select: {
         id: true,
         name: true,
@@ -184,7 +184,7 @@ nearbyHistoryRouter.get(
 
     const whereClause = category ? { category } : {};
 
-    const allEvents = await prisma.historicalEvent.findMany({
+    const allEvents = await db.historicalEvent.findMany({
       where: whereClause,
       orderBy: { year: "asc" },
     });
@@ -225,7 +225,7 @@ nearbyHistoryRouter.get(
     }
 
     // Fetch all historical events
-    const allEvents = await prisma.historicalEvent.findMany({
+    const allEvents = await db.historicalEvent.findMany({
       orderBy: { year: "asc" },
     });
 
@@ -254,7 +254,7 @@ nearbyHistoryRouter.get(
 nearbyHistoryRouter.get("/:id", async (c) => {
   const id = c.req.param("id");
 
-  const event = await prisma.historicalEvent.findUnique({
+  const event = await db.historicalEvent.findUnique({
     where: { id },
   });
 
@@ -271,14 +271,14 @@ nearbyHistoryRouter.get("/:id", async (c) => {
   let relatedLocation = null;
 
   if (event.explorerId) {
-    relatedExplorer = await prisma.explorer.findUnique({
+    relatedExplorer = await db.explorer.findUnique({
       where: { id: event.explorerId },
       select: { id: true, name: true, birthYear: true, deathYear: true },
     });
   }
 
   if (event.waterwayId) {
-    relatedWaterway = await prisma.waterway.findUnique({
+    relatedWaterway = await db.waterway.findUnique({
       where: { id: event.waterwayId },
       select: {
         id: true,
@@ -291,7 +291,7 @@ nearbyHistoryRouter.get("/:id", async (c) => {
   }
 
   if (event.locationId) {
-    relatedLocation = await prisma.location.findUnique({
+    relatedLocation = await db.location.findUnique({
       where: { id: event.locationId },
       select: {
         id: true,

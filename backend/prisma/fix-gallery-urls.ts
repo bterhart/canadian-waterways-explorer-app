@@ -12,7 +12,7 @@
  * Does NOT touch the imageUrl (hero) field — only galleryImages JSON.
  */
 
-import { prisma } from "../src/prisma";
+import { db } from "../src/db";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Known broken thumbnail URLs → confirmed working replacements
@@ -126,7 +126,7 @@ async function main() {
   console.log("=== fix-gallery-urls.ts ===\n");
 
   // ── Waterways ──────────────────────────────────────────────────────────────
-  const waterways = await prisma.waterway.findMany({
+  const waterways = await db.waterway.findMany({
     select: { id: true, name: true, galleryImages: true },
     orderBy: { name: "asc" },
   });
@@ -135,7 +135,7 @@ async function main() {
   for (const w of waterways) {
     const { fixed, changed } = fixGalleryJson(w.galleryImages);
     if (changed && fixed) {
-      await prisma.waterway.update({
+      await db.waterway.update({
         where: { id: w.id },
         data: { galleryImages: fixed },
       });
@@ -145,7 +145,7 @@ async function main() {
   }
 
   // ── Locations ──────────────────────────────────────────────────────────────
-  const locations = await prisma.location.findMany({
+  const locations = await db.location.findMany({
     select: { id: true, name: true, galleryImages: true },
     orderBy: { name: "asc" },
   });
@@ -154,7 +154,7 @@ async function main() {
   for (const l of locations) {
     const { fixed, changed } = fixGalleryJson(l.galleryImages);
     if (changed && fixed) {
-      await prisma.location.update({
+      await db.location.update({
         where: { id: l.id },
         data: { galleryImages: fixed },
       });

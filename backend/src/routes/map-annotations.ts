@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
-import { prisma } from "../prisma";
+import { db } from "../db";
 import { nanoid } from "nanoid";
 
 const mapAnnotationsRouter = new Hono();
@@ -107,7 +107,7 @@ mapAnnotationsRouter.get("/", async (c) => {
     );
   }
 
-  const annotations = await prisma.userMapAnnotation.findMany({
+  const annotations = await db.userMapAnnotation.findMany({
     where: { userId },
     include: {
       pins: true,
@@ -129,7 +129,7 @@ mapAnnotationsRouter.post(
   async (c) => {
     const data = c.req.valid("json");
 
-    const annotation = await prisma.userMapAnnotation.create({
+    const annotation = await db.userMapAnnotation.create({
       data: {
         userId: data.userId,
         title: data.title,
@@ -153,7 +153,7 @@ mapAnnotationsRouter.post(
 mapAnnotationsRouter.get("/shared/:shareCode", async (c) => {
   const shareCode = c.req.param("shareCode");
 
-  const annotation = await prisma.userMapAnnotation.findFirst({
+  const annotation = await db.userMapAnnotation.findFirst({
     where: {
       shareCode,
       isPublic: true,
@@ -179,7 +179,7 @@ mapAnnotationsRouter.get("/shared/:shareCode", async (c) => {
 mapAnnotationsRouter.get("/:id", async (c) => {
   const id = c.req.param("id");
 
-  const annotation = await prisma.userMapAnnotation.findUnique({
+  const annotation = await db.userMapAnnotation.findUnique({
     where: { id },
     include: {
       pins: true,
@@ -206,7 +206,7 @@ mapAnnotationsRouter.put(
     const id = c.req.param("id");
     const data = c.req.valid("json");
 
-    const existing = await prisma.userMapAnnotation.findUnique({
+    const existing = await db.userMapAnnotation.findUnique({
       where: { id },
     });
 
@@ -217,7 +217,7 @@ mapAnnotationsRouter.put(
       );
     }
 
-    const annotation = await prisma.userMapAnnotation.update({
+    const annotation = await db.userMapAnnotation.update({
       where: { id },
       data: {
         ...(data.title !== undefined && { title: data.title }),
@@ -242,7 +242,7 @@ mapAnnotationsRouter.put(
 mapAnnotationsRouter.delete("/:id", async (c) => {
   const id = c.req.param("id");
 
-  const existing = await prisma.userMapAnnotation.findUnique({
+  const existing = await db.userMapAnnotation.findUnique({
     where: { id },
   });
 
@@ -253,7 +253,7 @@ mapAnnotationsRouter.delete("/:id", async (c) => {
     );
   }
 
-  await prisma.userMapAnnotation.delete({
+  await db.userMapAnnotation.delete({
     where: { id },
   });
 
@@ -268,7 +268,7 @@ mapAnnotationsRouter.delete("/:id", async (c) => {
 mapAnnotationsRouter.post("/:id/share", async (c) => {
   const id = c.req.param("id");
 
-  const existing = await prisma.userMapAnnotation.findUnique({
+  const existing = await db.userMapAnnotation.findUnique({
     where: { id },
   });
 
@@ -282,7 +282,7 @@ mapAnnotationsRouter.post("/:id/share", async (c) => {
   // Generate new share code if not exists
   const shareCode = existing.shareCode || generateShareCode();
 
-  const annotation = await prisma.userMapAnnotation.update({
+  const annotation = await db.userMapAnnotation.update({
     where: { id },
     data: {
       shareCode,
@@ -311,7 +311,7 @@ mapAnnotationsRouter.post("/:id/share", async (c) => {
 mapAnnotationsRouter.get("/:id/export", async (c) => {
   const id = c.req.param("id");
 
-  const annotation = await prisma.userMapAnnotation.findUnique({
+  const annotation = await db.userMapAnnotation.findUnique({
     where: { id },
     include: {
       pins: true,
@@ -388,7 +388,7 @@ mapAnnotationsRouter.post(
     const annotationId = c.req.param("id");
     const data = c.req.valid("json");
 
-    const annotation = await prisma.userMapAnnotation.findUnique({
+    const annotation = await db.userMapAnnotation.findUnique({
       where: { id: annotationId },
     });
 
@@ -399,7 +399,7 @@ mapAnnotationsRouter.post(
       );
     }
 
-    const pin = await prisma.mapPin.create({
+    const pin = await db.mapPin.create({
       data: {
         annotationId,
         latitude: data.latitude,
@@ -428,7 +428,7 @@ mapAnnotationsRouter.delete("/:id/pin/:pinId", async (c) => {
   const annotationId = c.req.param("id");
   const pinId = c.req.param("pinId");
 
-  const existingPin = await prisma.mapPin.findFirst({
+  const existingPin = await db.mapPin.findFirst({
     where: { id: pinId, annotationId },
   });
 
@@ -439,7 +439,7 @@ mapAnnotationsRouter.delete("/:id/pin/:pinId", async (c) => {
     );
   }
 
-  await prisma.mapPin.delete({
+  await db.mapPin.delete({
     where: { id: pinId },
   });
 
@@ -458,7 +458,7 @@ mapAnnotationsRouter.post(
     const annotationId = c.req.param("id");
     const data = c.req.valid("json");
 
-    const annotation = await prisma.userMapAnnotation.findUnique({
+    const annotation = await db.userMapAnnotation.findUnique({
       where: { id: annotationId },
     });
 
@@ -469,7 +469,7 @@ mapAnnotationsRouter.post(
       );
     }
 
-    const route = await prisma.mapRoute.create({
+    const route = await db.mapRoute.create({
       data: {
         annotationId,
         title: data.title,
@@ -497,7 +497,7 @@ mapAnnotationsRouter.delete("/:id/route/:routeId", async (c) => {
   const annotationId = c.req.param("id");
   const routeId = c.req.param("routeId");
 
-  const existingRoute = await prisma.mapRoute.findFirst({
+  const existingRoute = await db.mapRoute.findFirst({
     where: { id: routeId, annotationId },
   });
 
@@ -508,7 +508,7 @@ mapAnnotationsRouter.delete("/:id/route/:routeId", async (c) => {
     );
   }
 
-  await prisma.mapRoute.delete({
+  await db.mapRoute.delete({
     where: { id: routeId },
   });
 
@@ -527,7 +527,7 @@ mapAnnotationsRouter.post(
     const annotationId = c.req.param("id");
     const data = c.req.valid("json");
 
-    const annotation = await prisma.userMapAnnotation.findUnique({
+    const annotation = await db.userMapAnnotation.findUnique({
       where: { id: annotationId },
     });
 
@@ -538,7 +538,7 @@ mapAnnotationsRouter.post(
       );
     }
 
-    const note = await prisma.mapNote.create({
+    const note = await db.mapNote.create({
       data: {
         annotationId,
         latitude: data.latitude,
@@ -562,7 +562,7 @@ mapAnnotationsRouter.delete("/:id/note/:noteId", async (c) => {
   const annotationId = c.req.param("id");
   const noteId = c.req.param("noteId");
 
-  const existingNote = await prisma.mapNote.findFirst({
+  const existingNote = await db.mapNote.findFirst({
     where: { id: noteId, annotationId },
   });
 
@@ -573,7 +573,7 @@ mapAnnotationsRouter.delete("/:id/note/:noteId", async (c) => {
     );
   }
 
-  await prisma.mapNote.delete({
+  await db.mapNote.delete({
     where: { id: noteId },
   });
 
