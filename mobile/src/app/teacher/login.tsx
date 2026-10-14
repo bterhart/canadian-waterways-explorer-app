@@ -14,16 +14,14 @@ import {
 } from 'react-native';
 import { useRouter, Stack, Link } from 'expo-router';
 import { GraduationCap, Mail, Lock, Eye, EyeOff } from 'lucide-react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTeacherLogin } from '@/lib/api/education-api';
+import { setSession } from '@/lib/api/api';
 
 const colors = {
   forestGreen: '#2D5A3D',
   creamWhite: '#FFFEF7',
   darkGreen: '#1A3A24',
 };
-
-const TEACHER_SESSION_KEY = '@waterways_teacher_session';
 
 export default function TeacherLoginScreen() {
   const router = useRouter();
@@ -46,10 +44,13 @@ export default function TeacherLoginScreen() {
       });
 
       if (result.success && result.teacher) {
-        await AsyncStorage.setItem(
-          TEACHER_SESSION_KEY,
-          JSON.stringify({ ...result.teacher, accessToken: result.accessToken })
-        );
+        // Both tokens are kept; api.ts refreshes the access token automatically.
+        await setSession({
+          kind: 'teacher',
+          accessToken: result.accessToken,
+          refreshToken: result.refreshToken ?? null,
+          profile: result.teacher,
+        });
         router.replace('/teacher/dashboard');
       }
     } catch (error) {

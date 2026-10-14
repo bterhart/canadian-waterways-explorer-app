@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -39,7 +39,7 @@ import {
   usePendingTeachers,
 } from '@/lib/api/admin-api';
 import { useAdminQuizzes } from '@/lib/api/waterways-api';
-import { setAuthToken } from '@/lib/api/api';
+import { setSession, loadSession, logoutSession, onSessionExpired } from '@/lib/api/api';
 
 // Theme colors
 const colors = {
@@ -115,6 +115,23 @@ export default function AdminScreen() {
     setTimeout(() => setFeedbackMessage(null), 3000);
   };
 
+  // Restore a stored admin session on mount; drop to the login form if it expires.
+  useEffect(() => {
+    loadSession().then((session) => {
+      if (session?.kind === 'admin') {
+        const profile = session.profile as { role?: 'super_admin' | 'moderator' } | null;
+        setAdminRole(profile?.role ?? 'moderator');
+        setIsLoggedIn(true);
+      }
+    });
+    const unsubscribe = onSessionExpired(() => {
+      setIsLoggedIn(false);
+      queryClient.clear();
+      showFeedback('error', 'Your session expired. Please sign in again.');
+    });
+    return unsubscribe;
+  }, []);
+
   const handleLogin = async () => {
     if (!email.trim() || !password.trim()) {
       showFeedback('error', 'Please enter email and password');
@@ -124,9 +141,14 @@ export default function AdminScreen() {
     try {
       const result = await loginMutation.mutateAsync({ email: email.trim(), password });
       if (result?.success) {
-        // Store the auth token for authenticated API requests
+        // Persist the session (tokens + profile); api.ts refreshes the access token itself.
         if (result.accessToken) {
-          setAuthToken(result.accessToken);
+          await setSession({
+            kind: 'admin',
+            accessToken: result.accessToken,
+            refreshToken: result.refreshToken ?? null,
+            profile: result.admin ?? null,
+          });
         }
         setIsLoggedIn(true);
         setPassword('');
@@ -143,9 +165,9 @@ export default function AdminScreen() {
     }
   };
 
-  const handleLogout = () => {
-    // Clear auth token on logout
-    setAuthToken(null);
+  const handleLogout = async () => {
+    // Blacklist the refresh token server-side (best effort) and clear the stored session
+    await logoutSession();
     setIsLoggedIn(false);
     setEmail('');
     setPassword('');
