@@ -17,25 +17,32 @@ There are three independent deliveries. You can stop after any of them:
 
 ## Part A — Merge on the GitHub website (no installs)
 
-The repo is `https://github.com/bterhart/canadian-waterways-explorer-app`. Branches:
+The repo is `https://github.com/bterhart/canadian-waterways-explorer-app`.
 
-- `claude/fix-map-filter-hide-hs4mz` — your `feat/river-overview-home-layer` plus the 17 audit/fix commits.
-- `feat/river-overview-home-layer` — your latest work, 28 commits ahead of `main`.
-- `main` — contains nothing the other two lack.
+**State on 2026-10-14 08:01 UTC:** PR #4 (`claude/fix-map-filter-hide-hs4mz` → `main`) was
+merged with "Rebase and merge". `main` now contains all of `feat/river-overview-home-layer`
+plus the audit/fix commits (verified: `git diff main claude/fix-map-filter-hide-hs4mz` is empty).
+Because a rebase-merge gives the commits new hashes, `feat/river-overview-home-layer` still
+points at the *old* copies of its 28 commits and GitHub reports "conflicts" against `main`
+that are really duplicates. **PR #5 (`feat` → `main`) must be closed, not merged.**
 
-1. Open **https://github.com/bterhart/canadian-waterways-explorer-app/compare/feat/river-overview-home-layer...claude/fix-map-filter-hide-hs4mz**
-   (base = `feat/river-overview-home-layer`, compare = `claude/fix-map-filter-hide-hs4mz`).
-2. Click **Create pull request**, give it any title, click **Create pull request** again.
-3. On the PR page click the green merge button. Use the dropdown arrow to choose
-   **Rebase and merge** (keeps history linear; "Create a merge commit" is also fine). Confirm.
-4. Now bring `main` up to date. Open
-   **https://github.com/bterhart/canadian-waterways-explorer-app/compare/main...feat/river-overview-home-layer**,
-   **Create pull request** → merge the same way.
-5. Verify: **https://github.com/bterhart/canadian-waterways-explorer-app/commits/main** should show
-   "docs: add DEPLOY.md…", "fix(mobile): teacher lesson-plan detail crashed…", etc. at the top.
+One-time cleanup so the branches stop diverging:
+1. Open **https://github.com/bterhart/canadian-waterways-explorer-app/pull/5** → scroll to the
+   bottom → **Close pull request** (do NOT click Resolve conflicts or merge).
+2. After it closes, a **Delete branch** button appears on the same page → click it
+   (deletes `feat/river-overview-home-layer`, whose content is already in `main`).
+3. Recreate it from `main`: go to **https://github.com/bterhart/canadian-waterways-explorer-app**,
+   click the branch dropdown (says `main`), type `feat/river-overview-home-layer`, click
+   **Create branch feat/river-overview-home-layer from main**.
+4. Verify: **…/commits/main** shows "docs: rewrite DEPLOY.md…", "fix(mobile): teacher lesson-plan…"
+   at the top, and **…/compare/main...feat/river-overview-home-layer** says
+   "There isn't anything to compare".
 
-If GitHub says "Can't automatically merge", stop and tell me — it means something was pushed
-to one of these branches from somewhere else.
+**For every future change (the normal flow):** the work arrives on
+`claude/fix-map-filter-hide-hs4mz`; open
+**…/compare/main...claude/fix-map-filter-hide-hs4mz** → **Create pull request** → merge with
+**Create a merge commit** (not rebase — a merge commit never rewrites hashes, so no branch
+can drift). If GitHub says "Can't automatically merge", stop and tell me.
 
 ---
 
