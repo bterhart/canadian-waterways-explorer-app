@@ -10,6 +10,16 @@ const adminLessonPlansRouter = new Hono();
 adminLessonPlansRouter.use("*", requireAdmin);
 
 // Validation schemas
+
+// Canonical shape of every entry in LessonPlan.activities / teacherActivities
+// (all live rows were normalized to this on 2026-10-14; see prisma/turso-migrations).
+const activitySchema = z.object({
+  title: z.string().min(1, "Activity title is required"),
+  description: z.string().default(""),
+  duration: z.string().nullable().default(null),
+  materials: z.array(z.string()).default([]),
+});
+
 const createLessonPlanSchema = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string().min(1, "Description is required"),
@@ -25,7 +35,7 @@ const createLessonPlanSchema = z.object({
   materials: z.array(z.string()).optional(),
   introduction: z.string().optional(),
   mainContent: z.string().min(1, "Main content is required"),
-  activities: z.array(z.string()).optional(),
+  activities: z.array(activitySchema).optional(),
   discussionQuestions: z.array(z.string()).optional(),
   assessment: z.string().optional(),
   extensions: z.string().optional(),
@@ -52,7 +62,7 @@ const updateLessonPlanSchema = z.object({
   materials: z.array(z.string()).optional().nullable(),
   introduction: z.string().optional().nullable(),
   mainContent: z.string().min(1).optional(),
-  activities: z.array(z.string()).optional().nullable(),
+  activities: z.array(activitySchema).optional().nullable(),
   discussionQuestions: z.array(z.string()).optional().nullable(),
   assessment: z.string().optional().nullable(),
   extensions: z.string().optional().nullable(),

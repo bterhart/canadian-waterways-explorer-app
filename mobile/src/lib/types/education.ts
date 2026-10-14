@@ -36,15 +36,14 @@ export interface DeepDiveTimelineEvent {
   description: string;
 }
 
-// Shape as stored in Turso (LessonPlan.activities / teacherActivities):
-// 24/26 lessons use `name`, one uses `title`, one stores plain strings.
-// `materials` is a plain string in 96 of 201 live activities and an array in 4.
+// Canonical shape of every entry in LessonPlan.activities / teacherActivities.
+// All live rows were normalized to this on 2026-10-14 and the admin API
+// (admin-lesson-plans.ts activitySchema) only accepts this shape.
 export interface LessonPlanActivity {
-  title?: string;
-  name?: string;
-  duration?: string;
+  title: string;
   description: string;
-  materials?: string[] | string;
+  duration: string | null;
+  materials: string[];
 }
 
 // Shape as stored in Turso (LessonPlan.curriculumConnections) and written by the
@@ -59,7 +58,7 @@ export interface LessonPlanDetail extends LessonPlanSummary {
   curriculumConnections: CurriculumConnection[] | null;
   objectives: string[];
   materials: string[] | null;
-  activities: (LessonPlanActivity | string)[] | null;
+  activities: LessonPlanActivity[] | null;
   discussionQuestions: string[] | null;
   assessmentSuggestions: string | null;
   extensionActivities: string | null;
@@ -76,7 +75,7 @@ export interface LessonPlanDetail extends LessonPlanSummary {
   timeline: DeepDiveTimelineEvent[] | null;
   // Enhanced Teacher Content
   teacherObjectives: string[] | null;
-  teacherActivities: (LessonPlanActivity | string)[] | null;
+  teacherActivities: LessonPlanActivity[] | null;
   teacherQuestions: string[] | null;
   teacherNotes: string | null;
 }
