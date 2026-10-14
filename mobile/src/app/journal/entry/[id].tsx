@@ -84,9 +84,13 @@ export default function JournalEntryScreen() {
           payload: {
             title: title.trim() || undefined,
             content: content.trim(),
-            tags: tagsArray.length > 0 ? tagsArray : undefined,
+            // Always send the array so removing every tag actually clears them.
+            tags: tagsArray,
           },
         });
+      } else {
+        Alert.alert('Unable to Save', 'This entry could not be found. Go back and open it again.');
+        return;
       }
       router.back();
     } catch (error) {
@@ -138,6 +142,19 @@ export default function JournalEntryScreen() {
       <View style={styles.centerContainer}>
         <Stack.Screen options={{ title: 'Loading...' }} />
         <ActivityIndicator size="large" color={colors.forestGreen} />
+      </View>
+    );
+  }
+
+  // Editing requires the parent journal id (passed by the list) and a matching entry.
+  if (!isNew && (!journalId || (journal && !existingEntry))) {
+    return (
+      <View style={styles.centerContainer}>
+        <Stack.Screen options={{ title: 'Entry' }} />
+        <Text style={styles.notFoundText}>This entry could not be found.</Text>
+        <Pressable style={styles.notFoundButton} onPress={() => router.back()}>
+          <Text style={styles.notFoundButtonText}>Back to Journal</Text>
+        </Pressable>
       </View>
     );
   }
@@ -252,6 +269,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: colors.creamWhite,
+  },
+  notFoundText: {
+    fontSize: 16,
+    color: '#6B7280',
+    marginBottom: 16,
+  },
+  notFoundButton: {
+    backgroundColor: colors.forestGreen,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 10,
+  },
+  notFoundButtonText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: 'white',
   },
   headerButton: {
     padding: 8,
