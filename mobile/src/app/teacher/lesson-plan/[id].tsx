@@ -162,7 +162,7 @@ export default function TeacherLessonPlanDetailScreen() {
                 <View style={styles.activityHeader}>
                   <Text style={styles.activityNumber}>{index + 1}</Text>
                   <View style={styles.activityTitleRow}>
-                    <Text style={styles.activityTitle}>{activity.title}</Text>
+                    <Text style={styles.activityTitle}>{activity.title ?? activity.name}</Text>
                     <Text style={styles.activityDuration}>{activity.duration}</Text>
                   </View>
                 </View>
@@ -219,14 +219,15 @@ export default function TeacherLessonPlanDetailScreen() {
           {lesson.curriculumConnections.map((connection, index) => (
             <View key={index} style={styles.curriculumCard}>
               <Text style={styles.curriculumProvince}>
-                {connection.province} - {connection.subject} ({connection.grade})
+                {connection.subject}
+                {connection.strand ? ` — ${connection.strand}` : ''}
               </Text>
-              {connection.expectations.map((exp, expIndex) => (
-                <View key={expIndex} style={styles.listItem}>
+              {connection.expectation ? (
+                <View style={styles.listItem}>
                   <View style={styles.bulletPoint} />
-                  <Text style={styles.listItemText}>{exp}</Text>
+                  <Text style={styles.listItemText}>{connection.expectation}</Text>
                 </View>
-              ))}
+              ) : null}
             </View>
           ))}
         </Section>

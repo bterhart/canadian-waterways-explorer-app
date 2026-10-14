@@ -36,18 +36,22 @@ export interface DeepDiveTimelineEvent {
   description: string;
 }
 
+// Shape as stored in Turso (LessonPlan.activities): 24/26 lessons use `name`,
+// one uses `title`, one stores plain strings. Both keys are accepted.
 export interface LessonPlanActivity {
-  title: string;
-  duration: string;
+  title?: string;
+  name?: string;
+  duration?: string;
   description: string;
   materials?: string[];
 }
 
+// Shape as stored in Turso (LessonPlan.curriculumConnections) and written by the
+// admin API: { subject, strand, expectation }. No province/grade/expectations[] exist.
 export interface CurriculumConnection {
-  province: string;
   subject: string;
-  grade: string;
-  expectations: string[];
+  strand?: string;
+  expectation?: string;
 }
 
 export interface LessonPlanDetail extends LessonPlanSummary {
