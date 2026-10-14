@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { db } from "../db";
+import { requireAdmin } from "../lib/admin-middleware";
 
 const notableFiguresRouter = new Hono();
 
@@ -196,6 +197,7 @@ const createFigureSchema = z.object({
 
 notableFiguresRouter.post(
   "/",
+  requireAdmin,
   zValidator("json", createFigureSchema),
   async (c) => {
     const data = c.req.valid("json");
@@ -235,6 +237,7 @@ notableFiguresRouter.post(
 // Admin: Update a notable figure
 notableFiguresRouter.patch(
   "/:id",
+  requireAdmin,
   zValidator("json", createFigureSchema.partial()),
   async (c) => {
     const id = c.req.param("id");
@@ -277,7 +280,7 @@ notableFiguresRouter.patch(
 );
 
 // Admin: Delete a notable figure
-notableFiguresRouter.delete("/:id", async (c) => {
+notableFiguresRouter.delete("/:id", requireAdmin, async (c) => {
   const id = c.req.param("id");
 
   const existing = await db.notableFigure.findUnique({ where: { id } });

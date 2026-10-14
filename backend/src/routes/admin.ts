@@ -4,9 +4,12 @@ import { z } from "zod";
 import { db } from "../db";
 import { generateAccessToken, generateRefreshToken } from "../lib/jwt-utils";
 import { loginRateLimiter } from "../lib/auth-utils";
+import { requireAdmin } from "../lib/admin-middleware";
+// "@prisma/client" below is the query library's generated types, not a database. Data lives in Turso.
+import type { AdminUser } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
-const adminRouter = new Hono();
+const adminRouter = new Hono<{ Variables: { admin: AdminUser } }>();
 
 // Validation schema for admin login
 const loginSchema = z.object({
@@ -18,7 +21,8 @@ const loginSchema = z.object({
 const updateContributionSchema = z.object({
   status: z.enum(["approved", "rejected"]),
   adminNotes: z.string().optional(),
-  reviewedBy: z.string().min(1, "Reviewer name is required"),
+  // Optional: defaults to the authenticated admin's name (the column stores a display name).
+  reviewedBy: z.string().min(1, "Reviewer name is required").optional(),
 });
 
 // POST /login - Admin login with JWT tokens
@@ -164,7 +168,7 @@ adminRouter.post(
 );
 
 // GET /contributions - Get all pending contributions (for admin review)
-adminRouter.get("/contributions", async (c) => {
+adminRouter.get("/contributions", requireAdmin, async (c) => {
   const status = c.req.query("status") || "pending";
 
   const contributions = await db.userContribution.findMany({
@@ -209,10 +213,12 @@ adminRouter.get("/contributions", async (c) => {
 // PATCH /contributions/:id - Update contribution status (approve/reject)
 adminRouter.patch(
   "/contributions/:id",
+  requireAdmin,
   zValidator("json", updateContributionSchema),
   async (c) => {
     const id = c.req.param("id");
-    const { status, adminNotes, reviewedBy } = c.req.valid("json");
+    const { status, adminNotes, reviewedBy: reviewedByInput } = c.req.valid("json");
+    const reviewedBy = reviewedByInput ?? c.get("admin").name;
 
     // Check if contribution exists
     const existingContribution = await db.userContribution.findUnique({
