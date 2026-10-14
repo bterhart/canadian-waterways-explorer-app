@@ -5,6 +5,20 @@
 Treat this as a production application with real users and live data. Before
 touching anything:
 
+- **MANDATORY PAUSE BEFORE EVERY CLAIM.** Before stating anything as fact — a
+  file's contents, a variable name, a database column, an API response shape, a
+  library's behavior — stop and ask: "Did I read or run this in this session, or
+  does it merely look right?" If it was not read or run, say **"unverified"**
+  explicitly. Never infer names, structures, or behavior from patterns, file
+  names, or what is typical in other projects. This rule has no exceptions.
+- **THE DATABASE IS TURSO. ONLY TURSO.** There is no local database and there is
+  no "Prisma database." `@prisma/client` is a query library that reaches Turso
+  through `@prisma/adapter-libsql`; it is not a database and must never be
+  described as one. Do not use the word "Prisma" to describe where data lives.
+  `schema.prisma` is a declaration the client code was generated from — it is
+  **not** the source of truth. The live Turso database is the truth, and the two
+  can drift. Any claim about the database must be verified against Turso
+  itself, or labeled unverified.
 - **Read the existing code fully** before proposing or making any change
 - **Ask before acting** on anything ambiguous, architectural, or irreversible
 - **Do not refactor** working code unless explicitly asked
