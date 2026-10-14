@@ -1,6 +1,7 @@
 // React Query hooks for Admin Content Management API
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api/api';
+import type { LessonPlanActivity } from '@/lib/types/education';
 
 // =========== Admin User Types ===========
 
@@ -80,7 +81,7 @@ export interface AdminLessonPlanDetail extends AdminLessonPlan {
   materials: string[] | null;
   introduction: string | null;
   mainContent: string;
-  activities: string[] | null;
+  activities: LessonPlanActivity[] | null;
   discussionQuestions: string[] | null;
   assessment: string | null;
   extensions: string | null;
@@ -105,7 +106,7 @@ export interface CreateLessonPlanPayload {
   materials?: string[];
   introduction?: string;
   mainContent: string;
-  activities?: string[];
+  activities?: LessonPlanActivity[];
   discussionQuestions?: string[];
   assessment?: string;
   extensions?: string;

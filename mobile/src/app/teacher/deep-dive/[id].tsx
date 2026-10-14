@@ -105,39 +105,28 @@ export default function TeacherDeepDiveDetailScreen() {
     ...(lesson.teacherQuestions || []),
   ];
 
-  const renderActivity = (activity: LessonPlanActivity | string, index: number) => {
-    if (typeof activity === 'string') {
-      return (
-        <View key={index} style={styles.listItem}>
-          <View style={styles.bulletPoint} />
-          <Text style={styles.listItemText}>{activity}</Text>
-        </View>
-      );
-    }
-    return (
-      <View key={index} style={styles.activityCard}>
-        <View style={styles.activityHeader}>
-          <Text style={styles.activityNumber}>{index + 1}</Text>
-          <View style={styles.activityTitleRow}>
-            <Text style={styles.activityTitle}>{activity.title ?? activity.name}</Text>
+  const renderActivity = (activity: LessonPlanActivity, index: number) => (
+    <View key={index} style={styles.activityCard}>
+      <View style={styles.activityHeader}>
+        <Text style={styles.activityNumber}>{index + 1}</Text>
+        <View style={styles.activityTitleRow}>
+          <Text style={styles.activityTitle}>{activity.title}</Text>
+          {activity.duration ? (
             <Text style={styles.activityDuration}>{activity.duration}</Text>
-          </View>
+          ) : null}
         </View>
-        <Text style={styles.activityDescription}>{activity.description}</Text>
-        {activity.materials && activity.materials.length > 0 ? (
-          <View style={styles.activityMaterials}>
-            <Text style={styles.activityMaterialsLabel}>Materials:</Text>
-            <Text style={styles.activityMaterialsText}>
-              {/* 96 of 201 live activities store materials as a plain string */}
-              {Array.isArray(activity.materials)
-                ? activity.materials.join(', ')
-                : activity.materials}
-            </Text>
-          </View>
-        ) : null}
       </View>
-    );
-  };
+      {activity.description ? (
+        <Text style={styles.activityDescription}>{activity.description}</Text>
+      ) : null}
+      {activity.materials.length > 0 ? (
+        <View style={styles.activityMaterials}>
+          <Text style={styles.activityMaterialsLabel}>Materials:</Text>
+          <Text style={styles.activityMaterialsText}>{activity.materials.join(', ')}</Text>
+        </View>
+      ) : null}
+    </View>
+  );
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
