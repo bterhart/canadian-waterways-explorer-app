@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { prisma } from "../prisma";
+import { db } from "../db";
 
 const comparisonsRouter = new Hono();
 
@@ -23,7 +23,7 @@ comparisonsRouter.get("/", async (c) => {
     whereClause.gradeLevel = gradeLevel;
   }
 
-  const comparisons = await prisma.comparisonTemplate.findMany({
+  const comparisons = await db.comparisonTemplate.findMany({
     where: whereClause,
     select: {
       id: true,
@@ -41,7 +41,7 @@ comparisonsRouter.get("/", async (c) => {
 
 // GET /types - Get all unique comparison types
 comparisonsRouter.get("/types", async (c) => {
-  const comparisons = await prisma.comparisonTemplate.findMany({
+  const comparisons = await db.comparisonTemplate.findMany({
     where: { isPublished: true },
     select: { comparisonType: true },
     distinct: ["comparisonType"],
@@ -56,7 +56,7 @@ comparisonsRouter.get("/types", async (c) => {
 comparisonsRouter.get("/:id", async (c) => {
   const id = c.req.param("id");
 
-  const comparison = await prisma.comparisonTemplate.findUnique({
+  const comparison = await db.comparisonTemplate.findUnique({
     where: { id, isPublished: true },
   });
 
@@ -93,7 +93,7 @@ comparisonsRouter.get("/generate/explorers", async (c) => {
 
   const explorerIds = ids.split(",");
 
-  const explorers = await prisma.explorer.findMany({
+  const explorers = await db.explorer.findMany({
     where: { id: { in: explorerIds } },
     include: {
       waterways: {
@@ -159,7 +159,7 @@ comparisonsRouter.get("/generate/forts", async (c) => {
 
   const locationIds = ids.split(",");
 
-  const locations = await prisma.location.findMany({
+  const locations = await db.location.findMany({
     where: {
       id: { in: locationIds },
       locationType: { in: ["Fort", "Trading Post"] },

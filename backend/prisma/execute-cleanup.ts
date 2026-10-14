@@ -1,4 +1,4 @@
-import { prisma } from "../src/prisma";
+import { db } from "../src/db";
 
 const R2_DOMAIN = 'pub-376806a1556549999cfff53a786882dd.r2.dev';
 
@@ -35,12 +35,12 @@ function shouldDelete(url: string | null): boolean {
 }
 
 async function main() {
-  const locations = await prisma.location.findMany({
+  const locations = await db.location.findMany({
     select: { id: true, name: true, imageUrl: true, galleryImages: true },
     orderBy: { name: 'asc' }
   });
 
-  const waterways = await prisma.waterway.findMany({
+  const waterways = await db.waterway.findMany({
     select: { id: true, name: true, imageUrl: true, galleryImages: true },
     orderBy: { name: 'asc' }
   });
@@ -97,9 +97,9 @@ async function main() {
       if (galleryChanged) updateData.galleryImages = JSON.stringify(newGallery);
 
       if (entity.type === 'Location') {
-        await prisma.location.update({ where: { id: entity.id }, data: updateData });
+        await db.location.update({ where: { id: entity.id }, data: updateData });
       } else {
-        await prisma.waterway.update({ where: { id: entity.id }, data: updateData });
+        await db.waterway.update({ where: { id: entity.id }, data: updateData });
       }
     }
   }
@@ -113,4 +113,4 @@ async function main() {
   console.log('====================================');
 }
 
-main().catch(console.error).finally(() => prisma.$disconnect());
+main().catch(console.error).finally(() => db.$disconnect());

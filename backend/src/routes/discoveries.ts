@@ -1,11 +1,11 @@
 import { Hono } from "hono";
-import { prisma } from "../prisma";
+import { db } from "../db";
 
 const discoveriesRouter = new Hono();
 
 // Get all archaeological discoveries
 discoveriesRouter.get("/", async (c) => {
-  const discoveries = await prisma.archaeologicalDiscovery.findMany({
+  const discoveries = await db.archaeologicalDiscovery.findMany({
     orderBy: { discoveryYear: "desc" },
     include: {
       waterway: {
@@ -24,7 +24,7 @@ discoveriesRouter.get("/", async (c) => {
 discoveriesRouter.get("/:id", async (c) => {
   const id = c.req.param("id");
 
-  const discovery = await prisma.archaeologicalDiscovery.findUnique({
+  const discovery = await db.archaeologicalDiscovery.findUnique({
     where: { id },
     include: {
       waterway: {
@@ -54,7 +54,7 @@ discoveriesRouter.get("/:id", async (c) => {
 discoveriesRouter.get("/waterway/:waterwayId", async (c) => {
   const waterwayId = c.req.param("waterwayId");
 
-  const discoveries = await prisma.archaeologicalDiscovery.findMany({
+  const discoveries = await db.archaeologicalDiscovery.findMany({
     where: { waterwayId },
     orderBy: { discoveryYear: "desc" }
   });

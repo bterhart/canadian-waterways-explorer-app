@@ -1,6 +1,6 @@
 import { mkdir } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
-import { prisma } from "../src/prisma";
+import { db } from "../src/db";
 
 type LngLat = [number, number]; // [lng, lat]
 type GeometryKind = "line" | "area";
@@ -296,7 +296,7 @@ function computeBBox(paths: LngLat[][]): [number, number, number, number] | null
 async function main(): Promise<void> {
   const options = parseArgs(Bun.argv.slice(2));
 
-  const waterways = await prisma.waterway.findMany({
+  const waterways = await db.waterway.findMany({
     select: {
       id: true,
       name: true,
@@ -415,5 +415,5 @@ main()
     process.exitCode = 1;
   })
   .finally(async () => {
-    await prisma.$disconnect();
+    await db.$disconnect();
   });

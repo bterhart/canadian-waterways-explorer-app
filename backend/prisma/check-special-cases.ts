@@ -1,11 +1,11 @@
-import { prisma } from "../src/prisma";
+import { db } from "../src/db";
 
 async function main() {
   const specialNames = ['Port-Royal (Habitation)', 'Quebec City', 'Saint John River', 'Strait of Belle Isle'];
   
   for (const name of specialNames) {
-    const loc = await prisma.location.findFirst({ where: { name }, select: { id: true, name: true, imageUrl: true, galleryImages: true }});
-    const way = await prisma.waterway.findFirst({ where: { name }, select: { id: true, name: true, imageUrl: true, galleryImages: true }});
+    const loc = await db.location.findFirst({ where: { name }, select: { id: true, name: true, imageUrl: true, galleryImages: true }});
+    const way = await db.waterway.findFirst({ where: { name }, select: { id: true, name: true, imageUrl: true, galleryImages: true }});
     const entity = loc || way;
     if (!entity) { console.log(`NOT FOUND: ${name}`); continue; }
     
@@ -20,4 +20,4 @@ async function main() {
   }
 }
 
-main().catch(console.error).finally(() => prisma.$disconnect());
+main().catch(console.error).finally(() => db.$disconnect());

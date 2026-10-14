@@ -1,4 +1,4 @@
-import { prisma } from "../src/prisma";
+import { db } from "../src/db";
 
 const WATERWAY_ID = "mackenzie-river-ontario-waterway";
 const WATERWAY_NAME = "Mackenzie River (Ontario)";
@@ -7,7 +7,7 @@ const FIGURE_ID = "roderick-mckenzie-notable-figure";
 const FIGURE_NAME = "Roderick McKenzie";
 
 async function main() {
-  const riverType = await prisma.waterwayType.findFirst({
+  const riverType = await db.waterwayType.findFirst({
     where: { name: { equals: "River" } },
     select: { id: true },
   });
@@ -16,7 +16,7 @@ async function main() {
     throw new Error('WaterwayType "River" not found.');
   }
 
-  await prisma.waterway.upsert({
+  await db.waterway.upsert({
     where: { id: WATERWAY_ID },
     update: {
       name: WATERWAY_NAME,
@@ -53,7 +53,7 @@ async function main() {
     },
   });
 
-  await prisma.notableFigure.upsert({
+  await db.notableFigure.upsert({
     where: { id: FIGURE_ID },
     update: {
       name: FIGURE_NAME,
@@ -126,7 +126,7 @@ async function main() {
     },
   });
 
-  await prisma.notableFigureWaterway.upsert({
+  await db.notableFigureWaterway.upsert({
     where: {
       notableFigureId_waterwayId: {
         notableFigureId: FIGURE_ID,
@@ -156,5 +156,5 @@ main()
     process.exitCode = 1;
   })
   .finally(async () => {
-    await prisma.$disconnect();
+    await db.$disconnect();
   });

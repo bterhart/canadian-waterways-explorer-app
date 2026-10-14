@@ -30,7 +30,7 @@ export {};
  *  - No duplicates anywhere in the gallery
  *  - All non-hero gallery entries are different from the hero
  */
-// import { prisma } from "../src/prisma";
+// import { db } from "../src/db";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // VERIFIED WIKIMEDIA COMMONS POOL

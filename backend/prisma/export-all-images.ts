@@ -1,4 +1,4 @@
-import { prisma } from "../src/prisma";
+import { db } from "../src/db";
 import { writeFileSync } from "fs";
 
 // CSV helpers
@@ -43,7 +43,7 @@ async function main() {
   rows.push(header);
 
   // ── 1. Waterway ──────────────────────────────────────────────────────────
-  const waterways = await prisma.waterway.findMany({
+  const waterways = await db.waterway.findMany({
     select: { id: true, name: true, imageUrl: true, galleryImages: true },
     orderBy: { name: "asc" },
   });
@@ -57,7 +57,7 @@ async function main() {
   }
 
   // ── 2. Location ───────────────────────────────────────────────────────────
-  const locations = await prisma.location.findMany({
+  const locations = await db.location.findMany({
     select: { id: true, name: true, imageUrl: true, galleryImages: true },
     orderBy: { name: "asc" },
   });
@@ -71,7 +71,7 @@ async function main() {
   }
 
   // ── 3. Explorer ───────────────────────────────────────────────────────────
-  const explorers = await prisma.explorer.findMany({
+  const explorers = await db.explorer.findMany({
     select: { id: true, name: true, imageUrl: true },
     orderBy: { name: "asc" },
   });
@@ -82,7 +82,7 @@ async function main() {
   }
 
   // ── 4. UserContribution ───────────────────────────────────────────────────
-  const contributions = await prisma.userContribution.findMany({
+  const contributions = await db.userContribution.findMany({
     select: { id: true, title: true, imageUrl: true },
     orderBy: { createdAt: "asc" },
   });
@@ -93,7 +93,7 @@ async function main() {
   }
 
   // ── 5. LessonPlan ─────────────────────────────────────────────────────────
-  const lessons = await prisma.lessonPlan.findMany({
+  const lessons = await db.lessonPlan.findMany({
     select: { id: true, title: true, heroImageUrl: true, images: true },
     orderBy: { title: "asc" },
   });
@@ -107,7 +107,7 @@ async function main() {
   }
 
   // ── 6. TimelineEvent ──────────────────────────────────────────────────────
-  const timelineEvents = await prisma.timelineEvent.findMany({
+  const timelineEvents = await db.timelineEvent.findMany({
     select: { id: true, title: true, imageUrl: true },
     orderBy: { year: "asc" },
   });
@@ -118,7 +118,7 @@ async function main() {
   }
 
   // ── 7. VirtualFieldTrip ───────────────────────────────────────────────────
-  const fieldTrips = await prisma.virtualFieldTrip.findMany({
+  const fieldTrips = await db.virtualFieldTrip.findMany({
     select: { id: true, title: true, coverImageUrl: true },
     orderBy: { title: "asc" },
   });
@@ -129,7 +129,7 @@ async function main() {
   }
 
   // ── 8. FieldTripStop ──────────────────────────────────────────────────────
-  const stops = await prisma.fieldTripStop.findMany({
+  const stops = await db.fieldTripStop.findMany({
     select: { id: true, title: true, imageUrl: true, tripId: true, trip: { select: { title: true } } },
     orderBy: { orderIndex: "asc" },
   });
@@ -141,7 +141,7 @@ async function main() {
   }
 
   // ── 9. PrimarySourceDocument ──────────────────────────────────────────────
-  const documents = await prisma.primarySourceDocument.findMany({
+  const documents = await db.primarySourceDocument.findMany({
     select: { id: true, title: true, imageUrl: true },
     orderBy: { title: "asc" },
   });
@@ -152,7 +152,7 @@ async function main() {
   }
 
   // ── 10. PrintableResource ─────────────────────────────────────────────────
-  const printables = await prisma.printableResource.findMany({
+  const printables = await db.printableResource.findMany({
     select: { id: true, title: true, previewImageUrl: true },
     orderBy: { title: "asc" },
   });
@@ -163,7 +163,7 @@ async function main() {
   }
 
   // ── 11. VoyageurJourney ───────────────────────────────────────────────────
-  const journeys = await prisma.voyageurJourney.findMany({
+  const journeys = await db.voyageurJourney.findMany({
     select: { id: true, title: true, coverImageUrl: true },
     orderBy: { title: "asc" },
   });
@@ -174,7 +174,7 @@ async function main() {
   }
 
   // ── 12. JourneyNode ───────────────────────────────────────────────────────
-  const nodes = await prisma.journeyNode.findMany({
+  const nodes = await db.journeyNode.findMany({
     select: { id: true, title: true, imageUrl: true, journeyId: true, journey: { select: { title: true } } },
     orderBy: { orderIndex: "asc" },
   });
@@ -186,7 +186,7 @@ async function main() {
   }
 
   // ── 13. HistoricalEvent ───────────────────────────────────────────────────
-  const historicalEvents = await prisma.historicalEvent.findMany({
+  const historicalEvents = await db.historicalEvent.findMany({
     select: { id: true, title: true, imageUrl: true },
     orderBy: { year: "asc" },
   });
@@ -197,7 +197,7 @@ async function main() {
   }
 
   // ── 14. NotableFigure ─────────────────────────────────────────────────────
-  const figures = await prisma.notableFigure.findMany({
+  const figures = await db.notableFigure.findMany({
     select: { id: true, name: true, imageUrl: true },
     orderBy: { name: "asc" },
   });
@@ -227,4 +227,4 @@ async function main() {
   }
 }
 
-main().catch(console.error).finally(() => prisma.$disconnect());
+main().catch(console.error).finally(() => db.$disconnect());

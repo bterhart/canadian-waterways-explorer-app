@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
-import { prisma } from "../prisma";
+import { db } from "../db";
 import { requireAdmin } from "../lib/admin-middleware";
 
 const adminQuizzesRouter = new Hono();
@@ -61,7 +61,7 @@ const updateQuestionSchema = z.object({
 // GET /stats - Get quiz statistics (total attempts, average scores by quiz)
 // Note: This must be defined before /:id to avoid route conflicts
 adminQuizzesRouter.get("/stats", async (c) => {
-  const quizzes = await prisma.quiz.findMany({
+  const quizzes = await db.quiz.findMany({
     select: {
       id: true,
       title: true,
@@ -140,7 +140,7 @@ adminQuizzesRouter.get("/stats", async (c) => {
 
 // GET / - List all quizzes (including unpublished)
 adminQuizzesRouter.get("/", async (c) => {
-  const quizzes = await prisma.quiz.findMany({
+  const quizzes = await db.quiz.findMany({
     select: {
       id: true,
       title: true,
@@ -181,7 +181,7 @@ adminQuizzesRouter.get("/", async (c) => {
 adminQuizzesRouter.get("/:id", async (c) => {
   const id = c.req.param("id");
 
-  const quiz = await prisma.quiz.findUnique({
+  const quiz = await db.quiz.findUnique({
     where: { id },
     include: {
       questions: {
@@ -223,7 +223,7 @@ adminQuizzesRouter.post(
   async (c) => {
     const data = c.req.valid("json");
 
-    const quiz = await prisma.quiz.create({
+    const quiz = await db.quiz.create({
       data: {
         title: data.title,
         description: data.description,
@@ -260,7 +260,7 @@ adminQuizzesRouter.patch(
     const data = c.req.valid("json");
 
     // Check if quiz exists
-    const existingQuiz = await prisma.quiz.findUnique({
+    const existingQuiz = await db.quiz.findUnique({
       where: { id },
     });
 
@@ -271,7 +271,7 @@ adminQuizzesRouter.patch(
       );
     }
 
-    const quiz = await prisma.quiz.update({
+    const quiz = await db.quiz.update({
       where: { id },
       data: {
         ...(data.title !== undefined && { title: data.title }),
@@ -304,7 +304,7 @@ adminQuizzesRouter.delete("/:id", async (c) => {
   const id = c.req.param("id");
 
   // Check if quiz exists
-  const existingQuiz = await prisma.quiz.findUnique({
+  const existingQuiz = await db.quiz.findUnique({
     where: { id },
   });
 
@@ -316,7 +316,7 @@ adminQuizzesRouter.delete("/:id", async (c) => {
   }
 
   // Delete quiz within a transaction to ensure atomicity with cascading deletes
-  await prisma.$transaction(async (tx) => {
+  await db.$transaction(async (tx) => {
     await tx.quiz.delete({
       where: { id },
     });
@@ -334,7 +334,7 @@ adminQuizzesRouter.post(
     const data = c.req.valid("json");
 
     // Check if quiz exists
-    const quiz = await prisma.quiz.findUnique({
+    const quiz = await db.quiz.findUnique({
       where: { id: quizId },
     });
 
@@ -359,7 +359,7 @@ adminQuizzesRouter.post(
       );
     }
 
-    const question = await prisma.quizQuestion.create({
+    const question = await db.quizQuestion.create({
       data: {
         quizId,
         questionText: data.questionText,
@@ -393,7 +393,7 @@ adminQuizzesRouter.patch(
     const data = c.req.valid("json");
 
     // Check if question exists and belongs to this quiz
-    const existingQuestion = await prisma.quizQuestion.findFirst({
+    const existingQuestion = await db.quizQuestion.findFirst({
       where: { id: questionId, quizId },
     });
 
@@ -449,7 +449,7 @@ adminQuizzesRouter.patch(
       }
     }
 
-    const question = await prisma.quizQuestion.update({
+    const question = await db.quizQuestion.update({
       where: { id: questionId },
       data: {
         ...(data.questionText !== undefined && { questionText: data.questionText }),
@@ -479,7 +479,7 @@ adminQuizzesRouter.delete("/:quizId/questions/:questionId", async (c) => {
   const questionId = c.req.param("questionId");
 
   // Check if question exists and belongs to this quiz
-  const existingQuestion = await prisma.quizQuestion.findFirst({
+  const existingQuestion = await db.quizQuestion.findFirst({
     where: { id: questionId, quizId },
   });
 
@@ -490,7 +490,7 @@ adminQuizzesRouter.delete("/:quizId/questions/:questionId", async (c) => {
     );
   }
 
-  await prisma.quizQuestion.delete({
+  await db.quizQuestion.delete({
     where: { id: questionId },
   });
 

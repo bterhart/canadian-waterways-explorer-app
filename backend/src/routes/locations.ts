@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { prisma } from "../prisma";
+import { db } from "../db";
 
 // Location router with imageUrl support
 const locationsRouter = new Hono();
@@ -19,7 +19,7 @@ function parseAssociatedLocations(value: string | null): string[] {
 
 // Get all locations for map markers
 locationsRouter.get("/", async (c) => {
-  const locations = await prisma.location.findMany({
+  const locations = await db.location.findMany({
     select: {
       id: true,
       name: true,
@@ -43,7 +43,7 @@ locationsRouter.get("/", async (c) => {
 locationsRouter.get("/type/:locationType", async (c) => {
   const locationType = c.req.param("locationType");
 
-  const locations = await prisma.location.findMany({
+  const locations = await db.location.findMany({
     where: {
       locationType: {
         equals: locationType
@@ -72,7 +72,7 @@ locationsRouter.get("/type/:locationType", async (c) => {
 locationsRouter.get("/:id", async (c) => {
   const id = c.req.param("id");
 
-  const location = await prisma.location.findUnique({
+  const location = await db.location.findUnique({
     where: { id },
     include: {
       waterway: {
@@ -93,7 +93,7 @@ locationsRouter.get("/:id", async (c) => {
     return c.json({ error: { message: "Location not found", code: "NOT_FOUND" } }, 404);
   }
 
-  const notableFigureRows = await prisma.notableFigure.findMany({
+  const notableFigureRows = await db.notableFigure.findMany({
   where: {
     associatedLocations: { contains: location.waterway.name }
   },
@@ -144,7 +144,7 @@ const notableFigures = notableFigureRows
 locationsRouter.get("/waterway/:waterwayId", async (c) => {
   const waterwayId = c.req.param("waterwayId");
 
-  const locations = await prisma.location.findMany({
+  const locations = await db.location.findMany({
     where: { waterwayId },
     include: {
       cartographer: true

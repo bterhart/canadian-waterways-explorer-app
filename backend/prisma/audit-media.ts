@@ -1,10 +1,10 @@
 // Comprehensive media audit: check every imageUrl, galleryImages, videoUrl
 // for all Locations and Waterways in the Turso database.
 // Output is JSON to stdout for further processing.
-import { prisma } from "../src/prisma";
+import { db } from "../src/db";
 
 async function main() {
-  const locations = await prisma.location.findMany({
+  const locations = await db.location.findMany({
     select: {
       id: true,
       name: true,
@@ -16,7 +16,7 @@ async function main() {
     orderBy: { name: "asc" },
   });
 
-  const waterways = await prisma.waterway.findMany({
+  const waterways = await db.waterway.findMany({
     select: {
       id: true,
       name: true,
@@ -30,4 +30,4 @@ async function main() {
   console.log(JSON.stringify({ locations, waterways }, null, 0));
 }
 
-main().catch(console.error).finally(() => prisma.$disconnect());
+main().catch(console.error).finally(() => db.$disconnect());

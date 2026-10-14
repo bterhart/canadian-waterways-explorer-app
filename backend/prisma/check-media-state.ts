@@ -1,7 +1,7 @@
-import { prisma } from "../src/prisma";
+import { db } from "../src/db";
 
 async function main() {
-  const locations = await prisma.location.findMany({
+  const locations = await db.location.findMany({
     select: {
       id: true,
       name: true,
@@ -61,4 +61,4 @@ async function main() {
   }
 }
 
-main().catch(console.error).finally(() => prisma.$disconnect());
+main().catch(console.error).finally(() => db.$disconnect());

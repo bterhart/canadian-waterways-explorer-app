@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
-import { prisma } from "../prisma";
+import { db } from "../db";
 // "@prisma/client" below is the query library's generated types, not a database. Data lives in Turso.
 import type { AdminUser } from "@prisma/client";
 import {
@@ -72,7 +72,7 @@ adminApprovalRouter.post(
     }
 
     // Check if email already exists
-    const existingAdmin = await prisma.adminUser.findUnique({
+    const existingAdmin = await db.adminUser.findUnique({
       where: { email },
     });
 
@@ -92,7 +92,7 @@ adminApprovalRouter.post(
     const passwordHash = await hashPassword(password);
 
     // Create pending admin user
-    const admin = await prisma.adminUser.create({
+    const admin = await db.adminUser.create({
       data: {
         email,
         name,
@@ -112,7 +112,7 @@ adminApprovalRouter.post(
     });
 
     // Get all super-admins to notify
-    const superAdmins = await prisma.adminUser.findMany({
+    const superAdmins = await db.adminUser.findMany({
       where: {
         role: "super_admin",
         status: "approved",
@@ -155,7 +155,7 @@ Please review and approve/reject this request in the admin panel.
 
 // GET /api/admin-approval/pending - List pending admin requests (super-admin only)
 adminApprovalRouter.get("/pending", requireAdmin, requireSuperAdmin, async (c) => {
-  const pendingAdmins = await prisma.adminUser.findMany({
+  const pendingAdmins = await db.adminUser.findMany({
     where: {
       status: "pending",
     },
@@ -178,7 +178,7 @@ adminApprovalRouter.get("/pending", requireAdmin, requireSuperAdmin, async (c) =
 adminApprovalRouter.get("/all", requireAdmin, requireSuperAdmin, async (c) => {
   const status = c.req.query("status");
 
-  const admins = await prisma.adminUser.findMany({
+  const admins = await db.adminUser.findMany({
     where: status ? { status } : undefined,
     select: {
       id: true,
@@ -213,7 +213,7 @@ adminApprovalRouter.post(
     const superAdmin = c.get("admin");
 
     // Check if admin exists and is pending
-    const pendingAdmin = await prisma.adminUser.findUnique({
+    const pendingAdmin = await db.adminUser.findUnique({
       where: { id },
     });
 
@@ -242,7 +242,7 @@ adminApprovalRouter.post(
     }
 
     // Approve admin within a transaction to ensure atomicity
-    const approvedAdmin = await prisma.$transaction(async (tx) => {
+    const approvedAdmin = await db.$transaction(async (tx) => {
       return await tx.adminUser.update({
         where: { id },
         data: {
@@ -316,7 +316,7 @@ adminApprovalRouter.post(
     const superAdmin = c.get("admin");
 
     // Check if admin exists and is pending
-    const pendingAdmin = await prisma.adminUser.findUnique({
+    const pendingAdmin = await db.adminUser.findUnique({
       where: { id },
     });
 
@@ -345,7 +345,7 @@ adminApprovalRouter.post(
     }
 
     // Reject admin within a transaction to ensure atomicity
-    const rejectedAdmin = await prisma.$transaction(async (tx) => {
+    const rejectedAdmin = await db.$transaction(async (tx) => {
       return await tx.adminUser.update({
         where: { id },
         data: {
@@ -409,7 +409,7 @@ adminApprovalRouter.post(
     const superAdmin = c.get("admin");
 
     // Check if admin exists and is approved
-    const admin = await prisma.adminUser.findUnique({
+    const admin = await db.adminUser.findUnique({
       where: { id },
     });
 
@@ -450,7 +450,7 @@ adminApprovalRouter.post(
     }
 
     // Grant super-admin role within a transaction to ensure atomicity
-    const updatedAdmin = await prisma.$transaction(async (tx) => {
+    const updatedAdmin = await db.$transaction(async (tx) => {
       return await tx.adminUser.update({
         where: { id },
         data: {
@@ -517,7 +517,7 @@ adminApprovalRouter.post(
     const superAdmin = c.get("admin");
 
     // Check if admin exists
-    const admin = await prisma.adminUser.findUnique({
+    const admin = await db.adminUser.findUnique({
       where: { id },
     });
 
@@ -572,7 +572,7 @@ adminApprovalRouter.post(
     }
 
     // Suspend admin within a transaction to ensure atomicity
-    const suspendedAdmin = await prisma.$transaction(async (tx) => {
+    const suspendedAdmin = await db.$transaction(async (tx) => {
       return await tx.adminUser.update({
         where: { id },
         data: {
@@ -619,7 +619,7 @@ adminApprovalRouter.post(
     const superAdmin = c.get("admin");
 
     // Check if admin exists and is suspended
-    const admin = await prisma.adminUser.findUnique({
+    const admin = await db.adminUser.findUnique({
       where: { id },
     });
 
@@ -648,7 +648,7 @@ adminApprovalRouter.post(
     }
 
     // Reactivate admin within a transaction to ensure atomicity
-    const reactivatedAdmin = await prisma.$transaction(async (tx) => {
+    const reactivatedAdmin = await db.$transaction(async (tx) => {
       return await tx.adminUser.update({
         where: { id },
         data: {

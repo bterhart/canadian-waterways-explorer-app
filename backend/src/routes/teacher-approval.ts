@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
-import { prisma } from "../prisma";
+import { db } from "../db";
 // "@prisma/client" below is the query library's generated types, not a database. Data lives in Turso.
 import type { AdminUser } from "@prisma/client";
 import {
@@ -27,7 +27,7 @@ const suspendSchema = z.object({
 
 // GET /api/teacher-approval/pending - List pending teachers (admin only)
 teacherApprovalRouter.get("/pending", requireAdmin, async (c) => {
-  const pendingTeachers = await prisma.teacher.findMany({
+  const pendingTeachers = await db.teacher.findMany({
     where: {
       status: "pending",
     },
@@ -51,7 +51,7 @@ teacherApprovalRouter.get("/pending", requireAdmin, async (c) => {
 teacherApprovalRouter.get("/all", requireAdmin, async (c) => {
   const status = c.req.query("status");
 
-  const teachers = await prisma.teacher.findMany({
+  const teachers = await db.teacher.findMany({
     where: status ? { status } : undefined,
     select: {
       id: true,
@@ -91,7 +91,7 @@ teacherApprovalRouter.post(
     const admin = c.get("admin");
 
     // Check if teacher exists and is pending
-    const pendingTeacher = await prisma.teacher.findUnique({
+    const pendingTeacher = await db.teacher.findUnique({
       where: { id },
     });
 
@@ -120,7 +120,7 @@ teacherApprovalRouter.post(
     }
 
     // Approve teacher within a transaction to ensure atomicity
-    const approvedTeacher = await prisma.$transaction(async (tx) => {
+    const approvedTeacher = await db.$transaction(async (tx) => {
       return await tx.teacher.update({
         where: { id },
         data: {
@@ -189,7 +189,7 @@ teacherApprovalRouter.post(
     const admin = c.get("admin");
 
     // Check if teacher exists and is pending
-    const pendingTeacher = await prisma.teacher.findUnique({
+    const pendingTeacher = await db.teacher.findUnique({
       where: { id },
     });
 
@@ -218,7 +218,7 @@ teacherApprovalRouter.post(
     }
 
     // Reject teacher within a transaction to ensure atomicity
-    const rejectedTeacher = await prisma.$transaction(async (tx) => {
+    const rejectedTeacher = await db.$transaction(async (tx) => {
       return await tx.teacher.update({
         where: { id },
         data: {
@@ -282,7 +282,7 @@ teacherApprovalRouter.post(
     const admin = c.get("admin");
 
     // Check if teacher exists
-    const teacher = await prisma.teacher.findUnique({
+    const teacher = await db.teacher.findUnique({
       where: { id },
     });
 
@@ -311,7 +311,7 @@ teacherApprovalRouter.post(
     }
 
     // Suspend teacher within a transaction to ensure atomicity
-    const suspendedTeacher = await prisma.$transaction(async (tx) => {
+    const suspendedTeacher = await db.$transaction(async (tx) => {
       return await tx.teacher.update({
         where: { id },
         data: {
@@ -357,7 +357,7 @@ teacherApprovalRouter.post(
     const admin = c.get("admin");
 
     // Check if teacher exists and is suspended
-    const teacher = await prisma.teacher.findUnique({
+    const teacher = await db.teacher.findUnique({
       where: { id },
     });
 
@@ -386,7 +386,7 @@ teacherApprovalRouter.post(
     }
 
     // Reactivate teacher within a transaction to ensure atomicity
-    const reactivatedTeacher = await prisma.$transaction(async (tx) => {
+    const reactivatedTeacher = await db.$transaction(async (tx) => {
       return await tx.teacher.update({
         where: { id },
         data: {

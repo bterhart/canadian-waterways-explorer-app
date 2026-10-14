@@ -1,5 +1,5 @@
 import type { Context, Next } from "hono";
-import { prisma } from "../prisma";
+import { db } from "../db";
 // "@prisma/client" below is the query library's generated types, not a database. Data lives in Turso.
 import type { AdminUser } from "@prisma/client";
 import { verifyAccessToken } from "./jwt-utils";
@@ -41,7 +41,7 @@ export async function requireAdmin(c: Context, next: Next) {
   }
 
   // Fetch admin from database
-  const admin = await prisma.adminUser.findUnique({
+  const admin = await db.adminUser.findUnique({
     where: { id: payload.userId },
   });
 

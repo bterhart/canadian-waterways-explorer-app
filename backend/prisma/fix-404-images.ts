@@ -1,4 +1,4 @@
-import { prisma } from "../src/prisma";
+import { db } from "../src/db";
 
 const fixes: Record<string, string> = {
   "Bas-de-la-Rivière (Fort Alexander)": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Red_River_Valley.jpg/1280px-Red_River_Valley.jpg",
@@ -9,9 +9,9 @@ const fixes: Record<string, string> = {
 
 async function main() {
   for (const [name, url] of Object.entries(fixes)) {
-    const loc = await prisma.location.findFirst({ where: { name } });
+    const loc = await db.location.findFirst({ where: { name } });
     if (loc) {
-      await prisma.location.update({ where: { id: loc.id }, data: { imageUrl: url } });
+      await db.location.update({ where: { id: loc.id }, data: { imageUrl: url } });
       console.log(`✓ Fixed 404: ${name}`);
     } else {
       console.log(`  Not found: ${name}`);
@@ -19,4 +19,4 @@ async function main() {
   }
 }
 
-main().catch(console.error).finally(() => prisma.$disconnect());
+main().catch(console.error).finally(() => db.$disconnect());

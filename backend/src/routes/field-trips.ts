@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { prisma } from "../prisma";
+import { db } from "../db";
 
 const fieldTripsRouter = new Hono();
 
@@ -23,7 +23,7 @@ fieldTripsRouter.get("/", async (c) => {
     whereClause.theme = theme;
   }
 
-  const fieldTrips = await prisma.virtualFieldTrip.findMany({
+  const fieldTrips = await db.virtualFieldTrip.findMany({
     where: whereClause,
     select: {
       id: true,
@@ -60,7 +60,7 @@ fieldTripsRouter.get("/", async (c) => {
 fieldTripsRouter.get("/:id", async (c) => {
   const id = c.req.param("id");
 
-  const fieldTrip = await prisma.virtualFieldTrip.findUnique({
+  const fieldTrip = await db.virtualFieldTrip.findUnique({
     where: { id, isPublished: true },
     include: {
       stops: {

@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
-import { prisma } from "../prisma";
+import { db } from "../db";
 
 const notableFiguresRouter = new Hono();
 
@@ -37,7 +37,7 @@ notableFiguresRouter.get("/", async (c) => {
     ];
   }
 
-  const figures = await prisma.notableFigure.findMany({
+  const figures = await db.notableFigure.findMany({
     where,
     select: {
       id: true,
@@ -66,7 +66,7 @@ notableFiguresRouter.get("/", async (c) => {
 
 // Get featured notable figures
 notableFiguresRouter.get("/featured", async (c) => {
-  const figures = await prisma.notableFigure.findMany({
+  const figures = await db.notableFigure.findMany({
     where: { isFeatured: true },
     select: {
       id: true,
@@ -90,7 +90,7 @@ notableFiguresRouter.get("/featured", async (c) => {
 notableFiguresRouter.get("/by-explorer/:explorerName", async (c) => {
   const explorerName = c.req.param("explorerName");
 
-  const figures = await prisma.notableFigure.findMany({
+  const figures = await db.notableFigure.findMany({
     where: {
       associatedExplorers: { contains: explorerName },
     },
@@ -122,7 +122,7 @@ notableFiguresRouter.get("/by-explorer/:explorerName", async (c) => {
 
 // Get available figure types
 notableFiguresRouter.get("/types", async (c) => {
-  const figures = await prisma.notableFigure.findMany({
+  const figures = await db.notableFigure.findMany({
     select: { figureType: true },
     distinct: ["figureType"],
   });
@@ -133,7 +133,7 @@ notableFiguresRouter.get("/types", async (c) => {
 
 // Get available nations
 notableFiguresRouter.get("/nations", async (c) => {
-  const figures = await prisma.notableFigure.findMany({
+  const figures = await db.notableFigure.findMany({
     where: { nation: { not: null } },
     select: { nation: true },
     distinct: ["nation"],
@@ -147,7 +147,7 @@ notableFiguresRouter.get("/nations", async (c) => {
 notableFiguresRouter.get("/:id", async (c) => {
   const id = c.req.param("id");
 
-  const figure = await prisma.notableFigure.findUnique({
+  const figure = await db.notableFigure.findUnique({
     where: { id },
   });
 
@@ -200,7 +200,7 @@ notableFiguresRouter.post(
   async (c) => {
     const data = c.req.valid("json");
 
-    const figure = await prisma.notableFigure.create({
+    const figure = await db.notableFigure.create({
       data: {
         name: data.name,
         alternateNames: data.alternateNames,
@@ -240,7 +240,7 @@ notableFiguresRouter.patch(
     const id = c.req.param("id");
     const data = c.req.valid("json");
 
-    const existing = await prisma.notableFigure.findUnique({ where: { id } });
+    const existing = await db.notableFigure.findUnique({ where: { id } });
     if (!existing) {
       return c.json(
         { error: { message: "Notable figure not found", code: "NOT_FOUND" } },
@@ -267,7 +267,7 @@ notableFiguresRouter.patch(
         : null;
     }
 
-    const figure = await prisma.notableFigure.update({
+    const figure = await db.notableFigure.update({
       where: { id },
       data: updateData,
     });
@@ -280,7 +280,7 @@ notableFiguresRouter.patch(
 notableFiguresRouter.delete("/:id", async (c) => {
   const id = c.req.param("id");
 
-  const existing = await prisma.notableFigure.findUnique({ where: { id } });
+  const existing = await db.notableFigure.findUnique({ where: { id } });
   if (!existing) {
     return c.json(
       { error: { message: "Notable figure not found", code: "NOT_FOUND" } },
@@ -288,7 +288,7 @@ notableFiguresRouter.delete("/:id", async (c) => {
     );
   }
 
-  await prisma.notableFigure.delete({ where: { id } });
+  await db.notableFigure.delete({ where: { id } });
 
   return c.json({ data: { success: true } });
 });

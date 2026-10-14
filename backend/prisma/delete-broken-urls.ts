@@ -1,4 +1,4 @@
-import { prisma } from "../src/prisma";
+import { db } from "../src/db";
 import { readFileSync } from "fs";
 
 function parseCsvRow(line: string): string[] {
@@ -52,29 +52,29 @@ async function main() {
       if (entry.field === "imageUrl" || entry.field === "heroImageUrl" || entry.field === "coverImageUrl" || entry.field === "previewImageUrl") {
         // Set image field to NULL
         if (entry.table === "Waterway") {
-          await prisma.waterway.update({ where: { id: entry.id }, data: { imageUrl: null } });
+          await db.waterway.update({ where: { id: entry.id }, data: { imageUrl: null } });
         } else if (entry.table === "Location") {
-          await prisma.location.update({ where: { id: entry.id }, data: { imageUrl: null } });
+          await db.location.update({ where: { id: entry.id }, data: { imageUrl: null } });
         } else if (entry.table === "Explorer") {
-          await prisma.explorer.update({ where: { id: entry.id }, data: { imageUrl: null } });
+          await db.explorer.update({ where: { id: entry.id }, data: { imageUrl: null } });
         } else if (entry.table === "UserContribution") {
-          await prisma.userContribution.update({ where: { id: entry.id }, data: { imageUrl: null } });
+          await db.userContribution.update({ where: { id: entry.id }, data: { imageUrl: null } });
         } else if (entry.table === "FieldTripStop") {
-          await prisma.fieldTripStop.update({ where: { id: entry.id }, data: { imageUrl: null } });
+          await db.fieldTripStop.update({ where: { id: entry.id }, data: { imageUrl: null } });
         } else if (entry.table === "VirtualFieldTrip") {
-          await prisma.virtualFieldTrip.update({ where: { id: entry.id }, data: { coverImageUrl: null } });
+          await db.virtualFieldTrip.update({ where: { id: entry.id }, data: { coverImageUrl: null } });
         } else if (entry.table === "LessonPlan") {
-          await prisma.lessonPlan.update({ where: { id: entry.id }, data: { heroImageUrl: null } });
+          await db.lessonPlan.update({ where: { id: entry.id }, data: { heroImageUrl: null } });
         } else if (entry.table === "PrintableResource") {
-          await prisma.printableResource.update({ where: { id: entry.id }, data: { previewImageUrl: null } });
+          await db.printableResource.update({ where: { id: entry.id }, data: { previewImageUrl: null } });
         } else if (entry.table === "VoyageurJourney") {
-          await prisma.voyageurJourney.update({ where: { id: entry.id }, data: { coverImageUrl: null } });
+          await db.voyageurJourney.update({ where: { id: entry.id }, data: { coverImageUrl: null } });
         } else if (entry.table === "JourneyNode") {
-          await prisma.journeyNode.update({ where: { id: entry.id }, data: { imageUrl: null } });
+          await db.journeyNode.update({ where: { id: entry.id }, data: { imageUrl: null } });
         } else if (entry.table === "HistoricalEvent") {
-          await prisma.historicalEvent.update({ where: { id: entry.id }, data: { imageUrl: null } });
+          await db.historicalEvent.update({ where: { id: entry.id }, data: { imageUrl: null } });
         } else if (entry.table === "NotableFigure") {
-          await prisma.notableFigure.update({ where: { id: entry.id }, data: { imageUrl: null } });
+          await db.notableFigure.update({ where: { id: entry.id }, data: { imageUrl: null } });
         }
         console.log(`  → imageUrl set to NULL`);
         removed++;
@@ -83,20 +83,20 @@ async function main() {
         // Remove specific URL from JSON array
         let current: any[] = [];
         if (entry.table === "Waterway") {
-          const rec = await prisma.waterway.findUnique({ where: { id: entry.id }, select: { galleryImages: true } });
+          const rec = await db.waterway.findUnique({ where: { id: entry.id }, select: { galleryImages: true } });
           try { current = JSON.parse(rec?.galleryImages as string ?? "[]"); } catch {}
           const filtered = current.filter((g: any) => g.url !== entry.url);
-          await prisma.waterway.update({ where: { id: entry.id }, data: { galleryImages: JSON.stringify(filtered) } });
+          await db.waterway.update({ where: { id: entry.id }, data: { galleryImages: JSON.stringify(filtered) } });
         } else if (entry.table === "Location") {
-          const rec = await prisma.location.findUnique({ where: { id: entry.id }, select: { galleryImages: true } });
+          const rec = await db.location.findUnique({ where: { id: entry.id }, select: { galleryImages: true } });
           try { current = JSON.parse(rec?.galleryImages as string ?? "[]"); } catch {}
           const filtered = current.filter((g: any) => g.url !== entry.url);
-          await prisma.location.update({ where: { id: entry.id }, data: { galleryImages: JSON.stringify(filtered) } });
+          await db.location.update({ where: { id: entry.id }, data: { galleryImages: JSON.stringify(filtered) } });
         } else if (entry.table === "LessonPlan") {
-          const rec = await prisma.lessonPlan.findUnique({ where: { id: entry.id }, select: { images: true } });
+          const rec = await db.lessonPlan.findUnique({ where: { id: entry.id }, select: { images: true } });
           try { current = JSON.parse(rec?.images as string ?? "[]"); } catch {}
           const filtered = current.filter((g: any) => g.url !== entry.url);
-          await prisma.lessonPlan.update({ where: { id: entry.id }, data: { images: JSON.stringify(filtered) } });
+          await db.lessonPlan.update({ where: { id: entry.id }, data: { images: JSON.stringify(filtered) } });
         }
         const before = current.length;
         console.log(`  → Removed from ${entry.field} array (was ${before} items)`);
@@ -111,4 +111,4 @@ async function main() {
   console.log(`Removed: ${removed} / ${broken.length} entries`);
 }
 
-main().catch(console.error).finally(() => prisma.$disconnect());
+main().catch(console.error).finally(() => db.$disconnect());

@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
-import { prisma } from "../prisma";
+import { db } from "../db";
 
 const journalsRouter = new Hono();
 
@@ -46,13 +46,13 @@ journalsRouter.post(
     const data = c.req.valid("json");
 
     // Check if journal already exists for this identifier
-    let journal = await prisma.studentJournal.findFirst({
+    let journal = await db.studentJournal.findFirst({
       where: { studentIdentifier: data.studentIdentifier },
     });
 
     if (journal) {
       // Update if name/school/grade changed
-      journal = await prisma.studentJournal.update({
+      journal = await db.studentJournal.update({
         where: { id: journal.id },
         data: {
           studentName: data.studentName ?? journal.studentName,
@@ -62,7 +62,7 @@ journalsRouter.post(
       });
     } else {
       // Create new journal
-      journal = await prisma.studentJournal.create({
+      journal = await db.studentJournal.create({
         data: {
           studentIdentifier: data.studentIdentifier,
           studentName: data.studentName,
@@ -80,7 +80,7 @@ journalsRouter.post(
 journalsRouter.get("/by-identifier/:identifier", async (c) => {
   const identifier = c.req.param("identifier");
 
-  const journal = await prisma.studentJournal.findFirst({
+  const journal = await db.studentJournal.findFirst({
     where: { studentIdentifier: identifier },
     include: {
       entries: {
@@ -115,7 +115,7 @@ journalsRouter.get("/by-identifier/:identifier", async (c) => {
 journalsRouter.get("/:id", async (c) => {
   const id = c.req.param("id");
 
-  const journal = await prisma.studentJournal.findUnique({
+  const journal = await db.studentJournal.findUnique({
     where: { id },
     include: {
       entries: {
@@ -154,7 +154,7 @@ journalsRouter.post(
     const journalId = c.req.param("journalId");
     const data = c.req.valid("json");
 
-    const journal = await prisma.studentJournal.findUnique({
+    const journal = await db.studentJournal.findUnique({
       where: { id: journalId },
     });
 
@@ -165,7 +165,7 @@ journalsRouter.post(
       );
     }
 
-    const entry = await prisma.journalEntry.create({
+    const entry = await db.journalEntry.create({
       data: {
         journalId,
         title: data.title,
@@ -198,7 +198,7 @@ journalsRouter.patch(
     const entryId = c.req.param("entryId");
     const data = c.req.valid("json");
 
-    const existingEntry = await prisma.journalEntry.findFirst({
+    const existingEntry = await db.journalEntry.findFirst({
       where: { id: entryId, journalId },
     });
 
@@ -209,7 +209,7 @@ journalsRouter.patch(
       );
     }
 
-    const entry = await prisma.journalEntry.update({
+    const entry = await db.journalEntry.update({
       where: { id: entryId },
       data: {
         ...(data.title !== undefined && { title: data.title }),
@@ -234,7 +234,7 @@ journalsRouter.delete("/:journalId/entries/:entryId", async (c) => {
   const journalId = c.req.param("journalId");
   const entryId = c.req.param("entryId");
 
-  const existingEntry = await prisma.journalEntry.findFirst({
+  const existingEntry = await db.journalEntry.findFirst({
     where: { id: entryId, journalId },
   });
 
@@ -245,7 +245,7 @@ journalsRouter.delete("/:journalId/entries/:entryId", async (c) => {
     );
   }
 
-  await prisma.journalEntry.delete({
+  await db.journalEntry.delete({
     where: { id: entryId },
   });
 
@@ -260,7 +260,7 @@ journalsRouter.post(
     const journalId = c.req.param("journalId");
     const data = c.req.valid("json");
 
-    const journal = await prisma.studentJournal.findUnique({
+    const journal = await db.studentJournal.findUnique({
       where: { id: journalId },
     });
 
@@ -279,7 +279,7 @@ journalsRouter.post(
       );
     }
 
-    const savedLocation = await prisma.savedLocation.create({
+    const savedLocation = await db.savedLocation.create({
       data: {
         journalId,
         waterwayId: data.waterwayId,
@@ -298,7 +298,7 @@ journalsRouter.delete("/:journalId/saved-locations/:locationId", async (c) => {
   const journalId = c.req.param("journalId");
   const locationId = c.req.param("locationId");
 
-  const existingLocation = await prisma.savedLocation.findFirst({
+  const existingLocation = await db.savedLocation.findFirst({
     where: { id: locationId, journalId },
   });
 
@@ -309,7 +309,7 @@ journalsRouter.delete("/:journalId/saved-locations/:locationId", async (c) => {
     );
   }
 
-  await prisma.savedLocation.delete({
+  await db.savedLocation.delete({
     where: { id: locationId },
   });
 

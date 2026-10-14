@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
-import { prisma } from "../prisma";
+import { db } from "../db";
 
 const indigenousLanguageRouter = new Hono();
 
@@ -16,7 +16,7 @@ indigenousLanguageRouter.get("/words", async (c) => {
   if (language) where.language = language;
   if (category) where.category = category;
 
-  const words = await prisma.indigenousWord.findMany({
+  const words = await db.indigenousWord.findMany({
     where,
     orderBy: { word: "asc" },
   });
@@ -28,7 +28,7 @@ indigenousLanguageRouter.get("/words", async (c) => {
 indigenousLanguageRouter.get("/words/:id", async (c) => {
   const id = c.req.param("id");
 
-  const word = await prisma.indigenousWord.findUnique({
+  const word = await db.indigenousWord.findUnique({
     where: { id },
   });
 
@@ -51,7 +51,7 @@ indigenousLanguageRouter.get("/word-of-day", async (c) => {
   today.setHours(0, 0, 0, 0);
 
   // Try to find word of the day for today
-  let wordOfDay = await prisma.wordOfTheDay.findFirst({
+  let wordOfDay = await db.wordOfTheDay.findFirst({
     where: {
       date: {
         gte: today,
@@ -65,12 +65,12 @@ indigenousLanguageRouter.get("/word-of-day", async (c) => {
 
   // If no word for today, get a random word and create word of the day
   if (!wordOfDay) {
-    const words = await prisma.indigenousWord.findMany();
+    const words = await db.indigenousWord.findMany();
     if (words.length > 0) {
       const randomIndex = Math.floor(Math.random() * words.length);
       const randomWord = words[randomIndex];
       if (randomWord) {
-        wordOfDay = await prisma.wordOfTheDay.create({
+        wordOfDay = await db.wordOfTheDay.create({
           data: {
             date: today,
             wordId: randomWord.id,
@@ -104,7 +104,7 @@ indigenousLanguageRouter.get("/vocabulary-quizzes", async (c) => {
   if (language) where.language = language;
   if (difficulty) where.difficulty = difficulty;
 
-  const quizzes = await prisma.vocabularyQuiz.findMany({
+  const quizzes = await db.vocabularyQuiz.findMany({
     where,
     orderBy: { title: "asc" },
     select: {
@@ -124,7 +124,7 @@ indigenousLanguageRouter.get("/vocabulary-quizzes", async (c) => {
 indigenousLanguageRouter.get("/vocabulary-quizzes/:id", async (c) => {
   const id = c.req.param("id");
 
-  const quiz = await prisma.vocabularyQuiz.findUnique({
+  const quiz = await db.vocabularyQuiz.findUnique({
     where: { id },
   });
 
@@ -163,7 +163,7 @@ indigenousLanguageRouter.post(
     const id = c.req.param("id");
     const { answers } = c.req.valid("json");
 
-    const quiz = await prisma.vocabularyQuiz.findUnique({
+    const quiz = await db.vocabularyQuiz.findUnique({
       where: { id },
     });
 
@@ -222,7 +222,7 @@ indigenousLanguageRouter.get("/stories", async (c) => {
   if (theme) where.theme = theme;
   if (gradeLevel) where.gradeLevel = gradeLevel;
 
-  const stories = await prisma.indigenousStory.findMany({
+  const stories = await db.indigenousStory.findMany({
     where,
     orderBy: { title: "asc" },
     select: {
@@ -245,7 +245,7 @@ indigenousLanguageRouter.get("/stories", async (c) => {
 indigenousLanguageRouter.get("/stories/:id", async (c) => {
   const id = c.req.param("id");
 
-  const story = await prisma.indigenousStory.findUnique({
+  const story = await db.indigenousStory.findUnique({
     where: { id },
   });
 
@@ -263,7 +263,7 @@ indigenousLanguageRouter.get("/stories/:id", async (c) => {
 
 // Get list of available languages
 indigenousLanguageRouter.get("/languages", async (c) => {
-  const words = await prisma.indigenousWord.groupBy({
+  const words = await db.indigenousWord.groupBy({
     by: ["language"],
     _count: {
       language: true,
@@ -288,7 +288,7 @@ indigenousLanguageRouter.get("/categories", async (c) => {
   const where: Record<string, unknown> = {};
   if (language) where.language = language;
 
-  const words = await prisma.indigenousWord.groupBy({
+  const words = await db.indigenousWord.groupBy({
     by: ["category"],
     where,
     _count: {

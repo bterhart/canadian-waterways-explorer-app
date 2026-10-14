@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
-import { prisma } from "../prisma";
+import { db } from "../db";
 import {
   verifyRefreshToken,
   generateAccessToken,
@@ -47,7 +47,7 @@ authRouter.post(
 
     // Check if user still has access (not suspended/not approved)
     if (payload.type === "admin") {
-      const admin = await prisma.adminUser.findUnique({
+      const admin = await db.adminUser.findUnique({
         where: { id: payload.userId },
       });
 
@@ -107,7 +107,7 @@ authRouter.post(
         },
       });
     } else if (payload.type === "teacher") {
-      const teacher = await prisma.teacher.findUnique({
+      const teacher = await db.teacher.findUnique({
         where: { id: payload.userId },
       });
 

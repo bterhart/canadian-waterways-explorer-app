@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
-import { prisma } from "../prisma";
+import { db } from "../db";
 
 const gamificationRouter = new Hono();
 
@@ -65,13 +65,13 @@ gamificationRouter.get(
     const { userId } = c.req.valid("query");
 
     // Get or create user progress
-    let progress = await prisma.userProgress.findUnique({
+    let progress = await db.userProgress.findUnique({
       where: { userId },
     });
 
     if (!progress) {
       // Create new progress record
-      progress = await prisma.userProgress.create({
+      progress = await db.userProgress.create({
         data: {
           userId,
           explorerRank: "Apprentice Voyageur",
@@ -134,12 +134,12 @@ gamificationRouter.post(
     const { userId, points, activityType, activityData } = c.req.valid("json");
 
     // Get or create user progress
-    let progress = await prisma.userProgress.findUnique({
+    let progress = await db.userProgress.findUnique({
       where: { userId },
     });
 
     if (!progress) {
-      progress = await prisma.userProgress.create({
+      progress = await db.userProgress.create({
         data: { userId },
       });
     }
@@ -216,7 +216,7 @@ gamificationRouter.post(
     }
 
     // Update progress
-    const updatedProgress = await prisma.userProgress.update({
+    const updatedProgress = await db.userProgress.update({
       where: { userId },
       data: updateData,
     });
@@ -247,7 +247,7 @@ gamificationRouter.get("/achievements", async (c) => {
     whereClause.category = category;
   }
 
-  const achievements = await prisma.achievement.findMany({
+  const achievements = await db.achievement.findMany({
     where: whereClause,
     orderBy: [{ category: "asc" }, { sortOrder: "asc" }],
   });
@@ -268,7 +268,7 @@ gamificationRouter.get(
   async (c) => {
     const { userId } = c.req.valid("query");
 
-    const userAchievements = await prisma.userAchievement.findMany({
+    const userAchievements = await db.userAchievement.findMany({
       where: { userId },
       include: {
         achievement: true,
@@ -302,7 +302,7 @@ gamificationRouter.post(
     const { userId } = c.req.valid("json");
 
     // Get user progress
-    const progress = await prisma.userProgress.findUnique({
+    const progress = await db.userProgress.findUnique({
       where: { userId },
     });
 
@@ -311,14 +311,14 @@ gamificationRouter.post(
     }
 
     // Get all achievements the user doesn't have yet
-    const earnedAchievementIds = await prisma.userAchievement.findMany({
+    const earnedAchievementIds = await db.userAchievement.findMany({
       where: { userId },
       select: { achievementId: true },
     });
 
     const earnedIds = new Set(earnedAchievementIds.map((a) => a.achievementId));
 
-    const allAchievements = await prisma.achievement.findMany();
+    const allAchievements = await db.achievement.findMany();
     const unearnedAchievements = allAchievements.filter(
       (a) => !earnedIds.has(a.id)
     );
@@ -373,7 +373,7 @@ gamificationRouter.post(
 
       if (earned) {
         // Award the achievement
-        await prisma.userAchievement.create({
+        await db.userAchievement.create({
           data: {
             userId,
             achievementId: achievement.id,
@@ -407,7 +407,7 @@ gamificationRouter.get(
     const today = new Date();
     today.setUTCHours(0, 0, 0, 0);
 
-    const challenge = await prisma.dailyChallenge.findUnique({
+    const challenge = await db.dailyChallenge.findUnique({
       where: { date: today },
     });
 
@@ -423,7 +423,7 @@ gamificationRouter.get(
     let userAttempt = null;
 
     if (userId) {
-      const attempt = await prisma.dailyChallengeAttempt.findUnique({
+      const attempt = await db.dailyChallengeAttempt.findUnique({
         where: {
           userId_challengeId: {
             userId,
@@ -481,7 +481,7 @@ gamificationRouter.post(
     const { userId, challengeId, answer } = c.req.valid("json");
 
     // Get the challenge
-    const challenge = await prisma.dailyChallenge.findUnique({
+    const challenge = await db.dailyChallenge.findUnique({
       where: { id: challengeId },
     });
 
@@ -493,7 +493,7 @@ gamificationRouter.post(
     }
 
     // Check if already attempted
-    const existingAttempt = await prisma.dailyChallengeAttempt.findUnique({
+    const existingAttempt = await db.dailyChallengeAttempt.findUnique({
       where: {
         userId_challengeId: {
           userId,
@@ -518,7 +518,7 @@ gamificationRouter.post(
     const isCorrect = answer === challenge.correctAnswer;
 
     // Create attempt record
-    const attempt = await prisma.dailyChallengeAttempt.create({
+    const attempt = await db.dailyChallengeAttempt.create({
       data: {
         userId,
         challengeId,
@@ -533,7 +533,7 @@ gamificationRouter.post(
       pointsEarned = challenge.pointsReward;
 
       // Update user progress
-      await prisma.userProgress.upsert({
+      await db.userProgress.upsert({
         where: { userId },
         create: {
           userId,
@@ -549,14 +549,14 @@ gamificationRouter.post(
       });
 
       // Update rank if needed
-      const progress = await prisma.userProgress.findUnique({
+      const progress = await db.userProgress.findUnique({
         where: { userId },
       });
 
       if (progress) {
         const newRank = getRankForPoints(progress.totalPoints);
         if (newRank !== progress.explorerRank) {
-          await prisma.userProgress.update({
+          await db.userProgress.update({
             where: { userId },
             data: { explorerRank: newRank },
           });
@@ -585,7 +585,7 @@ gamificationRouter.get("/leaderboard", async (c) => {
 
   if (classId) {
     // Class leaderboard - get students from that class with their progress
-    const classStudents = await prisma.classStudent.findMany({
+    const classStudents = await db.classStudent.findMany({
       where: { classId },
       select: {
         id: true,
@@ -596,7 +596,7 @@ gamificationRouter.get("/leaderboard", async (c) => {
     // Get progress for each student (using displayName as userId for simplicity)
     const leaderboardData = await Promise.all(
       classStudents.map(async (student) => {
-        const progress = await prisma.userProgress.findUnique({
+        const progress = await db.userProgress.findUnique({
           where: { userId: student.displayName },
         });
 
@@ -625,7 +625,7 @@ gamificationRouter.get("/leaderboard", async (c) => {
   }
 
   // Global leaderboard
-  const topUsers = await prisma.userProgress.findMany({
+  const topUsers = await db.userProgress.findMany({
     orderBy: { totalPoints: "desc" },
     take: limit,
     select: {

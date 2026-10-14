@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
-import { prisma } from "../prisma";
+import { db } from "../db";
 import { requireAdmin, requireSuperAdmin } from "../lib/admin-middleware";
 
 const waterwaysRouter = new Hono();
@@ -32,7 +32,7 @@ function parseAssociatedLocations(value: string | null): string[] {
 
 // Get all waterways with basic info for map markers
 waterwaysRouter.get("/", async (c) => {
-  const waterways = await prisma.waterway.findMany({
+  const waterways = await db.waterway.findMany({
     select: {
       id: true,
       name: true,
@@ -75,7 +75,7 @@ waterwaysRouter.get("/overview/rivers", async (c) => {
 waterwaysRouter.get("/region/:regionName", async (c) => {
   const regionName = c.req.param("regionName");
 
-  const waterways = await prisma.waterway.findMany({
+  const waterways = await db.waterway.findMany({
     where: {
       regionName: {
         contains: regionName
@@ -102,7 +102,7 @@ waterwaysRouter.get("/region/:regionName", async (c) => {
 waterwaysRouter.get("/type/:typeName", async (c) => {
   const typeName = c.req.param("typeName");
 
-  const waterways = await prisma.waterway.findMany({
+  const waterways = await db.waterway.findMany({
     where: {
       type: {
         name: {
@@ -131,7 +131,7 @@ waterwaysRouter.get("/type/:typeName", async (c) => {
 waterwaysRouter.get("/search/:query", async (c) => {
   const query = c.req.param("query");
 
-  const waterways = await prisma.waterway.findMany({
+  const waterways = await db.waterway.findMany({
     where: {
       OR: [
         { name: { contains: query } },
@@ -157,7 +157,7 @@ waterwaysRouter.get("/search/:query", async (c) => {
 
 // Get KML status for all waterways (superadmin only)
 waterwaysRouter.get("/admin/kml-status", requireAdmin, requireSuperAdmin, async (c) => {
-  const waterways = await prisma.waterway.findMany({
+  const waterways = await db.waterway.findMany({
     select: {
       id: true,
       name: true,
@@ -183,7 +183,7 @@ waterwaysRouter.get("/admin/kml-status", requireAdmin, requireSuperAdmin, async 
 waterwaysRouter.get("/:id", async (c) => {
   const id = c.req.param("id");
 
-  const waterway = await prisma.waterway.findUnique({
+  const waterway = await db.waterway.findUnique({
     where: { id },
     include: {
       type: true,
@@ -203,7 +203,7 @@ waterwaysRouter.get("/:id", async (c) => {
     return c.json({ error: { message: "Waterway not found", code: "NOT_FOUND" } }, 404);
   }
 
-  const notableFigureRows = await prisma.notableFigure.findMany({
+  const notableFigureRows = await db.notableFigure.findMany({
   where: {
     associatedLocations: { contains: waterway.name }
   },
@@ -251,7 +251,7 @@ const notableFigures = notableFigureRows
 waterwaysRouter.post("/:id/kml", requireAdmin, requireSuperAdmin, async (c) => {
   const id = c.req.param("id");
 
-  const waterway = await prisma.waterway.findUnique({ where: { id } });
+  const waterway = await db.waterway.findUnique({ where: { id } });
   if (!waterway) {
     return c.json({ error: { message: "Waterway not found", code: "NOT_FOUND" } }, 404);
   }
@@ -269,7 +269,7 @@ waterwaysRouter.post("/:id/kml", requireAdmin, requireSuperAdmin, async (c) => {
     return c.json({ error: { message: "Invalid KML file", code: "BAD_REQUEST" } }, 400);
   }
 
-  const updated = await prisma.waterway.update({
+  const updated = await db.waterway.update({
     where: { id },
     data: { kmlData: kmlText },
     select: { id: true, name: true }
@@ -282,7 +282,7 @@ waterwaysRouter.post("/:id/kml", requireAdmin, requireSuperAdmin, async (c) => {
 waterwaysRouter.delete("/:id/kml", requireAdmin, requireSuperAdmin, async (c) => {
   const id = c.req.param("id");
 
-  const updated = await prisma.waterway.update({
+  const updated = await db.waterway.update({
     where: { id },
     data: { kmlData: null },
     select: { id: true, name: true }

@@ -33,7 +33,7 @@ import { S3Client, PutObjectCommand, HeadObjectCommand } from "@aws-sdk/client-s
 import * as fs from "fs";
 import * as path from "path";
 import sharp from "sharp";
-import { prisma } from "../src/prisma";
+import { db } from "../src/db";
 
 // ── Config ─────────────────────────────────────────────────────────────────
 
@@ -758,67 +758,67 @@ async function main() {
 
   await runScalarSequence(
     filter("Waterway", "imageUrl"), "Waterway.imageUrl",
-    async (id, url) => { await prisma.waterway.update({ where: { id }, data: { imageUrl: url } }); }
+    async (id, url) => { await db.waterway.update({ where: { id }, data: { imageUrl: url } }); }
   );
 
   await runGallerySequence(
     filter("Waterway", "galleryImages"), "Waterway.galleryImages",
-    async (id, gallery) => { await prisma.waterway.update({ where: { id }, data: { galleryImages: gallery } }); }
+    async (id, gallery) => { await db.waterway.update({ where: { id }, data: { galleryImages: gallery } }); }
   );
 
   await runScalarSequence(
     filter("Location", "imageUrl"), "Location.imageUrl",
-    async (id, url) => { await prisma.location.update({ where: { id }, data: { imageUrl: url } }); }
+    async (id, url) => { await db.location.update({ where: { id }, data: { imageUrl: url } }); }
   );
 
   await runGallerySequence(
     filter("Location", "galleryImages"), "Location.galleryImages",
-    async (id, gallery) => { await prisma.location.update({ where: { id }, data: { galleryImages: gallery } }); }
+    async (id, gallery) => { await db.location.update({ where: { id }, data: { galleryImages: gallery } }); }
   );
 
   await runScalarSequence(
     filter("Explorer", "imageUrl"), "Explorer.imageUrl",
-    async (id, url) => { await prisma.explorer.update({ where: { id }, data: { imageUrl: url } }); }
+    async (id, url) => { await db.explorer.update({ where: { id }, data: { imageUrl: url } }); }
   );
 
   await runScalarSequence(
     filter("FieldTripStop", "imageUrl"), "FieldTripStop.imageUrl",
-    async (id, url) => { await prisma.fieldTripStop.update({ where: { id }, data: { imageUrl: url } }); }
+    async (id, url) => { await db.fieldTripStop.update({ where: { id }, data: { imageUrl: url } }); }
   );
 
   await runScalarSequence(
     filter("HistoricalEvent", "imageUrl"), "HistoricalEvent.imageUrl",
-    async (id, url) => { await prisma.historicalEvent.update({ where: { id }, data: { imageUrl: url } }); }
+    async (id, url) => { await db.historicalEvent.update({ where: { id }, data: { imageUrl: url } }); }
   );
 
   await runScalarSequence(
     filter("LessonPlan", "heroImageUrl"), "LessonPlan.heroImageUrl",
-    async (id, url) => { await prisma.lessonPlan.update({ where: { id }, data: { heroImageUrl: url } }); }
+    async (id, url) => { await db.lessonPlan.update({ where: { id }, data: { heroImageUrl: url } }); }
   );
 
   await runGallerySequence(
     filter("LessonPlan", "images"), "LessonPlan.images",
-    async (id, gallery) => { await prisma.lessonPlan.update({ where: { id }, data: { images: gallery } }); }
+    async (id, gallery) => { await db.lessonPlan.update({ where: { id }, data: { images: gallery } }); }
   );
 
   await runScalarSequence(
     filter("NotableFigure", "imageUrl"), "NotableFigure.imageUrl",
-    async (id, url) => { await prisma.notableFigure.update({ where: { id }, data: { imageUrl: url } }); }
+    async (id, url) => { await db.notableFigure.update({ where: { id }, data: { imageUrl: url } }); }
   );
 
   await runScalarSequence(
     filter("PrimarySourceDocument", "imageUrl"), "PrimarySourceDocument.imageUrl",
-    async (id, url) => { await prisma.primarySourceDocument.update({ where: { id }, data: { imageUrl: url } }); }
+    async (id, url) => { await db.primarySourceDocument.update({ where: { id }, data: { imageUrl: url } }); }
   );
 
   await runScalarSequence(
     filter("UserContribution", "imageUrl"), "UserContribution.imageUrl",
-    async (id, url) => { await prisma.userContribution.update({ where: { id }, data: { imageUrl: url } }); }
+    async (id, url) => { await db.userContribution.update({ where: { id }, data: { imageUrl: url } }); }
   );
 
   await runScalarSequence(
     filter("VirtualFieldTrip", "coverImageUrl"), "VirtualFieldTrip.coverImageUrl",
-    async (id, url) => { await prisma.virtualFieldTrip.update({ where: { id }, data: { coverImageUrl: url } }); }
+    async (id, url) => { await db.virtualFieldTrip.update({ where: { id }, data: { coverImageUrl: url } }); }
   );
 
   // ── Final summary ──────────────────────────────────────────────────────
@@ -846,7 +846,7 @@ async function main() {
     console.log("\n  ✅ All images successfully migrated to R2.");
   }
 
-  await prisma.$disconnect();
+  await db.$disconnect();
 }
 
 let exitCode = 0;
