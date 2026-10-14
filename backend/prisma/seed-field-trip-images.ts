@@ -7,6 +7,7 @@
  * - CC BY 4.0/3.0/2.0
  */
 
+// NOTE: "Prisma" is only the name of the query library (@prisma/client), not a database. The database is Turso.
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();

@@ -5,6 +5,7 @@ import { prisma } from "../prisma";
 import { generateAccessToken, generateRefreshToken } from "../lib/jwt-utils";
 import { loginRateLimiter } from "../lib/auth-utils";
 import { requireTeacher } from "../lib/teacher-middleware";
+// "@prisma/client" below is the query library's generated types, not a database. Data lives in Turso.
 import type { Teacher } from "@prisma/client";
 
 const teachersRouter = new Hono();

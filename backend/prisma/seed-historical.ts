@@ -2,6 +2,7 @@
 // Adds chronological explorer information, archaeological discoveries,
 // and expanded historical context from earliest explorers to Joseph Tyrrell
 
+// NOTE: "Prisma" is only the name of the query library (@prisma/client), not a database. The database is Turso.
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();

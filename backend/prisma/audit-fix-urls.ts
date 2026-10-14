@@ -1,6 +1,7 @@
 // Audit and fix all broken imageUrl + galleryImages URLs against the real Turso DB.
 // Run: cd /home/user/workspace/backend && bun run prisma/audit-fix-urls.ts
 
+// NOTE: "Prisma" is only the name of the query library (@prisma/client), not a database. The database is Turso.
 import { PrismaClient } from "@prisma/client";
 import { PrismaLibSQL } from "@prisma/adapter-libsql";
 

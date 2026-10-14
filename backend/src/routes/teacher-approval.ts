@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { prisma } from "../prisma";
+// "@prisma/client" below is the query library's generated types, not a database. Data lives in Turso.
 import type { AdminUser } from "@prisma/client";
 import {
   sendEmailNotification,
