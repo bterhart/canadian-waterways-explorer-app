@@ -7,7 +7,9 @@ const turso = createClient({
 });
 
 async function pushSchema() {
-  const sqlPath = "/tmp/turso_schema.sql";
+  // Path to the SQL file: first CLI argument, else the legacy /tmp location.
+  // Keep applied DDL under prisma/turso-migrations/ so the repo records what reached Turso.
+  const sqlPath = process.argv[2] ?? "/tmp/turso_schema.sql";
   console.log("Reading schema SQL from:", sqlPath);
 
   if (!existsSync(sqlPath)) {
