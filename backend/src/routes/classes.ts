@@ -3,8 +3,10 @@ import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { db } from "../db";
 import { requireTeacher } from "../lib/teacher-middleware";
+// "@prisma/client" below is the query library's generated types, not a database. Data lives in Turso.
+import type { Teacher } from "@prisma/client";
 
-const classesRouter = new Hono();
+const classesRouter = new Hono<{ Variables: { teacher: Teacher } }>();
 
 // Helper function to generate a unique join code
 function generateJoinCode(): string {
@@ -21,7 +23,7 @@ const createClassSchema = z.object({
   name: z.string().min(1, "Class name is required"),
   gradeLevel: z.string().min(1, "Grade level is required"),
   schoolYear: z.string().optional(),
-  teacherId: z.string().min(1, "Teacher ID is required"),
+  teacherId: z.string().optional(), // ignored: the authenticated teacher owns the class
 });
 
 const updateClassSchema = z.object({
@@ -133,17 +135,8 @@ classesRouter.post(
   async (c) => {
     const data = c.req.valid("json");
 
-    // Verify teacher exists
-    const teacher = await db.teacher.findUnique({
-      where: { id: data.teacherId },
-    });
-
-    if (!teacher) {
-      return c.json(
-        { error: { message: "Teacher not found", code: "NOT_FOUND" } },
-        404
-      );
-    }
+    // The class belongs to the authenticated teacher; a teacherId in the body is ignored.
+    const teacher = c.get("teacher");
 
     // Generate unique join code
     let joinCode = generateJoinCode();
@@ -163,7 +156,7 @@ classesRouter.post(
         gradeLevel: data.gradeLevel,
         schoolYear: data.schoolYear,
         joinCode,
-        teacherId: data.teacherId,
+        teacherId: teacher.id,
       },
     });
 
@@ -202,6 +195,13 @@ classesRouter.get("/:id", async (c) => {
     );
   }
 
+  if (classData.teacherId !== c.get("teacher").id) {
+    return c.json(
+      { error: { message: "You can only manage your own classes", code: "FORBIDDEN" } },
+      403
+    );
+  }
+
   return c.json({ data: classData });
 });
 
@@ -221,6 +221,13 @@ classesRouter.patch(
       return c.json(
         { error: { message: "Class not found", code: "NOT_FOUND" } },
         404
+      );
+    }
+
+    if (existingClass.teacherId !== c.get("teacher").id) {
+      return c.json(
+        { error: { message: "You can only manage your own classes", code: "FORBIDDEN" } },
+        403
       );
     }
 
@@ -253,6 +260,13 @@ classesRouter.delete("/:id", async (c) => {
     );
   }
 
+  if (existingClass.teacherId !== c.get("teacher").id) {
+    return c.json(
+      { error: { message: "You can only manage your own classes", code: "FORBIDDEN" } },
+      403
+    );
+  }
+
   // Delete class within a transaction to ensure atomicity with cascading deletes
   await db.$transaction(async (tx) => {
     await tx.class.delete({
@@ -275,6 +289,13 @@ classesRouter.post("/:id/regenerate-code", async (c) => {
     return c.json(
       { error: { message: "Class not found", code: "NOT_FOUND" } },
       404
+    );
+  }
+
+  if (existingClass.teacherId !== c.get("teacher").id) {
+    return c.json(
+      { error: { message: "You can only manage your own classes", code: "FORBIDDEN" } },
+      403
     );
   }
 
@@ -309,6 +330,13 @@ classesRouter.get("/:id/students", async (c) => {
     return c.json(
       { error: { message: "Class not found", code: "NOT_FOUND" } },
       404
+    );
+  }
+
+  if (classData.teacherId !== c.get("teacher").id) {
+    return c.json(
+      { error: { message: "You can only manage your own classes", code: "FORBIDDEN" } },
+      403
     );
   }
 
@@ -352,6 +380,13 @@ classesRouter.post(
       );
     }
 
+    if (classData.teacherId !== c.get("teacher").id) {
+      return c.json(
+        { error: { message: "You can only manage your own classes", code: "FORBIDDEN" } },
+        403
+      );
+    }
+
     // Check for duplicate name
     const existingStudent = await db.classStudent.findFirst({
       where: { classId: id, displayName },
@@ -380,6 +415,20 @@ classesRouter.post(
 classesRouter.delete("/:id/students/:studentId", async (c) => {
   const classId = c.req.param("id");
   const studentId = c.req.param("studentId");
+
+  const ownedClass = await db.class.findUnique({ where: { id: classId } });
+  if (!ownedClass) {
+    return c.json(
+      { error: { message: "Class not found", code: "NOT_FOUND" } },
+      404
+    );
+  }
+  if (ownedClass.teacherId !== c.get("teacher").id) {
+    return c.json(
+      { error: { message: "You can only manage your own classes", code: "FORBIDDEN" } },
+      403
+    );
+  }
 
   const existingStudent = await db.classStudent.findFirst({
     where: { id: studentId, classId },
@@ -414,6 +463,13 @@ classesRouter.get("/:id/assignments", async (c) => {
     return c.json(
       { error: { message: "Class not found", code: "NOT_FOUND" } },
       404
+    );
+  }
+
+  if (classData.teacherId !== c.get("teacher").id) {
+    return c.json(
+      { error: { message: "You can only manage your own classes", code: "FORBIDDEN" } },
+      403
     );
   }
 
@@ -470,6 +526,13 @@ classesRouter.post(
       );
     }
 
+    if (classData.teacherId !== c.get("teacher").id) {
+      return c.json(
+        { error: { message: "You can only manage your own classes", code: "FORBIDDEN" } },
+        403
+      );
+    }
+
     // Validate that the correct ID is provided for the assignment type
     if (data.assignmentType === "quiz" && !data.quizId) {
       return c.json(
@@ -516,6 +579,20 @@ classesRouter.patch(
     const assignmentId = c.req.param("assignmentId");
     const data = c.req.valid("json");
 
+    const ownedClass = await db.class.findUnique({ where: { id: classId } });
+    if (!ownedClass) {
+      return c.json(
+        { error: { message: "Class not found", code: "NOT_FOUND" } },
+        404
+      );
+    }
+    if (ownedClass.teacherId !== c.get("teacher").id) {
+      return c.json(
+        { error: { message: "You can only manage your own classes", code: "FORBIDDEN" } },
+        403
+      );
+    }
+
     const existingAssignment = await db.classAssignment.findFirst({
       where: { id: assignmentId, classId },
     });
@@ -547,6 +624,20 @@ classesRouter.patch(
 classesRouter.delete("/:id/assignments/:assignmentId", async (c) => {
   const classId = c.req.param("id");
   const assignmentId = c.req.param("assignmentId");
+
+  const ownedClass = await db.class.findUnique({ where: { id: classId } });
+  if (!ownedClass) {
+    return c.json(
+      { error: { message: "Class not found", code: "NOT_FOUND" } },
+      404
+    );
+  }
+  if (ownedClass.teacherId !== c.get("teacher").id) {
+    return c.json(
+      { error: { message: "You can only manage your own classes", code: "FORBIDDEN" } },
+      403
+    );
+  }
 
   const existingAssignment = await db.classAssignment.findFirst({
     where: { id: assignmentId, classId },
@@ -584,6 +675,13 @@ classesRouter.get("/:id/progress", async (c) => {
     );
   }
 
+  if (classData.teacherId !== c.get("teacher").id) {
+    return c.json(
+      { error: { message: "You can only manage your own classes", code: "FORBIDDEN" } },
+      403
+    );
+  }
+
   const progress = await db.studentProgress.findMany({
     where: {
       assignment: { classId: id },
@@ -618,6 +716,20 @@ classesRouter.put(
     const studentId = c.req.param("studentId");
     const assignmentId = c.req.param("assignmentId");
     const data = c.req.valid("json");
+
+    const ownedClass = await db.class.findUnique({ where: { id: classId } });
+    if (!ownedClass) {
+      return c.json(
+        { error: { message: "Class not found", code: "NOT_FOUND" } },
+        404
+      );
+    }
+    if (ownedClass.teacherId !== c.get("teacher").id) {
+      return c.json(
+        { error: { message: "You can only manage your own classes", code: "FORBIDDEN" } },
+        403
+      );
+    }
 
     // Verify student belongs to class
     const student = await db.classStudent.findFirst({

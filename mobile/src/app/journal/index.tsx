@@ -104,7 +104,9 @@ export default function JournalScreen() {
   const renderEntryCard = ({ item }: { item: JournalEntry }) => (
     <Pressable
       style={({ pressed }) => [styles.entryCard, pressed && styles.cardPressed]}
-      onPress={() => router.push(`/journal/entry/${item.id}`)}
+      onPress={() =>
+        router.push(`/journal/entry/${item.id}?journalId=${item.journalId ?? journal?.id ?? ''}`)
+      }
     >
       <View style={styles.entryHeader}>
         <Calendar size={14} color="#6B7280" />
