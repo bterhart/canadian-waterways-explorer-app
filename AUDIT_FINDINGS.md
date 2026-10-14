@@ -14,7 +14,7 @@ Every finding states **where** (`file:line`) and **how it was verified**. Three 
 | **PROBED** | Confirmed empirically by running the backend locally on `:3000` and sending requests (no Turso connectivity, so DB calls 500 — but auth middleware either fires 401 first or it doesn't). |
 | **UNVERIFIED** | Depends on live Turso data, Railway configuration, or a device build that could not be reached from this environment. Stated as a hypothesis, not a fact. |
 
-**What could NOT be checked, and why.** The sandbox's outbound proxy returns `403` for both the Turso host and the Railway host (the previous session, same environment id, had the identical limitation). Therefore: no live-schema introspection, no row counts, no check of which seeded ids/strings actually exist, no check of Railway env vars. Every claim about Turso *content* below is tagged UNVERIFIED. To unblock, allow the two hosts under the environment's Network access settings.
+**Network access.** At the time the body of this document was written the sandbox could reach neither the Turso host nor the Railway host, so Turso *content* claims were tagged UNVERIFIED. Access was granted later the same day; **§11 (Live verification addendum)** records what was then confirmed, corrected, or newly found against the live database and the production backend. Where §11 contradicts an earlier section, §11 wins.
 
 **Terminology.** The one and only database is **Turso**. `@prisma/client` + `@prisma/adapter-libsql` is the *query library* the backend uses to reach it; `schema.prisma` is a *declaration*, not the source of truth. The word "Prisma" below appears only where it is a literal library/file name.
 
@@ -24,7 +24,7 @@ Every finding states **where** (`file:line`) and **how it was verified**. Three 
 
 ## 1. Executive summary — the twelve things that matter most
 
-1. **Nine backend route groups have no authentication at all** (PROBED): admin contribution review, notable-figure create/edit/delete, journals, gamification, map-annotations, voyageur-journeys, image-health, the `/admin/image-export-csv` download, and the demo `/api/sample`. Anyone on the internet can approve contributions, grant unlimited points, read/write children's journals, or delete a notable figure. §2.1
+1. **Eight backend route groups have no authentication at all** (PROBED locally and on the production host): admin contribution review, notable-figure create/edit/delete, journals, gamification, map-annotations, voyageur-journeys, the `/admin/image-export-csv` download, and the demo `/api/sample`. Anyone on the internet can approve contributions, grant unlimited points, read/write children's journals, or delete a notable figure. §2.1 — **the three admin-facing groups are fixed in commit `fix(backend): require admin auth…` (pending deploy); the four student-facing groups need an identity design first (§10.6).**
 2. **Default credentials are published in the repo** (READ): `user_guide.md` and `RCGS_EXECUTIVE_SUMMARY.md` list teacher/admin/super-admin test accounts with passwords; two root scripts write the teacher password straight into Turso. Whether those rows exist live is UNVERIFIED — treat as compromised until checked. §2.2
 3. **All four `.env` files are tracked in git with live secrets** (Turso token, R2 keys, OpenAI key). §2.3
 4. **Admin contribution review is broken end-to-end**: the app never sends `reviewedBy`, the server requires it → every Approve/Reject returns 400. §3.1
@@ -55,8 +55,10 @@ Every finding states **where** (`file:line`) and **how it was verified**. Three 
 | `POST /api/map-annotations` and every `/:id` mutation | `map-annotations.ts` whole file | 400 ZodError | Anyone with an id owns the map; `PUT /:id` can flip `isPublic` |
 | `GET /api/journals/by-identifier/:identifier`, `POST /api/journals`, all entry/saved-location routes | `journals.ts` whole file | 500 / 400 | Read/write a child's journal, name, school, grade by guessing identifier or cuid |
 | `GET /api/voyageur-journeys/:id/start` and `/choice`, `/progress` | `voyageur-journey.ts` | 500 | `userId` is a client string |
-| `GET /api/admin/image-health`, `POST /api/admin/image-health/run` | `admin-image-health.ts:24,76` | READ | Anyone can start a full image scan (and the auto-repair in §6.3) |
-| `GET /admin/image-export-csv` | `backend/src/index.ts:67` | **200, full 106 KB CSV served** | Unauthenticated data export |
+| ~~`GET /api/admin/image-health`, `POST /run`~~ | `admin-image-health.ts:21` | **CORRECTION** — `router.use("*", requireAdmin)` guards the whole router; local and production probes both return 401. Earlier draft listed it in error. | — |
+| `GET /admin/image-export-csv` | `backend/src/index.ts:67` | **200, full 106 KB CSV served** (local AND production) | Unauthenticated data export — **FIXED** (requireAdmin), pending deploy |
+
+Status after fix commit: `admin.ts` contributions GET/PATCH, `notable-figures.ts` POST/PATCH/DELETE and `/admin/image-export-csv` now return 401 without a token (re-probed locally). `reviewedBy` defaults to the authenticated admin's name, which also repairs §3.1.
 | `GET /api/sample` | `sample.ts:5`, mounted `index.ts:85` | 200 | Demo route live in production |
 
 Routes that **do** carry auth but lack **ownership** checks (READ):
@@ -309,3 +311,38 @@ Map (waterways/locations/explorers/river-overview tiering/lazy KML fetch via `us
 - Mobile: all files under `src/app`, `src/components`, `src/lib`, `src/data` heads/keys; `app.json`, `eas.json`, `.env*`; typecheck run.
 - Cross-reference: `xref.py` (session scratchpad) parsed every `app.route()` mount, every `router.<verb>()` in `backend/src/routes`, every `api.<verb>()` in `mobile/src/lib/api` with its enclosing hook, and grepped every hook across screens. All 130 client calls resolve to a mounted route; breaks are in payload/auth/params, not URLs.
 - Prior-session context (`session_01K9kdFVxA3aDDckDafyxgkJ`): backend was never reachable from any cloud session; Railway start command `bun run src/index.ts`; 13 Railway env vars set incl. JWT secrets; KML lazy-load landed; Vibecode deps removed; EAS `appVersionSource: remote` + autoIncrement; TestFlight published.
+
+---
+
+## 11. Live verification addendum (2026-10-14, after network access was granted)
+
+Method: read-only introspection of live Turso via `@libsql/client` (`sqlite_master`, `PRAGMA table_info/foreign_key_list`, `COUNT(*)` per table; scratchpad `turso-live.md`), a declared-vs-live diff script, targeted read-only `SELECT`s, and read-only `GET` probes against the production Railway host. No production row was modified. (Logging in to a **local** backend with the documented moderator test account updated that account's `lastLoginAt`; nothing else.)
+
+### 11.1 Declared (`schema.prisma`) vs live Turso — task #3 closed
+- 48 live tables, 74 indexes. **No undeclared tables** — the Better-Auth-table hypothesis (I13) is false; no `user/session/account` tables exist.
+- **`ImageHealthLog` is declared but has NO table in Turso.** `jobs/image-health-check.ts:394,398` does `db.imageHealthLog.createMany/deleteMany` and `admin-image-health.ts:26,45` reads it → the nightly job's persistence step and both admin image-health endpoints (after auth) fail at runtime. Decision needed: push the table (via `push-turso-schema.ts` or equivalent SQL) or drop the feature. HIGH.
+- `Waterway.boundaryCoordinates` exists live but is undeclared; referenced by nothing in `src`/`scripts`. Harmless orphan column. LOW.
+- Every other table: column sets identical to the declaration (types/nullability not diffed beyond presence).
+
+### 11.2 Confirmed against live data
+- **§2.2 CRITICAL confirmed:** all three published test accounts exist and are `approved` — the teacher (`Teacher`), the moderator (`AdminUser`, role `moderator`) and the super-admin (`AdminUser`, role `super_admin`). The super-admin's password is printed in two tracked documents. Rotate this one before anything else.
+- **§3.11 CONFIRMED HIGH:** live `Waterway`/`Location`/`Explorer` ids are cuids (e.g. `cmlhaslql000km2zhocxl8zbv`). `locationReadingGuideData.ts` (slug keys) therefore never matches → waterway/location "Additional Study" is dead. `readingGuideData.ts`'s first key equals the live id of Samuel de Champlain → explorer guides work until any reseed.
+- **§3.12 confirmed:** `UserProgress` holds exactly two rows, `userId` = `test-user-123` and `demo-user-001`; `UserMapAnnotation`'s only row is `test-user-123`. The shared-identity problem is already visible in production data.
+- `UserContribution.reviewedBy` stores a display name ("Admin User"), not an id — the fix in §2.1 defaults to `admin.name` accordingly. One contribution is currently `pending`.
+- **Production probes (no token):** `GET /api/admin/contributions` → 200 with live rows incl. `contributorEmail`; `GET /admin/image-export-csv` → 200, 106,337 bytes; `GET /api/sample` → 200; `GET /api/journals/by-identifier/<random>` → 404 (router open, no auth); controls `/api/admin/quizzes`, `/api/teacher-approval/pending`, `/api/admin/image-health` → 401. Production is running code with these gaps as of today; the fix commit is not yet deployed.
+
+### 11.3 Row counts vs shipped copy (§8)
+| Copy claims | Live Turso |
+|---|---|
+| 26 lesson plans | 26 ✔ |
+| 4 field trips | **6** (`VirtualFieldTrip`) |
+| 14 documents | **48** (`PrimarySourceDocument`) |
+| 8 printables | 8 ✔ |
+| 33+ pronunciations | 33 ✔ |
+| 4 comparisons | 4 ✔ |
+| 16 timeline events | **23** |
+| 70+ waterways / 99 locations | 70 ✔ / **100** |
+| 298 Indigenous words | 298 ✔ (language split not verified) |
+| 14 notable figures | **19** |
+| "7 ranks" / "5 ranks" | n/a (code constant; 7) |
+Also: 30 `DailyChallenge` rows exist (so the daily challenge is not permanently empty as §3.6 feared — it depends on whether today's date is among them; not checked), 28 `Achievement`, 13 `Quiz` / 71 `QuizQuestion`, 92 `Explorer`, 48 `HistoricalEvent`, 2 `VoyageurJourney` / 23 `JourneyNode`, 3 `IndigenousStory`, 4 `VocabularyQuiz`. `JournalEntry`, `SavedLocation`, `StudentProgress`, `ClassAssignment`, `MapNote` are all **0 rows** — consistent with those features being unreachable from the app (§3.5, §3.7, §4.4).
