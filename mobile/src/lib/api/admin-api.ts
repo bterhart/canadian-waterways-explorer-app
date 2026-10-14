@@ -200,11 +200,12 @@ export interface AdminDocument {
   updatedAt: string;
 }
 
+// Shapes match backend admin-documents.ts (annotationSchema / vocabularySchema)
+// and the PrimarySourceDocument columns; there is no `description` column.
 export interface AdminDocumentDetail extends AdminDocument {
-  description: string | null;
   originalText: string | null;
   transcription: string | null;
-  annotations: Record<string, string> | null;
+  annotations: { gradeLevel: string; annotation: string }[] | null;
   vocabulary: { word: string; definition: string }[] | null;
   discussionQuestions: string[] | null;
   historicalContext: string | null;
@@ -221,10 +222,9 @@ export interface CreateDocumentPayload {
   originalYear?: number;
   imageUrl?: string;
   gradeLevel?: string;
-  description?: string;
   originalText?: string;
   transcription?: string;
-  annotations?: Record<string, string>;
+  annotations?: { gradeLevel: string; annotation: string }[];
   vocabulary?: { word: string; definition: string }[];
   discussionQuestions?: string[];
   historicalContext?: string;
@@ -247,7 +247,7 @@ export interface AdminPrintable {
   gradeLevel: string | null;
   topic: string;
   previewImageUrl: string | null;
-  pdfUrl: string | null;
+  fileUrl: string | null;
   isPublished: boolean;
   createdById: string | null;
   createdAt: string;
@@ -267,7 +267,7 @@ export interface CreatePrintablePayload {
   gradeLevel?: string;
   topic: string;
   previewImageUrl?: string;
-  pdfUrl?: string;
+  fileUrl?: string;
   content?: string;
   teacherNotes?: string;
   answerKey?: string;

@@ -50,7 +50,8 @@ function RootLayoutNav({ colorScheme }: { colorScheme: 'light' | 'dark' | null |
         <Stack.Screen name="pronunciations" options={{ headerShown: true }} />
         <Stack.Screen name="journal/index" options={{ headerShown: true }} />
         <Stack.Screen name="journal/entry/[id]" options={{ headerShown: true }} />
-        <Stack.Screen name="printables" options={{ headerShown: true }} />
+        <Stack.Screen name="printables/index" options={{ headerShown: true }} />
+        <Stack.Screen name="printables/[id]" options={{ headerShown: true }} />
         {/* Teacher Portal Screens */}
         <Stack.Screen name="teacher/login" options={{ headerShown: true }} />
         <Stack.Screen name="teacher/register" options={{ headerShown: true }} />

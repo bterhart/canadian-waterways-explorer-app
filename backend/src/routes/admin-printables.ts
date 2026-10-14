@@ -49,6 +49,7 @@ adminPrintablesRouter.get("/", async (c) => {
       gradeLevel: true,
       topic: true,
       previewImageUrl: true,
+      fileUrl: true,
       isPublished: true,
       createdAt: true,
       updatedAt: true,

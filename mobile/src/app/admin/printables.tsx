@@ -108,7 +108,7 @@ function PrintableCard({ printable, onEdit, onDelete }: PrintableCardProps) {
           </View>
 
           {/* PDF indicator */}
-          {printable.pdfUrl ? (
+          {printable.fileUrl ? (
             <View style={[styles.pdfBadge]}>
               <Download size={12} color={colors.waterBlue} />
               <Text style={[styles.pdfText]}>PDF</Text>

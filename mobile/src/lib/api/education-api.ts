@@ -29,6 +29,7 @@ import type {
   CreateAssignmentPayload,
   ClassAssignment,
   PrintableResource,
+  PrintableResourceDetail,
   IndigenousWord,
   WordOfTheDay,
   VocabularyQuizSummary,
@@ -755,7 +756,7 @@ export function usePrintableTopics() {
 export function usePrintable(id: string | null) {
   return useQuery({
     queryKey: printablesKeys.detail(id ?? ''),
-    queryFn: () => api.get<PrintableResource>(`/api/printables/${id}`),
+    queryFn: () => api.get<PrintableResourceDetail>(`/api/printables/${id}`),
     enabled: !!id,
   });
 }

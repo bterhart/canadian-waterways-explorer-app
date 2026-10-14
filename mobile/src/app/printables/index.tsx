@@ -11,19 +11,24 @@ import {
   Image,
   Linking,
 } from 'react-native';
-import { Stack } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import {
   Printer,
   Download,
   Filter,
   FileText,
+  Eye,
 } from 'lucide-react-native';
 import {
   usePrintables,
   usePrintableTypes,
   usePrintableTopics,
 } from '@/lib/api/education-api';
-import { getGradeLevelColor, getGradeLevelLabel, GRADE_LEVELS } from '@/lib/types/education';
+import {
+  getGradeLevelRangeColor,
+  getGradeLevelRangeLabel,
+  GRADE_LEVEL_RANGES,
+} from '@/lib/types/education';
 import type { PrintableResource } from '@/lib/types/education';
 
 const colors = {
@@ -32,6 +37,8 @@ const colors = {
   darkGreen: '#1A3A24',
 };
 
+// Keys match the live `resourceType` values (worksheet, map, timeline,
+// activity_sheet, quiz_printable) plus a few plausible future ones.
 const resourceTypeColors: Record<string, string> = {
   worksheet: '#3B82F6',
   map: '#10B981',
@@ -39,9 +46,14 @@ const resourceTypeColors: Record<string, string> = {
   flashcard: '#F97316',
   timeline: '#8B5CF6',
   activity: '#06B6D4',
+  activity_sheet: '#06B6D4',
+  quiz_printable: '#EF4444',
 };
 
+const formatResourceType = (type: string) => type.replace(/_/g, ' ');
+
 export default function PrintablesScreen() {
+  const router = useRouter();
   const [selectedType, setSelectedType] = useState<string | undefined>();
   const [selectedTopic, setSelectedTopic] = useState<string | undefined>();
   const [selectedGrade, setSelectedGrade] = useState<string | undefined>();
@@ -54,9 +66,9 @@ export default function PrintablesScreen() {
   const { data: resourceTypes } = usePrintableTypes();
   const { data: topics } = usePrintableTopics();
 
-  const handleDownload = (pdfUrl: string | null) => {
-    if (pdfUrl) {
-      Linking.openURL(pdfUrl);
+  const handleOpenFile = (fileUrl: string | null) => {
+    if (fileUrl) {
+      Linking.openURL(fileUrl);
     }
   };
 
@@ -97,18 +109,18 @@ export default function PrintablesScreen() {
                   },
                 ]}
               >
-                {item.resourceType}
+                {formatResourceType(item.resourceType)}
               </Text>
             </View>
             {item.gradeLevel ? (
               <View
                 style={[
                   styles.gradeBadge,
-                  { backgroundColor: getGradeLevelColor(item.gradeLevel) },
+                  { backgroundColor: getGradeLevelRangeColor(item.gradeLevel) },
                 ]}
               >
                 <Text style={styles.gradeBadgeText}>
-                  {getGradeLevelLabel(item.gradeLevel)}
+                  {getGradeLevelRangeLabel(item.gradeLevel)}
                 </Text>
               </View>
             ) : null}
@@ -132,13 +144,24 @@ export default function PrintablesScreen() {
         </View>
       </View>
 
-      <Pressable
-        style={styles.downloadButton}
-        onPress={() => handleDownload(item.pdfUrl ?? null)}
-      >
-        <Download size={18} color="white" />
-        <Text style={styles.downloadText}>Download PDF</Text>
-      </Pressable>
+      <View style={styles.actionRow}>
+        <Pressable
+          style={[styles.actionButton, styles.viewButton]}
+          onPress={() => router.push(`/printables/${item.id}`)}
+        >
+          <Eye size={18} color="white" />
+          <Text style={styles.actionText}>View Resource</Text>
+        </Pressable>
+        {item.fileUrl ? (
+          <Pressable
+            style={[styles.actionButton, styles.downloadButton]}
+            onPress={() => handleOpenFile(item.fileUrl)}
+          >
+            <Download size={18} color={colors.forestGreen} />
+            <Text style={[styles.actionText, styles.downloadText]}>Download</Text>
+          </Pressable>
+        ) : null}
+      </View>
     </View>
   );
 
@@ -228,7 +251,7 @@ export default function PrintablesScreen() {
                 All
               </Text>
             </Pressable>
-            {GRADE_LEVELS.map((grade) => (
+            {GRADE_LEVEL_RANGES.map((grade) => (
               <Pressable
                 key={grade}
                 style={[
@@ -412,18 +435,30 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#6B7280',
   },
-  downloadButton: {
+  actionRow: {
+    flexDirection: 'row',
+  },
+  actionButton: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-    backgroundColor: colors.forestGreen,
     padding: 14,
   },
-  downloadText: {
+  viewButton: {
+    backgroundColor: colors.forestGreen,
+  },
+  downloadButton: {
+    backgroundColor: colors.forestGreen + '15',
+  },
+  actionText: {
     fontSize: 14,
     fontWeight: '600',
     color: 'white',
+  },
+  downloadText: {
+    color: colors.forestGreen,
   },
   centerContainer: {
     flex: 1,
