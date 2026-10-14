@@ -428,9 +428,8 @@ export function useCreateJournalEntry() {
       payload: CreateEntryPayload;
     }) => api.post<JournalEntry>(`/api/journals/${journalId}/entries`, payload),
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: journalsKeys.detail(variables.journalId),
-      });
+      // The journal list reads by identifier and the entry screen by id: refresh both.
+      queryClient.invalidateQueries({ queryKey: journalsKeys.all });
     },
   });
 }
@@ -452,9 +451,8 @@ export function useUpdateJournalEntry() {
         payload
       ),
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: journalsKeys.detail(variables.journalId),
-      });
+      // The journal list reads by identifier and the entry screen by id: refresh both.
+      queryClient.invalidateQueries({ queryKey: journalsKeys.all });
     },
   });
 }
@@ -465,9 +463,8 @@ export function useDeleteJournalEntry() {
     mutationFn: ({ journalId, entryId }: { journalId: string; entryId: string }) =>
       api.delete<void>(`/api/journals/${journalId}/entries/${entryId}`),
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: journalsKeys.detail(variables.journalId),
-      });
+      // The journal list reads by identifier and the entry screen by id: refresh both.
+      queryClient.invalidateQueries({ queryKey: journalsKeys.all });
     },
   });
 }
@@ -483,9 +480,8 @@ export function useSaveLocation() {
       payload: { waterwayId?: string; locationId?: string; explorerId?: string; notes?: string };
     }) => api.post<SavedLocation>(`/api/journals/${journalId}/saved-locations`, payload),
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: journalsKeys.detail(variables.journalId),
-      });
+      // The journal list reads by identifier and the entry screen by id: refresh both.
+      queryClient.invalidateQueries({ queryKey: journalsKeys.all });
     },
   });
 }
@@ -501,9 +497,8 @@ export function useRemoveSavedLocation() {
       savedLocationId: string;
     }) => api.delete<void>(`/api/journals/${journalId}/saved-locations/${savedLocationId}`),
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: journalsKeys.detail(variables.journalId),
-      });
+      // The journal list reads by identifier and the entry screen by id: refresh both.
+      queryClient.invalidateQueries({ queryKey: journalsKeys.all });
     },
   });
 }
@@ -571,10 +566,9 @@ export function useCreateClass() {
   return useMutation({
     mutationFn: (payload: CreateClassPayload) =>
       api.post<ClassDetail>('/api/classes', payload),
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: teachersKeys.classes(variables.teacherId),
-      });
+    onSuccess: () => {
+      // The server assigns the class to the authenticated teacher; refresh every teacher query.
+      queryClient.invalidateQueries({ queryKey: teachersKeys.all });
     },
   });
 }
@@ -591,13 +585,19 @@ export function useUpdateClass() {
     }) => api.patch<ClassDetail>(`/api/classes/${id}`, payload),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: classesKeys.detail(variables.id) });
+      queryClient.invalidateQueries({ queryKey: teachersKeys.all });
     },
   });
 }
 
 export function useDeleteClass() {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => api.delete<void>(`/api/classes/${id}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: classesKeys.all });
+      queryClient.invalidateQueries({ queryKey: teachersKeys.all });
+    },
   });
 }
 
@@ -608,6 +608,7 @@ export function useRegenerateClassCode() {
       api.post<{ joinCode: string }>(`/api/classes/${classId}/regenerate-code`, {}),
     onSuccess: (_, classId) => {
       queryClient.invalidateQueries({ queryKey: classesKeys.detail(classId) });
+      queryClient.invalidateQueries({ queryKey: teachersKeys.all });
     },
   });
 }
@@ -647,6 +648,8 @@ export function useAddStudent() {
       queryClient.invalidateQueries({
         queryKey: classesKeys.detail(variables.classId),
       });
+      // The teacher dashboard's class list carries student/assignment counts.
+      queryClient.invalidateQueries({ queryKey: teachersKeys.all });
     },
   });
 }
@@ -663,6 +666,8 @@ export function useRemoveStudent() {
       queryClient.invalidateQueries({
         queryKey: classesKeys.detail(variables.classId),
       });
+      // The teacher dashboard's class list carries student/assignment counts.
+      queryClient.invalidateQueries({ queryKey: teachersKeys.all });
     },
   });
 }
@@ -692,6 +697,8 @@ export function useCreateAssignment() {
       queryClient.invalidateQueries({
         queryKey: classesKeys.detail(variables.classId),
       });
+      // The teacher dashboard's class list carries student/assignment counts.
+      queryClient.invalidateQueries({ queryKey: teachersKeys.all });
     },
   });
 }
@@ -713,6 +720,8 @@ export function useDeleteAssignment() {
       queryClient.invalidateQueries({
         queryKey: classesKeys.detail(variables.classId),
       });
+      // The teacher dashboard's class list carries student/assignment counts.
+      queryClient.invalidateQueries({ queryKey: teachersKeys.all });
     },
   });
 }
