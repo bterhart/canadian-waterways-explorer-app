@@ -1,5 +1,5 @@
 // React Query hooks for Canadian Waterways API
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api/api';
 import type {
   Waterway,
@@ -208,9 +208,16 @@ export function usePendingContributions(enabled: boolean = true) {
 }
 
 export function useReviewContribution() {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ id, status, adminNotes }: ReviewContributionPayload) =>
       api.patch<UserContribution>(`/api/admin/contributions/${id}`, { status, adminNotes }),
+    onSuccess: () => {
+      // Admin pending list, and the public per-waterway/location contribution lists
+      // (an approved contribution becomes visible in the detail sheets).
+      queryClient.invalidateQueries({ queryKey: adminKeys.all });
+      queryClient.invalidateQueries({ queryKey: contributionsKeys.all });
+    },
   });
 }
 
@@ -304,10 +311,19 @@ export interface CreateQuizPayload {
   isPublished?: boolean;
 }
 
+// Every quiz mutation refreshes both the admin caches and the public quiz caches:
+// publishing/editing a quiz must show up on the Quizzes tab without waiting for staleTime.
+const invalidateQuizCaches = (queryClient: ReturnType<typeof useQueryClient>) => {
+  queryClient.invalidateQueries({ queryKey: adminQuizzesKeys.all });
+  queryClient.invalidateQueries({ queryKey: quizzesKeys.all });
+};
+
 export function useCreateQuiz() {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (payload: CreateQuizPayload) =>
       api.post<Quiz>('/api/admin/quizzes', payload),
+    onSuccess: () => invalidateQuizCaches(queryClient),
   });
 }
 
@@ -322,15 +338,19 @@ export interface UpdateQuizPayload {
 }
 
 export function useUpdateQuiz() {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ id, ...payload }: UpdateQuizPayload) =>
       api.patch<Quiz>(`/api/admin/quizzes/${id}`, payload),
+    onSuccess: () => invalidateQuizCaches(queryClient),
   });
 }
 
 export function useDeleteQuiz() {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => api.delete<void>(`/api/admin/quizzes/${id}`),
+    onSuccess: () => invalidateQuizCaches(queryClient),
   });
 }
 
@@ -348,9 +368,11 @@ export interface AddQuizQuestionPayload {
 }
 
 export function useAddQuizQuestion() {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ quizId, ...payload }: AddQuizQuestionPayload) =>
       api.post<QuizQuestion>(`/api/admin/quizzes/${quizId}/questions`, payload),
+    onSuccess: () => invalidateQuizCaches(queryClient),
   });
 }
 
@@ -369,16 +391,20 @@ export interface UpdateQuizQuestionPayload {
 }
 
 export function useUpdateQuizQuestion() {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ quizId, questionId, ...payload }: UpdateQuizQuestionPayload) =>
       api.patch<QuizQuestion>(`/api/admin/quizzes/${quizId}/questions/${questionId}`, payload),
+    onSuccess: () => invalidateQuizCaches(queryClient),
   });
 }
 
 export function useDeleteQuizQuestion() {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ quizId, questionId }: { quizId: string; questionId: string }) =>
       api.delete<void>(`/api/admin/quizzes/${quizId}/questions/${questionId}`),
+    onSuccess: () => invalidateQuizCaches(queryClient),
   });
 }
 
