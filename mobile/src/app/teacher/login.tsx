@@ -1,5 +1,5 @@
 // Teacher Login Screen
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -15,7 +15,7 @@ import {
 import { useRouter, Stack, Link } from 'expo-router';
 import { GraduationCap, Mail, Lock, Eye, EyeOff } from 'lucide-react-native';
 import { useTeacherLogin } from '@/lib/api/education-api';
-import { setSession } from '@/lib/api/api';
+import { setSession, loadSession } from '@/lib/api/api';
 
 const colors = {
   forestGreen: '#2D5A3D',
@@ -28,6 +28,15 @@ export default function TeacherLoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+
+  // Already signed in (session persists for 7 days)? Skip the form.
+  useEffect(() => {
+    loadSession().then((session) => {
+      if (session?.kind === 'teacher') {
+        router.replace('/teacher/dashboard');
+      }
+    });
+  }, []);
 
   const loginMutation = useTeacherLogin();
 
