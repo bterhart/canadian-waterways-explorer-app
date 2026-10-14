@@ -18,6 +18,32 @@ const colors = {
   darkGreen: '#1A3A24',
 };
 
+// Stored `items` are free-form profiles. The label lives under one of these keys
+// depending on the template (name / perspective / route in the live data).
+const LABEL_KEYS = ['name', 'perspective', 'route', 'title'];
+
+function getItemLabel(item: Record<string, unknown>, index: number): string {
+  for (const key of LABEL_KEYS) {
+    const v = item[key];
+    if (typeof v === 'string' && v.trim()) return v;
+  }
+  const firstString = Object.values(item).find((v) => typeof v === 'string');
+  return (firstString as string | undefined) ?? `Item ${index + 1}`;
+}
+
+function getLabelKey(item: Record<string, unknown>): string | null {
+  for (const key of LABEL_KEYS) {
+    if (typeof item[key] === 'string') return key;
+  }
+  return null;
+}
+
+// "majorAchievements" -> "Major achievements", "startPoint" -> "Start point"
+function humanizeKey(key: string): string {
+  const spaced = key.replace(/([a-z0-9])([A-Z])/g, '$1 $2').replace(/[_-]+/g, ' ');
+  return spaced.charAt(0).toUpperCase() + spaced.slice(1).toLowerCase();
+}
+
 export default function ComparisonDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { data: comparison, isLoading, isError } = useComparison(id ?? null);
@@ -91,50 +117,66 @@ export default function ComparisonDetailScreen() {
                 <Text style={styles.itemNumberText}>{index + 1}</Text>
               </View>
               <Text style={styles.itemName}>
-                {(item as Record<string, unknown>).name as string || `Item ${index + 1}`}
+                {getItemLabel(item as Record<string, unknown>, index)}
               </Text>
             </View>
           ))}
         </View>
       </View>
 
-      {/* Comparison Table */}
+      {/* Side by side: every stored field of each item */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Comparison Details</Text>
-        {criteria.map((criterion, criterionIndex) => (
-          <View key={criterionIndex} style={styles.criterionSection}>
-            <View style={styles.criterionHeader}>
+        <Text style={styles.sectionTitle}>Side by Side</Text>
+        {items.map((item, itemIndex) => {
+          const itemData = item as Record<string, unknown>;
+          const labelKey = getLabelKey(itemData);
+          const fields = Object.entries(itemData).filter(
+            ([key, value]) => key !== labelKey && value !== null && value !== undefined && value !== ''
+          );
+          return (
+            <View key={itemIndex} style={styles.profileCard}>
+              <View style={styles.profileHeader}>
+                <View style={styles.itemNumber}>
+                  <Text style={styles.itemNumberText}>{itemIndex + 1}</Text>
+                </View>
+                <Text style={styles.profileTitle}>{getItemLabel(itemData, itemIndex)}</Text>
+              </View>
+              {fields.map(([key, value]) => (
+                <View key={key} style={styles.fieldRow}>
+                  <Text style={styles.fieldLabel}>{humanizeKey(key)}</Text>
+                  {Array.isArray(value) ? (
+                    value.map((entry, i) => (
+                      <View key={i} style={styles.bulletRow}>
+                        <View style={styles.bullet} />
+                        <Text style={styles.fieldValue}>{String(entry)}</Text>
+                      </View>
+                    ))
+                  ) : (
+                    <Text style={styles.fieldValue}>
+                      {typeof value === 'object' ? JSON.stringify(value) : String(value)}
+                    </Text>
+                  )}
+                </View>
+              ))}
+            </View>
+          );
+        })}
+      </View>
+
+      {/* Criteria: the questions to compare on */}
+      {criteria.length > 0 ? (
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Compare On</Text>
+          {criteria.map((criterion, criterionIndex) => (
+            <View key={criterionIndex} style={styles.criterionSection}>
               <Text style={styles.criterionTitle}>{criterion.criterion}</Text>
               {criterion.description ? (
-                <Text style={styles.criterionDescription}>
-                  {criterion.description}
-                </Text>
+                <Text style={styles.criterionDescription}>{criterion.description}</Text>
               ) : null}
             </View>
-            <View style={styles.comparisonRow}>
-              {items.map((item, itemIndex) => {
-                const itemData = item as Record<string, unknown>;
-                const value =
-                  itemData[criterion.criterion.toLowerCase().replace(/ /g, '')] ||
-                  itemData[criterion.criterion.toLowerCase()] ||
-                  'N/A';
-                return (
-                  <View key={itemIndex} style={styles.comparisonCell}>
-                    <Text style={styles.cellLabel}>
-                      {(itemData.name as string) || `Item ${itemIndex + 1}`}
-                    </Text>
-                    <Text style={styles.cellValue}>
-                      {typeof value === 'object'
-                        ? JSON.stringify(value)
-                        : String(value)}
-                    </Text>
-                  </View>
-                );
-              })}
-            </View>
-          </View>
-        ))}
-      </View>
+          ))}
+        </View>
+      ) : null}
 
       {/* Analysis Prompts */}
       {comparison.analysisPrompts && comparison.analysisPrompts.length > 0 ? (
@@ -263,13 +305,56 @@ const styles = StyleSheet.create({
     color: colors.darkGreen,
   },
   criterionSection: {
-    marginBottom: 20,
-    paddingBottom: 20,
+    marginBottom: 14,
+    paddingBottom: 14,
     borderBottomWidth: 1,
     borderBottomColor: '#F3F4F6',
   },
-  criterionHeader: {
+  profileCard: {
+    backgroundColor: '#F9FAFB',
+    borderRadius: 12,
+    padding: 14,
     marginBottom: 12,
+  },
+  profileHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginBottom: 10,
+  },
+  profileTitle: {
+    flex: 1,
+    fontSize: 16,
+    fontWeight: '700',
+    color: colors.darkGreen,
+  },
+  fieldRow: {
+    marginBottom: 10,
+  },
+  fieldLabel: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#6B7280',
+    marginBottom: 3,
+  },
+  fieldValue: {
+    flex: 1,
+    fontSize: 14,
+    color: '#374151',
+    lineHeight: 20,
+  },
+  bulletRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 8,
+    marginBottom: 4,
+  },
+  bullet: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: colors.forestGreen,
+    marginTop: 7,
   },
   criterionTitle: {
     fontSize: 16,
@@ -280,27 +365,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#6B7280',
     marginTop: 4,
-  },
-  comparisonRow: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  comparisonCell: {
-    flex: 1,
-    backgroundColor: '#F9FAFB',
-    padding: 12,
-    borderRadius: 10,
-  },
-  cellLabel: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#6B7280',
-    marginBottom: 6,
-  },
-  cellValue: {
-    fontSize: 14,
-    color: '#374151',
-    lineHeight: 20,
   },
   promptsHeader: {
     flexDirection: 'row',

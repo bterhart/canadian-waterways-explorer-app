@@ -163,17 +163,14 @@ export type DocumentType =
   | 'newspaper'
   | 'other';
 
+// Shapes as stored in Turso (PrimarySourceDocument.annotations / .vocabulary).
 export interface DocumentAnnotation {
-  id: string;
-  text: string;
-  x: number;
-  y: number;
+  gradeLevel: string;
+  annotation: string;
 }
 
-export interface VocabularyTerm {
-  term: string;
-  definition: string;
-}
+// 14 live documents store { word, definition }; 34 store plain strings.
+export type VocabularyTerm = { word: string; definition: string } | string;
 
 export interface DocumentSummary {
   id: string;
@@ -187,16 +184,17 @@ export interface DocumentSummary {
   createdAt: string;
 }
 
+// Mirrors the PrimarySourceDocument columns the public detail route returns.
 export interface DocumentDetail extends DocumentSummary {
-  description: string | null;
+  originalText: string | null;
   transcription: string | null;
-  contextualBackground: string | null;
-  historicalSignificance: string | null;
+  historicalContext: string | null;
   annotations: DocumentAnnotation[] | null;
   vocabulary: VocabularyTerm[] | null;
   discussionQuestions: string[] | null;
-  sourceUrl: string | null;
-  sourceAttribution: string | null;
+  explorerId: string | null;
+  waterwayId: string | null;
+  locationId: string | null;
   isPublished: boolean;
 }
 
@@ -436,8 +434,14 @@ export interface PrintableResource {
   gradeLevel: string | null;
   topic: string;
   previewImageUrl: string | null;
-  pdfUrl: string | null;
+  fileUrl: string | null; // column is `fileUrl`; null for every live row today
   createdAt: string;
+}
+
+// GET /api/printables/:id — the printable body is stored as HTML in `content`.
+export interface PrintableResourceDetail extends PrintableResource {
+  content: string | null;
+  isPublished: boolean;
 }
 
 // Grade level helper

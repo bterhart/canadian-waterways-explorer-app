@@ -38,6 +38,7 @@ printablesRouter.get("/", async (c) => {
       gradeLevel: true,
       topic: true,
       previewImageUrl: true,
+      fileUrl: true,
       createdAt: true,
     },
     orderBy: { createdAt: "desc" },
@@ -87,7 +88,10 @@ printablesRouter.get("/:id", async (c) => {
     );
   }
 
-  return c.json({ data: printable });
+  // Public route: never hand students the answer key or teacher notes.
+  const { answerKey: _answerKey, teacherNotes: _teacherNotes, ...publicFields } = printable;
+
+  return c.json({ data: publicFields });
 });
 
 export { printablesRouter };

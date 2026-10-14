@@ -7,7 +7,6 @@ import {
   StyleSheet,
   ActivityIndicator,
   Image,
-  Linking,
 } from 'react-native';
 import { useLocalSearchParams, Stack } from 'expo-router';
 import {
@@ -16,7 +15,7 @@ import {
   User,
   MessageCircle,
   BookOpen,
-  ExternalLink,
+  GraduationCap,
 } from 'lucide-react-native';
 import { useDocument } from '@/lib/api/education-api';
 import { getGradeLevelColor, getGradeLevelLabel } from '@/lib/types/education';
@@ -126,40 +125,32 @@ export default function DocumentDetailScreen() {
         </View>
       </View>
 
-      {/* Description */}
-      {document.description ? (
-        <Section
-          title="About This Document"
-          icon={<FileText size={20} color={colors.forestGreen} />}
-        >
-          <Text style={styles.bodyText}>{document.description}</Text>
-        </Section>
-      ) : null}
-
-      {/* Historical Context */}
-      {document.contextualBackground ? (
+      {/* Historical Context (present on all 48 live documents) */}
+      {document.historicalContext ? (
         <Section
           title="Historical Context"
           icon={<BookOpen size={20} color={colors.forestGreen} />}
         >
-          <Text style={styles.bodyText}>{document.contextualBackground}</Text>
+          <Text style={styles.bodyText}>{document.historicalContext}</Text>
         </Section>
       ) : null}
 
-      {/* Historical Significance */}
-      {document.historicalSignificance ? (
-        <View style={styles.significanceCard}>
-          <Text style={styles.significanceLabel}>Historical Significance</Text>
-          <Text style={styles.significanceText}>
-            {document.historicalSignificance}
-          </Text>
-        </View>
+      {/* Original Text (period spelling, where recorded) */}
+      {document.originalText ? (
+        <Section
+          title="Original Text"
+          icon={<FileText size={20} color={colors.forestGreen} />}
+        >
+          <View style={styles.transcriptionCard}>
+            <Text style={styles.transcriptionText}>{document.originalText}</Text>
+          </View>
+        </Section>
       ) : null}
 
       {/* Transcription */}
       {document.transcription ? (
         <Section
-          title="Transcription"
+          title={document.originalText ? 'Modern Transcription' : 'Transcription'}
           icon={<FileText size={20} color={colors.forestGreen} />}
         >
           <View style={styles.transcriptionCard}>
@@ -170,7 +161,22 @@ export default function DocumentDetailScreen() {
         </Section>
       ) : null}
 
-      {/* Vocabulary */}
+      {/* Grade-level annotations */}
+      {document.annotations && document.annotations.length > 0 ? (
+        <Section
+          title="Reading Notes by Grade"
+          icon={<GraduationCap size={20} color={colors.forestGreen} />}
+        >
+          {document.annotations.map((note, index) => (
+            <View key={index} style={styles.significanceCard}>
+              <Text style={styles.significanceLabel}>Grades {note.gradeLevel}</Text>
+              <Text style={styles.significanceText}>{note.annotation}</Text>
+            </View>
+          ))}
+        </Section>
+      ) : null}
+
+      {/* Vocabulary — stored either as { word, definition } or as plain strings */}
       {document.vocabulary && document.vocabulary.length > 0 ? (
         <Section
           title="Key Vocabulary"
@@ -178,8 +184,14 @@ export default function DocumentDetailScreen() {
         >
           {document.vocabulary.map((item, index) => (
             <View key={index} style={styles.vocabItem}>
-              <Text style={styles.vocabTerm}>{item.term}</Text>
-              <Text style={styles.vocabDefinition}>{item.definition}</Text>
+              {typeof item === 'string' ? (
+                <Text style={styles.vocabTerm}>{item}</Text>
+              ) : (
+                <>
+                  <Text style={styles.vocabTerm}>{item.word}</Text>
+                  <Text style={styles.vocabDefinition}>{item.definition}</Text>
+                </>
+              )}
             </View>
           ))}
         </Section>
@@ -198,27 +210,6 @@ export default function DocumentDetailScreen() {
             </View>
           ))}
         </Section>
-      ) : null}
-
-      {/* Source Attribution */}
-      {document.sourceAttribution || document.sourceUrl ? (
-        <View style={styles.sourceSection}>
-          <Text style={styles.sourceLabel}>Source</Text>
-          {document.sourceAttribution ? (
-            <Text style={styles.sourceText}>{document.sourceAttribution}</Text>
-          ) : null}
-          {document.sourceUrl ? (
-            <View style={styles.sourceLink}>
-              <ExternalLink size={14} color="#3B82F6" />
-              <Text
-                style={styles.sourceLinkText}
-                onPress={() => document.sourceUrl && Linking.openURL(document.sourceUrl)}
-              >
-                View Original Source
-              </Text>
-            </View>
-          ) : null}
-        </View>
       ) : null}
 
       <View style={styles.bottomSpacer} />
@@ -321,8 +312,7 @@ const styles = StyleSheet.create({
   },
   significanceCard: {
     backgroundColor: '#FEF3C7',
-    margin: 16,
-    marginBottom: 0,
+    marginBottom: 10,
     padding: 16,
     borderRadius: 12,
   },
@@ -387,36 +377,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: '#374151',
     lineHeight: 22,
-  },
-  sourceSection: {
-    backgroundColor: '#F9FAFB',
-    margin: 16,
-    padding: 16,
-    borderRadius: 12,
-  },
-  sourceLabel: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#6B7280',
-    marginBottom: 8,
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-  },
-  sourceText: {
-    fontSize: 14,
-    color: '#374151',
-    lineHeight: 20,
-  },
-  sourceLink: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    marginTop: 8,
-  },
-  sourceLinkText: {
-    fontSize: 14,
-    color: '#3B82F6',
-    fontWeight: '500',
   },
   bottomSpacer: {
     height: 32,
