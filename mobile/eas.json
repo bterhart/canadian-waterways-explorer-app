@@ -29,7 +29,8 @@
         "BACKEND_URL": "https://canadian-waterways-explorer-app-production.up.railway.app"
       },
       "ios": {
-        "distribution": "store"
+        "distribution": "store",
+        "image": "latest"
       },
       "android": {
         "distribution": "store"
