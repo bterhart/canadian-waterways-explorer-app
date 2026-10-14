@@ -33,7 +33,7 @@ import { S3Client, PutObjectCommand, HeadObjectCommand } from "@aws-sdk/client-s
 import * as fs from "fs";
 import * as path from "path";
 import sharp from "sharp";
-import { db } from "../src/db";
+import { db } from "../../src/db";
 
 // ── Config ─────────────────────────────────────────────────────────────────
 

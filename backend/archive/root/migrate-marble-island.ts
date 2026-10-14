@@ -1,7 +1,7 @@
 // Migration script to move Marble Island from Waterway to Location
 // Marble Island is a historic site in Hudson Bay, not a waterway
 
-import { db } from './src/db';
+import { db } from '../../src/db';
 
 const MARBLE_ISLAND_WATERWAY_ID = 'cml_marble_island';
 const HUDSON_BAY_WATERWAY_ID = 'cmlhaslrt001cm2zh9tknhhbe';

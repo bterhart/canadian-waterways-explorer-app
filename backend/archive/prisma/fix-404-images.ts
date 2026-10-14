@@ -1,4 +1,4 @@
-import { db } from "../src/db";
+import { db } from "../../src/db";
 
 const fixes: Record<string, string> = {
   "Bas-de-la-Rivière (Fort Alexander)": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Red_River_Valley.jpg/1280px-Red_River_Valley.jpg",

@@ -1,4 +1,4 @@
-import { db } from "../src/db";
+import { db } from "../../src/db";
 
 // These 3 specific Wikimedia file names don't exist — replace with confirmed working alternatives
 const URL_REPLACEMENTS: Record<string, string> = {

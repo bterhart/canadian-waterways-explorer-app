@@ -1,4 +1,4 @@
-import { db } from './src/db';
+import { db } from '../../src/db';
 
 async function main() {
   const location = await db.location.findFirst({
