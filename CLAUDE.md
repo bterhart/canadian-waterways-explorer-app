@@ -43,6 +43,6 @@ touching anything:
 
 ## Repository Overview
 
-**Repo**: `bterhart/Canadian_Waterways_App`
+**Repo**: `bterhart/canadian-waterways-explorer-app`
 **Two independently deployed layers:**
 
