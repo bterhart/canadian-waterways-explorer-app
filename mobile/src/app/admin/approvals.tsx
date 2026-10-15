@@ -27,6 +27,7 @@ import {
   adminApprovalKeys,
   type AdminUser,
 } from '@/lib/api/admin-api';
+import { usePromptModal } from '@/components/PromptModal';
 
 // Theme colors
 const colors = {
@@ -108,6 +109,7 @@ function AdminApprovalCard({ admin, onApprove, onReject }: AdminApprovalCardProp
 export default function AdminApprovalsScreen() {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { prompt, promptElement } = usePromptModal();
   const { data: pendingAdmins, isLoading, error, refetch } = usePendingAdmins(true);
   const approveMutation = useApproveAdmin();
   const rejectMutation = useRejectAdmin();
@@ -143,38 +145,29 @@ export default function AdminApprovalsScreen() {
     );
   };
 
-  const handleReject = (admin: AdminUser) => {
-    Alert.prompt(
-      'Reject Admin',
-      `Provide a reason for rejecting ${admin.name}:`,
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Reject',
-          style: 'destructive',
-          onPress: async (reason?: string) => {
-            if (!reason?.trim()) {
-              Alert.alert('Error', 'Please provide a rejection reason');
-              return;
-            }
-            setProcessingId(admin.id);
-            try {
-              await rejectMutation.mutateAsync({
-                id: admin.id,
-                payload: { rejectionReason: reason },
-              });
-              queryClient.invalidateQueries({ queryKey: adminApprovalKeys.pending() });
-              Alert.alert('Success', `${admin.name} has been rejected`);
-            } catch (err) {
-              Alert.alert('Error', 'Failed to reject admin. Please try again.');
-            } finally {
-              setProcessingId(null);
-            }
-          },
-        },
-      ],
-      'plain-text'
-    );
+  const handleReject = async (admin: AdminUser) => {
+    // The server requires a rejection reason of at least 10 characters.
+    const reason = await prompt({
+      title: 'Reject Admin',
+      message: `Provide a reason for rejecting ${admin.name}:`,
+      confirmText: 'Reject',
+      destructive: true,
+      minLength: 10,
+    });
+    if (reason === null) return;
+    setProcessingId(admin.id);
+    try {
+      await rejectMutation.mutateAsync({
+        id: admin.id,
+        payload: { rejectionReason: reason },
+      });
+      queryClient.invalidateQueries({ queryKey: adminApprovalKeys.pending() });
+      Alert.alert('Success', `${admin.name} has been rejected`);
+    } catch (err) {
+      Alert.alert('Error', 'Failed to reject admin. Please try again.');
+    } finally {
+      setProcessingId(null);
+    }
   };
 
   if (isLoading) {
@@ -270,6 +263,7 @@ export default function AdminApprovalsScreen() {
           </View>
         )}
       </ScrollView>
+      {promptElement}
     </View>
   );
 }
