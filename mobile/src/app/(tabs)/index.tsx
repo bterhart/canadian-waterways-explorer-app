@@ -1,7 +1,8 @@
 // Interactive Map Screen for Canadian Waterways Education
 import React, { useState, useRef, useCallback, useMemo, useEffect } from 'react';
 import { View, Text, ActivityIndicator, StyleSheet, TouchableOpacity, ScrollView, Linking } from 'react-native';
-import MapView, { Marker, PROVIDER_DEFAULT, Region, Polyline, Polygon } from 'react-native-maps';
+import MapView, { Marker, PROVIDER_DEFAULT, Region, Polyline, Polygon, type MapPressEvent } from 'react-native-maps';
+import type { LayoutChangeEvent } from 'react-native';
 import { Menu, ChevronDown, ChevronRight, Globe2, X } from 'lucide-react-native';
 import {
   useWaterways,
@@ -150,6 +151,87 @@ const bboxIntersectsRegion = (
 const overviewPathToCoordinates = (path: [number, number][]) =>
   path.map(([longitude, latitude]) => ({ latitude, longitude }));
 
+// How far (in screen pixels) a tap may land from a river and still select it. The map
+// library's own polyline hit test allows only 10 px regardless of zoom or stroke width,
+// which makes thin rivers nearly impossible to tap when zoomed out, so taps that reach
+// the map are re-tested here against the drawn overview geometry.
+const OVERVIEW_TAP_TOLERANCE_PX = 24;
+
+const distanceToSegmentPx = (
+  px: number, py: number,
+  ax: number, ay: number,
+  bx: number, by: number,
+): number => {
+  const dx = bx - ax;
+  const dy = by - ay;
+  if (dx === 0 && dy === 0) return Math.hypot(px - ax, py - ay);
+  const t = Math.max(0, Math.min(1, ((px - ax) * dx + (py - ay) * dy) / (dx * dx + dy * dy)));
+  return Math.hypot(px - (ax + t * dx), py - (ay + t * dy));
+};
+
+// Ray casting in lng/lat; good enough for lake and bay outlines at map scale
+const ringContains = (lng: number, lat: number, ring: [number, number][]): boolean => {
+  let inside = false;
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+    const [xi, yi] = ring[i];
+    const [xj, yj] = ring[j];
+    if ((yi > lat) !== (yj > lat) && lng < ((xj - xi) * (lat - yi)) / (yj - yi) + xi) {
+      inside = !inside;
+    }
+  }
+  return inside;
+};
+
+/** The id of the overview waterway nearest to a tap, or null if none is within tolerance. */
+const findOverviewRecordAtTap = (
+  tap: { latitude: number; longitude: number },
+  region: Region,
+  mapSize: { width: number; height: number },
+  records: WaterwayOverviewRecord[],
+  tier: OverviewTierName,
+): string | null => {
+  if (mapSize.width === 0 || mapSize.height === 0) return null;
+  const lngPerPx = region.longitudeDelta / mapSize.width;
+  const latPerPx = region.latitudeDelta / mapSize.height;
+  const tolLng = OVERVIEW_TAP_TOLERANCE_PX * lngPerPx;
+  const tolLat = OVERVIEW_TAP_TOLERANCE_PX * latPerPx;
+
+  let bestId: string | null = null;
+  let bestDistance = OVERVIEW_TAP_TOLERANCE_PX;
+
+  for (const record of records) {
+    if (record.bbox) {
+      const [minLng, minLat, maxLng, maxLat] = record.bbox;
+      if (
+        tap.longitude < minLng - tolLng || tap.longitude > maxLng + tolLng ||
+        tap.latitude < minLat - tolLat || tap.latitude > maxLat + tolLat
+      ) {
+        continue;
+      }
+    }
+    const paths = record.tiers[tier]?.paths;
+    if (!paths?.length) continue;
+
+    for (const path of paths) {
+      if (record.geometryKind === 'area' && ringContains(tap.longitude, tap.latitude, path)) {
+        return record.id;
+      }
+      for (let i = 0; i < path.length - 1; i += 1) {
+        const d = distanceToSegmentPx(
+          tap.longitude / lngPerPx, tap.latitude / latPerPx,
+          path[i][0] / lngPerPx, path[i][1] / latPerPx,
+          path[i + 1][0] / lngPerPx, path[i + 1][1] / latPerPx,
+        );
+        if (d < bestDistance) {
+          bestDistance = d;
+          bestId = record.id;
+        }
+      }
+    }
+  }
+  return bestId;
+};
+
 export default function MapScreen() {
   const { t } = useTranslation();
 
@@ -206,6 +288,8 @@ export default function MapScreen() {
   const markerRefs = useRef<Record<string, any>>({});
   // Ignore the map press MapKit reports right after an overlay (river line) press
   const lastOverlayPressAtRef = useRef(0);
+  // Map size in pixels, for converting the tap tolerance into degrees
+  const mapSizeRef = useRef({ width: 0, height: 0 });
 
   const isLoading = waterwaysLoading || locationsLoading;
   const isError = waterwaysError || locationsError;
@@ -544,13 +628,39 @@ export default function MapScreen() {
     bottomSheetRef.current?.close();
   }, [closePreview]);
 
-  const handleMapPress = useCallback(() => {
+  const handleMapLayout = useCallback((event: LayoutChangeEvent) => {
+    const { width, height } = event.nativeEvent.layout;
+    mapSizeRef.current = { width, height };
+  }, []);
+
+  const handleMapPress = useCallback((event: MapPressEvent) => {
     if (Date.now() - lastOverlayPressAtRef.current < 300) {
       return;
     }
+    // The native hit test missed (or was beyond its 10 px limit): try our own, wider one
+    if (shouldShowRiverOverview) {
+      const hitId = findOverviewRecordAtTap(
+        event.nativeEvent.coordinate,
+        mapRegion,
+        mapSizeRef.current,
+        visibleRiverOverviewRecords,
+        riverOverviewTier,
+      );
+      if (hitId) {
+        handleRiverOverviewPress(hitId);
+        return;
+      }
+    }
     handleDismissAll();
     setLegendVisible(false);
-  }, [handleDismissAll]);
+  }, [
+    shouldShowRiverOverview,
+    mapRegion,
+    visibleRiverOverviewRecords,
+    riverOverviewTier,
+    handleRiverOverviewPress,
+    handleDismissAll,
+  ]);
 
   // Pins carry no Callout child and no title, so MapKit draws no native callout; the docked
   // preview card below the map takes its place.
@@ -631,6 +741,7 @@ export default function MapScreen() {
         mapType="terrain"
         onRegionChangeComplete={handleRegionChangeComplete}
         onPress={handleMapPress}
+        onLayout={handleMapLayout}
       >
         {/* River overview layer for the initial home map */}
         {shouldShowRiverOverview
