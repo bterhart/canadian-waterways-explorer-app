@@ -30,6 +30,7 @@ import type {
   ClassAssignment,
   PrintableResource,
   PrintableResourceDetail,
+  MyClassMembership,
   IndigenousWord,
   WordOfTheDay,
   VocabularyQuizSummary,
@@ -155,6 +156,7 @@ export const teachersKeys = {
 
 export const classesKeys = {
   all: ['classes'] as const,
+  mine: (userId: string) => [...classesKeys.all, 'mine', userId] as const,
   detail: (id: string) => [...classesKeys.all, 'detail', id] as const,
   students: (id: string) => [...classesKeys.all, id, 'students'] as const,
   assignments: (id: string) => [...classesKeys.all, id, 'assignments'] as const,
@@ -614,12 +616,31 @@ export function useRegenerateClassCode() {
 }
 
 export function useJoinClass() {
+  const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (payload: { joinCode: string; displayName: string; studentCode?: string }) =>
+    mutationFn: (payload: {
+      joinCode: string;
+      displayName: string;
+      studentCode?: string;
+      userId: string; // device identity (lib/identity.ts)
+    }) =>
       api.post<{ student: { id: string }; class: { id: string; name: string } }>(
         '/api/classes/join',
         payload
       ),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: classesKeys.all });
+    },
+  });
+}
+
+/** A student's class memberships with active assignments and progress (device-id keyed). */
+export function useMyClasses(userId: string | null) {
+  return useQuery({
+    queryKey: classesKeys.mine(userId ?? ''),
+    queryFn: () =>
+      api.get<MyClassMembership[]>(`/api/classes/mine?userId=${encodeURIComponent(userId ?? '')}`),
+    enabled: !!userId,
   });
 }
 

@@ -30,6 +30,7 @@ import {
   HelpCircle,
   Info,
 } from 'lucide-react-native';
+import { Users as ClassIcon } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTranslation } from '@/lib/i18n';
 
@@ -273,6 +274,12 @@ export default function LearnHubScreen() {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>{t('quickAccess')}</Text>
         <View style={styles.quickLinksContainer}>
+          <QuickLink
+            title={t('myClass')}
+            icon={<ClassIcon size={20} color="#D97706" />}
+            color="#D97706"
+            onPress={() => router.push('/my-class')}
+          />
           <QuickLink
             title={t('myJournal')}
             icon={<BookMarked size={20} color={colors.forestGreen} />}

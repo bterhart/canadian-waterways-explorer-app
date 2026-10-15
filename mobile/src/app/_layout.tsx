@@ -48,6 +48,8 @@ function RootLayoutNav({ colorScheme }: { colorScheme: 'light' | 'dark' | null |
         <Stack.Screen name="comparisons/index" options={{ headerShown: true }} />
         <Stack.Screen name="comparisons/[id]" options={{ headerShown: true }} />
         <Stack.Screen name="pronunciations" options={{ headerShown: true }} />
+        <Stack.Screen name="join-class" options={{ headerShown: true }} />
+        <Stack.Screen name="my-class" options={{ headerShown: true }} />
         <Stack.Screen name="journal/index" options={{ headerShown: true }} />
         <Stack.Screen name="journal/entry/[id]" options={{ headerShown: true }} />
         <Stack.Screen name="printables/index" options={{ headerShown: true }} />
