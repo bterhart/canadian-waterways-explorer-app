@@ -24,6 +24,7 @@ import {
   adminKeys,
   type PendingContribution,
 } from '@/lib/api/waterways-api';
+import { usePromptModal } from '@/components/PromptModal';
 
 // Theme colors
 const colors = {
@@ -134,6 +135,7 @@ function ContributionCard({ contribution, onApprove, onReject }: ContributionCar
 export default function AdminContributionsScreen() {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { prompt, promptElement } = usePromptModal();
   const { data: contributions, isLoading, error, refetch } = usePendingContributions(true);
   const reviewMutation = useReviewContribution();
 
@@ -168,35 +170,28 @@ export default function AdminContributionsScreen() {
     );
   };
 
-  const handleReject = (contribution: PendingContribution) => {
-    Alert.prompt(
-      'Reject Contribution',
-      'Provide a reason for rejecting this contribution (optional):',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Reject',
-          style: 'destructive',
-          onPress: async (reason?: string) => {
-            setProcessingId(contribution.id);
-            try {
-              await reviewMutation.mutateAsync({
-                id: contribution.id,
-                status: 'rejected',
-                adminNotes: reason,
-              });
-              queryClient.invalidateQueries({ queryKey: adminKeys.pendingContributions() });
-              Alert.alert('Success', 'Contribution has been rejected');
-            } catch (err) {
-              Alert.alert('Error', 'Failed to reject contribution. Please try again.');
-            } finally {
-              setProcessingId(null);
-            }
-          },
-        },
-      ],
-      'plain-text'
-    );
+  const handleReject = async (contribution: PendingContribution) => {
+    const reason = await prompt({
+      title: 'Reject Contribution',
+      message: 'Provide a reason for rejecting this contribution (optional):',
+      confirmText: 'Reject',
+      destructive: true,
+    });
+    if (reason === null) return;
+    setProcessingId(contribution.id);
+    try {
+      await reviewMutation.mutateAsync({
+        id: contribution.id,
+        status: 'rejected',
+        adminNotes: reason || undefined,
+      });
+      queryClient.invalidateQueries({ queryKey: adminKeys.pendingContributions() });
+      Alert.alert('Success', 'Contribution has been rejected');
+    } catch (err) {
+      Alert.alert('Error', 'Failed to reject contribution. Please try again.');
+    } finally {
+      setProcessingId(null);
+    }
   };
 
   if (isLoading) {
@@ -292,6 +287,7 @@ export default function AdminContributionsScreen() {
           </View>
         )}
       </ScrollView>
+      {promptElement}
     </View>
   );
 }

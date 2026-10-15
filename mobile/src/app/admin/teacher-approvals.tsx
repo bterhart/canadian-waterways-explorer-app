@@ -27,6 +27,7 @@ import {
   teacherApprovalKeys,
   type Teacher,
 } from '@/lib/api/admin-api';
+import { usePromptModal } from '@/components/PromptModal';
 
 // Theme colors
 const colors = {
@@ -126,6 +127,7 @@ function TeacherApprovalCard({ teacher, onApprove, onReject }: TeacherApprovalCa
 export default function TeacherApprovalsScreen() {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { prompt, promptElement } = usePromptModal();
   const [activeTab, setActiveTab] = useState<'pending' | 'all'>('pending');
 
   const { data: pendingTeachers, isLoading: pendingLoading, error: pendingError, refetch: refetchPending } = usePendingTeachers(true);
@@ -166,38 +168,30 @@ export default function TeacherApprovalsScreen() {
     );
   };
 
-  const handleReject = (teacher: Teacher) => {
-    Alert.prompt(
-      'Reject Teacher',
-      `Provide a reason for rejecting ${teacher.name}:`,
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Reject',
-          style: 'destructive',
-          onPress: async (reason?: string) => {
-            if (!reason?.trim()) {
-              Alert.alert('Error', 'Please provide a rejection reason');
-              return;
-            }
-            setProcessingId(teacher.id);
-            try {
-              await rejectMutation.mutateAsync({
-                id: teacher.id,
-                payload: { rejectionReason: reason },
-              });
-              queryClient.invalidateQueries({ queryKey: teacherApprovalKeys.pending() });
-              Alert.alert('Success', `${teacher.name} has been rejected`);
-            } catch (err) {
-              Alert.alert('Error', 'Failed to reject teacher. Please try again.');
-            } finally {
-              setProcessingId(null);
-            }
-          },
-        },
-      ],
-      'plain-text'
-    );
+  const handleReject = async (teacher: Teacher) => {
+    // The server requires a rejection reason of at least 10 characters.
+    const reason = await prompt({
+      title: 'Reject Teacher',
+      message: `Provide a reason for rejecting ${teacher.name}:`,
+      confirmText: 'Reject',
+      destructive: true,
+      minLength: 10,
+    });
+    if (reason === null) return;
+    setProcessingId(teacher.id);
+    try {
+      await rejectMutation.mutateAsync({
+        id: teacher.id,
+        payload: { rejectionReason: reason },
+      });
+      queryClient.invalidateQueries({ queryKey: teacherApprovalKeys.pending() });
+      queryClient.invalidateQueries({ queryKey: teacherApprovalKeys.all });
+      Alert.alert('Success', `${teacher.name} has been rejected`);
+    } catch (err) {
+      Alert.alert('Error', 'Failed to reject teacher. Please try again.');
+    } finally {
+      setProcessingId(null);
+    }
   };
 
   if (isLoading) {
@@ -306,6 +300,7 @@ export default function TeacherApprovalsScreen() {
           </View>
         )}
       </ScrollView>
+      {promptElement}
     </View>
   );
 }
