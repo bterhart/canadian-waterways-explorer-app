@@ -4,6 +4,7 @@ import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import { ArrowLeft, Check, X, Trophy, ChevronRight, RotateCcw, AlertCircle } from 'lucide-react-native';
 import { cn } from '@/lib/cn';
 import { useQuiz, useSubmitQuizAttempt } from '@/lib/api/education-api';
+import { useDeviceId } from '@/lib/identity';
 import type { QuizQuestion, QuizOption, QuizAttemptResult } from '@/lib/types/education';
 
 // Theme colors
@@ -183,6 +184,7 @@ export default function QuizScreen() {
   // Fetch quiz from backend
   const { data: quiz, isLoading, isError, error } = useQuiz(id ?? null);
   const submitAttemptMutation = useSubmitQuizAttempt();
+  const deviceId = useDeviceId();
 
   // Handle quiz submission
   const handleSubmitQuiz = async () => {
@@ -194,6 +196,7 @@ export default function QuizScreen() {
       const response = await submitAttemptMutation.mutateAsync({
         quizId: id,
         payload: {
+          userId: deviceId ?? undefined,
           answers: userAnswers.map(a => ({
             questionId: a.questionId,
             selectedAnswer: a.selectedOptionId,
@@ -331,6 +334,7 @@ export default function QuizScreen() {
       const response = await submitAttemptMutation.mutateAsync({
         quizId: id,
         payload: {
+          userId: deviceId ?? undefined,
           answers: answers.map(a => ({
             questionId: a.questionId,
             selectedAnswer: a.selectedOptionId,

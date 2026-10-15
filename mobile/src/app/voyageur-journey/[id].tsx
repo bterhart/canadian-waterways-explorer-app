@@ -27,7 +27,6 @@ import {
   X,
 } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import MapView, { Marker } from 'react-native-maps';
 import {
   useVoyageurJourney,
@@ -35,10 +34,10 @@ import {
   useMakeJourneyChoice,
   useJourneyProgress,
 } from '@/lib/api/education-api';
+import { getDeviceId } from '@/lib/identity';
 import type { JourneyNode, JourneyChoice, JourneyProgress } from '@/lib/types/education';
 
 const { width, height } = Dimensions.get('window');
-const USER_ID_KEY = '@waterways_user_id';
 
 // Theme colors
 const colors = {
@@ -52,19 +51,6 @@ const colors = {
   riverBlue: '#3B82F6',
 };
 
-// Generate or retrieve a persistent user ID
-async function getUserId(): Promise<string> {
-  try {
-    const existingId = await AsyncStorage.getItem(USER_ID_KEY);
-    if (existingId) return existingId;
-
-    const newId = `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    await AsyncStorage.setItem(USER_ID_KEY, newId);
-    return newId;
-  } catch {
-    return `user_${Date.now()}`;
-  }
-}
 
 interface HistoricalFactModalProps {
   visible: boolean;
@@ -208,7 +194,7 @@ export default function VoyageurJourneyPlayScreen() {
 
   // Initialize user ID
   useEffect(() => {
-    getUserId().then(setUserId);
+    getDeviceId().then(setUserId);
   }, []);
 
   // Check for existing progress or start journey

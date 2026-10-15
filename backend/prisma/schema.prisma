@@ -242,6 +242,7 @@ model QuizQuestion {
 model QuizAttempt {
   id              String    @id @default(cuid())
   quizId          String
+  userId          String?   // anonymous device identity; lets class progress attribute attempts to a student
   studentName     String?
   studentGrade    String?
   schoolName      String?
@@ -255,6 +256,8 @@ model QuizAttempt {
   completedAt     DateTime?
   createdAt       DateTime  @default(now())
   quiz            Quiz      @relation(fields: [quizId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model LessonPlan {
@@ -497,12 +500,14 @@ model ClassStudent {
   classId     String
   displayName String
   studentCode String?
+  userId      String?           // anonymous device identity (mobile lib/identity.ts); links this membership to the student's data
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
   class       Class             @relation(fields: [classId], references: [id], onDelete: Cascade)
   progress    StudentProgress[]
 
   @@unique([classId, displayName])
+  @@index([userId])
 }
 
 model ClassAssignment {

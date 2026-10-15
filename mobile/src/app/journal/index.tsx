@@ -1,5 +1,5 @@
 // Student Journal Screen
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -19,12 +19,12 @@ import {
   ChevronRight,
   User,
 } from 'lucide-react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   useJournalByIdentifier,
   useCreateOrGetJournal,
   useCreateJournalEntry,
 } from '@/lib/api/education-api';
+import { useDeviceId } from '@/lib/identity';
 import type { JournalEntry } from '@/lib/types/education';
 
 const colors = {
@@ -33,12 +33,10 @@ const colors = {
   darkGreen: '#1A3A24',
 };
 
-const JOURNAL_IDENTIFIER_KEY = '@waterways_journal_identifier';
-
 export default function JournalScreen() {
   const router = useRouter();
-  const [identifier, setIdentifier] = useState<string | null>(null);
-  const [showSetup, setShowSetup] = useState(false);
+  // The journal is keyed by the device identity shared with every other student feature.
+  const identifier = useDeviceId();
   const [name, setName] = useState('');
   const [school, setSchool] = useState('');
   const [grade, setGrade] = useState('');
@@ -46,46 +44,33 @@ export default function JournalScreen() {
   const {
     data: journal,
     isLoading: journalLoading,
+    isError: journalError,
+    error,
     refetch,
   } = useJournalByIdentifier(identifier);
   const createJournal = useCreateOrGetJournal();
 
-  useEffect(() => {
-    loadIdentifier();
-  }, []);
-
-  const loadIdentifier = async () => {
-    try {
-      const stored = await AsyncStorage.getItem(JOURNAL_IDENTIFIER_KEY);
-      if (stored) {
-        setIdentifier(stored);
-      } else {
-        setShowSetup(true);
-      }
-    } catch {
-      setShowSetup(true);
-    }
-  };
+  // No journal exists yet for this device (backend 404) → show the one-time setup form.
+  const showSetup =
+    !!identifier &&
+    !journal &&
+    journalError &&
+    (error instanceof Error ? error.message.toLowerCase().includes('not found') : false);
 
   const handleCreateJournal = async () => {
+    if (!identifier) return;
     if (!name.trim()) {
       Alert.alert('Name Required', 'Please enter your name to create a journal.');
       return;
     }
 
-    const newIdentifier = `student_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-
     try {
       await createJournal.mutateAsync({
-        studentIdentifier: newIdentifier,
+        studentIdentifier: identifier,
         studentName: name.trim(),
         schoolName: school.trim() || undefined,
         gradeLevel: grade.trim() || undefined,
       });
-
-      await AsyncStorage.setItem(JOURNAL_IDENTIFIER_KEY, newIdentifier);
-      setIdentifier(newIdentifier);
-      setShowSetup(false);
       refetch();
     } catch (error) {
       Alert.alert('Error', 'Unable to create journal. Please try again.');

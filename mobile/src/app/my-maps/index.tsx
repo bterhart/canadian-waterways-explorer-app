@@ -27,6 +27,7 @@ import {
 } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useUserMapAnnotations, useDeleteMapAnnotation } from '@/lib/api/education-api';
+import { useDeviceId } from '@/lib/identity';
 import type { UserMapAnnotation } from '@/lib/types/education';
 
 const { width } = Dimensions.get('window');
@@ -43,8 +44,6 @@ const colors = {
   purple: '#8B5CF6',
 };
 
-// Mock user ID - in production this would come from auth context
-const MOCK_USER_ID = 'student-user-001';
 
 interface MapCardProps {
   map: UserMapAnnotation;
@@ -179,7 +178,8 @@ export default function MyMapsScreen() {
   const router = useRouter();
   const [refreshing, setRefreshing] = useState(false);
 
-  const { data: maps, isLoading, error, refetch } = useUserMapAnnotations(MOCK_USER_ID);
+  const userId = useDeviceId();
+  const { data: maps, isLoading, error, refetch } = useUserMapAnnotations(userId);
   const deleteMap = useDeleteMapAnnotation();
 
   const onRefresh = useCallback(async () => {
@@ -197,8 +197,9 @@ export default function MyMapsScreen() {
   };
 
   const handleDeleteMap = (map: UserMapAnnotation) => {
+    if (!userId) return;
     deleteMap.mutate(
-      { id: map.id, userId: MOCK_USER_ID },
+      { id: map.id, userId },
       {
         onSuccess: () => {
           refetch();

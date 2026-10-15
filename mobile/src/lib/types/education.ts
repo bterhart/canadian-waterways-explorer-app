@@ -1115,6 +1115,7 @@ export interface QuizAttemptPayload {
   studentName?: string;
   studentGrade?: string;
   schoolName?: string;
+  userId?: string; // device identity (lib/identity.ts) so the attempt can be attributed to a student
   answers: QuizAttemptAnswer[];
 }
 
