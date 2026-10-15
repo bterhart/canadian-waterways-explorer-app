@@ -29,14 +29,18 @@ explorersRouter.get("/:id", async (c) => {
     include: {
       waterways: {
         include: {
+          // Only what the app reads. A full waterway row carries kmlData (up to 12.7 MB per
+          // waterway), which made this response 15 MB for explorers of the Great Lakes.
           waterway: {
-            include: {
-              type: true
-            }
-          }
-        }
-      }
-    }
+            select: {
+              id: true,
+              name: true,
+              type: true,
+            },
+          },
+        },
+      },
+    },
   });
 
   if (!explorer) {
