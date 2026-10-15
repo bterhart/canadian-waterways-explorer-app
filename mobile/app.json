@@ -18,6 +18,7 @@
       }
     },
     "android": {
+      "package": "com.bterhart.canadianwaterwaysexplorer",
       "edgeToEdgeEnabled": true
     },
     "plugins": [

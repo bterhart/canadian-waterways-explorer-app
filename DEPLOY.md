@@ -161,9 +161,26 @@ and branch when prompted) and, when finished, *Submit to App Store* on the build
 This requires linking the GitHub repo in the project's settings once.
 
 ### Android
-`eas.json` also defines a store Android build, but `app.json` has **no Google Maps API key**
-(`expo.android.config.googleMaps.apiKey`) — every map screen renders blank on Android.
-Do not build or ship Android until that is fixed.
+On Android, react-native-maps only works with Google Maps, which needs an API key. The key must
+not be committed (the repo is public), so `mobile/app.config.js` injects it from an EAS
+environment variable at build time. One-time setup:
+
+1. Google Cloud Console → create (or reuse) a project → **APIs & Services → Library → "Maps SDK
+   for Android" → Enable**.
+2. **Credentials → Create credentials → API key.** Restrict it: *Application restrictions* =
+   Android apps, package name `com.bterhart.canadianwaterwaysexplorer`, SHA-1 from
+   `eas credentials --platform android` (production keystore); *API restrictions* = Maps SDK for
+   Android only.
+3. Store it for EAS builds (from `C:\dev\canadian-waterways-explorer-app\mobile`):
+   ```powershell
+   eas env:create --scope project --environment production --name GOOGLE_MAPS_ANDROID_API_KEY --value <paste key> --visibility secret
+   ```
+4. Build and submit:
+   ```powershell
+   eas build --platform android --profile production
+   eas submit --platform android --profile production --latest
+   ```
+Until step 3 is done, do not ship Android: every map screen renders blank there.
 
 ---
 
