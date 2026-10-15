@@ -387,7 +387,53 @@ export function useGrantSuperAdmin() {
   });
 }
 
+/** Super-admin only. The server requires a reason of at least 10 characters. */
+export function useSuspendAdmin() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, reason }: { id: string; reason: string }) =>
+      api.post<{ message: string; admin: AdminUser }>(`/api/admin-approval/suspend/${id}`, { reason }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: adminApprovalKeys.all });
+    },
+  });
+}
+
+export function useReactivateAdmin() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) =>
+      api.post<{ message: string; admin: AdminUser }>(`/api/admin-approval/reactivate/${id}`, {}),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: adminApprovalKeys.all });
+    },
+  });
+}
+
 // =========== Teacher Approval Hooks ===========
+
+/** Any approved admin. The server requires a reason of at least 10 characters. */
+export function useSuspendTeacher() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, reason }: { id: string; reason: string }) =>
+      api.post<{ message: string; teacher: Teacher }>(`/api/teacher-approval/suspend/${id}`, { reason }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: teacherApprovalKeys.all });
+    },
+  });
+}
+
+export function useReactivateTeacher() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) =>
+      api.post<{ message: string; teacher: Teacher }>(`/api/teacher-approval/reactivate/${id}`, {}),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: teacherApprovalKeys.all });
+    },
+  });
+}
 
 export function usePendingTeachers(enabled: boolean = false) {
   return useQuery({

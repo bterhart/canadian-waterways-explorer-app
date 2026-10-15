@@ -22,9 +22,12 @@ import {
 import {
   useAllAdmins,
   useGrantSuperAdmin,
+  useSuspendAdmin,
+  useReactivateAdmin,
   adminApprovalKeys,
   type AdminUser,
 } from '@/lib/api/admin-api';
+import { usePromptModal } from '@/components/PromptModal';
 
 // Theme colors
 const colors = {
@@ -55,9 +58,11 @@ const statusColors: Record<string, { bg: string; text: string }> = {
 interface AdminUserCardProps {
   admin: AdminUser;
   onGrantSuperAdmin?: () => void;
+  onSuspend?: () => void;
+  onReactivate?: () => void;
 }
 
-function AdminUserCard({ admin, onGrantSuperAdmin }: AdminUserCardProps) {
+function AdminUserCard({ admin, onGrantSuperAdmin, onSuspend, onReactivate }: AdminUserCardProps) {
   const statusStyle = statusColors[admin.status] ?? statusColors.pending;
   const isSuperAdmin = admin.role === 'super_admin';
 
@@ -129,12 +134,27 @@ function AdminUserCard({ admin, onGrantSuperAdmin }: AdminUserCardProps) {
           </View>
         ) : null}
 
-        {/* Grant super admin button (only for non-super-admins and approved admins) */}
-        {!isSuperAdmin && admin.status === 'approved' && onGrantSuperAdmin ? (
+        {/* Actions: approved non-super-admins can be promoted or suspended; suspended ones reactivated.
+            Super-admins cannot be suspended (server rule). */}
+        {!isSuperAdmin && admin.status === 'approved' && (onGrantSuperAdmin || onSuspend) ? (
           <View style={styles.actionsRow}>
-            <Pressable style={styles.grantButton} onPress={onGrantSuperAdmin}>
-              <Crown size={18} color={colors.white} />
-              <Text style={styles.grantButtonText}>Grant Super Admin</Text>
+            {onGrantSuperAdmin ? (
+              <Pressable style={styles.grantButton} onPress={onGrantSuperAdmin}>
+                <Crown size={18} color={colors.white} />
+                <Text style={styles.grantButtonText}>Grant Super Admin</Text>
+              </Pressable>
+            ) : null}
+            {onSuspend ? (
+              <Pressable style={styles.suspendButton} onPress={onSuspend}>
+                <Text style={styles.grantButtonText}>Suspend</Text>
+              </Pressable>
+            ) : null}
+          </View>
+        ) : null}
+        {admin.status === 'suspended' && onReactivate ? (
+          <View style={styles.actionsRow}>
+            <Pressable style={styles.reactivateButton} onPress={onReactivate}>
+              <Text style={styles.grantButtonText}>Reactivate</Text>
             </Pressable>
           </View>
         ) : null}
@@ -148,8 +168,54 @@ export default function AdminUsersScreen() {
   const queryClient = useQueryClient();
   const { data: admins, isLoading, error, refetch } = useAllAdmins();
   const grantSuperAdminMutation = useGrantSuperAdmin();
+  const suspendMutation = useSuspendAdmin();
+  const reactivateMutation = useReactivateAdmin();
+  const { prompt, promptElement } = usePromptModal();
 
   const [processingId, setProcessingId] = useState<string | null>(null);
+
+  const handleSuspend = async (admin: AdminUser) => {
+    // The server requires a suspension reason of at least 10 characters.
+    const reason = await prompt({
+      title: 'Suspend Admin',
+      message: `${admin.name} will no longer be able to sign in. Provide a reason:`,
+      confirmText: 'Suspend',
+      destructive: true,
+      minLength: 10,
+    });
+    if (reason === null) return;
+    setProcessingId(admin.id);
+    try {
+      await suspendMutation.mutateAsync({ id: admin.id, reason });
+      Alert.alert('Suspended', `${admin.name} has been suspended`);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Please try again.';
+      Alert.alert('Failed to suspend admin', message);
+    } finally {
+      setProcessingId(null);
+    }
+  };
+
+  const handleReactivate = (admin: AdminUser) => {
+    Alert.alert('Reactivate Admin', `Allow ${admin.name} to sign in again?`, [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Reactivate',
+        onPress: async () => {
+          setProcessingId(admin.id);
+          try {
+            await reactivateMutation.mutateAsync(admin.id);
+            Alert.alert('Reactivated', `${admin.name} can sign in again`);
+          } catch (err) {
+            const message = err instanceof Error ? err.message : 'Please try again.';
+            Alert.alert('Failed to reactivate admin', message);
+          } finally {
+            setProcessingId(null);
+          }
+        },
+      },
+    ]);
+  };
 
   const handleGrantSuperAdmin = (admin: AdminUser) => {
     Alert.alert(
@@ -256,6 +322,8 @@ export default function AdminUsersScreen() {
               <AdminUserCard
                 admin={admin}
                 onGrantSuperAdmin={() => handleGrantSuperAdmin(admin)}
+                onSuspend={() => handleSuspend(admin)}
+                onReactivate={() => handleReactivate(admin)}
               />
             </View>
           ))
@@ -269,6 +337,7 @@ export default function AdminUsersScreen() {
           </View>
         )}
       </ScrollView>
+      {promptElement}
     </View>
   );
 }
@@ -417,6 +486,27 @@ const styles = StyleSheet.create({
     borderTopColor: colors.gray100,
     paddingTop: 12,
     marginTop: 12,
+  },
+  suspendButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    backgroundColor: '#EF4444',
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderRadius: 10,
+    marginLeft: 8,
+  },
+  reactivateButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    backgroundColor: '#10B981',
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderRadius: 10,
   },
   grantButton: {
     flexDirection: 'row',

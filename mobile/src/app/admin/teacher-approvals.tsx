@@ -24,6 +24,8 @@ import {
   useAllTeachers,
   useApproveTeacher,
   useRejectTeacher,
+  useSuspendTeacher,
+  useReactivateTeacher,
   teacherApprovalKeys,
   type Teacher,
 } from '@/lib/api/admin-api';
@@ -51,9 +53,11 @@ interface TeacherApprovalCardProps {
   teacher: Teacher;
   onApprove: () => void;
   onReject: () => void;
+  onSuspend?: () => void;
+  onReactivate?: () => void;
 }
 
-function TeacherApprovalCard({ teacher, onApprove, onReject }: TeacherApprovalCardProps) {
+function TeacherApprovalCard({ teacher, onApprove, onReject, onSuspend, onReactivate }: TeacherApprovalCardProps) {
   const getStatusConfig = () => {
     switch (teacher.status) {
       case 'approved':
@@ -108,17 +112,33 @@ function TeacherApprovalCard({ teacher, onApprove, onReject }: TeacherApprovalCa
           </Text>
         </View>
 
-        {/* Actions row */}
-        <View style={styles.actionsRow}>
-          <Pressable style={styles.approveButton} onPress={onApprove}>
-            <UserCheck size={18} color={colors.white} />
-            <Text style={styles.approveButtonText}>Approve</Text>
-          </Pressable>
-          <Pressable style={styles.rejectButton} onPress={onReject}>
-            <UserX size={18} color={colors.white} />
-            <Text style={styles.rejectButtonText}>Reject</Text>
-          </Pressable>
-        </View>
+        {/* Actions depend on status: pending → approve/reject; approved → suspend; suspended → reactivate */}
+        {teacher.status === 'pending' ? (
+          <View style={styles.actionsRow}>
+            <Pressable style={styles.approveButton} onPress={onApprove}>
+              <UserCheck size={18} color={colors.white} />
+              <Text style={styles.approveButtonText}>Approve</Text>
+            </Pressable>
+            <Pressable style={styles.rejectButton} onPress={onReject}>
+              <UserX size={18} color={colors.white} />
+              <Text style={styles.rejectButtonText}>Reject</Text>
+            </Pressable>
+          </View>
+        ) : teacher.status === 'approved' && onSuspend ? (
+          <View style={styles.actionsRow}>
+            <Pressable style={styles.rejectButton} onPress={onSuspend}>
+              <UserX size={18} color={colors.white} />
+              <Text style={styles.rejectButtonText}>Suspend</Text>
+            </Pressable>
+          </View>
+        ) : teacher.status === 'suspended' && onReactivate ? (
+          <View style={styles.actionsRow}>
+            <Pressable style={styles.approveButton} onPress={onReactivate}>
+              <UserCheck size={18} color={colors.white} />
+              <Text style={styles.approveButtonText}>Reactivate</Text>
+            </Pressable>
+          </View>
+        ) : null}
       </View>
     </View>
   );
@@ -128,6 +148,8 @@ export default function TeacherApprovalsScreen() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { prompt, promptElement } = usePromptModal();
+  const suspendMutation = useSuspendTeacher();
+  const reactivateMutation = useReactivateTeacher();
   const [activeTab, setActiveTab] = useState<'pending' | 'all'>('pending');
 
   const { data: pendingTeachers, isLoading: pendingLoading, error: pendingError, refetch: refetchPending } = usePendingTeachers(true);
@@ -166,6 +188,49 @@ export default function TeacherApprovalsScreen() {
         },
       ]
     );
+  };
+
+  const handleSuspend = async (teacher: Teacher) => {
+    // The server requires a suspension reason of at least 10 characters.
+    const reason = await prompt({
+      title: 'Suspend Teacher',
+      message: `${teacher.name} will no longer be able to sign in. Provide a reason:`,
+      confirmText: 'Suspend',
+      destructive: true,
+      minLength: 10,
+    });
+    if (reason === null) return;
+    setProcessingId(teacher.id);
+    try {
+      await suspendMutation.mutateAsync({ id: teacher.id, reason });
+      Alert.alert('Suspended', `${teacher.name} has been suspended`);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Please try again.';
+      Alert.alert('Failed to suspend teacher', message);
+    } finally {
+      setProcessingId(null);
+    }
+  };
+
+  const handleReactivate = (teacher: Teacher) => {
+    Alert.alert('Reactivate Teacher', `Allow ${teacher.name} to sign in again?`, [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Reactivate',
+        onPress: async () => {
+          setProcessingId(teacher.id);
+          try {
+            await reactivateMutation.mutateAsync(teacher.id);
+            Alert.alert('Reactivated', `${teacher.name} can sign in again`);
+          } catch (err) {
+            const message = err instanceof Error ? err.message : 'Please try again.';
+            Alert.alert('Failed to reactivate teacher', message);
+          } finally {
+            setProcessingId(null);
+          }
+        },
+      },
+    ]);
   };
 
   const handleReject = async (teacher: Teacher) => {
@@ -287,15 +352,21 @@ export default function TeacherApprovalsScreen() {
                 teacher={teacher}
                 onApprove={() => handleApprove(teacher)}
                 onReject={() => handleReject(teacher)}
+                onSuspend={() => handleSuspend(teacher)}
+                onReactivate={() => handleReactivate(teacher)}
               />
             </View>
           ))
         ) : (
           <View style={styles.emptyContainer}>
             <UserCheck size={48} color={colors.gray200} />
-            <Text style={styles.emptyTitle}>No Pending Teacher Approvals</Text>
+            <Text style={styles.emptyTitle}>
+              {activeTab === 'pending' ? 'No Pending Teacher Approvals' : 'No Teachers Found'}
+            </Text>
             <Text style={styles.emptyText}>
-              All teacher requests have been processed
+              {activeTab === 'pending'
+                ? 'All teacher requests have been processed'
+                : 'No teacher accounts match this view'}
             </Text>
           </View>
         )}
