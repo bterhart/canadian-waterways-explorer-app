@@ -1,5 +1,12 @@
 import { Hono } from "hono";
+import { zValidator } from "@hono/zod-validator";
+import { z } from "zod";
 import { db } from "../db";
+import { completeResource, POINTS } from "../lib/progress";
+
+const completeSchema = z.object({
+  userId: z.string().min(1, "userId is required"), // device identity (mobile lib/identity.ts)
+});
 
 const lessonPlansRouter = new Hono();
 
@@ -99,5 +106,37 @@ lessonPlansRouter.get("/:id", async (c) => {
 
   return c.json({ data: result });
 });
+
+// POST /:id/complete - A device finished the lesson: points, achievements,
+// and completion of any matching class assignment (PUBLIC, device-id keyed).
+lessonPlansRouter.post(
+  "/:id/complete",
+  zValidator("json", completeSchema),
+  async (c) => {
+    const id = c.req.param("id");
+    const { userId } = c.req.valid("json");
+
+    const lesson = await db.lessonPlan.findUnique({
+      where: { id, isPublished: true },
+      select: { id: true },
+    });
+    if (!lesson) {
+      return c.json(
+        { error: { message: "Lesson plan not found", code: "NOT_FOUND" } },
+        404
+      );
+    }
+
+    const result = await completeResource({
+      userId,
+      kind: "lesson_plan",
+      resourceId: id,
+      points: POINTS.lessonCompleted,
+      activityType: "lesson_completed",
+    });
+
+    return c.json({ data: result });
+  }
+);
 
 export { lessonPlansRouter };

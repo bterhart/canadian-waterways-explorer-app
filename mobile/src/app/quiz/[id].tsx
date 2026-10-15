@@ -5,7 +5,7 @@ import { ArrowLeft, Check, X, Trophy, ChevronRight, RotateCcw, AlertCircle } fro
 import { cn } from '@/lib/cn';
 import { useQuiz, useSubmitQuizAttempt } from '@/lib/api/education-api';
 import { useDeviceId } from '@/lib/identity';
-import type { QuizQuestion, QuizOption, QuizAttemptResult } from '@/lib/types/education';
+import type { QuizQuestion, QuizOption, QuizAttemptResult, CompletionResult } from '@/lib/types/education';
 
 // Theme colors
 const colors = {
@@ -180,6 +180,7 @@ export default function QuizScreen() {
   const [userAnswers, setUserAnswers] = useState<UserAnswer[]>([]);
   const [attemptResults, setAttemptResults] = useState<QuizAttemptResult[]>([]);
   const [totalScore, setTotalScore] = useState({ correct: 0, total: 0, percentage: 0 });
+  const [earned, setEarned] = useState<CompletionResult | null>(null);
 
   // Fetch quiz from backend
   const { data: quiz, isLoading, isError, error } = useQuiz(id ?? null);
@@ -205,6 +206,7 @@ export default function QuizScreen() {
       });
 
       setAttemptResults(response.results);
+      setEarned(response.gamification ?? null);
       setTotalScore({
         correct: response.score,
         total: response.totalQuestions,
@@ -343,6 +345,7 @@ export default function QuizScreen() {
       });
 
       setAttemptResults(response.results);
+      setEarned(response.gamification ?? null);
       setTotalScore({
         correct: response.score,
         total: response.totalQuestions,
@@ -427,6 +430,15 @@ export default function QuizScreen() {
             <Text className="text-lg font-semibold text-center" style={{ color: colors.forestGreen }}>
               {scoreInfo.message}
             </Text>
+            {earned ? (
+              <Text className="text-base font-semibold text-center mt-3" style={{ color: colors.gold }}>
+                +{earned.activity.pointsAdded} points · {earned.activity.explorerRank}
+                {earned.activity.rankedUp ? ' (rank up!)' : ''}
+                {earned.newAchievements.length > 0
+                  ? `\nAchievement unlocked: ${earned.newAchievements.map((a) => a.name).join(', ')}`
+                  : ''}
+              </Text>
+            ) : null}
           </View>
 
           {/* Action buttons */}

@@ -27,6 +27,7 @@ import { getGradeLevelColor, getGradeLevelLabel } from '@/lib/types/education';
 import type { KeyFigure, DeepDiveTimelineEvent, DeepDiveImage } from '@/lib/types/education';
 import { MarkdownContent } from '@/components/MarkdownContent';
 import ExplorerDetailModal from '@/components/ExplorerDetailModal';
+import { MarkCompleteButton } from '@/components/MarkCompleteButton';
 
 const { width: screenWidth, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -284,6 +285,9 @@ export default function DeepDiveDetailScreen() {
           ))}
         </Section>
       ) : null}
+
+      {/* Points + class-assignment completion (server-side) */}
+      {id ? <MarkCompleteButton kind="lesson_plan" resourceId={id} label="Mark Lesson Complete" /> : null}
 
       <View style={styles.bottomSpacer} />
     </ScrollView>

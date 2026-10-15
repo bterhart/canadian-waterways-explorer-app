@@ -6,21 +6,14 @@ import { db } from "../db";
 const gamificationRouter = new Hono();
 
 // ==================== EXPLORER RANKS ====================
-// Point thresholds for each rank
-const RANKS = [
-  { name: "Apprentice Voyageur", minPoints: 0, maxPoints: 100 },
-  { name: "Junior Explorer", minPoints: 101, maxPoints: 300 },
-  { name: "Fur Trade Clerk", minPoints: 301, maxPoints: 600 },
-  { name: "Seasoned Voyageur", minPoints: 601, maxPoints: 1000 },
-  { name: "Fort Factor", minPoints: 1001, maxPoints: 1500 },
-  { name: "Chief Trader", minPoints: 1501, maxPoints: 2500 },
-  { name: "Master Explorer", minPoints: 2501, maxPoints: Infinity },
-];
-
-function getRankForPoints(points: number): string {
-  const rank = RANKS.find((r) => points >= r.minPoints && points <= r.maxPoints);
-  return rank?.name || "Apprentice Voyageur";
-}
+// Ranks, points, streaks and achievements live in ../lib/progress so that the
+// server can award them itself (quiz attempts, journal entries, completions).
+import {
+  RANKS,
+  getRankForPoints,
+  recordActivity,
+  checkAchievements,
+} from "../lib/progress";
 
 function getNextRankInfo(points: number): { nextRank: string | null; pointsNeeded: number; progress: number } {
   const currentRankIndex = RANKS.findIndex(
@@ -133,106 +126,15 @@ gamificationRouter.post(
   async (c) => {
     const { userId, points, activityType, activityData } = c.req.valid("json");
 
-    // Get or create user progress
-    let progress = await db.userProgress.findUnique({
-      where: { userId },
-    });
+    // Same bookkeeping the server applies on its own events (see ../lib/progress).
+    const result = await recordActivity(
+      userId,
+      activityType as Parameters<typeof recordActivity>[1],
+      points,
+      { quizPoints: activityData?.quizPoints as number | undefined }
+    );
 
-    if (!progress) {
-      progress = await db.userProgress.create({
-        data: { userId },
-      });
-    }
-
-    // Build update data based on activity type
-    const updateData: Record<string, unknown> = {
-      totalPoints: progress.totalPoints + points,
-    };
-
-    // Update specific counters based on activity type
-    switch (activityType) {
-      case "waterway_explored":
-        updateData.waterwaysExplored = progress.waterwaysExplored + 1;
-        break;
-      case "location_visited":
-        updateData.locationsVisited = progress.locationsVisited + 1;
-        break;
-      case "quiz_completed":
-        updateData.quizzesTaken = progress.quizzesTaken + 1;
-        updateData.quizPointsEarned =
-          progress.quizPointsEarned + (activityData?.quizPoints as number || 0);
-        break;
-      case "field_trip_completed":
-        updateData.fieldTripsCompleted = progress.fieldTripsCompleted + 1;
-        break;
-      case "journal_entry":
-        updateData.journalEntriesWritten = progress.journalEntriesWritten + 1;
-        break;
-      case "pronunciation_learned":
-        updateData.pronunciationsLearned = progress.pronunciationsLearned + 1;
-        break;
-      case "document_read":
-        updateData.documentsRead = progress.documentsRead + 1;
-        break;
-    }
-
-    // Update daily streak
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    if (progress.lastActiveDate) {
-      const lastActive = new Date(progress.lastActiveDate);
-      lastActive.setHours(0, 0, 0, 0);
-
-      const daysDiff = Math.floor(
-        (today.getTime() - lastActive.getTime()) / (1000 * 60 * 60 * 24)
-      );
-
-      if (daysDiff === 1) {
-        // Consecutive day
-        updateData.dailyStreak = progress.dailyStreak + 1;
-        updateData.longestStreak = Math.max(
-          progress.longestStreak,
-          progress.dailyStreak + 1
-        );
-      } else if (daysDiff > 1) {
-        // Streak broken
-        updateData.dailyStreak = 1;
-      }
-      // If daysDiff === 0, keep current streak
-    } else {
-      // First activity ever
-      updateData.dailyStreak = 1;
-      updateData.longestStreak = 1;
-    }
-
-    updateData.lastActiveDate = today;
-
-    // Calculate new rank
-    const newTotalPoints = progress.totalPoints + points;
-    const newRank = getRankForPoints(newTotalPoints);
-    if (newRank !== progress.explorerRank) {
-      updateData.explorerRank = newRank;
-    }
-
-    // Update progress
-    const updatedProgress = await db.userProgress.update({
-      where: { userId },
-      data: updateData,
-    });
-
-    // Check for rank up
-    const rankedUp = newRank !== progress.explorerRank;
-
-    return c.json({
-      data: {
-        pointsAdded: points,
-        newTotalPoints: updatedProgress.totalPoints,
-        explorerRank: updatedProgress.explorerRank,
-        rankedUp,
-        previousRank: rankedUp ? progress.explorerRank : null,
-      },
-    });
+    return c.json({ data: result });
   }
 );
 
@@ -301,96 +203,9 @@ gamificationRouter.post(
   async (c) => {
     const { userId } = c.req.valid("json");
 
-    // Get user progress
-    const progress = await db.userProgress.findUnique({
-      where: { userId },
-    });
+    const newAchievements = await checkAchievements(userId);
 
-    if (!progress) {
-      return c.json({ data: { newAchievements: [] } });
-    }
-
-    // Get all achievements the user doesn't have yet
-    const earnedAchievementIds = await db.userAchievement.findMany({
-      where: { userId },
-      select: { achievementId: true },
-    });
-
-    const earnedIds = new Set(earnedAchievementIds.map((a) => a.achievementId));
-
-    const allAchievements = await db.achievement.findMany();
-    const unearnedAchievements = allAchievements.filter(
-      (a) => !earnedIds.has(a.id)
-    );
-
-    // Check each unearned achievement
-    const newlyEarned: Array<{
-      id: string;
-      name: string;
-      description: string;
-      iconName: string;
-      category: string;
-    }> = [];
-
-    for (const achievement of unearnedAchievements) {
-      const criteria = JSON.parse(achievement.criteria) as {
-        type: string;
-        count?: number;
-        points?: number;
-      };
-
-      let earned = false;
-
-      switch (criteria.type) {
-        case "waterways_explored":
-          earned = progress.waterwaysExplored >= (criteria.count || 0);
-          break;
-        case "locations_visited":
-          earned = progress.locationsVisited >= (criteria.count || 0);
-          break;
-        case "quizzes_completed":
-          earned = progress.quizzesTaken >= (criteria.count || 0);
-          break;
-        case "field_trips_completed":
-          earned = progress.fieldTripsCompleted >= (criteria.count || 0);
-          break;
-        case "journal_entries":
-          earned = progress.journalEntriesWritten >= (criteria.count || 0);
-          break;
-        case "pronunciations_learned":
-          earned = progress.pronunciationsLearned >= (criteria.count || 0);
-          break;
-        case "documents_read":
-          earned = progress.documentsRead >= (criteria.count || 0);
-          break;
-        case "total_points":
-          earned = progress.totalPoints >= (criteria.points || 0);
-          break;
-        case "daily_streak":
-          earned = progress.dailyStreak >= (criteria.count || 0);
-          break;
-      }
-
-      if (earned) {
-        // Award the achievement
-        await db.userAchievement.create({
-          data: {
-            userId,
-            achievementId: achievement.id,
-          },
-        });
-
-        newlyEarned.push({
-          id: achievement.id,
-          name: achievement.name,
-          description: achievement.description,
-          iconName: achievement.iconName,
-          category: achievement.category,
-        });
-      }
-    }
-
-    return c.json({ data: { newAchievements: newlyEarned } });
+    return c.json({ data: { newAchievements } });
   }
 );
 

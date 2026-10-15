@@ -430,7 +430,9 @@ export interface ClassDetail {
     email: string;
   };
   students: ClassStudent[];
-  assignments: ClassAssignment[];
+  assignments: (ClassAssignment & {
+    progress: { studentId: string; status: string; score: number | null; maxScore: number | null; completedAt: string | null }[];
+  })[];
 }
 
 export interface CreateClassPayload {
@@ -1154,6 +1156,19 @@ export interface QuizAttemptResult {
   pointsPossible: number;
 }
 
+// Returned by the server whenever a device completes something (quiz, lesson, field trip).
+export interface CompletionResult {
+  activity: {
+    pointsAdded: number;
+    newTotalPoints: number;
+    explorerRank: string;
+    rankedUp: boolean;
+    previousRank: string | null;
+  };
+  newAchievements: { id: string; name: string; description: string; iconName: string; category: string }[];
+  assignmentsCompleted: number;
+}
+
 export interface QuizAttemptResponse {
   attemptId: string;
   score: number;
@@ -1162,4 +1177,5 @@ export interface QuizAttemptResponse {
   maxPoints: number;
   percentageScore: number;
   results: QuizAttemptResult[];
+  gamification: CompletionResult | null; // null when no device id was sent
 }

@@ -21,6 +21,7 @@ import {
   Volume2,
 } from 'lucide-react-native';
 import { useFieldTrip } from '@/lib/api/education-api';
+import { MarkCompleteButton } from '@/components/MarkCompleteButton';
 import { getGradeLevelColor, getGradeLevelLabel } from '@/lib/types/education';
 import type { FieldTripStop } from '@/lib/types/education';
 
@@ -273,6 +274,11 @@ export default function FieldTripDetailScreen() {
             <Text style={styles.conclusionLabel}>Conclusion</Text>
             <Text style={styles.conclusionText}>{fieldTrip.conclusion}</Text>
           </View>
+        ) : null}
+
+        {/* Last stop: points + class-assignment completion (server-side) */}
+        {currentStopIndex === totalStops - 1 && id ? (
+          <MarkCompleteButton kind="field_trip" resourceId={id} label="Mark Field Trip Complete" />
         ) : null}
 
         <View style={styles.bottomSpacer} />

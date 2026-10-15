@@ -1,5 +1,12 @@
 import { Hono } from "hono";
+import { zValidator } from "@hono/zod-validator";
+import { z } from "zod";
 import { db } from "../db";
+import { completeResource, POINTS } from "../lib/progress";
+
+const completeSchema = z.object({
+  userId: z.string().min(1, "userId is required"), // device identity (mobile lib/identity.ts)
+});
 
 const fieldTripsRouter = new Hono();
 
@@ -78,5 +85,37 @@ fieldTripsRouter.get("/:id", async (c) => {
 
   return c.json({ data: fieldTrip });
 });
+
+// POST /:id/complete - A device finished the field trip: points, achievements,
+// and completion of any matching class assignment (PUBLIC, device-id keyed).
+fieldTripsRouter.post(
+  "/:id/complete",
+  zValidator("json", completeSchema),
+  async (c) => {
+    const id = c.req.param("id");
+    const { userId } = c.req.valid("json");
+
+    const trip = await db.virtualFieldTrip.findUnique({
+      where: { id, isPublished: true },
+      select: { id: true },
+    });
+    if (!trip) {
+      return c.json(
+        { error: { message: "Field trip not found", code: "NOT_FOUND" } },
+        404
+      );
+    }
+
+    const result = await completeResource({
+      userId,
+      kind: "field_trip",
+      resourceId: id,
+      points: POINTS.fieldTripCompleted,
+      activityType: "field_trip_completed",
+    });
+
+    return c.json({ data: result });
+  }
+);
 
 export { fieldTripsRouter };
