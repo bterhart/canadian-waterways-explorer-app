@@ -53,6 +53,39 @@ export function parseKmlCoordinateBlocks(kmlData: string): LngLat[][] {
   return paths;
 }
 
+export interface KmlPath {
+  kind: GeometryKind;
+  path: LngLat[];
+}
+
+/**
+ * Like parseKmlCoordinateBlocks, but keeps each path's own geometry kind: a <LineString> is
+ * a line, a <Polygon> outer ring is an area, and a <Polygon> inner ring (an island) is drawn
+ * as an outline so it is not filled over. A river KML may therefore mix a centreline with
+ * the river's mapped water surface (the St. Lawrence below Montreal), and each part renders
+ * the right way. Coordinates outside any LineString/Polygon fall back to closed = area.
+ */
+export function parseKmlPaths(kmlData: string): KmlPath[] {
+  const out: KmlPath[] = [];
+  const pushBlocks = (text: string, kind: GeometryKind | null) => {
+    for (const path of parseKmlCoordinateBlocks(text)) {
+      out.push({ kind: kind ?? (isClosed(path) && path.length >= 4 ? "area" : "line"), path });
+    }
+  };
+  let rest = kmlData;
+  rest = rest.replace(/<Polygon\b[\s\S]*?<\/Polygon>/gi, (polygon) => {
+    for (const m of polygon.matchAll(/<outerBoundaryIs>[\s\S]*?<\/outerBoundaryIs>/gi)) pushBlocks(m[0], "area");
+    for (const m of polygon.matchAll(/<innerBoundaryIs>[\s\S]*?<\/innerBoundaryIs>/gi)) pushBlocks(m[0], "line");
+    return "";
+  });
+  rest = rest.replace(/<LineString\b[\s\S]*?<\/LineString>/gi, (line) => {
+    pushBlocks(line, "line");
+    return "";
+  });
+  pushBlocks(rest, null);
+  return out;
+}
+
 export function removeSequentialDuplicates(path: LngLat[]): LngLat[] {
   const result: LngLat[] = [];
 
@@ -193,6 +226,8 @@ export interface WaterwayGeometry {
   originalPointCount: number;
   /** [lat, lng] pairs — the order react-native-maps consumes. */
   paths: [number, number][][];
+  /** One entry per path; a river's mapped water surface is "area" while its centreline is "line". */
+  pathKinds: GeometryKind[];
 }
 
 /** Point budget per tier for the map route — keeps the payload around tens of KB. */
@@ -222,30 +257,39 @@ function pathExtentDeg(path: LngLat[]): number {
  * the budget is met, so the response size is bounded regardless of the source KML.
  */
 export function buildGeometry(kmlData: string, typeName: string, tier: TierName): WaterwayGeometry | null {
-  const original = parseKmlCoordinateBlocks(kmlData);
+  const original = parseKmlPaths(kmlData);
   if (original.length === 0) return null;
-  const geometryKind = inferGeometryKind(typeName, original);
+  const originalPaths = original.map((p) => p.path);
+  const geometryKind = inferGeometryKind(typeName, originalPaths);
+  // Lakes and bays keep every ring as area (as before) except islands, which are outlines;
+  // rivers are lines except where the KML carries the river's mapped water surface.
+  const kindOf = (p: KmlPath): GeometryKind => (geometryKind === "area" ? p.kind : p.kind === "area" ? "area" : "line");
   const budget = TIER_POINT_BUDGET[tier];
 
   // Largest paths first so that, when a budget forces pruning, the main body survives.
-  const ordered = [...original].sort((a, b) => pathExtentDeg(b) - pathExtentDeg(a));
+  const ordered = [...original].sort((a, b) => pathExtentDeg(b.path) - pathExtentDeg(a.path));
 
   let toleranceDeg = TIER_CONFIG[tier].toleranceDeg;
-  let simplified: LngLat[][] = [];
+  let simplified: KmlPath[] = [];
   for (let attempt = 0; attempt < 14; attempt += 1) {
-    const kept = ordered.filter((path, index) => index === 0 || pathExtentDeg(path) >= toleranceDeg * 2);
-    simplified = simplifyAllPaths(kept, toleranceDeg, geometryKind);
-    if (countPoints(simplified) <= budget) break;
+    const kept = ordered.filter((p, index) => index === 0 || pathExtentDeg(p.path) >= toleranceDeg * 2);
+    simplified = kept
+      .map((p) => {
+        const kind = kindOf(p);
+        return { kind, path: simplifyPath(p.path, toleranceDeg, kind === "area") };
+      })
+      .filter((p) => p.path.length >= (p.kind === "area" ? 4 : 2));
+    if (countPoints(simplified.map((p) => p.path)) <= budget) break;
     toleranceDeg *= 1.6;
   }
   // Last resort: keep the largest paths that fit the budget.
-  if (countPoints(simplified) > budget) {
-    const trimmed: LngLat[][] = [];
+  if (countPoints(simplified.map((p) => p.path)) > budget) {
+    const trimmed: KmlPath[] = [];
     let total = 0;
-    for (const path of simplified) {
-      if (total + path.length > budget && trimmed.length > 0) break;
-      trimmed.push(path);
-      total += path.length;
+    for (const p of simplified) {
+      if (total + p.path.length > budget && trimmed.length > 0) break;
+      trimmed.push(p);
+      total += p.path.length;
     }
     simplified = trimmed;
   }
@@ -255,8 +299,9 @@ export function buildGeometry(kmlData: string, typeName: string, tier: TierName)
     tier,
     toleranceDeg,
     pathCount: simplified.length,
-    pointCount: countPoints(simplified),
-    originalPointCount: countPoints(original),
-    paths: simplified.map((path) => path.map(([lng, lat]) => [lat, lng] as [number, number])),
+    pointCount: countPoints(simplified.map((p) => p.path)),
+    originalPointCount: countPoints(originalPaths),
+    paths: simplified.map((p) => p.path.map(([lng, lat]) => [lat, lng] as [number, number])),
+    pathKinds: simplified.map((p) => p.kind),
   };
 }

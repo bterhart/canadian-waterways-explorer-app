@@ -30,6 +30,8 @@ export interface WaterwayGeometry {
   originalPointCount: number;
   /** [latitude, longitude] pairs, simplified server-side. */
   paths: [number, number][][];
+  /** One entry per path when the server sends it: a river's water surface is 'area', its centreline 'line'. */
+  pathKinds?: ('line' | 'area')[];
 }
 
 export interface ExplorerWaterway {

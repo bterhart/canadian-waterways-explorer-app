@@ -54,6 +54,11 @@ interface Options {
   outDir: string;
   mirror: string | null;
   needsDb: boolean;
+  /** --with-surface: also export the mapped water surface the centreline runs through (wide rivers) */
+  withSurface: boolean;
+  surfaceRadiusKm: number;
+  /** --surface-bbox=S,W,N,E limits where surface polygons are taken from (e.g. only below Montreal) */
+  surfaceBbox: [number, number, number, number] | null;
 }
 
 const MIRRORS = [
@@ -130,7 +135,16 @@ async function parseOptions(argv: string[]): Promise<Options> {
     });
   }
   for (const j of jobs) if (j.type !== "river" && j.type !== "lake") throw new Error(`type must be river or lake (got ${j.type})`);
-  return { jobs, apply, gapKm, maxAnchorKm, outDir, mirror, needsDb };
+  const withSurface = argv.includes("--with-surface");
+  const surfaceRadiusKm = Number(arg(argv, "surface-radius-km") ?? 40);
+  const bboxArg = arg(argv, "surface-bbox");
+  let surfaceBbox: Options["surfaceBbox"] = null;
+  if (bboxArg) {
+    const parts = bboxArg.split(",").map(Number);
+    if (parts.length !== 4 || parts.some((n) => !Number.isFinite(n))) throw new Error("--surface-bbox must be S,W,N,E");
+    surfaceBbox = parts as [number, number, number, number];
+  }
+  return { jobs, apply, gapKm, maxAnchorKm, outDir, mirror, needsDb, withSurface, surfaceRadiusKm, surfaceBbox };
 }
 
 export function parseCsv(text: string): Record<string, string>[] {
@@ -187,7 +201,8 @@ export function buildQuery(job: Job): string {
 
 async function overpass(query: string, mirror: string | null): Promise<OsmElement[]> {
   const servers = mirror ? [mirror] : MIRRORS;
-  const delays = [3000, 8000, 15000];
+  // Public Overpass mirrors are often overloaded; be patient rather than fail a long export.
+  const delays = [5000, 10000, 20000, 40000, 60000, 90000];
   let lastError = "";
   for (let attempt = 0; attempt <= delays.length; attempt++) {
     for (const url of servers) {
@@ -300,6 +315,78 @@ export function buildKml(displayName: string, type: FeatureType, elements: OsmEl
   return { kml, placemarks: pm.length, sourceIds };
 }
 
+// ── water surface for wide rivers ────────────────────────────────────────────────
+//
+// OSM maps a river's centreline (waterway=river) and, separately, its water surface as
+// natural=water + water=river/lake polygons that are usually unnamed (or named for a lake
+// section such as Lac Saint-Pierre). The surface is found spatially, not by name: candidates
+// within --surface-radius-km of the centreline nodes are fetched as tags + bounds only, those
+// whose bounds hold at least one centreline point are fetched with geometry, and a polygon is
+// kept only if the centreline actually passes through it. Tributary surfaces end at the
+// confluence and never contain a centreline point, so they are rejected.
+
+function ringContains(pt: LngLat, ring: Seg): boolean {
+  let inside = false;
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+    const [xi, yi] = ring[i]!;
+    const [xj, yj] = ring[j]!;
+    if ((yi > pt[1]) !== (yj > pt[1]) && pt[0] < ((xj - xi) * (pt[1] - yi)) / (yj - yi || 1e-12) + xi) inside = !inside;
+  }
+  return inside;
+}
+
+function centrelinePoints(elements: OsmElement[]): LngLat[] {
+  const pts: LngLat[] = [];
+  for (const el of elements) {
+    if (el.type === "way") pts.push(...coordsOf(el.geometry));
+    else if (el.type === "relation") for (const m of el.members ?? []) if (m.type === "way") pts.push(...coordsOf(m.geometry));
+  }
+  return pts;
+}
+
+async function fetchSurface(elements: OsmElement[], opt: Options): Promise<OsmElement[]> {
+  const ids = elements.filter((e) => e.type !== "node").map((e) => `${e.type}(${e.id});`);
+  if (!ids.length) return [];
+  const bbox = opt.surfaceBbox ? `(${opt.surfaceBbox.join(",")})` : "";
+  const radius = Math.round(opt.surfaceRadiusKm * 1000);
+  // natural=water with water=river/lake, or with no water=* at all (the St. Lawrence's middle
+  // estuary is tagged that way); ponds, reservoirs, canals and basins are left out.
+  const filters = [`["natural"="water"]["water"~"^(river|lake)$"]${bbox}`, `["natural"="water"][!"water"]${bbox}`];
+  // Phase 1: candidates (tags + bounds only)
+  const q1 = `[out:json][timeout:${OVERPASS_TIMEOUT_S}];\n(\n${ids.join("\n")}\n)->.c;\nway(r.c)->.w;\n(\n  node(w.c)${bbox};\n  node(w.w)${bbox};\n)->.n;\n(\n${filters.map((f) => `  way(around.n:${radius})${f};\n  relation(around.n:${radius})${f};`).join("\n")}\n);\nout tags bb;`;
+  const candidates = (await overpass(q1, opt.mirror)).filter((e) => e.type !== "node") as (OsmElement & { bounds?: { minlat: number; minlon: number; maxlat: number; maxlon: number } })[];
+  const centre = centrelinePoints(elements);
+  const plausible = candidates.filter((e) => {
+    const b = e.bounds;
+    if (!b) return false;
+    return centre.some(([lng, lat]) => lng >= b.minlon && lng <= b.maxlon && lat >= b.minlat && lat <= b.maxlat);
+  });
+  console.log(`    surface: ${candidates.length} water polygons within ${opt.surfaceRadiusKm} km, ${plausible.length} overlap the centreline's extent`);
+  if (!plausible.length) return [];
+  // Phase 2: geometry for the plausible ones, then the exact containment test
+  const q2 = `[out:json][timeout:${OVERPASS_TIMEOUT_S}][maxsize:1073741824];\n(\n${plausible.map((e) => `  ${e.type}(${e.id});`).join("\n")}\n);\nout geom;`;
+  const withGeom = await overpass(q2, opt.mirror);
+  const kept: OsmElement[] = [];
+  for (const el of withGeom) {
+    const outers = el.type === "way"
+      ? [coordsOf(el.geometry)]
+      : chainSegments((el.members ?? []).filter((m) => m.type === "way" && m.role === "outer").map((m) => coordsOf(m.geometry)));
+    const rings = outers.filter((r) => r.length >= 4);
+    if (!rings.length) continue;
+    const b: [number, number, number, number] = [Infinity, Infinity, -Infinity, -Infinity];
+    for (const [x, y] of rings.flat()) {
+      b[0] = Math.min(b[0], x); b[1] = Math.min(b[1], y); b[2] = Math.max(b[2], x); b[3] = Math.max(b[3], y);
+    }
+    const inBox = centre.filter(([x, y]) => x >= b[0] && x <= b[2] && y >= b[1] && y <= b[3]);
+    const step = Math.max(1, Math.floor(inBox.length / 500));
+    let hit = false;
+    for (let i = 0; i < inBox.length && !hit; i += step) hit = rings.some((r) => ringContains(inBox[i]!, r));
+    if (hit) kept.push(el);
+  }
+  console.log(`    surface: ${kept.length} polygons contain the centreline and are kept (${kept.map((e) => `${e.type}/${e.id}${e.tags?.name ? ` ${e.tags.name}` : ""}`).join(", ")})`);
+  return kept;
+}
+
 export const slug = (s: string) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 const sha256 = (s: string) => createHash("sha256").update(s).digest("hex");
 const RELATED_TABLES = ["ExplorerWaterway", "Location", "ArchaeologicalDiscovery", "FurTradeInfo", "UserContribution"];
@@ -336,12 +423,32 @@ async function main() {
     }
     console.log(`\n### ${job.displayName}  (${job.type}; query ${job.osmIds.length ? job.osmIds.join(",") : `"${job.osmName}"`}; anchor ${job.lng.toFixed(2)}, ${job.lat.toFixed(2)})`);
 
-    const elements = await overpass(buildQuery(job), opt.mirror);
-    const drawable = elements.filter((e) => e.type !== "node");
-    console.log(`    overpass returned ${drawable.length} elements (${drawable.filter((e) => e.type === "relation").length} relations, ${drawable.filter((e) => e.type === "way").length} ways)`);
-    if (!drawable.length) { results.push({ name: job.displayName, status: "no-osm-match" }); console.log("    nothing found — check the OSM spelling (name, name:en, name:fr) or pass --osm=relation/<id>"); continue; }
-
-    const built = buildKml(job.displayName, job.type, drawable);
+    // --from-kml=<file>: re-use a KML this script already exported (skips Overpass; the guard still runs)
+    const fromKml = arg(process.argv.slice(2), "from-kml");
+    let built: { kml: string; placemarks: number; sourceIds: string[] };
+    let drawable: OsmElement[] = [];
+    if (fromKml) {
+      const kml = await readFile(fromKml, "utf8");
+      built = { kml, placemarks: splitPlacemarks(kml).length, sourceIds: [`file:${fromKml}`] };
+      console.log(`    using ${fromKml} (${kml.length} bytes, ${built.placemarks} placemarks)`);
+    } else {
+      const elements = await overpass(buildQuery(job), opt.mirror);
+      drawable = elements.filter((e) => e.type !== "node");
+      console.log(`    overpass returned ${drawable.length} elements (${drawable.filter((e) => e.type === "relation").length} relations, ${drawable.filter((e) => e.type === "way").length} ways)`);
+      if (!drawable.length) { results.push({ name: job.displayName, status: "no-osm-match" }); console.log("    nothing found — check the OSM spelling (name, name:en, name:fr) or pass --osm=relation/<id>"); continue; }
+      built = buildKml(job.displayName, job.type, drawable);
+    }
+    if (!fromKml && opt.withSurface && job.type === "river") {
+      const surface = await fetchSurface(drawable, opt);
+      if (surface.length) {
+        // Append the surface polygons (lakeStyle) after the centreline placemarks
+        const area = buildKml(`${job.displayName} surface`, "lake", surface);
+        const polygons = area.kml.slice(area.kml.indexOf("    <Placemark>"), area.kml.lastIndexOf("</Placemark>") + "</Placemark>".length);
+        const style = area.kml.slice(area.kml.indexOf('    <Style id="lakeStyle">'), area.kml.indexOf("</Style>") + "</Style>".length);
+        const kml = built.kml.replace("\n    <Placemark>", `\n${style}\n    <Placemark>`).replace("\n  </Document>", `\n${polygons}\n  </Document>`);
+        built = { kml, placemarks: built.placemarks + area.placemarks, sourceIds: [...built.sourceIds, ...area.sourceIds] };
+      }
+    }
     const frags = splitPlacemarks(built.kml);
     const decision = decide(frags, [job.lng, job.lat], opt.gapKm, opt.maxAnchorKm);
     if (decision.status === "no-canadian-river" || decision.status === "no-coordinates") {
