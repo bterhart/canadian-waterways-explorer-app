@@ -241,12 +241,14 @@ export default function MapScreen() {
     type: MarkerType;
   } | null>(null);
 
-  // The preview card docked at the bottom of the map. Set by a pin tap, by tapping a river on
-  // the overview layer, or by tapping the selected waterway's own outline. Any of them fetches
-  // the boundary and zooms the map to it.
+  // The preview card docked at the bottom of the map. Set by a pin tap (fromOverview false) or
+  // by tapping a river on the overview layer (fromOverview true). Either fetches the boundary
+  // and zooms to it; an overview preview keeps the overview rivers on screen instead of
+  // swapping them for the full set of pins.
   const [preview, setPreview] = useState<{
     id: string;
     type: MarkerType;
+    fromOverview: boolean;
   } | null>(null);
   const [mapRegion, setMapRegion] = useState<Region>(CANADA_CENTER);
 
@@ -296,7 +298,7 @@ export default function MapScreen() {
 
   // Close the preview card and deselect its pin
   const closePreview = useCallback(() => {
-    if (preview) {
+    if (preview && !preview.fromOverview) {
       markerRefs.current[`${preview.type}-${preview.id}`]?.hideCallout?.();
     }
     setPreview(null);
@@ -365,8 +367,11 @@ export default function MapScreen() {
   // Check if any filter is active
   const hasActiveFilter = filterType !== null || activeFilter !== null;
   const hasRiverOverviewData = !!riverOverviewData?.waterways?.length;
-  const shouldPreferRiverOverviewMode = !hasActiveFilter && !preview;
-  const shouldShowRiverOverview = shouldPreferRiverOverviewMode && !selectedMarker && hasRiverOverviewData;
+  // Overview mode: no filter, and either nothing is previewed/open or the preview came from
+  // the overview layer itself (then the rivers stay and the pins stay hidden, sheet or not)
+  const shouldPreferRiverOverviewMode =
+    !hasActiveFilter && (preview ? preview.fromOverview : !selectedMarker);
+  const shouldShowRiverOverview = shouldPreferRiverOverviewMode && hasRiverOverviewData;
   const shouldSuppressMarkersForOverview = shouldPreferRiverOverviewMode && (riverOverviewLoading || hasRiverOverviewData);
   const shouldRenderMarkers = !shouldSuppressMarkersForOverview;
   const riverOverviewTier = useMemo(() => getOverviewTier(mapRegion), [mapRegion]);
@@ -594,7 +599,7 @@ export default function MapScreen() {
 
   // Pin tapped: show the preview card (and, through detailWaterwayId, the waterway boundary)
   const handleMarkerSelect = useCallback((id: string, type: MarkerType) => {
-    setPreview({ id, type });
+    setPreview({ id, type, fromOverview: false });
   }, []);
 
   // "Tap for details" on the preview card: open the bottom sheet
@@ -607,7 +612,7 @@ export default function MapScreen() {
   const handleRiverOverviewPress = useCallback((waterwayId: string) => {
     lastOverlayPressAtRef.current = Date.now();
     setSelectedMarker(null);
-    setPreview({ id: waterwayId, type: 'waterway' });
+    setPreview({ id: waterwayId, type: 'waterway', fromOverview: true });
   }, []);
 
   // The selected waterway's outline tapped: zoom back to it (the card is already showing it)
