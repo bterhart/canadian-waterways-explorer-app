@@ -227,6 +227,10 @@ export default function ClassDetailScreen() {
                       Due: {new Date(assignment.dueDate).toLocaleDateString()}
                     </Text>
                   ) : null}
+                  <Text style={styles.assignmentDue}>
+                    {(assignment.progress ?? []).filter((p) => p.status === 'completed').length} of{' '}
+                    {classData.students?.length ?? 0} students completed
+                  </Text>
                 </View>
               </View>
             ))}

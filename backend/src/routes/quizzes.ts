@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { db } from "../db";
+import { completeResource, quizPoints } from "../lib/progress";
 
 const quizzesRouter = new Hono();
 
@@ -233,6 +234,27 @@ quizzesRouter.post(
       },
     });
 
+    // Server-side progress for identified devices: points (10–20 by score), streak,
+    // rank, achievements, and completion of any matching class assignment.
+    let gamification: Awaited<ReturnType<typeof completeResource>> | null = null;
+    if (userId) {
+      try {
+        gamification = await completeResource({
+          userId,
+          kind: "quiz",
+          resourceId: quizId,
+          points: quizPoints(percentageScore),
+          activityType: "quiz_completed",
+          activityData: { quizPoints: totalPoints },
+          score: correctCount,
+          maxScore: totalQuestions,
+        });
+      } catch (error) {
+        // The attempt is saved; progress bookkeeping must never fail the submission.
+        console.error("[quiz attempt] progress update failed:", error);
+      }
+    }
+
     return c.json({
       data: {
         attemptId: attempt.id,
@@ -242,6 +264,7 @@ quizzesRouter.post(
         maxPoints,
         percentageScore: Math.round(percentageScore * 100) / 100,
         results,
+        gamification,
       },
     });
   }

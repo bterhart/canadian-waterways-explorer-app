@@ -31,6 +31,7 @@ import type {
   PrintableResource,
   PrintableResourceDetail,
   MyClassMembership,
+  CompletionResult,
   IndigenousWord,
   WordOfTheDay,
   VocabularyQuizSummary,
@@ -629,6 +630,32 @@ export function useJoinClass() {
         payload
       ),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: classesKeys.all });
+    },
+  });
+}
+
+/** Device finished a lesson: server awards points/achievements and completes matching assignments. */
+export function useCompleteLesson() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ lessonId, userId }: { lessonId: string; userId: string }) =>
+      api.post<CompletionResult>(`/api/lesson-plans/${lessonId}/complete`, { userId }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: gamificationKeys.all });
+      queryClient.invalidateQueries({ queryKey: classesKeys.all });
+    },
+  });
+}
+
+/** Device finished a field trip: server awards points/achievements and completes matching assignments. */
+export function useCompleteFieldTrip() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ fieldTripId, userId }: { fieldTripId: string; userId: string }) =>
+      api.post<CompletionResult>(`/api/field-trips/${fieldTripId}/complete`, { userId }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: gamificationKeys.all });
       queryClient.invalidateQueries({ queryKey: classesKeys.all });
     },
   });

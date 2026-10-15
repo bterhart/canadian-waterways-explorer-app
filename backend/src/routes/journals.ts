@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { db } from "../db";
+import { recordActivity, checkAchievements, POINTS } from "../lib/progress";
 
 const journalsRouter = new Hono();
 
@@ -179,6 +180,14 @@ journalsRouter.post(
         tags: data.tags ? JSON.stringify(data.tags) : null,
       },
     });
+
+    // Journals are keyed by the device identity, so an entry earns points for it.
+    try {
+      await recordActivity(journal.studentIdentifier, "journal_entry", POINTS.journalEntry);
+      await checkAchievements(journal.studentIdentifier);
+    } catch (error) {
+      console.error("[journal entry] progress update failed:", error);
+    }
 
     return c.json({
       data: {

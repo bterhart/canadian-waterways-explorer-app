@@ -271,6 +271,12 @@ classesRouter.get("/:id", async (c) => {
       assignments: {
         where: { isActive: true },
         orderBy: { createdAt: "desc" },
+        include: {
+          // Per-student completion, written by the server when a student finishes the work.
+          progress: {
+            select: { studentId: true, status: true, score: true, maxScore: true, completedAt: true },
+          },
+        },
       },
     },
   });
