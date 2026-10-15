@@ -9,6 +9,7 @@ import {
   Linking,
 } from 'react-native';
 import { Stack } from 'expo-router';
+import * as Application from 'expo-application';
 import {
   Info,
   Heart,
@@ -100,10 +101,15 @@ export default function AboutScreen() {
             {'\n'}
             Waterways Initiative
           </Text>
+          {/* Read from the installed binary so this never drifts from the store listing. */}
           <View style={styles.versionBadge}>
-            <Text style={styles.versionText}>Version 1.0.0</Text>
+            <Text style={styles.versionText}>
+              Version {Application.nativeApplicationVersion ?? '—'}
+            </Text>
           </View>
-          <Text style={styles.versionDate}>February 2026</Text>
+          <Text style={styles.versionDate}>
+            {Application.nativeBuildVersion ? `Build ${Application.nativeBuildVersion}` : ''}
+          </Text>
         </View>
 
         {/* Description */}
