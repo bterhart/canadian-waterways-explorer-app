@@ -95,7 +95,7 @@ export function splitPlacemarks(kml: string): Fragment[] {
  */
 export function chainFragments(frags: Fragment[], gapKm: number): number[] {
   const parent = frags.map((_, i) => i);
-  const find = (i: number): number => (parent[i] === i ? i : (parent[i] = find(parent[i])));
+  const find = (i: number): number => (parent[i] === i ? i : (parent[i] = find(parent[i]!)));
   const union = (a: number, b: number) => {
     const ra = find(a), rb = find(b);
     if (ra !== rb) parent[rb] = ra;
@@ -103,7 +103,7 @@ export function chainFragments(frags: Fragment[], gapKm: number): number[] {
   const latStep = gapKm / 111;
   const owner = new Map<string, number>();
   for (let i = 0; i < frags.length; i++) {
-    for (const [lng, lat] of frags[i].points) {
+    for (const [lng, lat] of frags[i]!.points) {
       const lngStep = latStep / Math.max(0.2, Math.cos((lat * Math.PI) / 180));
       const cx = Math.floor(lng / lngStep), cy = Math.floor(lat / latStep);
       for (let dx = -1; dx <= 1; dx++) {
@@ -132,41 +132,41 @@ export interface Decision {
 }
 
 export function decide(frags: Fragment[], marker: LngLat, gapKm: number, maxAnchorKm: number): Decision {
-  const withPoints = frags.map((f, i) => i).filter((i) => frags[i].points.length > 0);
+  const withPoints = frags.map((f, i) => i).filter((i) => frags[i]!.points.length > 0);
   if (withPoints.length === 0) return { keepIdx: [], dropIdx: [], chains: [], anchorKm: Infinity, status: "no-coordinates" };
   const roots = chainFragments(frags, gapKm);
   const groups = new Map<number, number[]>();
-  for (const i of withPoints) groups.set(roots[i], [...(groups.get(roots[i]) ?? []), i]);
+  for (const i of withPoints) groups.set(roots[i]!, [...(groups.get(roots[i]!) ?? []), i]);
   const chains = [...groups.values()].map((idx) => {
     let best = Infinity;
-    const b = [Infinity, Infinity, -Infinity, -Infinity];
+    const b: [number, number, number, number] = [Infinity, Infinity, -Infinity, -Infinity];
     let points = 0;
     for (const i of idx) {
-      for (const p of frags[i].points) {
+      for (const p of frags[i]!.points) {
         best = Math.min(best, haversineKm(p, marker));
         b[0] = Math.min(b[0], p[0]); b[1] = Math.min(b[1], p[1]); b[2] = Math.max(b[2], p[0]); b[3] = Math.max(b[3], p[1]);
       }
-      points += frags[i].points.length;
+      points += frags[i]!.points.length;
     }
     // A marker placed in open water (Hudson Bay, Baffin Bay) can be 200+ km from the nearest
     // shoreline point while sitting squarely inside the outline: count that as distance 0.
     const inside = marker[0] >= b[0] && marker[0] <= b[2] && marker[1] >= b[1] && marker[1] <= b[3];
     return { idx, points, kmFromMarker: inside ? 0 : best, bbox: b.map((v) => +v.toFixed(2)) };
   }).sort((a, c) => a.kmFromMarker - c.kmFromMarker);
-  const anchor = chains[0];
+  const anchor = chains[0]!;
   if (anchor.kmFromMarker > maxAnchorKm) {
     return { keepIdx: [], dropIdx: [], chains, anchorKm: anchor.kmFromMarker, status: "no-canadian-river" };
   }
   const keep = new Set(anchor.idx);
   // Placemarks without coordinates (styles, folders' text) are kept so the document stays intact.
-  for (let i = 0; i < frags.length; i++) if (frags[i].points.length === 0) keep.add(i);
+  for (let i = 0; i < frags.length; i++) if (frags[i]!.points.length === 0) keep.add(i);
   const dropIdx = frags.map((_, i) => i).filter((i) => !keep.has(i));
   return { keepIdx: [...keep].sort((a, b) => a - b), dropIdx, chains, anchorKm: anchor.kmFromMarker, status: dropIdx.length ? "cleaned" : "clean" };
 }
 
 /** Original text with the dropped spans deleted; kept spans are untouched. */
 export function rebuildKml(kml: string, frags: Fragment[], dropIdx: number[]): string {
-  const drops = dropIdx.map((i) => frags[i]).sort((a, b) => a.start - b.start);
+  const drops = dropIdx.map((i) => frags[i]!).sort((a, b) => a.start - b.start);
   let out = "";
   let cursor = 0;
   for (const d of drops) {
@@ -231,18 +231,18 @@ async function main() {
     }
     const newKml = rebuildKml(original, frags, decision.dropIdx);
     // Fidelity check: kept placemark text is byte-identical and the point count adds up
-    const keptPoints = decision.keepIdx.reduce((n, i) => n + frags[i].points.length, 0);
-    const droppedPoints = decision.dropIdx.reduce((n, i) => n + frags[i].points.length, 0);
+    const keptPoints = decision.keepIdx.reduce((n, i) => n + frags[i]!.points.length, 0);
+    const droppedPoints = decision.dropIdx.reduce((n, i) => n + frags[i]!.points.length, 0);
     const reparsed = parseKmlCoordinateBlocks(newKml).flat().length;
     const originalPoints = parseKmlCoordinateBlocks(original).flat().length;
     for (const i of decision.keepIdx) {
-      if (!newKml.includes(frags[i].text)) throw new Error(`${w.name}: kept placemark ${i} is not present verbatim in the rebuilt KML`);
+      if (!newKml.includes(frags[i]!.text)) throw new Error(`${w.name}: kept placemark ${i} is not present verbatim in the rebuilt KML`);
     }
     if (reparsed !== keptPoints || keptPoints + droppedPoints !== originalPoints) {
       throw new Error(`${w.name}: point count mismatch (original ${originalPoints}, kept ${keptPoints}, dropped ${droppedPoints}, reparsed ${reparsed})`);
     }
     console.log(`CLEAN     ${head}`);
-    console.log(`          keep ${decision.chains[0].idx.length} placemarks / ${keptPoints} pts (anchor chain ${Math.round(decision.anchorKm)} km from marker, bbox ${JSON.stringify(decision.chains[0].bbox)})`);
+    console.log(`          keep ${decision.chains[0]!.idx.length} placemarks / ${keptPoints} pts (anchor chain ${Math.round(decision.anchorKm)} km from marker, bbox ${JSON.stringify(decision.chains[0]!.bbox)})`);
     for (const ch of decision.chains.slice(1)) {
       console.log(`          drop ${ch.idx.length} placemarks / ${ch.points} pts at ${Math.round(ch.kmFromMarker)} km, bbox ${JSON.stringify(ch.bbox)}`);
     }
@@ -263,7 +263,7 @@ async function main() {
     id: p.id, name: p.name,
     originalSha256: sha256(p.original), originalLength: p.original.length,
     cleanedSha256: sha256(p.newKml), cleanedLength: p.newKml.length,
-    droppedPlacemarks: p.decision.dropIdx.map((i) => ({ start: p.frags[i].start, text: p.frags[i].text })),
+    droppedPlacemarks: p.decision.dropIdx.map((i) => ({ start: p.frags[i]!.start, text: p.frags[i]!.text })),
   })), null, 1));
   console.log(`Backup written: ${backupPath}`);
 
