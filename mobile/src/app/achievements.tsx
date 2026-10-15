@@ -54,13 +54,12 @@ import {
   useSubmitDailyChallenge,
   useRanks,
 } from '@/lib/api/education-api';
+import { useDeviceId } from '@/lib/identity';
 import type { Achievement, UserAchievement, RankInfo } from '@/lib/types/education';
 import { useTranslation } from '@/lib/i18n';
 
 const { width } = Dimensions.get('window');
 
-// Mock user ID for demo purposes - in production this would come from auth
-const DEMO_USER_ID = 'demo-user-001';
 
 // Theme colors matching the app style
 const colors = {
@@ -410,10 +409,11 @@ export default function AchievementsScreen() {
   } | null>(null);
 
   // Fetch data
-  const { data: progress, isLoading: progressLoading, refetch: refetchProgress } = useUserProgress(DEMO_USER_ID);
+  const userId = useDeviceId();
+  const { data: progress, isLoading: progressLoading, refetch: refetchProgress } = useUserProgress(userId);
   const { data: achievements, isLoading: achievementsLoading, refetch: refetchAchievements } = useAchievements();
-  const { data: userAchievements, refetch: refetchUserAchievements } = useUserAchievements(DEMO_USER_ID);
-  const { data: dailyChallenge, isLoading: challengeLoading, refetch: refetchChallenge } = useDailyChallenge(DEMO_USER_ID);
+  const { data: userAchievements, refetch: refetchUserAchievements } = useUserAchievements(userId);
+  const { data: dailyChallenge, isLoading: challengeLoading, refetch: refetchChallenge } = useDailyChallenge(userId ?? undefined);
   const { data: ranks } = useRanks();
 
   const submitChallenge = useSubmitDailyChallenge();
@@ -430,13 +430,13 @@ export default function AchievementsScreen() {
   }, [refetchProgress, refetchAchievements, refetchUserAchievements, refetchChallenge]);
 
   const handleSubmitChallenge = useCallback((answer: string) => {
-    if (!dailyChallenge) return;
+    if (!dailyChallenge || !userId) return;
     submitChallenge.mutate({
-      userId: DEMO_USER_ID,
+      userId,
       challengeId: dailyChallenge.id,
       answer,
     });
-  }, [dailyChallenge, submitChallenge]);
+  }, [dailyChallenge, submitChallenge, userId]);
 
   // Combine achievements with earned status
   const achievementsWithStatus = useMemo(() => {

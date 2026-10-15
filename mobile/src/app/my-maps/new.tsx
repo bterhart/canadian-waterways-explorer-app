@@ -16,6 +16,7 @@ import { useRouter, Stack } from 'expo-router';
 import { Map, MapPin, ChevronRight } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useCreateMapAnnotation } from '@/lib/api/education-api';
+import { useDeviceId } from '@/lib/identity';
 
 // Theme colors
 const colors = {
@@ -25,9 +26,6 @@ const colors = {
   gold: '#C9A962',
   lightGreen: '#E8F5E9',
 };
-
-// Mock user ID - in production this would come from auth context
-const MOCK_USER_ID = 'student-user-001';
 
 // Preset map centers for Canadian regions
 const MAP_PRESETS = [
@@ -43,6 +41,7 @@ const MAP_PRESETS = [
 
 export default function NewMapScreen() {
   const router = useRouter();
+  const userId = useDeviceId();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [selectedPreset, setSelectedPreset] = useState(0);
@@ -57,9 +56,13 @@ export default function NewMapScreen() {
 
     const preset = MAP_PRESETS[selectedPreset];
 
+    if (!userId) {
+      Alert.alert('Please wait', 'Setting up your device identity…');
+      return;
+    }
     createMap.mutate(
       {
-        userId: MOCK_USER_ID,
+        userId,
         title: title.trim(),
         description: description.trim() || undefined,
         centerLatitude: preset.latitude,

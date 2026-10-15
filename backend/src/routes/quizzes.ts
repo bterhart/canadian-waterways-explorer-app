@@ -118,6 +118,8 @@ const submitAttemptSchema = z.object({
   studentName: z.string().optional(),
   studentGrade: z.string().optional(),
   schoolName: z.string().optional(),
+  // Anonymous device identity (mobile lib/identity.ts). Optional for older clients.
+  userId: z.string().min(1).optional(),
   answers: z.array(attemptAnswerSchema),
 });
 
@@ -127,7 +129,7 @@ quizzesRouter.post(
   zValidator("json", submitAttemptSchema),
   async (c) => {
     const quizId = c.req.param("id");
-    const { studentName, studentGrade, schoolName, answers } =
+    const { studentName, studentGrade, schoolName, userId, answers } =
       c.req.valid("json");
 
     // Get the quiz with questions to validate and calculate score
@@ -217,6 +219,7 @@ quizzesRouter.post(
     const attempt = await db.quizAttempt.create({
       data: {
         quizId,
+        userId,
         studentName,
         studentGrade,
         schoolName,

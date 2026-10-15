@@ -37,6 +37,8 @@ const joinClassSchema = z.object({
   joinCode: z.string().min(1, "Join code is required"),
   displayName: z.string().min(1, "Display name is required"),
   studentCode: z.string().optional(),
+  // Anonymous device identity (mobile lib/identity.ts). Optional for older clients.
+  userId: z.string().min(1).optional(),
 });
 
 const addStudentSchema = z.object({
@@ -72,7 +74,7 @@ classesRouter.post(
   "/join",
   zValidator("json", joinClassSchema),
   async (c) => {
-    const { joinCode, displayName, studentCode } = c.req.valid("json");
+    const { joinCode, displayName, studentCode, userId } = c.req.valid("json");
 
     const classToJoin = await db.class.findUnique({
       where: { joinCode },
@@ -92,6 +94,25 @@ classesRouter.post(
       );
     }
 
+    // Same device joining the same class again: return the existing membership (idempotent).
+    if (userId) {
+      const alreadyMember = await db.classStudent.findFirst({
+        where: { classId: classToJoin.id, userId },
+      });
+      if (alreadyMember) {
+        return c.json({
+          data: {
+            student: alreadyMember,
+            class: {
+              id: classToJoin.id,
+              name: classToJoin.name,
+              gradeLevel: classToJoin.gradeLevel,
+            },
+          },
+        });
+      }
+    }
+
     // Check if student with same display name already in class
     const existingStudent = await db.classStudent.findFirst({
       where: { classId: classToJoin.id, displayName },
@@ -109,6 +130,7 @@ classesRouter.post(
         classId: classToJoin.id,
         displayName,
         studentCode,
+        userId,
       },
     });
 

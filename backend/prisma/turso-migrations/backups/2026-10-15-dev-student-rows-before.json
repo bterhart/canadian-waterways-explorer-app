@@ -1,0 +1,294 @@
+{
+  "StudentProgress": [],
+  "ClassStudent": [
+    {
+      "id": "cmlheadme0005m28uixfzqexl",
+      "classId": "cmlheaa4o0003m28uh0y3iz36",
+      "displayName": "Student One",
+      "studentCode": null,
+      "createdAt": 1770775962998,
+      "updatedAt": 1770775962998,
+      "userId": null
+    },
+    {
+      "id": "cmv8tlryt00017dhnvnvrihlz",
+      "classId": "cmv8nx6je0001p8019l7vxi5n",
+      "displayName": "Probe Student",
+      "studentCode": null,
+      "createdAt": "2026-10-15T00:48:36.821+00:00",
+      "updatedAt": "2026-10-15T00:48:36.821+00:00",
+      "userId": "dev_probe-0000-0000-0000-000000000001"
+    }
+  ],
+  "JournalEntry": [
+    {
+      "id": "cmv8rhqb40008o501a2k369re",
+      "journalId": "cmv8rgas50006o501k4qx6h3i",
+      "title": "Just starting out...",
+      "content": "Really like what this is about!",
+      "waterwayId": null,
+      "locationId": null,
+      "explorerId": null,
+      "quizId": null,
+      "lessonPlanId": null,
+      "fieldTripId": null,
+      "tags": null,
+      "createdAt": "2026-10-14T23:49:28.816+00:00",
+      "updatedAt": "2026-10-14T23:49:28.816+00:00"
+    },
+    {
+      "id": "cmv8rio12000ao5017b0wrqun",
+      "journalId": "cmv8rgas50006o501k4qx6h3i",
+      "title": "Testing",
+      "content": "Just testing",
+      "waterwayId": null,
+      "locationId": null,
+      "explorerId": null,
+      "quizId": null,
+      "lessonPlanId": null,
+      "fieldTripId": null,
+      "tags": null,
+      "createdAt": "2026-10-14T23:50:12.517+00:00",
+      "updatedAt": "2026-10-14T23:50:12.517+00:00"
+    },
+    {
+      "id": "cmv8sms9r0001o001f7d66ef1",
+      "journalId": "cmv8rgas50006o501k4qx6h3i",
+      "title": "Checking in...",
+      "content": "Another check note.",
+      "waterwayId": null,
+      "locationId": null,
+      "explorerId": null,
+      "quizId": null,
+      "lessonPlanId": null,
+      "fieldTripId": null,
+      "tags": null,
+      "createdAt": "2026-10-15T00:21:24.255+00:00",
+      "updatedAt": "2026-10-15T00:21:24.255+00:00"
+    }
+  ],
+  "SavedLocation": [],
+  "StudentJournal": [
+    {
+      "id": "cmlhea4kv0000m28u85ihph7l",
+      "studentIdentifier": "test-device-123",
+      "studentName": "Test Student",
+      "schoolName": null,
+      "gradeLevel": "4-6",
+      "createdAt": 1770775951280,
+      "updatedAt": 1770775951280
+    },
+    {
+      "id": "cmv8rgas50006o501k4qx6h3i",
+      "studentIdentifier": "student_1792021701429_o6r5c3z0a",
+      "studentName": "Bert terHart",
+      "schoolName": "ECS",
+      "gradeLevel": "12",
+      "createdAt": "2026-10-14T23:48:22.037+00:00",
+      "updatedAt": "2026-10-14T23:48:22.037+00:00"
+    }
+  ],
+  "UserAchievement": [
+    {
+      "id": "cmlhq3tz00005m2rcx34o97n5",
+      "userId": "test-user-123",
+      "achievementId": "cmlhq2ni40000m2thb2nbvc01",
+      "earnedAt": 1770795812988
+    }
+  ],
+  "DailyChallengeAttempt": [
+    {
+      "id": "cmlhq3j0m0002m2rc64hciy2t",
+      "userId": "test-user-123",
+      "challengeId": "cmlhq2njs000sm2thdm2u9l3t",
+      "answer": "b",
+      "isCorrect": 1,
+      "completedAt": 1770795798791
+    },
+    {
+      "id": "cmlhxgszr0002m2tue1rgvad1",
+      "userId": "demo-user-001",
+      "challengeId": "cmlhq2njs000sm2thdm2u9l3t",
+      "answer": "b",
+      "isCorrect": 1,
+      "completedAt": 1770808175559
+    },
+    {
+      "id": "cmllf1m050001m2574awgqaxg",
+      "userId": "demo-user-001",
+      "challengeId": "cmlhq2njw000um2thxmn064xs",
+      "answer": "a",
+      "isCorrect": 1,
+      "completedAt": 1771019098278
+    }
+  ],
+  "UserJourneyProgress": [
+    {
+      "id": "cmlhqhuq6000em2rclew5lmnz",
+      "userId": "test-user-123",
+      "journeyId": "cmlhqh7v70000m20bdp3m3ny5",
+      "currentNodeId": "gp-node-fork",
+      "choicesMade": "[\"start-paddle\"]",
+      "score": 5,
+      "status": "in_progress",
+      "startedAt": 1770796467150,
+      "completedAt": null
+    }
+  ],
+  "UserProgress": [
+    {
+      "id": "cmlhq3cm20000m2rcfsmfaki3",
+      "userId": "test-user-123",
+      "totalPoints": 35,
+      "explorerRank": "Apprentice Voyageur",
+      "waterwaysExplored": 1,
+      "locationsVisited": 0,
+      "quizzesTaken": 0,
+      "quizPointsEarned": 0,
+      "fieldTripsCompleted": 0,
+      "journalEntriesWritten": 0,
+      "pronunciationsLearned": 0,
+      "documentsRead": 0,
+      "dailyStreak": 1,
+      "longestStreak": 1,
+      "lastActiveDate": 1770768000000,
+      "createdAt": 1770795790491,
+      "updatedAt": 1770795807038
+    },
+    {
+      "id": "cmlhxghmg0000m2tu6uswjjdl",
+      "userId": "demo-user-001",
+      "totalPoints": 20,
+      "explorerRank": "Apprentice Voyageur",
+      "waterwaysExplored": 0,
+      "locationsVisited": 0,
+      "quizzesTaken": 0,
+      "quizPointsEarned": 0,
+      "fieldTripsCompleted": 0,
+      "journalEntriesWritten": 0,
+      "pronunciationsLearned": 0,
+      "documentsRead": 0,
+      "dailyStreak": 0,
+      "longestStreak": 0,
+      "lastActiveDate": null,
+      "createdAt": 1770808160824,
+      "updatedAt": 1771019098281
+    }
+  ],
+  "MapNote": [],
+  "MapRoute": [
+    {
+      "id": "cmlhqea2m000am2rc46v5agit",
+      "annotationId": "cmlhqe21p0006m2rc3gq0o8g6",
+      "title": "My Trade Route",
+      "description": "Following the Fraser River",
+      "coordinates": "[[49.2827,-123.1207],[49.35,-123],[49.45,-122.8],[49.55,-122.6]]",
+      "color": "#4ECDC4",
+      "strokeWidth": 4,
+      "isDashed": 0,
+      "compareToExplorerId": null,
+      "createdAt": 1770796300415
+    }
+  ],
+  "MapPin": [
+    {
+      "id": "cmlhqe6oa0008m2rchchtx368",
+      "annotationId": "cmlhqe21p0006m2rc3gq0o8g6",
+      "latitude": 49.2827,
+      "longitude": -123.1207,
+      "title": "Fort Langley",
+      "description": "Historic Hudson Bay Company trading post",
+      "color": "#FF6B6B",
+      "icon": "fort",
+      "linkedWaterwayId": null,
+      "linkedLocationId": null,
+      "linkedExplorerId": null,
+      "createdAt": 1770796296011
+    }
+  ],
+  "UserMapAnnotation": [
+    {
+      "id": "cmlhqe21p0006m2rc3gq0o8g6",
+      "userId": "test-user-123",
+      "title": "Updated: My Fur Trade Route",
+      "description": "The grand voyage west",
+      "centerLatitude": 49.2827,
+      "centerLongitude": -123.1207,
+      "zoomLevel": 8,
+      "isPublic": 1,
+      "shareCode": "w2NaKX7vdG",
+      "createdAt": 1770796290013,
+      "updatedAt": 1770796328608
+    }
+  ],
+  "QuizAttempt": [
+    {
+      "id": "cmlhd0dft0004m2cmt6r69oxp",
+      "quizId": "cmlhczng50000m2cmzloa51vo",
+      "studentName": "Test Student",
+      "studentGrade": "8",
+      "schoolName": "Test School",
+      "score": 1,
+      "totalQuestions": 1,
+      "totalPoints": 1,
+      "maxPoints": 1,
+      "percentageScore": 100,
+      "answers": "[{\"questionId\":\"cmlhczsog0002m2cmi7i5jc2m\",\"selectedAnswer\":\"c\",\"isCorrect\":true}]",
+      "startedAt": 1770773816585,
+      "completedAt": 1770773816582,
+      "createdAt": 1770773816585,
+      "userId": null
+    },
+    {
+      "id": "cmlhd0gpv0006m2cmg4hkrrke",
+      "quizId": "cmlhczng50000m2cmzloa51vo",
+      "studentName": "Another Student",
+      "studentGrade": null,
+      "schoolName": null,
+      "score": 0,
+      "totalQuestions": 1,
+      "totalPoints": 0,
+      "maxPoints": 1,
+      "percentageScore": 0,
+      "answers": "[{\"questionId\":\"cmlhczsog0002m2cmi7i5jc2m\",\"selectedAnswer\":\"a\",\"isCorrect\":false}]",
+      "startedAt": 1770773820835,
+      "completedAt": 1770773820834,
+      "createdAt": 1770773820835,
+      "userId": null
+    },
+    {
+      "id": "cmln8zrd40001jo3x1uxtu5xd",
+      "quizId": "cmligch7s001tm23xzvjdqzgy",
+      "studentName": null,
+      "studentGrade": null,
+      "schoolName": null,
+      "score": 3,
+      "totalQuestions": 5,
+      "totalPoints": 3,
+      "maxPoints": 5,
+      "percentageScore": 60,
+      "answers": "[{\"questionId\":\"cmligch7v001vm23x9zxc390p\",\"selectedAnswer\":\"c\",\"isCorrect\":false},{\"questionId\":\"cmligch7z001xm23x3ut8zoz5\",\"selectedAnswer\":\"b\",\"isCorrect\":false},{\"questionId\":\"cmligch84001zm23xgyf0y9cy\",\"selectedAnswer\":\"b\",\"isCorrect\":true},{\"questionId\":\"cmligch870021m23x356mtg2m\",\"selectedAnswer\":\"b\",\"isCorrect\":true},{\"questionId\":\"cmligch8a0023m23x4lc0te3u\",\"selectedAnswer\":\"c\",\"isCorrect\":true}]",
+      "startedAt": "2026-02-15T04:31:06.568+00:00",
+      "completedAt": "2026-02-15T04:31:06.552+00:00",
+      "createdAt": "2026-02-15T04:31:06.568+00:00",
+      "userId": null
+    },
+    {
+      "id": "cmv8tlsc700037dhnpjhh5ej9",
+      "quizId": "cmligch7s001tm23xzvjdqzgy",
+      "studentName": null,
+      "studentGrade": null,
+      "schoolName": null,
+      "score": 0,
+      "totalQuestions": 5,
+      "totalPoints": 0,
+      "maxPoints": 5,
+      "percentageScore": 0,
+      "answers": "[]",
+      "startedAt": "2026-10-15T00:48:37.304+00:00",
+      "completedAt": "2026-10-15T00:48:37.299+00:00",
+      "createdAt": "2026-10-15T00:48:37.304+00:00",
+      "userId": "dev_probe-0000-0000-0000-000000000001"
+    }
+  ]
+}
