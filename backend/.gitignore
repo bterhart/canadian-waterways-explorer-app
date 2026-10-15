@@ -36,3 +36,5 @@ studio.log
 
 # Prisma generated files (bunx prisma generate)
 /generated/prisma
+# Local KML exports from scripts/export-waterway-kml.ts (reproducible from OSM; backups of replaced KML live in prisma/turso-migrations/backups)
+generated/kml-exports/

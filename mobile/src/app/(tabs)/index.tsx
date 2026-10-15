@@ -802,7 +802,10 @@ export default function MapScreen() {
             : '#0EA5E9';
 
           return selectedWaterwayPaths.map((latLngs, index) => {
-            if (isArea) {
+            // Per-path kind lets a river carry its mapped water surface (filled) alongside its
+            // centreline (line); older servers send no pathKinds and fall back to the waterway kind.
+            const pathIsArea = (selectedWaterwayGeometry.pathKinds?.[index] ?? (isArea ? 'area' : 'line')) === 'area';
+            if (pathIsArea) {
               return (
                 <Polygon
                   key={`kml-poly-${index}`}
