@@ -10,6 +10,7 @@ import {
   Image,
   Dimensions,
   Pressable,
+  TouchableOpacity,
   Modal,
 } from 'react-native';
 import { useLocalSearchParams, Stack } from 'expo-router';
@@ -69,19 +70,18 @@ function KeyFigureCard({ figure, onPress }: KeyFigureCardProps) {
   // Use explorer's imageUrl if available, fallback to figure.imageUrl
   const imageUrl = explorerData?.imageUrl ?? figure.imageUrl;
 
-  const CardWrapper = explorerId ? Pressable : View;
-  const cardProps = explorerId && onPress
-    ? {
-        onPress,
-        style: ({ pressed }: { pressed: boolean }) => [
-          styles.figureCard,
-          pressed && styles.figureCardPressed,
-        ],
-      }
-    : { style: styles.figureCard };
+  // A plain touchable with a static style. The previous version picked Pressable or View at
+  // render time and spread a function-valued style into it; on iOS (build 49) that card lost
+  // its row layout and padding, so the text slid under the portrait and was clipped.
+  const pressable = !!explorerId && !!onPress;
 
   return (
-    <CardWrapper {...cardProps}>
+    <TouchableOpacity
+      style={styles.figureCard}
+      onPress={onPress}
+      disabled={!pressable}
+      activeOpacity={0.7}
+    >
       {imageUrl ? (
         <Image
           source={{ uri: imageUrl }}
@@ -101,7 +101,7 @@ function KeyFigureCard({ figure, onPress }: KeyFigureCardProps) {
         ) : null}
         <Text style={styles.figureDescription}>{figure.description}</Text>
       </View>
-    </CardWrapper>
+    </TouchableOpacity>
   );
 }
 
@@ -466,10 +466,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 14,
     marginBottom: 12,
-  },
-  figureCardPressed: {
-    backgroundColor: '#E5E7EB',
-    opacity: 0.8,
   },
   figureImage: {
     width: 70,
