@@ -159,13 +159,12 @@ export default function MapScreen() {
     type: MarkerType;
   } | null>(null);
 
-  // The preview card docked at the bottom of the map. Set by a pin tap (fromOverview false)
-  // or by tapping a river on the overview layer at local zoom (fromOverview true, which keeps
-  // the overview layer on screen and defers the boundary fetch until details are requested).
+  // The preview card docked at the bottom of the map. Set by a pin tap, by tapping a river on
+  // the overview layer, or by tapping the selected waterway's own outline. Any of them fetches
+  // the boundary and zooms the map to it.
   const [preview, setPreview] = useState<{
     id: string;
     type: MarkerType;
-    fromOverview: boolean;
   } | null>(null);
   const [mapRegion, setMapRegion] = useState<Region>(CANADA_CENTER);
 
@@ -194,7 +193,7 @@ export default function MapScreen() {
 
   // Fetch the boundary for a waterway previewed from a pin or opened in the bottom sheet
   const detailWaterwayId =
-    preview?.type === 'waterway' && !preview.fromOverview
+    preview?.type === 'waterway'
       ? preview.id
       : selectedMarker?.type === 'waterway'
         ? selectedMarker.id
@@ -213,7 +212,7 @@ export default function MapScreen() {
 
   // Close the preview card and deselect its pin
   const closePreview = useCallback(() => {
-    if (preview && !preview.fromOverview) {
+    if (preview) {
       markerRefs.current[`${preview.type}-${preview.id}`]?.hideCallout?.();
     }
     setPreview(null);
@@ -282,12 +281,11 @@ export default function MapScreen() {
   // Check if any filter is active
   const hasActiveFilter = filterType !== null || activeFilter !== null;
   const hasRiverOverviewData = !!riverOverviewData?.waterways?.length;
-  const shouldPreferRiverOverviewMode = !hasActiveFilter && !(preview && !preview.fromOverview);
+  const shouldPreferRiverOverviewMode = !hasActiveFilter && !preview;
   const shouldShowRiverOverview = shouldPreferRiverOverviewMode && !selectedMarker && hasRiverOverviewData;
   const shouldSuppressMarkersForOverview = shouldPreferRiverOverviewMode && (riverOverviewLoading || hasRiverOverviewData);
   const shouldRenderMarkers = !shouldSuppressMarkersForOverview;
   const riverOverviewTier = useMemo(() => getOverviewTier(mapRegion), [mapRegion]);
-  const isRiverOverviewInteractive = riverOverviewTier === 'local';
   const riverOverviewStrokeWidth = OVERVIEW_STROKE_WIDTH[riverOverviewTier];
 
   const visibleRiverOverviewRecords = useMemo(() => {
@@ -457,26 +455,28 @@ export default function MapScreen() {
   );
 
 
-  // Animate to waterway when a waterway is focused through either a callout or direct overview selection
+  // Zoom to the selected waterway: its fetched boundary when available, otherwise its pin
+  const animateToSelectedWaterway = useCallback(() => {
+    if (!selectedWaterway || !mapRef.current) return;
+    if (selectedWaterwayPaths && selectedWaterwayPaths.length > 0) {
+      const region = getRegionForCoordinates(selectedWaterwayPaths.flat());
+      if (region) {
+        mapRef.current.animateToRegion(region, 500);
+        return;
+      }
+    }
+    mapRef.current.animateToRegion({
+      latitude: selectedWaterway.latitude,
+      longitude: selectedWaterway.longitude,
+      latitudeDelta: 2,
+      longitudeDelta: 2,
+    }, 500);
+  }, [selectedWaterway, selectedWaterwayPaths]);
+
+  // Animate to the waterway or location being previewed (and again once its boundary arrives)
   useEffect(() => {
     if (detailWaterwayId && selectedWaterway) {
-      if (selectedWaterwayPaths && selectedWaterwayPaths.length > 0) {
-        const region = getRegionForCoordinates(selectedWaterwayPaths.flat());
-        if (region && mapRef.current) {
-          mapRef.current.animateToRegion(region, 500);
-          return;
-        }
-      }
-
-      if (mapRef.current) {
-        mapRef.current.animateToRegion({
-          latitude: selectedWaterway.latitude,
-          longitude: selectedWaterway.longitude,
-          latitudeDelta: 2,
-          longitudeDelta: 2,
-        }, 500);
-      }
-
+      animateToSelectedWaterway();
       return;
     }
 
@@ -491,7 +491,7 @@ export default function MapScreen() {
         }, 500);
       }
     }
-  }, [detailWaterwayId, selectedWaterway, selectedWaterwayPaths, preview, locations]);
+  }, [detailWaterwayId, selectedWaterway, animateToSelectedWaterway, preview, locations]);
 
   const handleRegionChangeComplete = useCallback((region: Region) => {
     setMapRegion(region);
@@ -510,23 +510,27 @@ export default function MapScreen() {
 
   // Pin tapped: show the preview card (and, through detailWaterwayId, the waterway boundary)
   const handleMarkerSelect = useCallback((id: string, type: MarkerType) => {
-    setPreview({ id, type, fromOverview: false });
+    setPreview({ id, type });
   }, []);
 
-  // "Tap for details" on the preview card: open the bottom sheet. A preview that came from the
-  // overview layer is cleared so that closing the sheet returns to the plain overview map.
+  // "Tap for details" on the preview card: open the bottom sheet
   const handlePreviewDetailsPress = useCallback(() => {
     if (!preview) return;
-    if (preview.fromOverview) setPreview(null);
     setSelectedMarker({ id: preview.id, type: preview.type });
   }, [preview]);
 
-  // River line tapped on the overview layer at local zoom: lightweight preview first
+  // River tapped on the overview layer (any zoom): preview it exactly like a pin tap
   const handleRiverOverviewPress = useCallback((waterwayId: string) => {
     lastOverlayPressAtRef.current = Date.now();
     setSelectedMarker(null);
-    setPreview({ id: waterwayId, type: 'waterway', fromOverview: true });
+    setPreview({ id: waterwayId, type: 'waterway' });
   }, []);
+
+  // The selected waterway's outline tapped: zoom back to it (the card is already showing it)
+  const handleSelectedOutlinePress = useCallback(() => {
+    lastOverlayPressAtRef.current = Date.now();
+    animateToSelectedWaterway();
+  }, [animateToSelectedWaterway]);
 
   // Called when bottom sheet is closed - only closes sheet, leaves preview and boundary visible
   const handleBottomSheetClose = useCallback(() => {
@@ -647,8 +651,8 @@ export default function MapScreen() {
                       strokeColor={strokeColor}
                       fillColor={`${strokeColor}20`}
                       strokeWidth={2}
-                      tappable={isRiverOverviewInteractive}
-                      onPress={isRiverOverviewInteractive ? () => handleRiverOverviewPress(record.id) : undefined}
+                      tappable
+                      onPress={() => handleRiverOverviewPress(record.id)}
                     />
                   );
                 }
@@ -659,8 +663,8 @@ export default function MapScreen() {
                     coordinates={coordinates}
                     strokeColor={strokeColor}
                     strokeWidth={riverOverviewStrokeWidth}
-                    tappable={isRiverOverviewInteractive}
-                    onPress={isRiverOverviewInteractive ? () => handleRiverOverviewPress(record.id) : undefined}
+                    tappable
+                    onPress={() => handleRiverOverviewPress(record.id)}
                   />
                 );
               });
@@ -690,6 +694,8 @@ export default function MapScreen() {
                   strokeColor={color}
                   fillColor={`${color}30`}
                   strokeWidth={2}
+                  tappable
+                  onPress={handleSelectedOutlinePress}
                 />
               );
             }
@@ -699,6 +705,8 @@ export default function MapScreen() {
                 coordinates={latLngs}
                 strokeColor={color}
                 strokeWidth={3}
+                tappable
+                onPress={handleSelectedOutlinePress}
               />
             );
           });
