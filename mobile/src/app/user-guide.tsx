@@ -42,13 +42,16 @@ Welcome to the Canadian Interactive Waterways Initiative - an immersive educatio
 
 When you open the app, you'll see tabs at the bottom:
 - Map - Interactive map of Canada's waterways and historic locations
+- Explorers - Profiles of the explorers who travelled these waterways
+- Quizzes - Test your knowledge by topic and grade level
 - Learn - Educational resources, lesson plans, and teacher tools
+- Admin - Sign-in for content administrators
 
-Simply tap on either tab to begin exploring.
+No account is needed. Simply tap a tab to begin exploring.
 
 ## Interactive Map
 
-The heart of the app is an interactive map showcasing Canada's major waterways and historic locations.
+The heart of the app is an interactive map showcasing Canada's major waterways and historic locations: 70 waterways and 100 historic locations.
 
 ### Map Features
 
@@ -62,6 +65,8 @@ Historic Location Markers:
 - Orange markers - Trading Posts (York Factory, Moose Factory, etc.)
 - Brown markers - Portages and other sites
 
+The Map Legend explains every icon. Filters let you show one waterway, one explorer's waterways, or one time period at a time.
+
 ### How to Use the Map
 
 Tap any marker to see a preview card with name, type, and description.
@@ -70,7 +75,7 @@ Tap "Learn More" to open the full detail view with complete history, connected e
 
 ### Boundary Highlighting
 
-When you select a waterway, the entire waterway boundary illuminates like a highlighter on a map, helping visualize the true scale of Canada's water systems.
+When you select a waterway, its outline is drawn on the map, helping visualize the true scale of Canada's water systems. Outlines become more detailed as you zoom in.
 
 ## Learn Tab
 
@@ -78,13 +83,20 @@ The Learn tab is your gateway to structured educational content.
 
 ### Available Resources
 
-- Lesson Plans (26 Complete Plans) - Curriculum-aligned plans organized by grade level and topic
-- Virtual Field Trips (4 Complete Tours) - Experience historic locations
-- Document Library (14 Primary Source Documents) - Access annotated primary sources
-- Printable Worksheets (8 Resources) - Download and print educational materials
-- Pronunciation Guide (33+ Entries) - Learn correct pronunciation of Indigenous place names
-- Historical Comparisons (4 Templates) - Compare different aspects of Canadian history
-- Interactive Timeline (16 Major Events) - Visualize 1,000 years of exploration history
+- Deep Dives (26 lesson plans) - Curriculum-aligned plans organized by grade level and topic
+- Timeline (23 events) - Nearly 300 years of exploration history, from 1613 to 1885
+- Field Trips (6 virtual tours) - Experience historic locations stop by stop
+- Documents (48 primary sources) - Annotated letters, journals, maps and records
+- What Happened Here? - Historical events near your current location
+- Notable Figures (18 profiles) - Women, Indigenous leaders, guides and traders
+- My Maps - Your own annotated maps with pins, routes and notes
+- Indigenous Languages (298 words) - Vocabulary from First Nations and Inuit languages
+- Compare (4 templates) - Side-by-side comparisons of people, places and events
+- Pronunciations (33 entries) - Phonetic spellings of Indigenous place and nation names
+- My Class - Join a teacher's class and complete assignments
+- My Journal - Private reflections on what you have learned
+- Teacher Portal - Classes, assignments and progress tracking for teachers
+- Printable Resources (8 items) - Worksheets and activity sheets to download and print
 
 ## Teacher Portal
 
@@ -92,51 +104,59 @@ The Teacher Portal provides tools for managing classroom learning.
 
 ### Getting Started
 
-1. Tap "Learn" tab
+1. Tap the "Learn" tab
 2. Tap "Teacher Portal"
-3. Register with your school email or log in
+3. Tap "Create an Account" and register, or sign in if you already have an account
+4. An administrator reviews new accounts, typically within 1-2 business days. You can sign in once approved.
 
 ### Dashboard Features
 
-- Class Management - Create classes and generate student join codes
-- Assignments - Create custom assignments with due dates
-- Progress Tracking - Monitor student engagement and quiz scores
+- Class Management - Create classes; each one gets a 6-character join code for students
+- Assignments - Assign quizzes, Deep Dives or field trips with due dates and instructions
+- Progress Tracking - See who has joined and which assignments each student has completed
 
 ## Student Features
+
+Students never create accounts. Progress, points, achievements and journal entries are tied to the device.
+
+### My Class
+
+1. Open the Learn tab
+2. Tap "My Class"
+3. Enter the join code from your teacher and a display name
+4. Your teacher's assignments appear here. Quizzes count when you finish them; a Deep Dive or field trip counts when you tap its "Mark ... Complete" button at the bottom of the page.
 
 ### Student Journal
 
 Students can record their learning journey:
 1. Open the Learn tab
 2. Tap "My Journal"
-3. Tap "New Entry"
-4. Select a topic and write reflections
+3. The first time, enter your name (school and grade are optional) to create your journal
+4. Tap the + button and write your reflections
+
+Journal entries are private and are not shown to teachers.
 
 ### Achievement Badges
 
-Earn badges for:
+28 badges are available, including:
 - First Steps - Explore your first waterway
-- Knowledge Seeker - Complete your first quiz
-- Voyageur in Training - Complete a journey adventure
-- Word Learner - Learn 10 Indigenous words
-- And many more...
+- Quiz Beginner - Complete your first quiz
+- First Voyage - Finish your first virtual field trip
+- First Words - Learn your first pronunciation
+- First Entry - Write your first journal entry
+- First Discovery - Read your first primary source document
+- And many more, up to Unstoppable for long daily streaks
 
-## RCGS Educational Quizzes
+## Quizzes
 
-Test your knowledge with quizzes developed in partnership with the Royal Canadian Geographical Society.
-
-### Quiz Categories
+13 quizzes in five categories:
 - Explorers - Test knowledge of Canada's famous explorers
 - Fur Trade - Learn about trading companies and routes
 - Maritime History - Discover coastal exploration
 - Indigenous Heritage - Understand First Nations history
 - Geography - Know Canada's waterways and territories
 
-### Grade Levels
-- K-3: Picture-based, simplified questions
-- 4-6: Standard multiple choice with explanations
-- 7-9: More detailed analytical questions
-- 10-12: Advanced source-based questions
+Each quiz is written for one grade band: K-3, 4-6, 7-9 or 10-12. Quizzes can be retaken as often as you like.
 
 ## Gamification & Progress
 
@@ -145,20 +165,23 @@ Track your learning journey and earn achievements!
 ### Explorer Ranks
 
 Progress through these ranks:
-1. Apprentice Voyageur (0-99 points)
-2. Junior Explorer (100-249 points)
-3. Trail Blazer (250-499 points)
-4. Seasoned Voyageur (500-999 points)
-5. Master Explorer (1,000+ points)
+1. Apprentice Voyageur (0-100 points)
+2. Junior Explorer (101-300 points)
+3. Fur Trade Clerk (301-600 points)
+4. Seasoned Voyageur (601-1,000 points)
+5. Fort Factor (1,001-1,500 points)
+6. Chief Trader (1,501-2,500 points)
+7. Master Explorer (2,501+ points)
 
 ### Earning Points
 
-- Complete a quiz: 10-20 points
-- Explore a waterway: 5 points
-- Complete a lesson plan: 15 points
+- Complete a quiz: 10-20 points, depending on your score
+- Complete a Deep Dive lesson: 15 points
 - Finish a virtual field trip: 20 points
-- Learn 10 Indigenous words: 10 points
-- Daily challenge: 10 points
+- Write a journal entry: 5 points
+- Daily challenge: bonus points when a challenge is scheduled for the day
+
+Your points, rank, streak and badges are shown on the Achievements screen.
 
 ## Indigenous Language Learning
 
@@ -166,7 +189,6 @@ Learn words and phrases from Canada's Indigenous languages.
 
 ### 298 Indigenous Words Available
 
-The app features vocabulary across 8 First Nations languages:
 - Cree: 83 words
 - Ojibwe: 58 words
 - Inuktitut: 45 words
@@ -174,6 +196,7 @@ The app features vocabulary across 8 First Nations languages:
 - Blackfoot: 30 words
 - Mohawk: 22 words
 - Mi'kmaq: 19 words
+- Iroquoian languages: 7 words
 
 ### Word Categories
 
@@ -185,27 +208,37 @@ The app features vocabulary across 8 First Nations languages:
 
 ## Notable Figures
 
-Meet the 14 women and Indigenous leaders who shaped Canadian history.
+Meet the 18 women, Indigenous leaders, guides and traders who shaped Canadian history.
 
 ### Featured Women
-- Charlotte Small - Métis wife and partner of David Thompson
-- Thanadelthur - Chipewyan peacemaker and guide
-- Marie-Anne Gaboury - First European woman to travel to Canadian Northwest
-- Isabel Gunn - Only known woman to work disguised as a man for HBC
+- Charlotte Small - Métis partner of David Thompson, interpreter and expedition companion
+- Thanadelthur - Chipewyan peacemaker, guide and interpreter for the Hudson's Bay Company
+- Marie-Anne Gaboury - First European woman to travel to the Canadian Northwest
+- Isabel Gunn - First European woman in Rupert's Land, disguised as a man
+- Sacagawea - Lemhi Shoshone guide and interpreter for the Lewis and Clark Expedition
 
 ### Indigenous Leaders & Guides
-- Matonabbee - Led Samuel Hearne to Arctic Ocean
-- Saukamappee - Shared invaluable oral history
-- Akaitcho - Guided John Franklin's Arctic expedition
+- Matonabbee - Chipewyan leader, guide and diplomat who led Samuel Hearne to the Arctic Ocean
+- Saukamappee - Cree warrior, Piikani elder and oral historian
+- Akaitcho - Yellowknife Dene chief and guide for John Franklin's expedition
+- Keskarrah - Yellowknife leader who assisted Samuel Hearne
+- Tattannoeuck - Inuit interpreter for John Franklin's Arctic expeditions
+- Crowfoot (Isapo-Muxika) - Siksika (Blackfoot) Chief
+- Poundmaker (Pîhtokahanapiwiyin) - Plains Cree Chief
+- Big Bear (Mistahimaskwa) - Plains Cree Chief
 
 ### Métis Leaders
-- Louis Riel - Founder of Manitoba, Métis leader
-- Gabriel Dumont - Military leader
-- Cuthbert Grant - Warden of the Plains
+- Louis Riel - Founder of Manitoba and Métis rights leader
+- Gabriel Dumont - Métis military leader and buffalo hunt captain
+- Cuthbert Grant - Warden of the Plains and early Métis leader
 
-## Multi-Language Support
+### Voyageurs & Traders
+- Jean-Baptiste Lagimodière - Legendary voyageur and grandfather of Louis Riel
+- Roderick McKenzie - North West Company fur trader, later Hudson's Bay Company chief factor
 
-The app is available in English and French.
+## Language Settings
+
+Menus, the main tabs and settings can be shown in English or French. Educational content, quizzes and this guide are currently in English.
 
 ### How to Change Language
 
@@ -222,9 +255,11 @@ Discover historical events near your location using GPS!
 
 1. Open "What Happened Here?" from the Learn tab
 2. Allow location access when prompted
-3. Choose a search radius (5km to 100km)
+3. Choose a search radius (5 km to 100 km)
 4. Filter by category (optional)
 5. See historical events sorted by distance
+
+Location is used only on this screen and is never stored.
 
 ## Frequently Asked Questions
 
@@ -235,19 +270,19 @@ Yes, the app is completely free for all students, teachers, and educational inst
 The app contains content for K-12 students, with features tailored to different grade levels.
 
 ### Can I use this app offline?
-Basic map features work with limited connectivity, but full functionality requires internet.
+No. Content is loaded from our servers, so an internet connection is required.
 
 ### Is the app available in French?
-Yes! The entire app is available in both English and French.
+Menus and navigation can be shown in French. Educational content is currently in English.
 
 ### How accurate is the historical information?
-All content is based on historical records and academic research, reviewed by historians and Indigenous communities.
+All content is based on historical records, archives, academic publications and public domain materials.
 
 ### Do students need accounts?
-No! Students can explore all content without creating an account. Accounts are optional for saving progress.
+No. Students never create accounts. Progress is tied to the device, and a student joins a class with a join code and display name only.
 
 ### Can I track student progress?
-Yes, create a teacher account and have students join your class using a class code.
+Yes. Create a teacher account, create a class, and have students join it with the class code. Assignment completion is shown on your dashboard.
 
 ## Getting Help
 
@@ -255,16 +290,15 @@ If you need assistance:
 
 In-App Support:
 - Review this User Guide
-- Check the FAQ section
-- Use the Feedback form
+- Check the FAQ section (Settings > FAQ)
 
 Contact Support:
-- Technical Issues: support@waterways.edu
-- Educational Questions: education@waterways.edu
+- Technical Issues: support@canadianwaterways.ca
+- Educational Questions: education@canadianwaterways.ca
 
 ## Credits & Acknowledgments
 
-The Canadian Interactive Waterways Initiative is developed in partnership with:
+The Canadian Interactive Waterways Initiative is a self-financed project of the Kainani Across Alone Team, with thanks to:
 - Royal Canadian Geographical Society
 - Indigenous Education Consultants
 - Historians and Archaeologists
@@ -272,9 +306,7 @@ The Canadian Interactive Waterways Initiative is developed in partnership with:
 
 ### Land Acknowledgment
 
-We acknowledge that the waterways featured in this app flow through the traditional territories of diverse Indigenous peoples across what is now called Canada. These waterways have been traveled, named, and stewarded by Indigenous peoples for thousands of years before European contact.
-
-Version 1.0 | February 2026`;
+We acknowledge that the waterways featured in this app flow through the traditional territories of diverse Indigenous peoples across what is now called Canada. These waterways have been traveled, named, and stewarded by Indigenous peoples for thousands of years before European contact.`;
 
 function parseUserGuide(content: string): Section[] {
   const sections: Section[] = [];

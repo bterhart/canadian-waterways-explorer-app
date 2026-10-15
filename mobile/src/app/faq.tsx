@@ -68,25 +68,25 @@ const FAQ_DATA: FAQItem[] = [
   {
     id: 'devices',
     question: 'What devices does the app work on?',
-    answer: 'The app works on iOS devices (iPhone, iPad), Android devices, and web browsers. It\'s optimized for tablets for the best map viewing experience, but works well on phones too.',
+    answer: 'The app is published for iPhone and iPad through the App Store. An Android version is being prepared. Tablets give the best map viewing experience, but the app works well on phones too.',
     category: 'Getting Started',
   },
   {
     id: 'french-support',
     question: 'Is the app available in French?',
-    answer: 'Yes! The entire app is available in both English and French. Switch languages anytime in Settings. Perfect for French immersion classrooms and Francophone Canada.',
+    answer: 'Partly. Menus, the main tabs and settings can be shown in French (Settings > Language). Educational content, quizzes, the User Guide and this FAQ are currently in English.',
     category: 'Getting Started',
   },
   {
     id: 'offline-use',
     question: 'Can I use this app offline?',
-    answer: 'Basic map features and previously viewed content work with limited connectivity. However, full functionality (quizzes, images, new content) requires an internet connection. We recommend downloading key content before field trips if connectivity may be limited.',
+    answer: 'No. Waterways, locations, quizzes and images are loaded from our servers, so the app needs an internet connection. Screens you have already opened may stay visible for a short time, but nothing new will load without a connection.',
     category: 'Getting Started',
   },
   {
     id: 'get-started',
     question: 'How do I get started?',
-    answer: 'Simply open the app and explore! Start with the Map tab to see Canadian waterways, or visit the Learn tab for educational content. No account is required to use most features.',
+    answer: 'Simply open the app and explore! Start with the Map tab to see Canadian waterways, or visit the Learn tab for educational content. No account is required.',
     category: 'Getting Started',
   },
 
@@ -118,7 +118,7 @@ const FAQ_DATA: FAQItem[] = [
   {
     id: 'explorer-routes',
     question: 'Can I see explorer routes on the map?',
-    answer: 'Yes! When viewing an explorer\'s profile, you can see the waterways they explored highlighted on the map. You can also use My Maps to draw and compare routes yourself.',
+    answer: 'Yes! Use the Explorer filter on the Map tab to highlight the waterways an explorer travelled. You can also use My Maps to draw and compare routes yourself.',
     category: 'Map & Navigation',
   },
 
@@ -144,7 +144,7 @@ const FAQ_DATA: FAQItem[] = [
   {
     id: 'regions',
     question: 'Is there content about all regions of Canada?',
-    answer: 'Yes! The app includes content from coast to coast to coast: Atlantic Canada, Quebec, Ontario, the Prairies, British Columbia, the Territories, and the Arctic. Coverage is comprehensive with 70+ waterways and 99 historic locations.',
+    answer: 'Yes! The app includes content from coast to coast to coast: Atlantic Canada, Quebec, Ontario, the Prairies, British Columbia, the Territories, and the Arctic. Coverage is comprehensive with 70 waterways and 100 historic locations.',
     category: 'Educational Content',
   },
   {
@@ -168,7 +168,7 @@ const FAQ_DATA: FAQItem[] = [
   {
     id: 'updates',
     question: 'How often is new content added?',
-    answer: 'We update the app regularly with new content, quizzes, and field trips. Check for "New" badges on recently added content. Community contributions are reviewed and added on an ongoing basis.',
+    answer: 'Content, quizzes and field trips are added over time through app updates. Contributions submitted in the app are reviewed by administrators before they appear.',
     category: 'Educational Content',
   },
 
@@ -194,7 +194,7 @@ const FAQ_DATA: FAQItem[] = [
   {
     id: 'student-accounts',
     question: 'Do students need accounts?',
-    answer: 'No! Students can explore all content without creating an account. Accounts are only needed if students want to save progress, write journals, or join a teacher\'s class for tracked assignments.',
+    answer: 'No. Students never create accounts. Progress, points, achievements and journal entries are tied to the device, so no email or password is needed. To receive a teacher\'s assignments, a student joins the class from Learn > My Class with the class join code.',
     category: 'For Teachers',
   },
   {
@@ -206,7 +206,7 @@ const FAQ_DATA: FAQItem[] = [
   {
     id: 'create-quizzes',
     question: 'Can I create my own quizzes?',
-    answer: 'Currently, quiz creation is limited to ensure quality and accuracy. However, you can suggest quiz topics through the feedback form. We\'re exploring teacher quiz creation for a future update.',
+    answer: 'Quizzes are created and edited by administrators to keep them accurate and consistent. If you would like a quiz added, email education@canadianwaterways.ca with the topic and grade level.',
     category: 'For Teachers',
   },
   {
@@ -218,7 +218,7 @@ const FAQ_DATA: FAQItem[] = [
   {
     id: 'class-codes',
     question: 'How do class join codes work?',
-    answer: 'Each class gets a unique 6-character code. Share it with students to have them join. You can regenerate codes if needed. Students enter the code in the app to join your class.',
+    answer: 'Each class gets a unique 6-character code when you create it. Share it with students; they enter it under Learn > My Class, along with a display name, to join your class.',
     category: 'For Teachers',
   },
   {
@@ -230,7 +230,7 @@ const FAQ_DATA: FAQItem[] = [
   {
     id: 'printables',
     question: 'Are there printable resources?',
-    answer: 'Yes! The Printables section includes worksheets, maps, vocabulary builders, and activity sheets. All include teacher notes and answer keys where applicable.',
+    answer: 'Yes! The Printable Resources section under Learn includes worksheets, maps, vocabulary builders, and activity sheets. Teacher notes and answer keys are included where provided.',
     category: 'For Teachers',
   },
 
@@ -238,7 +238,7 @@ const FAQ_DATA: FAQItem[] = [
   {
     id: 'join-class',
     question: 'How do I join my teacher\'s class?',
-    answer: 'Ask your teacher for the class join code. Go to Learn > Join Class, enter the code and your display name. You\'ll then see assignments from your teacher.',
+    answer: 'Ask your teacher for the class join code. Go to Learn > My Class, enter the code and your display name. You\'ll then see assignments from your teacher, and each one is marked complete when you finish it.',
     category: 'For Students',
   },
   {
@@ -250,19 +250,13 @@ const FAQ_DATA: FAQItem[] = [
   {
     id: 'journal-private',
     question: 'Who can see my journal?',
-    answer: 'Your journal is private by default. Only you can see your entries unless you choose to share specific entries with your teacher. You control your privacy.',
-    category: 'For Students',
-  },
-  {
-    id: 'save-locations',
-    question: 'How do I save favorite locations?',
-    answer: 'When viewing a waterway, location, or explorer, tap the bookmark icon to save it to your journal. Access saved locations anytime from My Journal.',
+    answer: 'Your journal is private. Entries are tied to your device and are not shown to teachers, classmates or anyone else in the app.',
     category: 'For Students',
   },
   {
     id: 'pronunciation-help',
     question: 'How do I learn to pronounce Indigenous words?',
-    answer: 'The Pronunciation Guide in the Learn tab provides phonetic spellings for Indigenous place names, nation names, and fur trade terms. Audio pronunciation is available for many terms.',
+    answer: 'The Pronunciation Guide in the Learn tab provides phonetic spellings for Indigenous place names, nation names, and fur trade terms. Entries that include a recording have a play button.',
     category: 'For Students',
   },
 
@@ -270,25 +264,25 @@ const FAQ_DATA: FAQItem[] = [
   {
     id: 'earn-points',
     question: 'How do I earn points?',
-    answer: 'Earn points by completing quizzes, exploring waterways and locations, reading documents, writing journal entries, and completing daily challenges. Different activities award different point amounts.',
+    answer: 'Earn points by completing quizzes (10 to 20 points depending on your score), Deep Dive lessons (15), virtual field trips (20) and journal entries (5), plus bonus points for the daily challenge when one is scheduled.',
     category: 'Gamification',
   },
   {
     id: 'ranks',
     question: 'What are the explorer ranks?',
-    answer: 'Progress through ranks from "Apprentice Voyageur" to "Master Explorer" by earning points. Each rank unlocks as you reach point thresholds. There are 7 ranks total.',
+    answer: 'There are 7 ranks: Apprentice Voyageur (0-100 points), Junior Explorer (101-300), Fur Trade Clerk (301-600), Seasoned Voyageur (601-1,000), Fort Factor (1,001-1,500), Chief Trader (1,501-2,500) and Master Explorer (2,501+).',
     category: 'Gamification',
   },
   {
     id: 'achievements',
     question: 'How do achievements work?',
-    answer: 'Achievements are badges earned for specific accomplishments: exploring all Great Lakes, completing quizzes in each category, maintaining streaks, and more. Check Achievements to see available badges.',
+    answer: 'Achievements are badges for specific accomplishments: exploring waterways and locations (First Steps, Waterway Wanderer, Fort Finder), quizzes (Quiz Beginner through History Scholar), journal writing (First Entry to Master Chronicler), Indigenous words (First Words to Polyglot), documents (Document Detective), points (Point Collector) and streaks (Consistent Explorer to Unstoppable). The Achievements screen lists all 28.',
     category: 'Gamification',
   },
   {
     id: 'daily-challenges',
     question: 'What are daily challenges?',
-    answer: 'A new question appears each day. Answer correctly to earn bonus points and maintain your streak. Daily challenges cover various topics from Canadian history.',
+    answer: 'When a challenge is scheduled for the day, it appears on the Achievements screen. Answer correctly to earn bonus points. Challenges cover various topics from Canadian history; there is not one every day.',
     category: 'Gamification',
   },
   {
@@ -300,13 +294,13 @@ const FAQ_DATA: FAQItem[] = [
   {
     id: 'reset-progress',
     question: 'Can I reset my progress?',
-    answer: 'Yes, in Settings you can reset your progress to start fresh. This is useful if multiple students share a device or if you want a clean start.',
+    answer: 'There is no reset button. Progress is tied to the app installation on the device, so deleting and reinstalling the app starts fresh. To have stored progress removed from our servers, email support@canadianwaterways.ca.',
     category: 'Gamification',
   },
   {
     id: 'leaderboard',
     question: 'Is there a leaderboard?',
-    answer: 'Yes! Compare your progress with classmates in the class leaderboard (if enrolled in a class) or see top explorers in the global leaderboard. Rankings are based on total points.',
+    answer: 'Not at the moment. The app does not rank students against each other anywhere.',
     category: 'Gamification',
   },
 
@@ -326,7 +320,7 @@ const FAQ_DATA: FAQItem[] = [
   {
     id: 'super-admin-approve',
     question: 'How do Super Admins approve teacher and admin requests?',
-    answer: 'Super Admins sign in to the Admin tab, then access "Pending Teacher Approvals" or "Pending Admin Approvals" from the dashboard. They can review each request and approve or reject it. Rejections require a reason (minimum 10 characters).',
+    answer: 'Super Admins sign in to the Admin tab, then access "Pending Teacher Approvals" or "Pending Admin Approvals" from the dashboard. They can review each request and approve or reject it, and later suspend or reactivate an account. Rejections and suspensions require a reason (minimum 10 characters).',
     category: 'Technical',
   },
 
@@ -340,7 +334,7 @@ const FAQ_DATA: FAQItem[] = [
   {
     id: 'map-not-loading',
     question: 'The map isn\'t loading. What should I do?',
-    answer: 'Check your internet connection first. If connected, try closing and reopening the app. Clear the app cache in Settings if problems persist. Check for app updates.',
+    answer: 'Check your internet connection first. If connected, close and reopen the app, and check the App Store for an update.',
     category: 'Technical',
   },
   {
@@ -352,19 +346,19 @@ const FAQ_DATA: FAQItem[] = [
   {
     id: 'report-bug',
     question: 'How do I report a bug?',
-    answer: 'Use the Feedback option in the app menu, or email support@canadianwaterways.ca with details: device type, operating system version, and what you were doing when the problem occurred.',
+    answer: 'Email support@canadianwaterways.ca with details: device type, operating system version, and what you were doing when the problem occurred.',
     category: 'Technical',
   },
   {
     id: 'suggest-features',
     question: 'Can I suggest new features?',
-    answer: 'Absolutely! We welcome suggestions. Use the Feedback form or email education@canadianwaterways.ca with your ideas. Many features come from user suggestions.',
+    answer: 'Absolutely! We welcome suggestions. Email education@canadianwaterways.ca with your ideas. Many features come from user suggestions.',
     category: 'Technical',
   },
   {
     id: 'content-error',
     question: 'I found an error in the content. How do I report it?',
-    answer: 'Please report content errors through the Feedback form. Include the specific content (waterway name, quiz question, etc.) and describe the error. We take accuracy seriously.',
+    answer: 'Please email support@canadianwaterways.ca. Include the specific content (waterway name, quiz question, etc.) and describe the error. We take accuracy seriously.',
     category: 'Technical',
   },
 
@@ -378,7 +372,7 @@ const FAQ_DATA: FAQItem[] = [
   {
     id: 'data-safe',
     question: 'Is student data safe?',
-    answer: 'Yes. We follow educational data privacy standards including FERPA and COPPA compliance. Data is encrypted, stored securely, and never shared with third parties. Teachers can only see their own students.',
+    answer: 'Student records hold no names beyond an optional display name and no contact details. Data travels over encrypted connections, is not sold or shared with third parties, and teachers can only see students in their own classes.',
     category: 'Privacy & Safety',
   },
   {
@@ -390,19 +384,19 @@ const FAQ_DATA: FAQItem[] = [
   {
     id: 'ads',
     question: 'Are there ads in the app?',
-    answer: 'No. The app is completely ad-free and will remain ad-free. It\'s a purely educational tool funded by educational grants and partnerships.',
+    answer: 'No. The app is completely ad-free and will remain ad-free. It\'s a purely educational, self-financed project.',
     category: 'Privacy & Safety',
   },
   {
     id: 'delete-data',
     question: 'Can I delete my data?',
-    answer: 'Yes. Contact support@canadianwaterways.ca to request data deletion. For progress stored on-device, use the Reset Progress option in Settings.',
+    answer: 'Yes. Email support@canadianwaterways.ca to request deletion of stored progress, journal entries or class membership. Deleting the app from the device also removes the device identity, so a reinstall starts fresh.',
     category: 'Privacy & Safety',
   },
   {
     id: 'parental-consent',
     question: 'Is parental consent required?',
-    answer: 'The app can be used without any account or personal information. If a student creates an account or joins a class, schools typically handle consent as part of their ed-tech policies.',
+    answer: 'The app can be used without any account or personal information. If a student joins a class with a display name, schools typically handle consent as part of their ed-tech policies.',
     category: 'Privacy & Safety',
   },
 ];
