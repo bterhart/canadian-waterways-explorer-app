@@ -16,6 +16,7 @@ import type {
   QuizQuestion,
   QuizAttemptSubmission,
   QuizAttemptResponse,
+  WaterwayGeometry,
 } from '@/lib/types/waterways';
 
 // Query keys for cache management
@@ -82,6 +83,16 @@ export function useWaterwayDetail(id: string | null) {
     queryKey: waterwaysKeys.detail(id ?? ''),
     queryFn: () => api.get<WaterwayDetail>(`/api/waterways/${id}`),
     enabled: !!id,
+  });
+}
+
+/** Simplified boundary/route for the map; tiny compared with the raw KML (up to 12.7 MB). */
+export function useWaterwayGeometry(id: string | null, tier: WaterwayGeometry['tier'] = 'local') {
+  return useQuery({
+    queryKey: [...waterwaysKeys.detail(id ?? ''), 'geometry', tier] as const,
+    queryFn: () => api.get<WaterwayGeometry | null>(`/api/waterways/${id}/geometry?tier=${tier}`),
+    enabled: !!id,
+    staleTime: 60 * 60 * 1000, // geometry only changes when an admin re-uploads KML
   });
 }
 

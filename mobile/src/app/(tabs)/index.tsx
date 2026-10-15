@@ -9,7 +9,7 @@ import {
   useLocations,
   useExplorers,
   useExplorerDetail,
-  useWaterwayDetail,
+  useWaterwayGeometry,
 } from '@/lib/api/waterways-api';
 import DetailBottomSheet, { DetailBottomSheetRef } from '@/components/DetailBottomSheet';
 import type {
@@ -79,41 +79,6 @@ const getGoogleEarthUrl = (latitude: number, longitude: number): string => {
 };
 
 // Parse KML text and extract all coordinate paths
-const parseKmlCoordinates = (kmlData: string): Array<{ lat: number; lng: number }[]> => {
-  try {
-    const paths: Array<{ lat: number; lng: number }[]> = [];
-
-    // Extract all <coordinates> blocks from the KML
-    const coordRegex = /<coordinates[^>]*>([\s\S]*?)<\/coordinates>/gi;
-    let match;
-
-    while ((match = coordRegex.exec(kmlData)) !== null) {
-      const coordText = match[1].trim();
-      const coords = coordText
-        .split(/\s+/)
-        .map(triplet => triplet.trim())
-        .filter(triplet => triplet.length > 0)
-        .map(triplet => {
-          const parts = triplet.split(',');
-          if (parts.length < 2) return null;
-          const lng = parseFloat(parts[0]);
-          const lat = parseFloat(parts[1]);
-          if (isNaN(lat) || isNaN(lng)) return null;
-          return { lat, lng };
-        })
-        .filter((c): c is { lat: number; lng: number } => c !== null);
-
-      if (coords.length > 0) {
-        paths.push(coords);
-      }
-    }
-
-    return paths;
-  } catch {
-    return [];
-  }
-};
-
 // Calculate region to fit coordinates
 const getRegionForCoordinates = (coordinates: { latitude: number; longitude: number }[]): Region | null => {
   if (coordinates.length === 0) return null;
@@ -235,7 +200,6 @@ export default function MapScreen() {
       : selectedMarker?.type === 'waterway'
         ? selectedMarker.id
         : null;
-  const { data: waterwayKmlDetail } = useWaterwayDetail(detailWaterwayId);
 
   const bottomSheetRef = useRef<DetailBottomSheetRef>(null);
   const mapRef = useRef<MapView>(null);
@@ -498,10 +462,15 @@ export default function MapScreen() {
     return waterways?.find(w => w.id === detailWaterwayId) || null;
   }, [detailWaterwayId, waterways]);
 
-  const selectedWaterwayKml = useMemo(() => {
-    if (!detailWaterwayId) return null;
-    return waterwayKmlDetail?.kmlData || selectedWaterway?.kmlData || null;
-  }, [detailWaterwayId, waterwayKmlDetail, selectedWaterway]);
+  // Simplified boundary/route from the server (never raw KML). null while loading or when none.
+  const { data: selectedWaterwayGeometry } = useWaterwayGeometry(detailWaterwayId);
+  const selectedWaterwayPaths = useMemo(
+    () =>
+      selectedWaterwayGeometry?.paths.map((path) =>
+        path.map(([latitude, longitude]) => ({ latitude, longitude }))
+      ) ?? null,
+    [selectedWaterwayGeometry]
+  );
 
   // Get coordinates for the visible callout marker (for floating icons)
   const visibleMarkerCoords = useMemo(() => {
@@ -518,10 +487,8 @@ export default function MapScreen() {
   // Animate to waterway when a waterway is focused through either a callout or direct overview selection
   useEffect(() => {
     if (detailWaterwayId && selectedWaterway) {
-      if (selectedWaterwayKml) {
-        const paths = parseKmlCoordinates(selectedWaterwayKml);
-        const allCoords = paths.flat().map(c => ({ latitude: c.lat, longitude: c.lng }));
-        const region = getRegionForCoordinates(allCoords);
+      if (selectedWaterwayPaths && selectedWaterwayPaths.length > 0) {
+        const region = getRegionForCoordinates(selectedWaterwayPaths.flat());
         if (region && mapRef.current) {
           mapRef.current.animateToRegion(region, 500);
           return;
@@ -551,7 +518,7 @@ export default function MapScreen() {
         }, 500);
       }
     }
-  }, [detailWaterwayId, selectedWaterway, selectedWaterwayKml, visibleCalloutMarker, locations]);
+  }, [detailWaterwayId, selectedWaterway, selectedWaterwayPaths, visibleCalloutMarker, locations]);
 
   // Function to update screen position of callout icons
   const updateCalloutScreenPosition = useCallback(async () => {
@@ -924,16 +891,14 @@ export default function MapScreen() {
         {shouldRenderMarkers ? filteredLocations.map(renderLocationMarker) : null}
 
         {/* KML overlay for selected waterway */}
-        {selectedWaterwayKml && selectedWaterway ? (() => {
-          const paths = parseKmlCoordinates(selectedWaterwayKml);
-          const isArea = selectedWaterway.type?.name === 'Lake' || selectedWaterway.type?.name === 'Bay';
+        {selectedWaterwayPaths && selectedWaterwayGeometry && selectedWaterway ? (() => {
+          const isArea = selectedWaterwayGeometry.geometryKind === 'area';
           const color = selectedWaterway.type?.name === 'River' ? '#3B82F6'
             : selectedWaterway.type?.name === 'Lake' ? '#06B6D4'
             : selectedWaterway.type?.name === 'Bay' ? '#10B981'
             : '#0EA5E9';
 
-          return paths.map((coords, index) => {
-            const latLngs = coords.map(c => ({ latitude: c.lat, longitude: c.lng }));
+          return selectedWaterwayPaths.map((latLngs, index) => {
             if (isArea) {
               return (
                 <Polygon
