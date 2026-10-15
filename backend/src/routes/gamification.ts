@@ -222,9 +222,24 @@ gamificationRouter.get(
     const today = new Date();
     today.setUTCHours(0, 0, 0, 0);
 
-    const challenge = await db.dailyChallenge.findUnique({
+    // A row dated today wins. Otherwise rotate through the whole pool by day (the seeded
+    // rows cover 2026-02-11 .. 2026-03-12 only, so without this there was no challenge
+    // after March 12). The pick is deterministic, so every device sees the same question.
+    let challenge = await db.dailyChallenge.findUnique({
       where: { date: today },
     });
+
+    if (!challenge) {
+      const pool = await db.dailyChallenge.findMany({
+        orderBy: { date: "asc" },
+        select: { id: true },
+      });
+      if (pool.length > 0) {
+        const dayIndex = Math.floor(today.getTime() / 86_400_000);
+        const pick = pool[dayIndex % pool.length]!;
+        challenge = await db.dailyChallenge.findUnique({ where: { id: pick.id } });
+      }
+    }
 
     if (!challenge) {
       return c.json(
