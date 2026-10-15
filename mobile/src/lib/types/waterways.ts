@@ -15,10 +15,21 @@ export interface Waterway {
   latitude: number;
   longitude: number;
   regionName: string;
-  kmlData: string | null;
   type: {
     name: string;
   };
+}
+
+// GET /api/waterways/:id/geometry?tier=local|region|nation
+export interface WaterwayGeometry {
+  geometryKind: 'line' | 'area';
+  tier: 'nation' | 'region' | 'local';
+  toleranceDeg: number;
+  pathCount: number;
+  pointCount: number;
+  originalPointCount: number;
+  /** [latitude, longitude] pairs, simplified server-side. */
+  paths: [number, number][][];
 }
 
 export interface ExplorerWaterway {
@@ -105,7 +116,7 @@ export interface WaterwayDetail {
   regionName: string;
   typeId: string;
   historicalSignificance: string | null;
-  kmlData: string | null;
+  hasKml: boolean; // raw KML is never sent; see useWaterwayGeometry
   imageUrl: string | null;
   galleryImages: string | null;
   videoUrl: string | null;

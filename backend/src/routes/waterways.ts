@@ -3,8 +3,18 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { db } from "../db";
 import { requireAdmin, requireSuperAdmin } from "../lib/admin-middleware";
+import { buildGeometry, TIER_CONFIG } from "../lib/kml-geometry";
+import type { TierName, WaterwayGeometry } from "../lib/kml-geometry";
 
 const waterwaysRouter = new Hono();
+
+// Simplified geometry cache: KML changes only through the admin upload/delete
+// routes below, which clear the entries for that waterway.
+const geometryCache = new Map<string, WaterwayGeometry | null>();
+const geometryCacheKey = (id: string, tier: TierName) => `${id}:${tier}`;
+const invalidateGeometry = (id: string) => {
+  for (const tier of Object.keys(TIER_CONFIG) as TierName[]) geometryCache.delete(geometryCacheKey(id, tier));
+};
 
 const RIVER_OVERVIEW_PATH = join(import.meta.dir, "../../generated/river-overview.json");
 let riverOverviewCache: unknown | null = null;
@@ -239,13 +249,49 @@ const notableFigures = notableFigureRows
   }))
   .filter((figure) => figure.associatedLocations.includes(waterway.name));
 
+  // Raw KML is never sent to clients (up to 12.7 MB per row); the map draws the
+  // boundary from GET /:id/geometry instead.
+  const { kmlData, ...publicWaterway } = waterway;
+
   return c.json({
     data: {
-      ...waterway,
+      ...publicWaterway,
+      hasKml: !!kmlData,
       notableFigures,
     }
   });
-});  
+});
+
+// Simplified boundary/route geometry for the map, by zoom tier (public)
+waterwaysRouter.get("/:id/geometry", async (c) => {
+  const id = c.req.param("id");
+  const tierParam = c.req.query("tier") ?? "local";
+  if (!(tierParam in TIER_CONFIG)) {
+    return c.json(
+      { error: { message: "tier must be one of nation, region, local", code: "BAD_REQUEST" } },
+      400
+    );
+  }
+  const tier = tierParam as TierName;
+  const key = geometryCacheKey(id, tier);
+
+  if (!geometryCache.has(key)) {
+    const waterway = await db.waterway.findUnique({
+      where: { id },
+      select: { kmlData: true, type: { select: { name: true } } },
+    });
+    if (!waterway) {
+      return c.json({ error: { message: "Waterway not found", code: "NOT_FOUND" } }, 404);
+    }
+    geometryCache.set(
+      key,
+      waterway.kmlData ? buildGeometry(waterway.kmlData, waterway.type?.name ?? "", tier) : null
+    );
+  }
+
+  c.header("Cache-Control", "public, max-age=3600");
+  return c.json({ data: geometryCache.get(key) ?? null });
+});
 
 // Upload KML data for a waterway (superadmin only)
 waterwaysRouter.post("/:id/kml", requireAdmin, requireSuperAdmin, async (c) => {
@@ -274,6 +320,7 @@ waterwaysRouter.post("/:id/kml", requireAdmin, requireSuperAdmin, async (c) => {
     data: { kmlData: kmlText },
     select: { id: true, name: true }
   });
+  invalidateGeometry(id);
 
   return c.json({ data: { ...updated, kmlUploaded: true } });
 });
@@ -287,6 +334,7 @@ waterwaysRouter.delete("/:id/kml", requireAdmin, requireSuperAdmin, async (c) =>
     data: { kmlData: null },
     select: { id: true, name: true }
   });
+  invalidateGeometry(id);
 
   return c.json({ data: { ...updated, kmlUploaded: false } });
 });

@@ -169,8 +169,11 @@ export interface DocumentAnnotation {
   annotation: string;
 }
 
-// 14 live documents store { word, definition }; 34 store plain strings.
-export type VocabularyTerm = { word: string; definition: string } | string;
+// Canonical shape (all live rows normalized 2026-10-15; admin API enforces it).
+export interface VocabularyTerm {
+  word: string;
+  definition: string;
+}
 
 export interface DocumentSummary {
   id: string;

@@ -176,7 +176,7 @@ export default function DocumentDetailScreen() {
         </Section>
       ) : null}
 
-      {/* Vocabulary — stored either as { word, definition } or as plain strings */}
+      {/* Vocabulary */}
       {document.vocabulary && document.vocabulary.length > 0 ? (
         <Section
           title="Key Vocabulary"
@@ -184,14 +184,10 @@ export default function DocumentDetailScreen() {
         >
           {document.vocabulary.map((item, index) => (
             <View key={index} style={styles.vocabItem}>
-              {typeof item === 'string' ? (
-                <Text style={styles.vocabTerm}>{item}</Text>
-              ) : (
-                <>
-                  <Text style={styles.vocabTerm}>{item.word}</Text>
-                  <Text style={styles.vocabDefinition}>{item.definition}</Text>
-                </>
-              )}
+              <Text style={styles.vocabTerm}>{item.word}</Text>
+              {item.definition ? (
+                <Text style={styles.vocabDefinition}>{item.definition}</Text>
+              ) : null}
             </View>
           ))}
         </Section>
