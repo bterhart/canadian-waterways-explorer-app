@@ -1,7 +1,7 @@
 // Interactive Map Screen for Canadian Waterways Education
 import React, { useState, useRef, useCallback, useMemo, useEffect } from 'react';
 import { View, Text, ActivityIndicator, StyleSheet, TouchableOpacity, ScrollView, Linking } from 'react-native';
-import MapView, { Marker, Callout, PROVIDER_DEFAULT, Region, Polyline, Polygon } from 'react-native-maps';
+import MapView, { Marker, PROVIDER_DEFAULT, Region, Polyline, Polygon } from 'react-native-maps';
 import { Menu, ChevronDown, ChevronRight, Globe2, X } from 'lucide-react-native';
 import {
   useWaterways,
@@ -72,6 +72,9 @@ const markerColors: Record<string, string> = {
 const getMarkerColor = (typeName: string): string => {
   return markerColors[typeName] || '#6B7280';
 };
+
+// Pin colour for the waterway/location whose preview card is open
+const SELECTED_PIN_COLOR = '#1A3A24';
 
 // Generate Google Earth Web URL
 const getGoogleEarthUrl = (latitude: number, longitude: number): string => {
@@ -156,19 +159,15 @@ export default function MapScreen() {
     type: MarkerType;
   } | null>(null);
 
-  // Track which waterway callout is visible (controls boundary display)
-  // This is separate from selectedMarker which controls bottom sheet
-  const [visibleCalloutMarker, setVisibleCalloutMarker] = useState<{
+  // The preview card docked at the bottom of the map. Set by a pin tap (fromOverview false)
+  // or by tapping a river on the overview layer at local zoom (fromOverview true, which keeps
+  // the overview layer on screen and defers the boundary fetch until details are requested).
+  const [preview, setPreview] = useState<{
     id: string;
     type: MarkerType;
+    fromOverview: boolean;
   } | null>(null);
-
-  // Track screen position of the callout icons
-  const [calloutScreenPosition, setCalloutScreenPosition] = useState<{ x: number; y: number } | null>(null);
   const [mapRegion, setMapRegion] = useState<Region>(CANADA_CENTER);
-  const [overviewPreviewRiverId, setOverviewPreviewRiverId] = useState<string | null>(null);
-  const [overviewPreviewScreenPosition, setOverviewPreviewScreenPosition] = useState<{ x: number; y: number } | null>(null);
-  const [showFloatingCalloutControls, setShowFloatingCalloutControls] = useState(false);
 
   const [legendVisible, setLegendVisible] = useState(false);
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
@@ -193,46 +192,32 @@ export default function MapScreen() {
   const { data: explorers, isLoading: explorersLoading } = useExplorers();
   const { data: explorerDetail } = useExplorerDetail(selectedExplorerId);
 
-  // Fetch KML for either a visible waterway callout or a waterway selected directly from the overview layer
+  // Fetch the boundary for a waterway previewed from a pin or opened in the bottom sheet
   const detailWaterwayId =
-    visibleCalloutMarker?.type === 'waterway'
-      ? visibleCalloutMarker.id
+    preview?.type === 'waterway' && !preview.fromOverview
+      ? preview.id
       : selectedMarker?.type === 'waterway'
         ? selectedMarker.id
         : null;
 
   const bottomSheetRef = useRef<DetailBottomSheetRef>(null);
   const mapRef = useRef<MapView>(null);
-  // Store marker refs to allow programmatic callout dismissal
+  // Marker refs so a dismissed pin can be deselected natively; otherwise MapKit does not fire
+  // onSelect again the next time the same pin is tapped
   const markerRefs = useRef<Record<string, any>>({});
-  // Ignore only map presses that occur immediately after a callout tap
-  const lastCalloutPressAtRef = useRef(0);
-  // Keep floating callout icon positioning smooth and reject stale async point lookups
-  const calloutPositionFrameRef = useRef<number | null>(null);
-  const calloutPositionRequestIdRef = useRef(0);
-  const overviewPreviewPositionRequestIdRef = useRef(0);
-  const calloutControlsTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Ignore the map press MapKit reports right after an overlay (river line) press
+  const lastOverlayPressAtRef = useRef(0);
 
   const isLoading = waterwaysLoading || locationsLoading;
   const isError = waterwaysError || locationsError;
-  const clearCalloutControlsTimer = useCallback(() => {
-    if (calloutControlsTimeoutRef.current !== null) {
-      clearTimeout(calloutControlsTimeoutRef.current);
-      calloutControlsTimeoutRef.current = null;
+
+  // Close the preview card and deselect its pin
+  const closePreview = useCallback(() => {
+    if (preview && !preview.fromOverview) {
+      markerRefs.current[`${preview.type}-${preview.id}`]?.hideCallout?.();
     }
-  }, []);
-
-  const resetOverviewPreview = useCallback(() => {
-    overviewPreviewPositionRequestIdRef.current += 1;
-    setOverviewPreviewRiverId(null);
-    setOverviewPreviewScreenPosition(null);
-  }, []);
-
-  useEffect(() => {
-    return () => {
-      clearCalloutControlsTimer();
-    };
-  }, [clearCalloutControlsTimer]);
+    setPreview(null);
+  }, [preview]);
 
   const toggleLegend = useCallback(() => {
     setLegendVisible(prev => !prev);
@@ -240,9 +225,7 @@ export default function MapScreen() {
 
   // Legacy legend filter handler (for map legend items)
   const handleLegendFilterPress = useCallback((legendType: string) => {
-    resetOverviewPreview();
-    clearCalloutControlsTimer();
-    setShowFloatingCalloutControls(false);
+    closePreview();
 
     if (activeFilter === legendType) {
       // Clear filter if same item tapped
@@ -254,60 +237,52 @@ export default function MapScreen() {
       setFilterType('legend');
       setFilterValue(legendType);
     }
-  }, [activeFilter, resetOverviewPreview, clearCalloutControlsTimer]);
+  }, [activeFilter, closePreview]);
 
   // Handler for waterway filter selection
   const handleWaterwayFilterSelect = useCallback((waterwayId: string) => {
-    resetOverviewPreview();
-    clearCalloutControlsTimer();
-    setShowFloatingCalloutControls(false);
+    closePreview();
 
     setFilterType('waterway');
     setFilterValue(waterwayId);
     setActiveFilter(null);
     setSelectedExplorerId(null);
-  }, [resetOverviewPreview, clearCalloutControlsTimer]);
+  }, [closePreview]);
 
   // Handler for explorer filter selection
   const handleExplorerFilterSelect = useCallback((explorerId: string) => {
-    resetOverviewPreview();
-    clearCalloutControlsTimer();
-    setShowFloatingCalloutControls(false);
+    closePreview();
 
     setFilterType('explorer');
     setFilterValue(explorerId);
     setSelectedExplorerId(explorerId);
     setActiveFilter(null);
-  }, [resetOverviewPreview, clearCalloutControlsTimer]);
+  }, [closePreview]);
 
   // Handler for time period filter selection
   const handlePeriodFilterSelect = useCallback((periodId: string) => {
-    resetOverviewPreview();
-    clearCalloutControlsTimer();
-    setShowFloatingCalloutControls(false);
+    closePreview();
 
     setFilterType('period');
     setFilterValue(periodId);
     setActiveFilter(null);
     setSelectedExplorerId(null);
-  }, [resetOverviewPreview, clearCalloutControlsTimer]);
+  }, [closePreview]);
 
   // Clear all filters
   const clearAllFilters = useCallback(() => {
-    resetOverviewPreview();
-    clearCalloutControlsTimer();
-    setShowFloatingCalloutControls(false);
+    closePreview();
 
     setActiveFilter(null);
     setFilterType(null);
     setFilterValue(null);
     setSelectedExplorerId(null);
-  }, [resetOverviewPreview, clearCalloutControlsTimer]);
+  }, [closePreview]);
 
   // Check if any filter is active
   const hasActiveFilter = filterType !== null || activeFilter !== null;
   const hasRiverOverviewData = !!riverOverviewData?.waterways?.length;
-  const shouldPreferRiverOverviewMode = !hasActiveFilter && !visibleCalloutMarker;
+  const shouldPreferRiverOverviewMode = !hasActiveFilter && !(preview && !preview.fromOverview);
   const shouldShowRiverOverview = shouldPreferRiverOverviewMode && !selectedMarker && hasRiverOverviewData;
   const shouldSuppressMarkersForOverview = shouldPreferRiverOverviewMode && (riverOverviewLoading || hasRiverOverviewData);
   const shouldRenderMarkers = !shouldSuppressMarkersForOverview;
@@ -329,23 +304,32 @@ export default function MapScreen() {
     return new Set(explorerDetail.waterways.map(ew => ew.waterway.id));
   }, [explorerDetail]);
 
-  const overviewPreviewRiverRecord = useMemo(() => {
-    if (!overviewPreviewRiverId || !riverOverviewData?.waterways) return null;
-    return riverOverviewData.waterways.find((record) => record.id === overviewPreviewRiverId) || null;
-  }, [overviewPreviewRiverId, riverOverviewData]);
-
-  const overviewPreviewRiverWaterway = useMemo(() => {
-    if (!overviewPreviewRiverId) return null;
-    return waterways?.find((waterway) => waterway.id === overviewPreviewRiverId) || null;
-  }, [overviewPreviewRiverId, waterways]);
-
-  const overviewPreviewCoords = useMemo(() => {
-    if (!overviewPreviewRiverRecord) return null;
+  // Everything the docked preview card shows, resolved from the full lists when available
+  // and from the overview dataset otherwise
+  const previewInfo = useMemo(() => {
+    if (!preview) return null;
+    if (preview.type === 'location') {
+      const location = locations?.find((l) => l.id === preview.id);
+      if (!location) return null;
+      return {
+        typeName: location.locationType || 'Settlement',
+        name: location.name,
+        indigenousName: location.indigenousName,
+        latitude: location.latitude,
+        longitude: location.longitude,
+      };
+    }
+    const waterway = waterways?.find((w) => w.id === preview.id);
+    const record = riverOverviewData?.waterways?.find((r) => r.id === preview.id);
+    if (!waterway && !record) return null;
     return {
-      latitude: overviewPreviewRiverRecord.labelPoint.lat,
-      longitude: overviewPreviewRiverRecord.labelPoint.lng,
+      typeName: waterway?.type?.name || record?.typeName || 'River',
+      name: waterway?.name || record?.name || '',
+      indigenousName: waterway?.indigenousName || record?.indigenousName || null,
+      latitude: waterway?.latitude ?? record!.labelPoint.lat,
+      longitude: waterway?.longitude ?? record!.labelPoint.lng,
     };
-  }, [overviewPreviewRiverRecord]);  
+  }, [preview, waterways, locations, riverOverviewData]);
 
   // Get time period for filtering
   const selectedPeriod = useMemo(() => {
@@ -472,17 +456,6 @@ export default function MapScreen() {
     [selectedWaterwayGeometry]
   );
 
-  // Get coordinates for the visible callout marker (for floating icons)
-  const visibleMarkerCoords = useMemo(() => {
-    if (!visibleCalloutMarker) return null;
-    if (visibleCalloutMarker.type === 'waterway') {
-      const waterway = waterways?.find(w => w.id === visibleCalloutMarker.id);
-      return waterway ? { latitude: waterway.latitude, longitude: waterway.longitude } : null;
-    } else {
-      const location = locations?.find(l => l.id === visibleCalloutMarker.id);
-      return location ? { latitude: location.latitude, longitude: location.longitude } : null;
-    }
-  }, [visibleCalloutMarker, waterways, locations]);
 
   // Animate to waterway when a waterway is focused through either a callout or direct overview selection
   useEffect(() => {
@@ -507,8 +480,8 @@ export default function MapScreen() {
       return;
     }
 
-    if (visibleCalloutMarker?.type === 'location') {
-      const location = locations?.find(l => l.id === visibleCalloutMarker.id);
+    if (preview?.type === 'location') {
+      const location = locations?.find(l => l.id === preview.id);
       if (location && mapRef.current) {
         mapRef.current.animateToRegion({
           latitude: location.latitude,
@@ -518,138 +491,11 @@ export default function MapScreen() {
         }, 500);
       }
     }
-  }, [detailWaterwayId, selectedWaterway, selectedWaterwayPaths, visibleCalloutMarker, locations]);
-
-  // Function to update screen position of callout icons
-  const updateCalloutScreenPosition = useCallback(async () => {
-    if (!visibleMarkerCoords || !mapRef.current) {
-      setCalloutScreenPosition(null);
-      return;
-    }
-    const requestId = ++calloutPositionRequestIdRef.current;
-    try {
-      const point = await mapRef.current.pointForCoordinate({
-        latitude: visibleMarkerCoords.latitude,
-        longitude: visibleMarkerCoords.longitude,
-      });
-      if (requestId !== calloutPositionRequestIdRef.current) {
-        return;
-      }
-      if (point) {
-        setCalloutScreenPosition({ x: point.x, y: point.y });
-      }
-    } catch {
-      // Ignore errors - map may not be ready
-    }
-  }, [visibleMarkerCoords]);
-
-  const updateOverviewPreviewScreenPosition = useCallback(async () => {
-    if (!overviewPreviewCoords || !mapRef.current) {
-      setOverviewPreviewScreenPosition(null);
-      return;
-    }
-
-    const requestId = ++overviewPreviewPositionRequestIdRef.current;
-      try {
-        const point = await mapRef.current.pointForCoordinate({
-          latitude: overviewPreviewCoords.latitude,
-          longitude: overviewPreviewCoords.longitude,
-        });  
-        if (requestId !== overviewPreviewPositionRequestIdRef.current) {
-          return;
-        }  
-        if (point) {
-          setOverviewPreviewScreenPosition({ x: point.x, y: point.y });
-        }
-      } catch {
-        // Ignore errors - map may not be ready
-      }
-  }, [overviewPreviewCoords]);
-
-  const scheduleCalloutScreenPositionUpdate = useCallback(() => {
-    if (!visibleMarkerCoords) {
-      setCalloutScreenPosition(null);
-      return;
-    }
-
-    if (calloutPositionFrameRef.current !== null) {
-      cancelAnimationFrame(calloutPositionFrameRef.current);
-    }
-
-    calloutPositionFrameRef.current = requestAnimationFrame(() => {
-      calloutPositionFrameRef.current = null;
-      updateCalloutScreenPosition();
-    });
-  }, [visibleMarkerCoords, updateCalloutScreenPosition]);
-
-  // Update screen position immediately when the visible marker changes
-  useEffect(() => {
-    if (!visibleMarkerCoords) {
-      if (calloutPositionFrameRef.current !== null) {
-        cancelAnimationFrame(calloutPositionFrameRef.current);
-        calloutPositionFrameRef.current = null;
-      }
-      calloutPositionRequestIdRef.current += 1;
-      setCalloutScreenPosition(null);
-      return;
-    }
-    scheduleCalloutScreenPositionUpdate();
-
-    return () => {
-      if (calloutPositionFrameRef.current !== null) {
-        cancelAnimationFrame(calloutPositionFrameRef.current);
-        calloutPositionFrameRef.current = null;
-      }
-    };
-  }, [visibleMarkerCoords, scheduleCalloutScreenPositionUpdate]);
-
-  useEffect(() => {
-    if (!overviewPreviewCoords) {
-      overviewPreviewPositionRequestIdRef.current += 1;
-      setOverviewPreviewScreenPosition(null);
-      return;
-    }
-    void updateOverviewPreviewScreenPosition();
-  }, [overviewPreviewCoords, updateOverviewPreviewScreenPosition]);  
-
-  // Update callout icon position when map region changes (drag/zoom)
-  const handleRegionChange = useCallback(() => {
-    if (visibleMarkerCoords) {
-      clearCalloutControlsTimer();
-      setShowFloatingCalloutControls(false);
-      scheduleCalloutScreenPositionUpdate();
-    }
-  }, [visibleMarkerCoords, scheduleCalloutScreenPositionUpdate, clearCalloutControlsTimer]);
+  }, [detailWaterwayId, selectedWaterway, selectedWaterwayPaths, preview, locations]);
 
   const handleRegionChangeComplete = useCallback((region: Region) => {
     setMapRegion(region);
-
-    if (overviewPreviewCoords) {
-      void updateOverviewPreviewScreenPosition();
-    }
-
-    if (visibleMarkerCoords) {
-      clearCalloutControlsTimer();
-      setShowFloatingCalloutControls(false);
-      scheduleCalloutScreenPositionUpdate();
-
-      calloutControlsTimeoutRef.current = setTimeout(() => {
-        void updateCalloutScreenPosition().finally(() => {
-          setShowFloatingCalloutControls(true);
-        });
-      }, 150);
-    } else {
-      clearCalloutControlsTimer();
-      setShowFloatingCalloutControls(false);
-    }
-  }, [
-    overviewPreviewCoords,
-    updateOverviewPreviewScreenPosition,
-    visibleMarkerCoords,
-    clearCalloutControlsTimer,
-    scheduleCalloutScreenPositionUpdate,
-    updateCalloutScreenPosition,
-  ]);
+  }, []);
 
   // Open the bottom sheet only after it has mounted
   useEffect(() => {
@@ -662,81 +508,52 @@ export default function MapScreen() {
     return () => cancelAnimationFrame(frame);
   }, [selectedMarker]);
 
-  // Called when marker is tapped (callout appears) - show boundary
+  // Pin tapped: show the preview card (and, through detailWaterwayId, the waterway boundary)
   const handleMarkerSelect = useCallback((id: string, type: MarkerType) => {
-    resetOverviewPreview();
-    clearCalloutControlsTimer();
-    setShowFloatingCalloutControls(false);
-    setVisibleCalloutMarker({ id, type });
-  }, [resetOverviewPreview, clearCalloutControlsTimer]);
+    setPreview({ id, type, fromOverview: false });
+  }, []);
 
-  // Called when "Tap for details" is pressed in callout - show bottom sheet
-  const handleCalloutPress = useCallback((id: string, type: MarkerType) => {
-    lastCalloutPressAtRef.current = Date.now();
-    resetOverviewPreview();
-    setSelectedMarker({ id, type });
-  }, [resetOverviewPreview]);
+  // "Tap for details" on the preview card: open the bottom sheet. A preview that came from the
+  // overview layer is cleared so that closing the sheet returns to the plain overview map.
+  const handlePreviewDetailsPress = useCallback(() => {
+    if (!preview) return;
+    if (preview.fromOverview) setPreview(null);
+    setSelectedMarker({ id: preview.id, type: preview.type });
+  }, [preview]);
 
-  // Called when a river overview line is pressed at local zoom - show lightweight river preview first
+  // River line tapped on the overview layer at local zoom: lightweight preview first
   const handleRiverOverviewPress = useCallback((waterwayId: string) => {
-    lastCalloutPressAtRef.current = Date.now();
-    clearCalloutControlsTimer();
-    setShowFloatingCalloutControls(false);
-    setVisibleCalloutMarker(null);
+    lastOverlayPressAtRef.current = Date.now();
     setSelectedMarker(null);
-    setOverviewPreviewRiverId(waterwayId);
-  }, [clearCalloutControlsTimer]);
+    setPreview({ id: waterwayId, type: 'waterway', fromOverview: true });
+  }, []);
 
-  const handleOverviewPreviewDetailsPress = useCallback(() => {
-    if (!overviewPreviewRiverId) return;
-
-    lastCalloutPressAtRef.current = Date.now();
-    setOverviewPreviewRiverId(null);
-    setSelectedMarker({ id: overviewPreviewRiverId, type: 'waterway' });
-  }, [overviewPreviewRiverId]);
-
-  // Called when bottom sheet is closed - only closes sheet, leaves callout and boundary visible
+  // Called when bottom sheet is closed - only closes sheet, leaves preview and boundary visible
   const handleBottomSheetClose = useCallback(() => {
     setSelectedMarker(null);
   }, []);
 
-  // Called when callout should be dismissed (clears both callout and boundary)
-  const handleCalloutDismiss = useCallback(() => {
-    // Hide the callout for the currently visible marker
-    if (visibleCalloutMarker) {
-      const markerKey = `${visibleCalloutMarker.type}-${visibleCalloutMarker.id}`;
-      const markerRef = markerRefs.current[markerKey];
-      if (markerRef?.hideCallout) {
-        markerRef.hideCallout();
-      }
-    }
-    clearCalloutControlsTimer();
-    setShowFloatingCalloutControls(false);
-    if (calloutPositionFrameRef.current !== null) {
-      cancelAnimationFrame(calloutPositionFrameRef.current);
-      calloutPositionFrameRef.current = null;
-    }
-    calloutPositionRequestIdRef.current += 1;
-    setCalloutScreenPosition(null);
-    resetOverviewPreview();
-    setVisibleCalloutMarker(null);
-
-    // Also close bottom sheet if open
+  // Close everything: preview card, boundary and bottom sheet
+  const handleDismissAll = useCallback(() => {
+    closePreview();
     setSelectedMarker(null);
     bottomSheetRef.current?.close();
-  }, [visibleCalloutMarker, clearCalloutControlsTimer, resetOverviewPreview]);
+  }, [closePreview]);
 
   const handleMapPress = useCallback(() => {
-    if (Date.now() - lastCalloutPressAtRef.current < 300) {
+    if (Date.now() - lastOverlayPressAtRef.current < 300) {
       return;
     }
-    handleCalloutDismiss();
+    handleDismissAll();
     setLegendVisible(false);
-  }, [handleCalloutDismiss]);
+  }, [handleDismissAll]);
 
+  // Pins carry no Callout child and no title, so MapKit draws no native callout; the docked
+  // preview card below the map takes its place.
   const renderWaterwayMarker = (waterway: Waterway) => {
     const typeName = waterway.type?.name || 'River';
     const markerKey = `waterway-${waterway.id}`;
+    const isSelected = preview?.type === 'waterway' && preview.id === waterway.id;
     return (
       <Marker
         key={markerKey}
@@ -747,34 +564,18 @@ export default function MapScreen() {
           latitude: waterway.latitude,
           longitude: waterway.longitude,
         }}
-        pinColor={getMarkerColor(typeName)}
+        pinColor={isSelected ? SELECTED_PIN_COLOR : getMarkerColor(typeName)}
+        zIndex={isSelected ? 10 : 0}
         tracksViewChanges={false}
         onSelect={() => handleMarkerSelect(waterway.id, 'waterway')}
-      >
-        <Callout
-          onPress={() => handleCalloutPress(waterway.id, 'waterway')}
-          tooltip={false}
-        >
-          <View style={styles.calloutContainer}>
-            <View style={[styles.typeBadge, { backgroundColor: getMarkerColor(typeName) }]}>
-              <Text style={styles.typeBadgeText}>{typeName}</Text>
-            </View>
-            <Text style={styles.calloutTitle}>{waterway.name}</Text>
-            {waterway.indigenousName ? (
-              <Text style={styles.calloutIndigenous}>"{waterway.indigenousName}"</Text>
-            ) : null}
-            <View style={styles.calloutDetailButton}>
-              <Text style={styles.calloutDetailButtonText}>{t('tapForDetails')}</Text>
-            </View>
-          </View>
-        </Callout>
-      </Marker>
+      />
     );
   };
 
   const renderLocationMarker = (location: Location) => {
     const locationType = location.locationType || 'Settlement';
     const markerKey = `location-${location.id}`;
+    const isSelected = preview?.type === 'location' && preview.id === location.id;
     return (
       <Marker
         key={markerKey}
@@ -785,28 +586,11 @@ export default function MapScreen() {
           latitude: location.latitude,
           longitude: location.longitude,
         }}
-        pinColor={getMarkerColor(locationType)}
+        pinColor={isSelected ? SELECTED_PIN_COLOR : getMarkerColor(locationType)}
+        zIndex={isSelected ? 10 : 0}
         tracksViewChanges={false}
         onSelect={() => handleMarkerSelect(location.id, 'location')}
-      >
-        <Callout
-          onPress={() => handleCalloutPress(location.id, 'location')}
-          tooltip={false}
-        >
-          <View style={styles.calloutContainer}>
-            <View style={[styles.typeBadge, { backgroundColor: getMarkerColor(locationType) }]}>
-              <Text style={styles.typeBadgeText}>{locationType}</Text>
-            </View>
-            <Text style={styles.calloutTitle}>{location.name}</Text>
-            {location.indigenousName ? (
-              <Text style={styles.calloutIndigenous}>"{location.indigenousName}"</Text>
-            ) : null}
-            <View style={styles.calloutDetailButton}>
-              <Text style={styles.calloutDetailButtonText}>{t('tapForDetails')}</Text>
-            </View>
-          </View>
-        </Callout>
-      </Marker>
+      />
     );
   };
 
@@ -841,7 +625,6 @@ export default function MapScreen() {
         showsCompass={true}
         showsScale={true}
         mapType="terrain"
-        onRegionChange={handleRegionChange}
         onRegionChangeComplete={handleRegionChangeComplete}
         onPress={handleMapPress}
       >
@@ -922,103 +705,50 @@ export default function MapScreen() {
         })() : null}
       </MapView>
 
-      {/* Lightweight preview card for overview river taps */}
-      {overviewPreviewRiverRecord && overviewPreviewScreenPosition ? (
-        <View style={styles.overviewPreviewOverlay} pointerEvents="box-none">
-          <View
-            style={[
-              styles.overviewPreviewCard,
-              {
-                left: overviewPreviewScreenPosition.x - 100,
-                top: overviewPreviewScreenPosition.y - 155,
-              },
-            ]}
-          >
-            <View
-              style={[
-                styles.typeBadge,
-                {
-                  backgroundColor: getMarkerColor(
-                    overviewPreviewRiverWaterway?.type?.name ||
-                      overviewPreviewRiverRecord.typeName ||
-                      'River',
-                  ),
-                },
-              ]}
-            >
-              <Text style={styles.typeBadgeText}>
-                {overviewPreviewRiverWaterway?.type?.name ||
-                  overviewPreviewRiverRecord.typeName ||
-                  'River'}
-              </Text>
+      {/* Preview card docked at the bottom of the map, so it never has to track the pin.
+          Hidden while the bottom sheet is open; it returns when the sheet closes. */}
+      {preview && previewInfo && !selectedMarker ? (
+        <View style={styles.previewCard}>
+          <View style={styles.previewHeader}>
+            <View style={[styles.typeBadge, { backgroundColor: getMarkerColor(previewInfo.typeName) }]}>
+              <Text style={styles.typeBadgeText}>{previewInfo.typeName}</Text>
             </View>
-
-            <Text style={styles.calloutTitle}>
-              {overviewPreviewRiverWaterway?.name || overviewPreviewRiverRecord.name}
-            </Text>
-
-            {(overviewPreviewRiverWaterway?.indigenousName ||
-              overviewPreviewRiverRecord.indigenousName) ? (
-              <Text style={styles.calloutIndigenous}>
-                "
-                {overviewPreviewRiverWaterway?.indigenousName ||
-                  overviewPreviewRiverRecord.indigenousName}
-                "
-              </Text>
-            ) : null}
-
             <TouchableOpacity
-              style={styles.calloutDetailButton}
-              onPress={handleOverviewPreviewDetailsPress}
-              activeOpacity={0.8}
+              style={styles.previewCloseButton}
+              onPress={handleDismissAll}
+              hitSlop={8}
+              accessibilityLabel={t('close')}
             >
-              <Text style={styles.calloutDetailButtonText}>{t('tapForDetails')}</Text>
+              <X size={18} color="#6B7280" strokeWidth={2.5} />
             </TouchableOpacity>
           </View>
-        </View>
-      ) : null}
-      
-      {/* Floating Icons Above Callout */}
-      {showFloatingCalloutControls && visibleCalloutMarker && visibleMarkerCoords && calloutScreenPosition ? (
-        <View style={styles.calloutIconsOverlay} pointerEvents="box-none">
-          {/* Google Earth Button - Left aligned with callout left edge */}
-          <TouchableOpacity
-            style={[
-              styles.calloutEarthButton,
-              {
-                position: 'absolute',
-                // Callout is 200px wide, centered on marker. Left edge = marker.x - 100
-                left: calloutScreenPosition.x - 100,
-                // Position barely above callout
-                top: calloutScreenPosition.y - 195,
-              },
-            ]}
-            onPress={() => {
-              const url = getGoogleEarthUrl(visibleMarkerCoords.latitude, visibleMarkerCoords.longitude);
-              Linking.openURL(url);
-            }}
-            activeOpacity={0.8}
-          >
-            <Globe2 size={16} color="white" />
-          </TouchableOpacity>
-
-          {/* Close Button - Right aligned with callout right edge */}
-          <TouchableOpacity
-            style={[
-              styles.calloutCloseButton,
-              {
-                position: 'absolute',
-                // Right edge of callout = marker.x + 100
-                // Button is 56px wide, so left = callout right - button width
-                left: calloutScreenPosition.x + 100 - 56,
-                top: calloutScreenPosition.y - 195,
-              },
-            ]}
-            onPress={handleCalloutDismiss}
-            activeOpacity={0.8}
-          >
-            <X size={16} color="white" strokeWidth={3} />
-          </TouchableOpacity>
+          <Text style={styles.calloutTitle} numberOfLines={2}>
+            {previewInfo.name}
+          </Text>
+          {previewInfo.indigenousName ? (
+            <Text style={styles.calloutIndigenous} numberOfLines={1}>
+              "{previewInfo.indigenousName}"
+            </Text>
+          ) : null}
+          <View style={styles.previewActions}>
+            <TouchableOpacity
+              style={styles.previewDetailButton}
+              onPress={handlePreviewDetailsPress}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.previewDetailButtonText}>{t('tapForDetails')}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.previewEarthButton}
+              onPress={() =>
+                Linking.openURL(getGoogleEarthUrl(previewInfo.latitude, previewInfo.longitude))
+              }
+              activeOpacity={0.8}
+            >
+              <Globe2 size={16} color="white" />
+              <Text style={styles.previewEarthButtonText}>Google Earth</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       ) : null}
 
@@ -1243,7 +973,7 @@ export default function MapScreen() {
           markerId={selectedMarker.id}
           markerType={selectedMarker.type}
           onClose={handleBottomSheetClose}
-          onReturnToMap={handleCalloutDismiss}
+          onReturnToMap={handleDismissAll}
           markerLatitude={
             selectedMarker.type === 'waterway'
               ? waterways?.find(w => w.id === selectedMarker.id)?.latitude
@@ -1291,76 +1021,65 @@ const styles = StyleSheet.create({
     color: '#6B7280',
     textAlign: 'center',
   },
-  calloutContainer: {
-    width: 200,
-    padding: 12,
+  previewCard: {
+    position: 'absolute',
+    left: 12,
+    right: 12,
+    bottom: 12,
+    padding: 14,
     backgroundColor: '#FFFEF7',
-    borderRadius: 12,
-  },
-  calloutIconsOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-  },
-  overviewPreviewOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-  },
-  overviewPreviewCard: {
-    position: 'absolute',
-    width: 200,
-    padding: 12,
-    backgroundColor: '#FFFEF7',
-    borderRadius: 12,
+    borderRadius: 14,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.18,
-    shadowRadius: 6,
-    elevation: 4,
-  },  
-  calloutEarthButton: {
-    width: 56,
-    height: 28,
-    borderRadius: 6,
-    backgroundColor: '#4285F4',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  previewHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
+    marginBottom: 8,
   },
-  calloutCloseButton: {
-    width: 56,
-    height: 28,
-    borderRadius: 6,
-    backgroundColor: '#EF4444',
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  calloutDetailButton: {
-    marginTop: 8,
+  previewCloseButton: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     backgroundColor: '#F3F4F6',
-    paddingVertical: 6,
-    paddingHorizontal: 10,
-    borderRadius: 6,
     alignItems: 'center',
+    justifyContent: 'center',
   },
-  calloutDetailButtonText: {
-    color: '#6B7280',
-    fontSize: 11,
-    fontWeight: '500',
+  previewActions: {
+    flexDirection: 'row',
+    gap: 10,
+    marginTop: 10,
+  },
+  previewDetailButton: {
+    flex: 1,
+    backgroundColor: '#2D5A3D',
+    paddingVertical: 10,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  previewDetailButtonText: {
+    color: 'white',
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  previewEarthButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: '#4285F4',
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderRadius: 8,
+  },
+  previewEarthButtonText: {
+    color: 'white',
+    fontSize: 13,
+    fontWeight: '600',
   },
   typeBadge: {
     paddingHorizontal: 8,
