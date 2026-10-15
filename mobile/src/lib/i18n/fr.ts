@@ -96,6 +96,7 @@ export const fr: Record<TranslationKey, string> = {
   pronunciationGuide: 'Guide de prononciation',
   quickAccess: 'Acces rapide',
   myJournal: 'Mon journal',
+  myClass: 'Ma classe',
   teacherPortal: 'Portail enseignant',
   printableResources: 'Ressources imprimables',
   printables: 'Imprimables',

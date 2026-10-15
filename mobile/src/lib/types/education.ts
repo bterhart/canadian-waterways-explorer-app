@@ -391,6 +391,31 @@ export interface ClassAssignment {
   createdAt: string;
 }
 
+// Student side — GET /api/classes/mine?userId=<device id>
+export interface StudentAssignmentProgress {
+  status: 'not_started' | 'in_progress' | 'completed' | string;
+  score: number | null;
+  maxScore: number | null;
+  completedAt: string | null;
+}
+
+export interface StudentAssignment extends ClassAssignment {
+  lessonPlan: { id: string; title: string } | null;
+  progress: StudentAssignmentProgress | null;
+}
+
+export interface MyClassMembership {
+  student: { id: string; displayName: string; joinedAt: string };
+  class: {
+    id: string;
+    name: string;
+    gradeLevel: string;
+    schoolYear: string | null;
+    teacherName: string;
+  };
+  assignments: StudentAssignment[];
+}
+
 export interface ClassDetail {
   id: string;
   name: string;

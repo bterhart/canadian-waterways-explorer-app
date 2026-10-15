@@ -147,6 +147,71 @@ classesRouter.post(
   }
 );
 
+// GET /mine?userId= - A student's class memberships with active assignments and progress
+// (PUBLIC - keyed by the anonymous device identity, which is unguessable; see mobile lib/identity.ts)
+classesRouter.get("/mine", async (c) => {
+  const userId = c.req.query("userId");
+  if (!userId) {
+    return c.json(
+      { error: { message: "userId is required", code: "BAD_REQUEST" } },
+      400
+    );
+  }
+
+  const memberships = await db.classStudent.findMany({
+    where: { userId },
+    include: {
+      class: {
+        include: {
+          teacher: { select: { name: true } },
+          assignments: {
+            where: { isActive: true },
+            orderBy: { createdAt: "desc" },
+            include: { lessonPlan: { select: { id: true, title: true } } },
+          },
+        },
+      },
+      progress: true,
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  const data = memberships
+    .filter((m) => m.class.isActive)
+    .map((m) => ({
+      student: { id: m.id, displayName: m.displayName, joinedAt: m.createdAt },
+      class: {
+        id: m.class.id,
+        name: m.class.name,
+        gradeLevel: m.class.gradeLevel,
+        schoolYear: m.class.schoolYear,
+        teacherName: m.class.teacher.name,
+      },
+      assignments: m.class.assignments.map((a) => {
+        const p = m.progress.find((x) => x.assignmentId === a.id);
+        return {
+          id: a.id,
+          classId: a.classId,
+          assignmentType: a.assignmentType,
+          quizId: a.quizId,
+          lessonPlanId: a.lessonPlanId,
+          fieldTripId: a.fieldTripId,
+          lessonPlan: a.lessonPlan,
+          title: a.title,
+          instructions: a.instructions,
+          dueDate: a.dueDate,
+          isActive: a.isActive,
+          createdAt: a.createdAt,
+          progress: p
+            ? { status: p.status, score: p.score, maxScore: p.maxScore, completedAt: p.completedAt }
+            : null,
+        };
+      }),
+    }));
+
+  return c.json({ data });
+});
+
 // Require teacher authentication for all routes below this point
 classesRouter.use("*", requireTeacher);
 

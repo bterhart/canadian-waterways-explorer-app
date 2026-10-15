@@ -93,6 +93,7 @@ export const en = {
   pronunciationGuide: 'Pronunciation Guide',
   quickAccess: 'Quick Access',
   myJournal: 'My Journal',
+  myClass: 'My Class',
   teacherPortal: 'Teacher Portal',
   printableResources: 'Printable Resources',
   printables: 'Printables',
