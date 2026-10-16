@@ -86,25 +86,30 @@ achievements. Those are populated by scripts, so the content pipeline (section 5
 | DailyChallenge | 30 | rotated daily since PR #19 |
 | Achievement | 28 | |
 
-### Relationship fill rates: the links the templates provide are mostly empty
+### How content is linked today: columns, embedded ids, coordinates and text
 
-| Link | Filled |
-|---|---|
-| LessonPlan related waterway/explorer/location/quiz ids | **0 of 26** |
-| QuizQuestion source link (sourceType/sourceId) | **0 of 71** |
-| FieldTripStop → location or waterway | **0 of 36** (stops carry raw coordinates only) |
-| IndigenousWord → waterway or location | **0 of 298** |
-| PronunciationGuide → waterway/location/nation/explorer | **0 of 33** |
-| TimelineEvent → explorer/waterway/location | 6 of 23 |
-| HistoricalEvent → explorer/waterway/location | 2 of 48 |
-| Location → cartographer | 1 of 100 |
-| Explorer → at least one waterway | 42 of 92 |
-| NotableFigure → waterway | by **string match** on the waterway's name inside `associatedLocations` (fragile; a rename breaks it) |
+The app realizes links in four different ways, and only the first is a database relation.
 
-This is the most important finding. The app has the columns to inter-relate everything, and the
-screens render those relations when present, but the existing content was authored without them.
-New content must fill them, and existing content should be back-filled in the same pass, or the
-new material will be more connected than the old.
+| Link | Mechanism | Filled |
+|---|---|---|
+| Deep Dive / Lesson Plan → explorers | `keyFigures[].explorerId` inside JSON (the tap-the-portrait link) | **26 of 26 plans; 105 of 105 key figures resolve** |
+| Deep Dive → timeline events | `timeline[].eventId` inside JSON | 68 of 123 entries resolve (18 distinct events) |
+| Deep Dive → waterways / locations / quizzes | `relatedWaterwayIds`, `relatedLocationIds`, `relatedQuizIds` columns (not read by any screen today) | 0 of 26 |
+| Field trip stop → pin / waterway | `locationId` / `waterwayId` columns; stops carry their own coordinates, which coincide with existing pins (Rocky Mountain House stops at 52.3756 N 114.9217 W, pin at 52.37 N 114.92 W) but nothing joins them; the trip screen cannot open the pin, the waterway or the explorer the text names | 0 of 36 |
+| Field trip → explorer | prose only (the Rocky Mountain House trip names David Thompson in its description and four stops) | none |
+| Quiz question → source | `sourceType`/`sourceId` | 0 of 71 |
+| Indigenous word → waterway / location | `relatedWaterwayId` / `relatedLocationId` | 0 of 298 |
+| Pronunciation → waterway / location / nation / explorer | link columns | 0 of 33 |
+| Timeline event → explorer / waterway / location | link columns | 6 of 23 |
+| "What Happened Here" event → explorer / waterway / location | link columns | 2 of 48 |
+| Location → cartographer | `cartographerId` | 1 of 100 |
+| Explorer → waterway | `ExplorerWaterway` rows (drives the map filter and "Waterways Explored") | 42 of 92 explorers |
+| Notable figure → waterway / location | **text match**: the waterway's name searched inside `associatedLocations` | works while names never change |
+
+Consequence: the authors used the same places and people consistently, so most of the missing
+references can be derived mechanically (stop coordinates to pins within a few hundred metres,
+names in text to explorer records) and then reviewed, rather than typed by hand. New content must
+set the references directly.
 
 ### Integrity and consistency defects to fix first
 
