@@ -158,7 +158,12 @@ const overviewPathToCoordinates = (path: [number, number][]) =>
 const distinctCount = (coords: { latitude: number; longitude: number }[]) =>
   new Set(coords.map((c) => `${c.latitude},${c.longitude}`)).size;
 const isDrawableLine = (coords: { latitude: number; longitude: number }[]) => distinctCount(coords) >= 2;
-const isDrawablePolygon = (coords: { latitude: number; longitude: number }[]) => distinctCount(coords) >= 3;
+// The iOS map library copies a polygon's coordinates onto the main thread's 1 MB stack when it
+// builds the native overlay (16 bytes a point); a 102,662-point ring crashed build 39. The server
+// now caps rings at 8,000 points; this is the belt to that suspender.
+const MAX_POLYGON_POINTS = 20000;
+const isDrawablePolygon = (coords: { latitude: number; longitude: number }[]) =>
+  coords.length <= MAX_POLYGON_POINTS && distinctCount(coords) >= 3;
 
 // Detail tier for the selected waterway's trace, from the visible span (degrees). The first
 // three match the home-map overview; detail and fine are requested with the padded viewport.
