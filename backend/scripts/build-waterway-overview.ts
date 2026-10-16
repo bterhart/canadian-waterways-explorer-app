@@ -3,7 +3,7 @@ import { dirname, resolve } from "node:path";
 import { db } from "../src/db";
 import {
   TIER_CONFIG,
-  parseKmlCoordinateBlocks,
+  parseKmlPaths,
   inferGeometryKind,
   simplifyAllPaths,
   countPoints,
@@ -155,13 +155,22 @@ async function main(): Promise<void> {
       }
     }
 
-    const originalPaths = waterway.kmlData ? parseKmlCoordinateBlocks(waterway.kmlData) : [];
-    if (originalPaths.length === 0) {
+    const allPaths = waterway.kmlData ? parseKmlPaths(waterway.kmlData) : [];
+    if (allPaths.length === 0) {
       skippedNoGeometry += 1;
       continue;
     }
 
-    const geometryKind = inferGeometryKind(typeName, originalPaths);
+    const geometryKind = inferGeometryKind(typeName, allPaths.map((p) => p.path));
+    // The home-map layer draws a river as its centreline. A river KML may also carry the
+    // river's water surface and hundreds of island rings (the St. Lawrence below Montreal);
+    // those became ~420 two-point overlays per tier and crashed the map in eastern Canada,
+    // so for line waterways only line paths go into the overview.
+    const originalPaths = (geometryKind === "line" ? allPaths.filter((p) => p.kind === "line" && !p.ring) : allPaths).map((p) => p.path);
+    if (originalPaths.length === 0) {
+      skippedNoGeometry += 1;
+      continue;
+    }
 
     const tiers = {
       nation: buildTier(originalPaths, TIER_CONFIG.nation.toleranceDeg, geometryKind),
@@ -222,7 +231,10 @@ async function main(): Promise<void> {
 }
 
 function buildTier(paths: LngLat[][], toleranceDeg: number, geometryKind: GeometryKind): SimplifiedTier {
-  const simplified = simplifyAllPaths(paths, toleranceDeg, geometryKind);
+  // A path that collapses to a single distinct point draws nothing and is unsafe as a native overlay.
+  const simplified = simplifyAllPaths(paths, toleranceDeg, geometryKind).filter(
+    (path) => new Set(path.map(([lng, lat]) => `${lng},${lat}`)).size >= 2
+  );
   return {
     toleranceDeg,
     pathCount: simplified.length,
