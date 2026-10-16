@@ -10,6 +10,9 @@ import {
 } from "../src/lib/kml-geometry";
 import type { LngLat, GeometryKind, TierName, TierConfig } from "../src/lib/kml-geometry";
 
+// The overview dataset carries only the three coarse tiers; detail/fine are served live per viewport.
+type OverviewTierName = Extract<TierName, "nation" | "region" | "local">;
+
 
 
 interface CliOptions {
@@ -42,7 +45,7 @@ interface WaterwayOverviewRecord {
     pathCount: number;
     pointCount: number;
   };
-  tiers: Record<TierName, SimplifiedTier>;
+  tiers: Record<OverviewTierName, SimplifiedTier>;
 }
 
 interface WaterwayOverviewDataset {
@@ -52,7 +55,7 @@ interface WaterwayOverviewDataset {
     typeFilter: string[] | null;
     onlyWithKml: boolean;
   };
-  tolerancesDeg: Record<TierName, number>;
+  tolerancesDeg: Record<OverviewTierName, number>;
   stats: {
     totalWaterwaysRead: number;
     totalWaterwaysWritten: number;
@@ -176,7 +179,7 @@ async function main(): Promise<void> {
       nation: buildTier(originalPaths, TIER_CONFIG.nation.toleranceDeg, geometryKind),
       region: buildTier(originalPaths, TIER_CONFIG.region.toleranceDeg, geometryKind),
       local: buildTier(originalPaths, TIER_CONFIG.local.toleranceDeg, geometryKind),
-    } satisfies Record<TierName, SimplifiedTier>;
+    } satisfies Record<OverviewTierName, SimplifiedTier>;
 
     const bbox = computeBBox(tiers.local.paths);
 

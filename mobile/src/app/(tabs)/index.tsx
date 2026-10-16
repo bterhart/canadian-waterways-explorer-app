@@ -18,6 +18,7 @@ import type {
   Waterway,
   Location,
   OverviewTierName,
+  GeometryTier,
   WaterwayOverviewRecord,
 } from '@/lib/types/waterways';
 import { useTranslation } from '@/lib/i18n';
@@ -150,6 +151,34 @@ const bboxIntersectsRegion = (
 
 const overviewPathToCoordinates = (path: [number, number][]) =>
   path.map(([longitude, latitude]) => ({ latitude, longitude }));
+
+// Detail tier for the selected waterway's trace, from the visible span (degrees). The first
+// three match the home-map overview; detail and fine are requested with the padded viewport.
+const getGeometryTier = (region: Region): GeometryTier => {
+  const maxDelta = Math.max(region.latitudeDelta, region.longitudeDelta);
+  if (maxDelta >= 12) return 'nation';
+  if (maxDelta >= 4) return 'region';
+  if (maxDelta >= 1) return 'local';
+  if (maxDelta >= 0.25) return 'detail';
+  return 'fine';
+};
+
+// Visible region padded by about a third on each side and snapped outward to a 0.05° grid, so
+// small pans reuse the same request and the server cache: "minLng,minLat,maxLng,maxLat".
+const paddedBBoxParam = (region: Region): string => {
+  const halfLat = region.latitudeDelta * 0.675;
+  const halfLng = region.longitudeDelta * 0.675;
+  const snapDown = (v: number) => Math.floor(v / 0.05) * 0.05;
+  const snapUp = (v: number) => Math.ceil(v / 0.05) * 0.05;
+  return [
+    snapDown(region.longitude - halfLng),
+    snapDown(region.latitude - halfLat),
+    snapUp(region.longitude + halfLng),
+    snapUp(region.latitude + halfLat),
+  ]
+    .map((v) => v.toFixed(2))
+    .join(',');
+};
 
 // How far (in screen pixels) a tap may land from a river and still select it. The map
 // library's own polyline hit test allows only 10 px regardless of zoom or stroke width,
@@ -533,8 +562,19 @@ export default function MapScreen() {
     return waterways?.find(w => w.id === detailWaterwayId) || null;
   }, [detailWaterwayId, waterways]);
 
-  // Simplified boundary/route from the server (never raw KML). null while loading or when none.
-  const { data: selectedWaterwayGeometry } = useWaterwayGeometry(detailWaterwayId);
+  // Simplified boundary/route from the server (never raw KML). Two requests:
+  //  - the coarse, unclipped "nation" trace: the waterway's full extent, used to zoom to it
+  //    and as the fallback drawing while a finer tier loads;
+  //  - the tier the current zoom calls for, clipped to the padded viewport at the two finest
+  //    tiers, so detail grows as the user zooms in while the download stays small.
+  const geometryTier = useMemo(() => getGeometryTier(mapRegion), [mapRegion]);
+  const geometryBBox = useMemo(
+    () => (geometryTier === 'detail' || geometryTier === 'fine' ? paddedBBoxParam(mapRegion) : null),
+    [geometryTier, mapRegion]
+  );
+  const { data: extentGeometry } = useWaterwayGeometry(detailWaterwayId, 'nation');
+  const { data: tierGeometry } = useWaterwayGeometry(detailWaterwayId, geometryTier, geometryBBox);
+  const selectedWaterwayGeometry = tierGeometry ?? extentGeometry ?? null;
   const selectedWaterwayPaths = useMemo(
     () =>
       selectedWaterwayGeometry?.paths.map((path) =>
@@ -542,13 +582,17 @@ export default function MapScreen() {
       ) ?? null,
     [selectedWaterwayGeometry]
   );
+  const extentPaths = useMemo(
+    () =>
+      extentGeometry?.paths.map((path) => path.map(([latitude, longitude]) => ({ latitude, longitude }))) ?? null,
+    [extentGeometry]
+  );
 
-
-  // Zoom to the selected waterway: its fetched boundary when available, otherwise its pin
+  // Zoom to the selected waterway's full extent when known, otherwise to its pin
   const animateToSelectedWaterway = useCallback(() => {
     if (!selectedWaterway || !mapRef.current) return;
-    if (selectedWaterwayPaths && selectedWaterwayPaths.length > 0) {
-      const region = getRegionForCoordinates(selectedWaterwayPaths.flat());
+    if (extentPaths && extentPaths.length > 0) {
+      const region = getRegionForCoordinates(extentPaths.flat());
       if (region) {
         mapRef.current.animateToRegion(region, 500);
         return;
@@ -560,14 +604,22 @@ export default function MapScreen() {
       latitudeDelta: 2,
       longitudeDelta: 2,
     }, 500);
-  }, [selectedWaterway, selectedWaterwayPaths]);
+  }, [selectedWaterway, extentPaths]);
 
-  // Animate to the waterway or location being previewed (and again once its boundary arrives)
+  // Animate once per selection: to the pin as soon as a waterway is chosen, then to its full
+  // extent when that arrives. Later geometry updates (finer tiers as the user zooms) must not
+  // move the map, or they would fight the user's own zooming.
+  const animatedExtentForRef = useRef<string | null>(null);
   useEffect(() => {
     if (detailWaterwayId && selectedWaterway) {
+      const extentReady = !!(extentPaths && extentPaths.length > 0);
+      const stamp = `${detailWaterwayId}:${extentReady ? 'extent' : 'pin'}`;
+      if (animatedExtentForRef.current === stamp || animatedExtentForRef.current === `${detailWaterwayId}:extent`) return;
+      animatedExtentForRef.current = stamp;
       animateToSelectedWaterway();
       return;
     }
+    animatedExtentForRef.current = null;
 
     if (preview?.type === 'location') {
       const location = locations?.find(l => l.id === preview.id);

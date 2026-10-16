@@ -6,18 +6,28 @@
 
 export type LngLat = [number, number]; // [lng, lat]
 export type GeometryKind = "line" | "area";
-export type TierName = "nation" | "region" | "local";
+/**
+ * Zoom tiers. nation/region/local are the three the home-map overview dataset is built
+ * with; detail and fine serve the selected waterway when the map is zoomed in, and are
+ * meant to be requested with a viewport bbox so only the part in view is sent.
+ */
+export type TierName = "nation" | "region" | "local" | "detail" | "fine";
 
 export interface TierConfig {
   toleranceDeg: number;
 }
 
-/** Tolerances per zoom tier (same values the overview dataset was built with). */
+/** Simplification tolerance per tier, in degrees (0.0005° ≈ 50 m: effectively the stored points). */
 export const TIER_CONFIG: Record<TierName, TierConfig> = {
   nation: { toleranceDeg: 0.12 },
   region: { toleranceDeg: 0.03 },
   local: { toleranceDeg: 0.008 },
+  detail: { toleranceDeg: 0.002 },
+  fine: { toleranceDeg: 0.0005 },
 };
+
+/** [minLng, minLat, maxLng, maxLat] */
+export type BBox = [number, number, number, number];
 
 export const AREA_TYPE_NAMES = new Set(["Lake", "Bay", "Gulf", "Sound", "Basin"]);
 
@@ -242,7 +252,56 @@ export const TIER_POINT_BUDGET: Record<TierName, number> = {
   nation: 800,
   region: 2000,
   local: 5000,
+  detail: 12000,
+  fine: 25000,
 };
+
+const inBBox = ([lng, lat]: LngLat, b: BBox) => lng >= b[0] && lng <= b[2] && lat >= b[1] && lat <= b[3];
+
+/**
+ * Restrict paths to a viewport. A line is cut into the runs of consecutive points that lie
+ * inside the box, each extended by one neighbouring point so the trace reaches the edge of
+ * the screen; a ring (area) is kept whole when its extent touches the box, since a filled
+ * polygon cannot be cut without changing its shape. The box the client sends is padded well
+ * beyond the screen, so exact edge clipping is unnecessary.
+ */
+export function clipPathsToBBox(paths: KmlPath[], bbox: BBox): KmlPath[] {
+  const out: KmlPath[] = [];
+  for (const p of paths) {
+    if (p.kind === "area" || p.ring) {
+      if (ringExtentTouches(p.path, bbox)) out.push(p);
+      continue;
+    }
+    let run: LngLat[] | null = null;
+    for (let i = 0; i < p.path.length; i++) {
+      const pt = p.path[i]!;
+      if (inBBox(pt, bbox)) {
+        if (!run) {
+          run = [];
+          if (i > 0) run.push(p.path[i - 1]!);
+        }
+        run.push(pt);
+      } else if (run) {
+        run.push(pt);
+        out.push({ ...p, path: run });
+        run = null;
+      }
+    }
+    if (run) out.push({ ...p, path: run });
+  }
+  return out;
+}
+
+function ringExtentTouches(path: LngLat[], b: BBox): boolean {
+  let minLng = Infinity, minLat = Infinity, maxLng = -Infinity, maxLat = -Infinity;
+  for (const [lng, lat] of path) {
+    if (lng < minLng) minLng = lng;
+    if (lng > maxLng) maxLng = lng;
+    if (lat < minLat) minLat = lat;
+    if (lat > maxLat) maxLat = lat;
+  }
+  return !(maxLng < b[0] || minLng > b[2] || maxLat < b[1] || minLat > b[3]);
+}
 
 /** Largest lat/lng extent of a path, in degrees (longitude scaled by cos(lat)). */
 function pathExtentDeg(path: LngLat[]): number {
@@ -263,7 +322,7 @@ function pathExtentDeg(path: LngLat[]): number {
  * smaller than the tolerance are dropped, and the tolerance is raised step by step until
  * the budget is met, so the response size is bounded regardless of the source KML.
  */
-export function buildGeometry(kmlData: string, typeName: string, tier: TierName): WaterwayGeometry | null {
+export function buildGeometry(kmlData: string, typeName: string, tier: TierName, bbox?: BBox): WaterwayGeometry | null {
   const original = parseKmlPaths(kmlData);
   if (original.length === 0) return null;
   const originalPaths = original.map((p) => p.path);
@@ -272,14 +331,18 @@ export function buildGeometry(kmlData: string, typeName: string, tier: TierName)
   // rivers are lines except where the KML carries the river's mapped water surface.
   const kindOf = (p: KmlPath): GeometryKind => (geometryKind === "area" ? p.kind : p.kind === "area" ? "area" : "line");
   const budget = TIER_POINT_BUDGET[tier];
+  const working = bbox ? clipPathsToBBox(original, bbox) : original;
 
   // Largest paths first so that, when a budget forces pruning, the main body survives.
-  const ordered = [...original].sort((a, b) => pathExtentDeg(b.path) - pathExtentDeg(a.path));
+  const ordered = [...working].sort((a, b) => pathExtentDeg(b.path) - pathExtentDeg(a.path));
 
   let toleranceDeg = TIER_CONFIG[tier].toleranceDeg;
   let simplified: KmlPath[] = [];
   for (let attempt = 0; attempt < 14; attempt += 1) {
-    const kept = ordered.filter((p, index) => index === 0 || pathExtentDeg(p.path) >= toleranceDeg * 2);
+    // Tiny rings (islands) below the tolerance are dropped at the coarse tiers; the two fine
+    // tiers keep everything in view and let the budget decide.
+    const dropTiny = tier !== "detail" && tier !== "fine";
+    const kept = ordered.filter((p, index) => index === 0 || !dropTiny || pathExtentDeg(p.path) >= toleranceDeg * 2);
     simplified = kept
       .map((p) => {
         const kind = kindOf(p);
