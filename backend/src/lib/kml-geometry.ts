@@ -256,6 +256,11 @@ export const TIER_POINT_BUDGET: Record<TierName, number> = {
   fine: 25000,
 };
 
+/** Hard cap on points in one polygon ring; see the note in buildGeometry. */
+export const AREA_PATH_MAX_POINTS = 8000;
+/** Hard cap on paths (native overlays) in one response. */
+export const MAX_PATHS = 400;
+
 const inBBox = ([lng, lat]: LngLat, b: BBox) => lng >= b[0] && lng <= b[2] && lat >= b[1] && lat <= b[3];
 
 /**
@@ -352,6 +357,25 @@ export function buildGeometry(kmlData: string, typeName: string, tier: TierName,
     if (countPoints(simplified.map((p) => p.path)) <= budget) break;
     toleranceDeg *= 1.6;
   }
+  // No single polygon ring may exceed AREA_PATH_MAX_POINTS: the iOS map library copies a
+  // polygon's coordinates into a stack-allocated array (16 bytes each) when it builds the
+  // native overlay, and the main thread's stack is 1 MB. A 102,662-point ring overflowed it
+  // and crashed the app (crash log, build 39). Rings are simplified further until they fit.
+  simplified = simplified.map((p) => {
+    if (p.kind !== "area" || p.path.length <= AREA_PATH_MAX_POINTS) return p;
+    let tol = toleranceDeg;
+    let path = p.path;
+    for (let i = 0; i < 20 && path.length > AREA_PATH_MAX_POINTS; i += 1) {
+      tol *= 1.5;
+      path = simplifyPath(p.path, tol, true);
+    }
+    return { ...p, path };
+  });
+
+  // Each path becomes one native map overlay; thousands of island outlines at the fine tier
+  // (Lake Huron: 2,994) are far too many for the map. Keep the largest MAX_PATHS.
+  if (simplified.length > MAX_PATHS) simplified = simplified.slice(0, MAX_PATHS);
+
   // Last resort: keep the largest paths that fit the budget.
   if (countPoints(simplified.map((p) => p.path)) > budget) {
     const trimmed: KmlPath[] = [];
