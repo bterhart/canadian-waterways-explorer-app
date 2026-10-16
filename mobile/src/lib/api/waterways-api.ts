@@ -1,5 +1,5 @@
 // React Query hooks for Canadian Waterways API
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query';
 import { api } from '@/lib/api/api';
 import type {
   Waterway,
@@ -87,12 +87,25 @@ export function useWaterwayDetail(id: string | null) {
 }
 
 /** Simplified boundary/route for the map; tiny compared with the raw KML (up to 12.7 MB). */
-export function useWaterwayGeometry(id: string | null, tier: WaterwayGeometry['tier'] = 'local') {
+/**
+ * Simplified trace for one waterway at a zoom tier. For the two finest tiers pass the padded
+ * viewport as `bbox` ("minLng,minLat,maxLng,maxLat") so only the part in view is sent. The
+ * previous tier's data stays on screen while the next loads (no flicker between zoom levels).
+ */
+export function useWaterwayGeometry(
+  id: string | null,
+  tier: WaterwayGeometry['tier'] = 'local',
+  bbox: string | null = null
+) {
   return useQuery({
-    queryKey: [...waterwaysKeys.detail(id ?? ''), 'geometry', tier] as const,
-    queryFn: () => api.get<WaterwayGeometry | null>(`/api/waterways/${id}/geometry?tier=${tier}`),
+    queryKey: [...waterwaysKeys.detail(id ?? ''), 'geometry', tier, bbox ?? 'all'] as const,
+    queryFn: () =>
+      api.get<WaterwayGeometry | null>(
+        `/api/waterways/${id}/geometry?tier=${tier}${bbox ? `&bbox=${bbox}` : ''}`
+      ),
     enabled: !!id,
     staleTime: 60 * 60 * 1000, // geometry only changes when an admin re-uploads KML
+    placeholderData: keepPreviousData,
   });
 }
 

@@ -4,16 +4,17 @@ import { join } from "node:path";
 import { db } from "../db";
 import { requireAdmin, requireSuperAdmin } from "../lib/admin-middleware";
 import { buildGeometry, TIER_CONFIG } from "../lib/kml-geometry";
-import type { TierName, WaterwayGeometry } from "../lib/kml-geometry";
+import type { BBox, TierName, WaterwayGeometry } from "../lib/kml-geometry";
 
 const waterwaysRouter = new Hono();
 
 // Simplified geometry cache: KML changes only through the admin upload/delete
 // routes below, which clear the entries for that waterway.
 const geometryCache = new Map<string, WaterwayGeometry | null>();
-const geometryCacheKey = (id: string, tier: TierName) => `${id}:${tier}`;
+const geometryCacheKey = (id: string, tier: TierName, bbox?: BBox) =>
+  `${id}:${tier}${bbox ? `:${bbox.map((v) => v.toFixed(2)).join(",")}` : ""}`;
 const invalidateGeometry = (id: string) => {
-  for (const tier of Object.keys(TIER_CONFIG) as TierName[]) geometryCache.delete(geometryCacheKey(id, tier));
+  for (const key of [...geometryCache.keys()]) if (key.startsWith(`${id}:`)) geometryCache.delete(key);
 };
 
 const RIVER_OVERVIEW_PATH = join(import.meta.dir, "../../generated/river-overview.json");
@@ -268,12 +269,25 @@ waterwaysRouter.get("/:id/geometry", async (c) => {
   const tierParam = c.req.query("tier") ?? "local";
   if (!(tierParam in TIER_CONFIG)) {
     return c.json(
-      { error: { message: "tier must be one of nation, region, local", code: "BAD_REQUEST" } },
+      { error: { message: "tier must be one of nation, region, local, detail, fine", code: "BAD_REQUEST" } },
       400
     );
   }
   const tier = tierParam as TierName;
-  const key = geometryCacheKey(id, tier);
+
+  // Optional viewport, minLng,minLat,maxLng,maxLat. Snapped outward to a 0.05° grid so that
+  // small pans reuse the same cache entry; the client pads the box well beyond the screen.
+  let bbox: BBox | undefined;
+  const bboxParam = c.req.query("bbox");
+  if (bboxParam) {
+    const parts = bboxParam.split(",").map(Number);
+    if (parts.length !== 4 || parts.some((n) => !Number.isFinite(n)) || parts[0]! >= parts[2]! || parts[1]! >= parts[3]!) {
+      return c.json({ error: { message: "bbox must be minLng,minLat,maxLng,maxLat", code: "BAD_REQUEST" } }, 400);
+    }
+    const snap = (v: number, up: boolean) => (up ? Math.ceil(v / 0.05) : Math.floor(v / 0.05)) * 0.05;
+    bbox = [snap(parts[0]!, false), snap(parts[1]!, false), snap(parts[2]!, true), snap(parts[3]!, true)];
+  }
+  const key = geometryCacheKey(id, tier, bbox);
 
   if (!geometryCache.has(key)) {
     const waterway = await db.waterway.findUnique({
@@ -283,9 +297,14 @@ waterwaysRouter.get("/:id/geometry", async (c) => {
     if (!waterway) {
       return c.json({ error: { message: "Waterway not found", code: "NOT_FOUND" } }, 404);
     }
+    // Bound the cache: viewport-specific entries would otherwise grow without limit.
+    if (geometryCache.size >= 600) {
+      const oldest = geometryCache.keys().next().value;
+      if (oldest !== undefined) geometryCache.delete(oldest);
+    }
     geometryCache.set(
       key,
-      waterway.kmlData ? buildGeometry(waterway.kmlData, waterway.type?.name ?? "", tier) : null
+      waterway.kmlData ? buildGeometry(waterway.kmlData, waterway.type?.name ?? "", tier, bbox) : null
     );
   }
 

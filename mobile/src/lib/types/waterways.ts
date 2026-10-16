@@ -21,9 +21,12 @@ export interface Waterway {
 }
 
 // GET /api/waterways/:id/geometry?tier=local|region|nation
+/** nation/region/local match the home-map overview; detail/fine serve the selected trace when zoomed in. */
+export type GeometryTier = 'nation' | 'region' | 'local' | 'detail' | 'fine';
+
 export interface WaterwayGeometry {
   geometryKind: 'line' | 'area';
-  tier: 'nation' | 'region' | 'local';
+  tier: GeometryTier;
   toleranceDeg: number;
   pathCount: number;
   pointCount: number;
