@@ -152,6 +152,14 @@ const bboxIntersectsRegion = (
 const overviewPathToCoordinates = (path: [number, number][]) =>
   path.map(([longitude, latitude]) => ({ latitude, longitude }));
 
+// Never hand MapKit a degenerate overlay. A line needs two distinct points and a polygon
+// three; anything less draws nothing and has crashed the native map. Server data is already
+// filtered, but the app must not depend on that.
+const distinctCount = (coords: { latitude: number; longitude: number }[]) =>
+  new Set(coords.map((c) => `${c.latitude},${c.longitude}`)).size;
+const isDrawableLine = (coords: { latitude: number; longitude: number }[]) => distinctCount(coords) >= 2;
+const isDrawablePolygon = (coords: { latitude: number; longitude: number }[]) => distinctCount(coords) >= 3;
+
 // Detail tier for the selected waterway's trace, from the visible span (degrees). The first
 // three match the home-map overview; detail and fine are requested with the padded viewport.
 const getGeometryTier = (region: Region): GeometryTier => {
@@ -812,6 +820,7 @@ export default function MapScreen() {
                 const coordinates = overviewPathToCoordinates(path);
 
                 if (record.geometryKind === 'area') {
+                  if (!isDrawablePolygon(coordinates)) return null;
                   return (
                     <Polygon
                       key={`overview-area-${riverOverviewTier}-${record.id}-${index}`}
@@ -825,6 +834,7 @@ export default function MapScreen() {
                   );
                 }
 
+                if (!isDrawableLine(coordinates)) return null;
                 return (
                   <Polyline
                     key={`overview-line-${riverOverviewTier}-${record.id}-${index}`}
@@ -857,6 +867,7 @@ export default function MapScreen() {
             // Per-path kind lets a river carry its mapped water surface (filled) alongside its
             // centreline (line); older servers send no pathKinds and fall back to the waterway kind.
             const pathIsArea = (selectedWaterwayGeometry.pathKinds?.[index] ?? (isArea ? 'area' : 'line')) === 'area';
+            if (pathIsArea ? !isDrawablePolygon(latLngs) : !isDrawableLine(latLngs)) return null;
             if (pathIsArea) {
               return (
                 <Polygon

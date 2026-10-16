@@ -72,8 +72,11 @@ export function useRiverOverview() {
   return useQuery({
     queryKey: waterwaysKeys.riverOverview(),
     queryFn: () => api.get<WaterwayOverviewDataset>('/api/waterways/overview/rivers'),
-    staleTime: 24 * 60 * 60 * 1000,
-    gcTime: 24 * 60 * 60 * 1000,
+    // The dataset changes whenever waterway KML is cleaned or re-exported; an hour is long
+    // enough to spare the server and short enough that a server-side fix reaches the app
+    // without a force-quit.
+    staleTime: 60 * 60 * 1000,
+    gcTime: 60 * 60 * 1000,
     retry: false,
   });
 }
