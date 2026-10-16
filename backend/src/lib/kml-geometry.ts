@@ -56,6 +56,8 @@ export function parseKmlCoordinateBlocks(kmlData: string): LngLat[][] {
 export interface KmlPath {
   kind: GeometryKind;
   path: LngLat[];
+  /** true for a Polygon inner ring (an island) drawn as an outline rather than filled */
+  ring?: boolean;
 }
 
 /**
@@ -67,15 +69,15 @@ export interface KmlPath {
  */
 export function parseKmlPaths(kmlData: string): KmlPath[] {
   const out: KmlPath[] = [];
-  const pushBlocks = (text: string, kind: GeometryKind | null) => {
+  const pushBlocks = (text: string, kind: GeometryKind | null, ring = false) => {
     for (const path of parseKmlCoordinateBlocks(text)) {
-      out.push({ kind: kind ?? (isClosed(path) && path.length >= 4 ? "area" : "line"), path });
+      out.push({ kind: kind ?? (isClosed(path) && path.length >= 4 ? "area" : "line"), path, ...(ring ? { ring: true } : {}) });
     }
   };
   let rest = kmlData;
   rest = rest.replace(/<Polygon\b[\s\S]*?<\/Polygon>/gi, (polygon) => {
     for (const m of polygon.matchAll(/<outerBoundaryIs>[\s\S]*?<\/outerBoundaryIs>/gi)) pushBlocks(m[0], "area");
-    for (const m of polygon.matchAll(/<innerBoundaryIs>[\s\S]*?<\/innerBoundaryIs>/gi)) pushBlocks(m[0], "line");
+    for (const m of polygon.matchAll(/<innerBoundaryIs>[\s\S]*?<\/innerBoundaryIs>/gi)) pushBlocks(m[0], "line", true);
     return "";
   });
   rest = rest.replace(/<LineString\b[\s\S]*?<\/LineString>/gi, (line) => {
@@ -213,6 +215,11 @@ function perpendicularDistance(point: LngLat, start: LngLat, end: LngLat, xScale
   return Math.hypot(px - projX, py - projY);
 }
 
+/** Number of distinct coordinates; a closed ring simplified down to its endpoints has 1. */
+export function distinctPointCount(path: LngLat[]): number {
+  return new Set(path.map(([lng, lat]) => `${lng},${lat}`)).size;
+}
+
 export function countPoints(paths: LngLat[][]): number {
   return paths.reduce((sum, path) => sum + path.length, 0);
 }
@@ -278,7 +285,7 @@ export function buildGeometry(kmlData: string, typeName: string, tier: TierName)
         const kind = kindOf(p);
         return { kind, path: simplifyPath(p.path, toleranceDeg, kind === "area") };
       })
-      .filter((p) => p.path.length >= (p.kind === "area" ? 4 : 2));
+      .filter((p) => p.path.length >= (p.kind === "area" ? 4 : 2) && distinctPointCount(p.path) >= 2);
     if (countPoints(simplified.map((p) => p.path)) <= budget) break;
     toleranceDeg *= 1.6;
   }
