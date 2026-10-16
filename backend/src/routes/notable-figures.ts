@@ -11,6 +11,9 @@ interface AssociatedExplorerEntry {
   name?: string;
   relationship?: string;
   explorerId?: string | null;
+  // Set when the associated person is a NotableFigure rather than an Explorer
+  // (Riel ↔ Dumont, Gaboury ↔ Lagimodière after the 2026-10-16 move).
+  notableFigureId?: string | null;
 }
 
 // Honorifics the figure JSON sometimes carries or omits relative to Explorer.name
@@ -36,18 +39,26 @@ async function resolveAssociatedExplorers(raw: string | null): Promise<Associate
   } catch {
     return null;
   }
-  const unresolved = entries.filter((e) => !e.explorerId && e.name);
-  if (unresolved.length === 0) return entries.map((e) => ({ ...e, explorerId: e.explorerId ?? null }));
+  const unresolved = entries.filter((e) => !e.explorerId && !e.notableFigureId && e.name);
+  if (unresolved.length === 0) {
+    return entries.map((e) => ({ ...e, explorerId: e.explorerId ?? null, notableFigureId: e.notableFigureId ?? null }));
+  }
 
-  const explorers = await db.explorer.findMany({ select: { id: true, name: true } });
+  const [explorers, figures] = await Promise.all([
+    db.explorer.findMany({ select: { id: true, name: true } }),
+    db.notableFigure.findMany({ select: { id: true, name: true } }),
+  ]);
   const byExact = new Map(explorers.map((e) => [e.name, e.id]));
   const byNormalized = new Map(explorers.map((e) => [normalizePersonName(e.name), e.id]));
+  const figureBase = (n: string) => normalizePersonName(n.replace(/\s*\(.*\)\s*$/, ""));
+  const figureByName = new Map(figures.map((f) => [figureBase(f.name), f.id]));
 
   return entries.map((e) => {
-    if (e.explorerId) return e;
+    if (e.explorerId || e.notableFigureId) return { ...e, explorerId: e.explorerId ?? null, notableFigureId: e.notableFigureId ?? null };
     const name = e.name ?? "";
-    const id = byExact.get(name) ?? byNormalized.get(normalizePersonName(name)) ?? null;
-    return { ...e, explorerId: id };
+    const explorerId = byExact.get(name) ?? byNormalized.get(normalizePersonName(name)) ?? null;
+    const notableFigureId = explorerId ? null : figureByName.get(figureBase(name)) ?? null;
+    return { ...e, explorerId, notableFigureId };
   });
 }
 

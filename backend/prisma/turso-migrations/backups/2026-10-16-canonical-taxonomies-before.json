@@ -1,0 +1,593 @@
+{
+ "generatedAt": "2026-10-16T22:41:39.183Z",
+ "apply": true,
+ "locations": [
+  {
+   "id": "fort_st_charles_location",
+   "name": "Fort St. Charles",
+   "locationType": "fort"
+  },
+  {
+   "id": "bloody_falls_location",
+   "name": "Bloody Falls",
+   "locationType": "historic_site"
+  },
+  {
+   "id": "massacre_island_location",
+   "name": "Massacre Island (Lake of the Woods)",
+   "locationType": "historic_site"
+  },
+  {
+   "id": "cml_marble_island",
+   "name": "Marble Island",
+   "locationType": "historic_site"
+  }
+ ],
+ "waterwayTypes": [
+  {
+   "id": "cmlhaslp10000m2zhimvy5ukv",
+   "name": "River",
+   "waterways": [
+    {
+     "id": "cmlhaslql000km2zhocxl8zbv",
+     "name": "St. Lawrence River"
+    },
+    {
+     "id": "cmlhaslqp000mm2zh1z4uc8lw",
+     "name": "Mackenzie River"
+    },
+    {
+     "id": "cmlhaslqs000om2zh7u6tr7m8",
+     "name": "Fraser River"
+    },
+    {
+     "id": "cmlhaslqu000qm2zh7ssejohe",
+     "name": "Ottawa River"
+    },
+    {
+     "id": "cmlhaslqy000sm2zhxfks60fd",
+     "name": "Saskatchewan River"
+    },
+    {
+     "id": "cmlhaslr1000um2zh1ohr52f9",
+     "name": "Churchill River (Saskatchewan)"
+    },
+    {
+     "id": "cmlhaslr7000wm2zhi88te1r4",
+     "name": "Columbia River"
+    },
+    {
+     "id": "cmlhbjrpt0001m2mb70w5ub4a",
+     "name": "Nelson River"
+    },
+    {
+     "id": "cmlhbjrpw0003m2mbmmpa8102",
+     "name": "Athabasca River"
+    },
+    {
+     "id": "cmlhbjrpy0005m2mbsanafmlo",
+     "name": "Peace River"
+    },
+    {
+     "id": "cmlhbjrq10007m2mb166687ob",
+     "name": "Red River"
+    },
+    {
+     "id": "cmlhbjrq30009m2mbjvc52rym",
+     "name": "Assiniboine River"
+    },
+    {
+     "id": "cmlhbjrq5000bm2mbpbrh6i7v",
+     "name": "Yukon River"
+    },
+    {
+     "id": "cmlhbjrqa000dm2mb7n6w7y4w",
+     "name": "Coppermine River"
+    },
+    {
+     "id": "cmlhbjrqd000fm2mb9j2kl8w0",
+     "name": "Thelon River"
+    },
+    {
+     "id": "cmlhbjrqg000hm2mbrxd1csg3",
+     "name": "Saguenay River"
+    },
+    {
+     "id": "cmlhbjrqk000jm2mbu4c80xzn",
+     "name": "Saint John River"
+    },
+    {
+     "id": "cmligbkuv0001m20z88hvpgz2",
+     "name": "Hayes River"
+    },
+    {
+     "id": "cmligbkuz0003m20z3seyhxbw",
+     "name": "Moose River"
+    },
+    {
+     "id": "cmligbkv20005m20zmpiyg4ag",
+     "name": "Albany River"
+    },
+    {
+     "id": "cmligbkv50007m20z56lg1di6",
+     "name": "Abitibi River"
+    },
+    {
+     "id": "cmlizphim0001m2ybbm7btaxk",
+     "name": "Kaministiquia River"
+    },
+    {
+     "id": "back-river-waterway",
+     "name": "Back River"
+    },
+    {
+     "id": "seine-river-ontario-waterway",
+     "name": "Seine River"
+    },
+    {
+     "id": "atikokan-river-waterway",
+     "name": "Atikokan River"
+    },
+    {
+     "id": "souris-river-waterway",
+     "name": "Souris River"
+    },
+    {
+     "id": "red-deer-river-alberta-waterway",
+     "name": "Red Deer River"
+    },
+    {
+     "id": "french-river-waterway",
+     "name": "French River"
+    }
+   ]
+  },
+  {
+   "id": "cmlhaslpc0001m2zh8s6fuk8s",
+   "name": "Lake",
+   "waterways": [
+    {
+     "id": "cmlhaslra000ym2zh4pyu55je",
+     "name": "Lake Superior"
+    },
+    {
+     "id": "cmlhaslrc0010m2zhzbcapn1v",
+     "name": "Lake Huron"
+    },
+    {
+     "id": "cmlhaslre0012m2zhg9f595d4",
+     "name": "Lake Ontario"
+    },
+    {
+     "id": "cmlhaslri0014m2zhlrrx8pqe",
+     "name": "Lake Winnipeg"
+    },
+    {
+     "id": "cmlhaslrl0016m2zh71casjqv",
+     "name": "Great Slave Lake"
+    },
+    {
+     "id": "cmlhaslro0018m2zh54ssf898",
+     "name": "Great Bear Lake"
+    },
+    {
+     "id": "cmlhaslrq001am2zhud0snm8t",
+     "name": "Lake Athabasca"
+    },
+    {
+     "id": "cmlhbjrqm000lm2mb54fxoup5",
+     "name": "Lake Erie"
+    },
+    {
+     "id": "cmlhbjrqo000nm2mb16337n49",
+     "name": "Lake Michigan"
+    },
+    {
+     "id": "cmlhbjrqs000pm2mb2n5b8ozi",
+     "name": "Reindeer Lake"
+    },
+    {
+     "id": "cmlhbjrqu000rm2mb2jzjv5dc",
+     "name": "Lake Nipigon"
+    },
+    {
+     "id": "cmlhbjrqx000tm2mb8efa6a4y",
+     "name": "Lesser Slave Lake"
+    }
+   ]
+  },
+  {
+   "id": "cmlhaslpf0002m2zhbkwv0nmg",
+   "name": "Bay",
+   "waterways": [
+    {
+     "id": "cmlhaslrt001cm2zh9tknhhbe",
+     "name": "Hudson Bay"
+    },
+    {
+     "id": "cmlhaslrv001em2zheht25x94",
+     "name": "James Bay"
+    },
+    {
+     "id": "cmlhci06g0003m2rxvk2z3kyo",
+     "name": "Baie des Chaleurs"
+    },
+    {
+     "id": "cmlhci06l0005m2rxruhm0g4o",
+     "name": "Gaspé Bay"
+    },
+    {
+     "id": "cmlhci06q0009m2rx52k6015h",
+     "name": "Bonavista Bay"
+    },
+    {
+     "id": "cmlhci06u000bm2rx0mhic71i",
+     "name": "Placentia Bay"
+    },
+    {
+     "id": "cmlhci072000hm2rxsiy2pofi",
+     "name": "English Bay"
+    },
+    {
+     "id": "cmlhci075000jm2rxv7atyc59",
+     "name": "Friendly Cove (Yuquot)"
+    },
+    {
+     "id": "cmlhci07g000rm2rxgqu76lmi",
+     "name": "Lituya Bay"
+    },
+    {
+     "id": "terror-bay-waterway",
+     "name": "Terror Bay"
+    },
+    {
+     "id": "mercy-bay-waterway",
+     "name": "Mercy Bay"
+    },
+    {
+     "id": "queen-maud-gulf-waterway",
+     "name": "Queen Maud Gulf"
+    },
+    {
+     "id": "foxe-basin-waterway",
+     "name": "Foxe Basin"
+    },
+    {
+     "id": "baffin-bay-waterway",
+     "name": "Baffin Bay"
+    },
+    {
+     "id": "frobisher-bay-waterway",
+     "name": "Frobisher Bay"
+    }
+   ]
+  },
+  {
+   "id": "cmlhaslpi0003m2zhdjfuci4l",
+   "name": "Strait",
+   "waterways": [
+    {
+     "id": "cmlhci06o0007m2rx0b9040b1",
+     "name": "Strait of Belle Isle"
+    },
+    {
+     "id": "cmlhci078000lm2rxus8do5zj",
+     "name": "Juan de Fuca Strait"
+    },
+    {
+     "id": "cmlhci07b000nm2rxfad3b0er",
+     "name": "Georgia Strait"
+    },
+    {
+     "id": "davis-strait-waterway",
+     "name": "Davis Strait"
+    },
+    {
+     "id": "parry-channel-waterway",
+     "name": "Parry Channel"
+    },
+    {
+     "id": "bellot-strait-waterway",
+     "name": "Bellot Strait"
+    }
+   ]
+  },
+  {
+   "id": "cmlhci0600000m2rxdq9xrbqy",
+   "name": "Sound",
+   "waterways": [
+    {
+     "id": "cmlhci06w000dm2rx3bn9gj7e",
+     "name": "Nootka Sound"
+    },
+    {
+     "id": "cmlhci07e000pm2rxpaiz59r9",
+     "name": "Queen Charlotte Sound"
+    },
+    {
+     "id": "lancaster-sound-waterway",
+     "name": "Lancaster Sound"
+    },
+    {
+     "id": "cumberland-sound-waterway",
+     "name": "Cumberland Sound"
+    }
+   ]
+  },
+  {
+   "id": "cmlhci06d0001m2rx77t9f4up",
+   "name": "Inlet",
+   "waterways": [
+    {
+     "id": "cmlhci06z000fm2rx9a0q3kpo",
+     "name": "Burrard Inlet"
+    },
+    {
+     "id": "dean-channel-waterway",
+     "name": "Dean Channel"
+    },
+    {
+     "id": "chesterfield-inlet-waterway",
+     "name": "Chesterfield Inlet"
+    }
+   ]
+  },
+  {
+   "id": "cmlk2w3ji0000m2634kp0e4ch",
+   "name": "lake",
+   "waterways": [
+    {
+     "id": "cmlk2w3jm0002m2636jrqvptl",
+     "name": "Lake of the Woods"
+    }
+   ]
+  }
+ ],
+ "explorers": [
+  {
+   "id": "cmlhc4gt7000bm2ogmjjkr2c4",
+   "name": "Peter Pond",
+   "nationality": "American (Connecticut)",
+   "biography": "Peter Pond was a controversial but significant figure who opened the rich Athabasca fur trade. A veteran of the Seven Years' War, he became a fur trader in the 1760s and pushed into ever more remote regions. In 1778, he crossed the Methye Portage and established a post on the Athabasca River, opening the most productive fur region in North America. His maps, though based partly on Indigenous information and speculation, inspired Alexander Mackenzie's expeditions. Pond was a violent man, implicated in the deaths of two rival traders, which eventually forced him to leave the trade. Despite his flawed character, his geographic theories and the Athabasca trade he opened transformed the North West Company's fortunes."
+  },
+  {
+   "id": "cmlijaid00007m22rzrs1u1i7",
+   "name": "Alexander Henry the Elder",
+   "nationality": "American (New Jersey)",
+   "biography": "Alexander Henry the Elder was a pioneering fur trader and explorer who was among the first English-speaking traders to venture into the Great Lakes region after the British conquest of New France. His memoir 'Travels and Adventures in Canada and the Indian Territories' (1809) provides a vivid account of the early British fur trade and his survival of the 1763 attack on Fort Michilimackinac during Pontiac's War, where he was saved by his Ojibwe friend Wawatam. Henry traveled extensively throughout the upper Great Lakes and into the Saskatchewan country. He later became a Montreal merchant and investor in the fur trade, though he never joined the North West Company partnership. His account remains one of the most important sources for the early post-conquest fur trade."
+  },
+  {
+   "id": "cmlijaide0009m22rf9svqtwd",
+   "name": "Daniel Williams Harmon",
+   "nationality": "American (Vermont)",
+   "biography": "Daniel Williams Harmon was a North West Company trader whose journal, covering his years in the trade from 1800 to 1819, provides one of the most detailed accounts of fur trade life in the Athabasca and New Caledonia regions. A devout Protestant from New England, Harmon's journals reflect his moral struggles with the customs of the trade, including his own 'country marriage' to Lizette Duval, a Metis woman he eventually married legally and took east. His sixteen years of journal entries describe daily trading operations, relations with Indigenous peoples, the landscape and wildlife, and the social world of the fur trade posts. His 'Journal of Voyages and Travels in the Interior of North America' (1820) remains an important primary source."
+  },
+  {
+   "id": "cmlhaslq90009m2zhn28km7lg",
+   "name": "Simon Fraser",
+   "nationality": "American (Vermont), Loyalist",
+   "biography": "Simon Fraser was a North West Company partner and explorer who established the first European settlements west of the Rocky Mountains in New Caledonia (British Columbia). In 1808, he led a harrowing expedition down the river that now bears his name, hoping it was the Columbia. The Fraser River proved to be a terrifying torrent, with Fraser and his men forced to cling to cliff faces and navigate through deadly rapids. Upon reaching the Pacific, Fraser realized the river was not the Columbia and was useless as a trade route. Despite this disappointment, his expedition and the posts he established (including Fort George, Fort Fraser, and Fort St. James) secured the region for British interests. Fraser later retired to Ontario and lived to age 86."
+  },
+  {
+   "id": "cmlijaicv0005m22r4caohonp",
+   "name": "James Douglas",
+   "nationality": "British (born British Guiana)",
+   "biography": "Sir James Douglas began his career with the North West Company before the 1821 merger brought him into the Hudson's Bay Company. He rose to become Chief Factor and eventually Governor of Vancouver Island (1851-1864) and British Columbia (1858-1864). Douglas managed the company's Pacific operations during the turbulent gold rush era, maintaining order during the Fraser River and Cariboo gold rushes. Of mixed Scottish and Creole heritage, he married Amelia Connolly, a Metis woman, following the custom of the country. Douglas is credited with preserving British sovereignty over the Pacific Northwest during American expansion. He built roads, established colonial government, and transformed the region from a fur trading territory into a settled colony. He was knighted in 1863 and is considered the 'Father of British Columbia.'"
+  },
+  {
+   "id": "cmlhc4gul000hm2ogccikl5ze",
+   "name": "Vilhjalmur Stefansson",
+   "nationality": "Canadian (Icelandic descent)",
+   "biography": "Canadian Arctic explorer and ethnographer who led the Canadian Arctic Expedition (1913-1918). He promoted the concept of a 'Friendly Arctic' where Europeans could live off the land. His expedition discovered new Arctic islands but also suffered the loss of the ship Karluk and 11 crew members."
+  },
+  {
+   "id": "cmlijaicr0004m22rcq8twhin",
+   "name": "John McLoughlin",
+   "nationality": "Canadian (Quebec)",
+   "biography": "Dr. John McLoughlin was a larger-than-life figure who served as Chief Factor of the Columbia District for the Hudson's Bay Company from 1824 to 1846, effectively ruling the Pacific Northwest. Standing six feet four inches with white hair, he was an imposing presence known as the 'Father of Oregon.' McLoughlin established Fort Vancouver as headquarters and developed the company's network of posts from California to Alaska. He created agricultural settlements to make the district self-sufficient and welcomed American settlers, often providing them with supplies on credit against company policy. His humanitarian treatment of settlers contributed to American migration and ultimately American claims to the Oregon Territory. After conflicts with George Simpson over his policies, McLoughlin retired to Oregon City, where he became an American citizen."
+  },
+  {
+   "id": "cmlhci08d0012m2rxdg10pdc1",
+   "name": "Vitus Bering",
+   "nationality": "Danish (sailing for Russia)",
+   "biography": "Danish navigator in Russian service who led two major expeditions to determine whether Asia and North America were connected. On his second expedition (1741), he reached Alaska, but his ship was wrecked on the return voyage. Bering died of scurvy on what is now Bering Island."
+  },
+  {
+   "id": "cmlhaslpx0006m2zhsckolb5o",
+   "name": "David Thompson",
+   "nationality": "English (Welsh heritage)",
+   "biography": "David Thompson is widely considered the greatest land geographer in history, having surveyed and mapped over 4.9 million square kilometers of North American wilderness. Apprenticed to the Hudson's Bay Company at age 14, he was trained in surveying by Philip Turnor. Thompson defected to the North West Company in 1797 to pursue his passion for exploration and mapping. His meticulous astronomical observations and surveys produced the first accurate maps of western Canada. He traced the entire length of the Columbia River to its mouth (1811), mapped the Rocky Mountains, and documented countless rivers and lakes. Thompson married Charlotte Small, a Metis woman who accompanied him on many journeys. After the 1821 merger, he completed the landmark map of the Northwest for the NWC/HBC. He died in poverty and obscurity, his achievements only fully recognized in the 20th century."
+  },
+  {
+   "id": "cmlhc4gue000fm2ogcq03p325",
+   "name": "Sir Robert McClure",
+   "nationality": "Irish-English",
+   "biography": "Royal Navy officer who, while searching for Franklin's lost expedition, became the first to traverse the Northwest Passage (1850-1854), though partly by sledge after his ship HMS Investigator became trapped in ice. He and his crew were rescued after three winters."
+  },
+  {
+   "id": "cmliirala0002m2ee63e6kdje",
+   "name": "Moses Norton",
+   "nationality": "Mixed (English-Chipewyan)",
+   "biography": "Moses Norton was the son of HBC factor Richard Norton and a Chipewyan woman. He was sent to England for education and returned to become Chief Factor at Prince of Wales Fort in 1762. He was the driving force behind Samuel Hearne's expeditions to find the copper mines and a Northwest Passage. Despite his Indigenous heritage, he was known as a demanding administrator. He died shortly after the Massacre at Bloody Falls, having finally received Hearne's reports of reaching the Arctic Ocean."
+  },
+  {
+   "id": "cmlhc4gqi0000m2ogibqba4au",
+   "name": "Leif Erikson",
+   "nationality": "Norse/Icelandic",
+   "biography": "Norse explorer believed to be the first European to set foot on continental North America, around 500 years before Columbus. His voyage from Greenland led him to a land he called 'Vinland,' likely in Newfoundland."
+  },
+  {
+   "id": "cmlijai0j0000m22rgzrz5osg",
+   "name": "William Tomison",
+   "nationality": "Scottish (Orkney)",
+   "biography": "William Tomison was one of the Hudson's Bay Company's most important inland traders during the critical period of competition with the North West Company. An Orkneyman who joined the HBC in 1760, he rose to become master of all inland operations. Tomison established numerous posts in the Saskatchewan River country, including Edmonton House (1795), which would become one of the most significant trading posts in the West. He was instrumental in the HBC's expansion into the interior to counter the aggressive competition from Montreal traders. Known for his fairness in dealing with Indigenous peoples and his phenomenal endurance, Tomison spent over 30 winters in the interior, more than any other HBC officer of his era. He trained many younger traders and oversaw the transformation of the HBC from a coastal trading company into an inland commercial empire."
+  },
+  {
+   "id": "cmlhc4gu4000dm2ogqifw8dbk",
+   "name": "Dr. John Rae",
+   "nationality": "Scottish/Canadian",
+   "biography": "Hudson's Bay Company surgeon and Arctic explorer who learned survival techniques from the Inuit. He was the first to bring back conclusive evidence of the fate of the Franklin expedition in 1854, learning from Inuit witnesses that the crew had resorted to cannibalism. This revelation caused public outrage in Victorian Britain."
+  },
+  {
+   "id": "cmlhci07s000vm2rxdmc81idj",
+   "name": "Juan Francisco de la Bodega y Quadra",
+   "nationality": "Spanish (born in Peru)",
+   "biography": "Spanish naval officer who made three major expeditions to the Pacific Northwest (1775, 1779, 1792). He explored as far north as Alaska and later served as Spanish commandant at Nootka Sound. He developed a famous friendship with Captain George Vancouver during negotiations over Nootka."
+  },
+  {
+   "id": "cmlhci07j000sm2rxzbx1byj0",
+   "name": "John Cabot (Giovanni Caboto)",
+   "nationality": "Venetian/Italian (sailing for England)",
+   "biography": "Italian navigator and explorer who sailed under the commission of Henry VII of England in 1497. His voyage to North America was the first European exploration of the mainland since the Norse 500 years earlier. He made landfall somewhere on the Atlantic coast, likely Newfoundland or Cape Breton, and claimed the land for England."
+  }
+ ],
+ "furTradeInfo": [
+  {
+   "id": "cmlhasls0001rm2zh0lgmchu8",
+   "tradingCompany": "French Crown / Multiple Companies",
+   "waterway": {
+    "name": "St. Lawrence River"
+   }
+  },
+  {
+   "id": "cmlhasls0001sm2zhzh5swtwh",
+   "tradingCompany": "French / North West Company",
+   "waterway": {
+    "name": "Ottawa River"
+   }
+  },
+  {
+   "id": "cmlhasls0001tm2zh42jz40j4",
+   "tradingCompany": "Hudson's Bay Company / North West Company",
+   "waterway": {
+    "name": "Saskatchewan River"
+   }
+  },
+  {
+   "id": "cmlhasls0001um2zhtoujegk6",
+   "tradingCompany": "Hudson's Bay Company / North West Company",
+   "waterway": {
+    "name": "Churchill River (Saskatchewan)"
+   }
+  },
+  {
+   "id": "cmlhasls0001vm2zhwx63daxp",
+   "tradingCompany": "North West Company / HBC",
+   "waterway": {
+    "name": "Lake Athabasca"
+   }
+  },
+  {
+   "id": "cmlhasls0001wm2zhx3bcjqny",
+   "tradingCompany": "Hudson's Bay Company",
+   "waterway": {
+    "name": "Hudson Bay"
+   }
+  },
+  {
+   "id": "cmlhasls0001xm2zh20zeroa3",
+   "tradingCompany": "North West Company / Hudson's Bay Company",
+   "waterway": {
+    "name": "Fraser River"
+   }
+  },
+  {
+   "id": "cmlhasls0001ym2zhxubd57zy",
+   "tradingCompany": "North West Company / Hudson's Bay Company / Pacific Fur Company",
+   "waterway": {
+    "name": "Columbia River"
+   }
+  },
+  {
+   "id": "cmlhcpxqw002rm2a3fj9agtu8",
+   "tradingCompany": "North West Company / Hudson's Bay Company / XY Company",
+   "waterway": {
+    "name": "Red River"
+   }
+  },
+  {
+   "id": "cmlhcpxr6002tm2a3cehu08qj",
+   "tradingCompany": "North West Company / Hudson's Bay Company",
+   "waterway": {
+    "name": "Mackenzie River"
+   }
+  },
+  {
+   "id": "cmlhcpxra002vm2a3ayoskbja",
+   "tradingCompany": "North West Company / Hudson's Bay Company",
+   "waterway": {
+    "name": "Athabasca River"
+   }
+  },
+  {
+   "id": "cmlhcpxrf002xm2a3nk1cfo12",
+   "tradingCompany": "North West Company / Hudson's Bay Company",
+   "waterway": {
+    "name": "Peace River"
+   }
+  },
+  {
+   "id": "cmlhcpxri002zm2a3reomwvzx",
+   "tradingCompany": "North West Company",
+   "waterway": {
+    "name": "Lake Superior"
+   }
+  },
+  {
+   "id": "cmlhcpxrm0031m2a3okwa3rbl",
+   "tradingCompany": "North West Company / Hudson's Bay Company / XY Company",
+   "waterway": {
+    "name": "Lake Winnipeg"
+   }
+  },
+  {
+   "id": "cmlhcpxrv0033m2a3xjyiip6m",
+   "tradingCompany": "Hudson's Bay Company",
+   "waterway": {
+    "name": "James Bay"
+   }
+  },
+  {
+   "id": "cmlhcpxs10035m2a36m0nrvrc",
+   "tradingCompany": "British maritime traders",
+   "waterway": {
+    "name": "Nootka Sound"
+   }
+  },
+  {
+   "id": "cmllg4cje0001m2vx175fcan2",
+   "tradingCompany": "North West Company / Hudson's Bay Company",
+   "waterway": {
+    "name": "Seine River"
+   }
+  },
+  {
+   "id": "cmllg4cjg0003m2vx44r559s8",
+   "tradingCompany": "North West Company / Hudson's Bay Company",
+   "waterway": {
+    "name": "Atikokan River"
+   }
+  },
+  {
+   "id": "cmllg4cji0005m2vxwti7l448",
+   "tradingCompany": "North West Company / Hudson's Bay Company",
+   "waterway": {
+    "name": "Souris River"
+   }
+  },
+  {
+   "id": "cmllg4cjk0007m2vxhbypgq92",
+   "tradingCompany": "North West Company / Hudson's Bay Company",
+   "waterway": {
+    "name": "Red Deer River"
+   }
+  },
+  {
+   "id": "cmllg4cjm0009m2vx057083m8",
+   "tradingCompany": "French Crown / North West Company",
+   "waterway": {
+    "name": "French River"
+   }
+  }
+ ]
+}

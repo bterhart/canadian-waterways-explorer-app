@@ -1116,6 +1116,8 @@ export interface AssociatedExplorer {
   name: string;
   relationship: string;
   explorerId: string | null;
+  /** Set instead of explorerId when the person is a Notable Figure (opens that screen). */
+  notableFigureId: string | null;
 }
 
 // Mirrors backend lib/reading-guides.ts (ReadingGuide table).

@@ -1,3 +1,5 @@
+// @ts-nocheck — the two source files were deleted from the app once this import ran
+// (2026-10-16); the script stays as the record of how the rows were produced.
 // Move the two static reading-guide files shipped in the app into the ReadingGuide
 // table (decision 12, 2026-10-16). Dry run by default; --apply writes.
 //

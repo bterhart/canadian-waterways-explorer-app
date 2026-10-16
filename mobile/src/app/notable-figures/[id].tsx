@@ -8,7 +8,7 @@ import {
   ActivityIndicator,
   Pressable,
 } from 'react-native';
-import { Stack, useLocalSearchParams } from 'expo-router';
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import {
   User,
   Crown,
@@ -111,6 +111,7 @@ function formatYearRange(
 
 export default function NotableFigureDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const router = useRouter();
   const { data: figure, isLoading, isError } = useNotableFigure(id ?? null);
   // An associated explorer with a resolved id opens the explorer modal (decision 11)
   const [selectedExplorerId, setSelectedExplorerId] = useState<string | null>(null);
@@ -272,8 +273,11 @@ export default function NotableFigureDetailScreen() {
                 <Pressable
                   key={index}
                   style={styles.explorerCard}
-                  disabled={!explorer.explorerId}
-                  onPress={() => explorer.explorerId && setSelectedExplorerId(explorer.explorerId)}
+                  disabled={!explorer.explorerId && !explorer.notableFigureId}
+                  onPress={() => {
+                    if (explorer.explorerId) setSelectedExplorerId(explorer.explorerId);
+                    else if (explorer.notableFigureId) router.push(`/notable-figures/${explorer.notableFigureId}`);
+                  }}
                 >
                   <View style={styles.explorerIcon}>
                     <Users size={20} color={colors.forestGreen} />
@@ -284,7 +288,7 @@ export default function NotableFigureDetailScreen() {
                       {explorer.relationship}
                     </Text>
                   </View>
-                  {explorer.explorerId ? <ChevronRight size={20} color="#9CA3AF" /> : null}
+                  {explorer.explorerId || explorer.notableFigureId ? <ChevronRight size={20} color="#9CA3AF" /> : null}
                 </Pressable>
               ))}
             </View>

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-16T02:52:53.909Z",
+  "generatedAt": "2026-10-16T22:47:13.983Z",
   "source": "Prisma/Turso waterway.kmlData",
   "filters": {
     "typeFilter": [
@@ -15,7 +15,7 @@
   "stats": {
     "totalWaterwaysRead": 70,
     "totalWaterwaysWritten": 28,
-    "skippedNoKml": 1,
+    "skippedNoKml": 0,
     "skippedNoGeometry": 0
   },
   "waterways": [
@@ -10981,7 +10981,7 @@
     },
     {
       "id": "cmlhaslr1000um2zh1ohr52f9",
-      "name": "Churchill River (Saskatchewan)",
+      "name": "Churchill River",
       "indigenousName": "Missinipi",
       "regionName": "Saskatchewan / Manitoba",
       "typeName": "River",

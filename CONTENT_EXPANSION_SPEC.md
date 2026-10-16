@@ -705,10 +705,40 @@ McLoughlin, Rupert House). Notable figures have none yet; the fourteen people mo
 children's and middle-grade titles (picture books, Canadian Geographic Kids, Scholastic Canada
 biographies, Parks Canada learning pages), one or two per target, sourced at authoring time.
 
-### 9.3 Data phase (next)
-One script per decision under `backend/prisma/turso-migrations/`, each with a dry run, a
-committed backup and a verification step: duplicates (2), fort merges (3), taxonomies (4),
-Mackenzie River (Ontario) and the Roderick McKenzie entry (6), the fourteen people to
-NotableFigure with key-figure and reading-guide rewrites (1b), document grades proposed for
-approval before writing (5), then Bay of Fundy and Churchill River (Manitoba) with their
-geometry, imagery and explorers, and the two location moves (7).
+### 9.3 Data phase (done, same day; one script per decision under `backend/prisma/turso-migrations/`, each with a dry run, a committed backup and a verification step)
+
+| Decision | Script | Result (verified by query after apply) |
+|---|---|---|
+| 2 duplicates | `2026-10-16-dedupe-nations-cartographers-quizzes.ts` | 7 nations, 9 cartographers, 7 quizzes with 36 questions; the one class assignment that pointed at a deleted quiz copy repointed to the kept copy |
+| 6 bogus river | `2026-10-16-remove-mackenzie-ontario.ts` | row and its 4 guide entries deleted; Roderick McKenzie now names Fort William, Thunder Bay, Lake Superior; the real Mackenzie River untouched |
+| 1b people | `2026-10-16-move-people-to-notable-figures.ts` | 15 Explorer rows removed (77 remain); figure rows created for Chief Peguis and Shawnadithit (20 figures); 35 key-figure entries in 12 lessons now carry `notableFigureId`; 64 reading-guide rows retargeted; portraits copied to Akaitcho, Chief Peguis, Cuthbert Grant, Gabriel Dumont, Lagimodière, Riel, Gaboury, Shawnadithit. **Not copied:** Thanadelthur (no likeness exists). **Provenance to confirm:** Cuthbert Grant, Jean-Baptiste Lagimodière, and the pre-existing Matonabbee portrait; none has an authenticated contemporary likeness that the author of this document knows of |
+| 4 taxonomies | `2026-10-16-canonical-taxonomies.ts` | locationType: Fort 53, Trading Post 16, Portage 14, Cultural Site 12, Settlement 5; WaterwayType `lake` folded (Lake 13); nationality reduced to 16 values with 11 biographies gaining one sentence of detail; tradingCompany to 10 full-name spellings |
+| 3 fort pairs | `2026-10-16-merge-fort-pairs.ts` | 94 locations; Fort William, Fort Edmonton, Fort Churchill, Upper Fort Garry (absorbing Fort Garry and Fort Garry (Upper)), Rocky Mountain House each hold the merged notes, gallery, earliest year and reading guide; Riel's associated location "Fort Garry" rewritten |
+| 7 waterways | `2026-10-16-bay-of-fundy-and-churchill.ts` | see below |
+| 5 grades | `2026-10-16-document-grades.ts` | **written, not applied**: the 34 proposed bands await the owner's approval (section 9.4) |
+
+**Bay of Fundy.** New waterway (type Bay, anchor 45.1 N 65.6 W, region New Brunswick / Nova
+Scotia). Geometry from OpenStreetMap through the exporter's bay branch: one relation, 15,148
+points, bbox 66.95 W to 64.94 W, 44.21 N to 45.49 N, anchor inside. Four Wikimedia Commons
+images with licence and author recorded (Eric Van Lochem CC BY-SA 4.0; Ian Mackenzie CC BY 2.0;
+Madereugeneandrew CC BY-SA 3.0; NASA/METI ASTER public domain), served as `Special:FilePath`
+URLs because the R2 keys are not in this session. Champlain linked (1604) with expedition
+notes; three reading-guide entries; Port-Royal moved onto it. The Mi'kmaq name is left null
+rather than asserted.
+
+**Churchill River: a correction to decision 7.** The row named "Churchill River (Saskatchewan)"
+already carried the whole river: its KML spans 108.38 W to 94.18 W and reaches 58.79 N, the
+mouth at Churchill, Manitoba. A separate "Manitoba" row would have duplicated that geometry,
+so the row was renamed "Churchill River" (region unchanged: Saskatchewan / Manitoba) and the
+merged Fort Churchill moved onto it from Hudson Bay, beside Prince of Wales Fort, Methye
+Portage and Frog Portage. The home-map overview was rebuilt for the new name
+(`generated/river-overview.json`, 28 rivers).
+
+### 9.4 Awaiting approval: document grade bands
+Proposed from a Flesch-Kincaid estimate of each transcription (≤ 7 → 4-6, ≤ 11 → 7-9, above →
+10-12), checked against the fourteen documents that already had a band (their estimates run
+4.4 to 10.9 for 7-9 and 5.6 to 9.3 for 4-6). Result: 5 at 4-6 (Champlain's founding of Quebec
+and his Hochelaga description, Cartier on scurvy, Joutel on La Salle's last expedition, Fidler
+with the Peigan), 19 at 7-9, 10 at 10-12 (La Salle's Louisiana claim, Tyrrell's bone beds,
+Back's three, Turnor's instructions, Norton's instructions and trade report, Stuart's peace
+mission report, La Pérouse's attack account). The full list is in the script's `GRADES` map.
