@@ -22,6 +22,7 @@ import type {
   WaterwayOverviewRecord,
 } from '@/lib/types/waterways';
 import { useTranslation } from '@/lib/i18n';
+import { useLocalSearchParams } from 'expo-router';
 
 // Filter types
 type FilterType = 'legend' | 'waterway' | 'explorer' | 'period' | null;
@@ -642,6 +643,34 @@ export default function MapScreen() {
   const handleMarkerSelect = useCallback((id: string, type: MarkerType) => {
     setPreview({ id, type, fromOverview: false });
   }, []);
+
+  // Opened from another screen (decision 11, 2026-10-16): `/?markerId=&markerType=` selects
+  // that waterway or location and opens its detail sheet; `/?lat=&lng=` (What Happened Here)
+  // centres the map on an event. Each distinct param set is handled once.
+  const params = useLocalSearchParams<{ markerId?: string; markerType?: string; lat?: string; lng?: string }>();
+  const handledParamsRef = useRef<string | null>(null);
+  useEffect(() => {
+    const { markerId, markerType, lat, lng } = params;
+    const key = `${markerId ?? ''}|${markerType ?? ''}|${lat ?? ''}|${lng ?? ''}`;
+    if (key === '|||' || handledParamsRef.current === key) return;
+
+    if (markerId && (markerType === 'waterway' || markerType === 'location')) {
+      const known =
+        markerType === 'waterway' ? waterways?.some((w) => w.id === markerId) : locations?.some((l) => l.id === markerId);
+      if (!known) return; // wait for the list to load; a missing id is ignored once loaded below
+      handledParamsRef.current = key;
+      setPreview({ id: markerId, type: markerType, fromOverview: false });
+      setSelectedMarker({ id: markerId, type: markerType });
+      return;
+    }
+
+    const latitude = lat ? Number(lat) : NaN;
+    const longitude = lng ? Number(lng) : NaN;
+    if (Number.isFinite(latitude) && Number.isFinite(longitude)) {
+      handledParamsRef.current = key;
+      mapRef.current?.animateToRegion({ latitude, longitude, latitudeDelta: 0.5, longitudeDelta: 0.5 }, 500);
+    }
+  }, [params, waterways, locations]);
 
   // "Tap for details" on the preview card: open the bottom sheet
   const handlePreviewDetailsPress = useCallback(() => {

@@ -85,7 +85,7 @@ export default function ComparisonDetailScreen() {
           <View style={styles.typeBadge}>
             <GitCompare size={14} color={colors.forestGreen} />
             <Text style={styles.typeText}>
-              {comparison.comparisonType.replace('_', ' ')}
+              {comparison.comparisonType.replace(/_/g, ' ')}
             </Text>
           </View>
           {comparison.gradeLevel ? (

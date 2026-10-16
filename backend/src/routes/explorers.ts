@@ -1,5 +1,6 @@
 import { Hono } from "hono";
 import { db } from "../db";
+import { getReadingGuide } from "../lib/reading-guides";
 
 const explorersRouter = new Hono();
 
@@ -47,7 +48,9 @@ explorersRouter.get("/:id", async (c) => {
     return c.json({ error: { message: "Explorer not found", code: "NOT_FOUND" } }, 404);
   }
 
-  return c.json({ data: explorer });
+  const readingGuide = await getReadingGuide("explorer", explorer.id);
+
+  return c.json({ data: { ...explorer, readingGuide } });
 });
 
 // Search explorers by name

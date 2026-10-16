@@ -13,7 +13,39 @@ import {
   getRankForPoints,
   recordActivity,
   checkAchievements,
+  EXPLORATION_ACTIVITIES,
 } from "../lib/progress";
+
+// POST /explore - A device opened a waterway or location, read a document, or marked a
+// pronunciation learned. The server decides the points and awards them once per
+// (device, activity, record): the UserExploration unique index makes a repeat a no-op.
+const exploreSchema = z.object({
+  userId: z.string().min(1),
+  activityType: z.enum(["waterway_explored", "location_visited", "document_read", "pronunciation_learned"]),
+  resourceId: z.string().min(1),
+});
+
+gamificationRouter.post("/explore", zValidator("json", exploreSchema), async (c) => {
+  const { userId, activityType, resourceId } = c.req.valid("json");
+
+  const existing = await db.userExploration.findUnique({
+    where: { userId_activityType_resourceId: { userId, activityType, resourceId } },
+  });
+  if (existing) {
+    return c.json({ data: { awarded: false, activity: null, newAchievements: [] } });
+  }
+
+  try {
+    await db.userExploration.create({ data: { userId, activityType, resourceId } });
+  } catch {
+    // Two taps raced; the first one won the unique index.
+    return c.json({ data: { awarded: false, activity: null, newAchievements: [] } });
+  }
+
+  const activity = await recordActivity(userId, activityType, EXPLORATION_ACTIVITIES[activityType]);
+  const newAchievements = await checkAchievements(userId);
+  return c.json({ data: { awarded: true, activity, newAchievements } });
+});
 
 function getNextRankInfo(points: number): { nextRank: string | null; pointsNeeded: number; progress: number } {
   const currentRankIndex = RANKS.findIndex(

@@ -1,5 +1,6 @@
 import { Hono } from "hono";
 import { db } from "../db";
+import { loadRelated, attachRelated } from "../lib/related";
 
 const timelineRouter = new Hono();
 
@@ -57,7 +58,14 @@ timelineRouter.get("/", async (c) => {
     orderBy: [{ year: "asc" }, { month: "asc" }, { day: "asc" }],
   });
 
-  return c.json({ data: events });
+  // The app shows and opens the related explorer / waterway / location by name
+  const maps = await loadRelated({
+    explorerIds: events.map((e) => e.explorerId),
+    waterwayIds: events.map((e) => e.waterwayId),
+    locationIds: events.map((e) => e.locationId),
+  });
+
+  return c.json({ data: events.map((e) => attachRelated(e, maps)) });
 });
 
 // GET /themes - Get all unique themes
@@ -87,7 +95,13 @@ timelineRouter.get("/:id", async (c) => {
     );
   }
 
-  return c.json({ data: event });
+  const maps = await loadRelated({
+    explorerIds: [event.explorerId],
+    waterwayIds: [event.waterwayId],
+    locationIds: [event.locationId],
+  });
+
+  return c.json({ data: attachRelated(event, maps) });
 });
 
 export { timelineRouter };

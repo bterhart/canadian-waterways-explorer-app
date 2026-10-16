@@ -21,8 +21,12 @@ const colors = {
   darkGreen: '#1A3A24',
 };
 
+// Live comparisonType values: explorers, perspectives, trade_companies, trade_routes.
 const comparisonTypeColors: Record<string, string> = {
   explorers: '#3B82F6',
+  perspectives: '#EC4899',
+  trade_companies: '#F97316',
+  trade_routes: '#06B6D4',
   forts: '#EF4444',
   waterways: '#06B6D4',
   nations: '#EC4899',
@@ -73,7 +77,7 @@ export default function ComparisonsScreen() {
               },
             ]}
           >
-            {item.comparisonType.replace('_', ' ')}
+            {item.comparisonType.replace(/_/g, ' ')}
           </Text>
         </View>
         {item.gradeLevel ? (
@@ -158,7 +162,7 @@ export default function ComparisonsScreen() {
                     selectedType === type && styles.filterChipTextActive,
                   ]}
                 >
-                  {type.replace('_', ' ')}
+                  {type.replace(/_/g, ' ')}
                 </Text>
               </Pressable>
             ))}

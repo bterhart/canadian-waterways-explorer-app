@@ -24,7 +24,21 @@ export const POINTS = {
   fieldTripCompleted: 20,
   journalEntry: 5,
   waterwayExplored: 5,
+  // Exploration awarded once per record per device via POST /api/gamification/explore
+  // (decision 9, 2026-10-16); UserExploration rows make the award idempotent.
+  locationVisited: 3,
+  documentRead: 5,
+  pronunciationLearned: 2,
 } as const;
+
+/** The four activities a device earns by opening or marking a record, once each. */
+export const EXPLORATION_ACTIVITIES = {
+  waterway_explored: POINTS.waterwayExplored,
+  location_visited: POINTS.locationVisited,
+  document_read: POINTS.documentRead,
+  pronunciation_learned: POINTS.pronunciationLearned,
+} as const;
+export type ExplorationActivity = keyof typeof EXPLORATION_ACTIVITIES;
 
 /** 10–20 points: base plus a bonus proportional to the percentage score. */
 export const quizPoints = (percentageScore: number): number =>

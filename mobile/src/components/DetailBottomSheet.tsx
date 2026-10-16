@@ -8,7 +8,8 @@ import { useWaterwayDetail, useLocationDetail, useWaterwayContributions, useLoca
 import ContributeModal from './ContributeModal';
 import ExplorerDetailModal from './ExplorerDetailModal';
 import type { MarkerType, WaterwayDetail, LocationDetail, UserContribution, ArchaeologicalDiscovery } from '@/lib/types/waterways';
-import { locationReadingGuideData } from '@/data/locationReadingGuideData';
+import { ReadingGuideList } from './ReadingGuideList';
+import { useExploration } from '@/lib/exploration';
 import { useRouter } from 'expo-router';
 
 // Generate Google Earth Web URL
@@ -170,6 +171,10 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
 
     const isLoading = waterwayLoading || locationLoading;
     const data: WaterwayDetail | LocationDetail | undefined = markerType === 'waterway' ? waterwayData : locationData;
+
+    // Opening the sheet counts as exploring the record: points once per device (decision 9)
+    useExploration('waterway_explored', markerType === 'waterway' ? markerId : null, !!waterwayData);
+    useExploration('location_visited', markerType === 'location' ? markerId : null, !!locationData);
 
     // Get icon for contribution type
     const getContributionIcon = (type: string) => {
@@ -837,94 +842,8 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                     </View>
                   ) : null}
 
-                  {/* Additional Study */}
-                  {markerId && locationReadingGuideData[markerId] && locationReadingGuideData[markerId].length > 0 ? (
-                    <View className="mb-4">
-                      <Text
-                        className="text-lg font-bold mb-3"
-                        style={{ color: colors.earthBrown }}
-                      >
-                        Additional Study
-                      </Text>
-                      <View className="rounded-xl overflow-hidden">
-                        {locationReadingGuideData[markerId].map((entry, index) => {
-                          const isOdd = index % 2 === 1;
-                          return (
-                            <View
-                              key={index}
-                              style={{
-                                paddingVertical: 12,
-                                paddingHorizontal: 16,
-                                backgroundColor: isOdd ? '#FAF3E8' : '#F0E6D9',
-                              }}
-                            >
-                              {entry.title ? (
-                                <Text
-                                  style={{
-                                    fontSize: 15,
-                                    fontStyle: 'italic',
-                                    color: isOdd ? '#333' : '#2A2520',
-                                    lineHeight: 22,
-                                    marginBottom: 4,
-                                  }}
-                                >
-                                  {entry.title}
-                                </Text>
-                              ) : null}
-                              {entry.authorSource ? (
-                                <Text
-                                  style={{
-                                    fontSize: 14,
-                                    fontWeight: '500',
-                                    color: isOdd ? colors.earthBrown : '#6B4423',
-                                    marginBottom: 4,
-                                  }}
-                                >
-                                  {entry.authorSource}
-                                </Text>
-                              ) : null}
-                              <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
-                                {entry.publisher ? (
-                                  <Text style={{ fontSize: 13, color: '#666' }}>
-                                    {entry.publisher}
-                                  </Text>
-                                ) : null}
-                                {entry.publisher && entry.year ? (
-                                  <Text style={{ fontSize: 13, color: '#999' }}> · </Text>
-                                ) : null}
-                                {entry.year ? (
-                                  <Text style={{ fontSize: 13, color: '#666' }}>
-                                    {entry.year}
-                                  </Text>
-                                ) : null}
-                              </View>
-                              {entry.description ? (
-                                <Text style={{ fontSize: 13, color: '#555', lineHeight: 20 }}>
-                                  {entry.description}
-                                </Text>
-                              ) : null}
-                              {entry.url ? (
-                                <Pressable
-                                  onPress={() => Linking.openURL(entry.url!)}
-                                  style={{ marginTop: 8, alignSelf: 'flex-start' }}
-                                >
-                                  <Text
-                                    style={{
-                                      fontSize: 13,
-                                      color: colors.waterBlue,
-                                      textDecorationLine: 'underline',
-                                    }}
-                                  >
-                                    View Resource
-                                  </Text>
-                                </Pressable>
-                              ) : null}
-                            </View>
-                          );
-                        })}
-                      </View>
-                    </View>
-                  ) : null}
+                  {/* Additional Study (ReadingGuide table, decision 12) */}
+                  <ReadingGuideList entries={waterwayData.readingGuide} titleColor={colors.earthBrown} linkColor={colors.waterBlue} />
                 </>
               ) : null}
 
@@ -1182,94 +1101,8 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                     </View>
                   ) : null}
 
-                  {/* Additional Study */}
-                  {markerId && locationReadingGuideData[markerId] && locationReadingGuideData[markerId].length > 0 ? (
-                    <View className="mb-4">
-                      <Text
-                        className="text-lg font-bold mb-3"
-                        style={{ color: colors.earthBrown }}
-                      >
-                        Additional Study
-                      </Text>
-                      <View className="rounded-xl overflow-hidden">
-                        {locationReadingGuideData[markerId].map((entry, index) => {
-                          const isOdd = index % 2 === 1;
-                          return (
-                            <View
-                              key={index}
-                              style={{
-                                paddingVertical: 12,
-                                paddingHorizontal: 16,
-                                backgroundColor: isOdd ? '#FAF3E8' : '#F0E6D9',
-                              }}
-                            >
-                              {entry.title ? (
-                                <Text
-                                  style={{
-                                    fontSize: 15,
-                                    fontStyle: 'italic',
-                                    color: isOdd ? '#333' : '#2A2520',
-                                    lineHeight: 22,
-                                    marginBottom: 4,
-                                  }}
-                                >
-                                  {entry.title}
-                                </Text>
-                              ) : null}
-                              {entry.authorSource ? (
-                                <Text
-                                  style={{
-                                    fontSize: 14,
-                                    fontWeight: '500',
-                                    color: isOdd ? colors.earthBrown : '#6B4423',
-                                    marginBottom: 4,
-                                  }}
-                                >
-                                  {entry.authorSource}
-                                </Text>
-                              ) : null}
-                              <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
-                                {entry.publisher ? (
-                                  <Text style={{ fontSize: 13, color: '#666' }}>
-                                    {entry.publisher}
-                                  </Text>
-                                ) : null}
-                                {entry.publisher && entry.year ? (
-                                  <Text style={{ fontSize: 13, color: '#999' }}> · </Text>
-                                ) : null}
-                                {entry.year ? (
-                                  <Text style={{ fontSize: 13, color: '#666' }}>
-                                    {entry.year}
-                                  </Text>
-                                ) : null}
-                              </View>
-                              {entry.description ? (
-                                <Text style={{ fontSize: 13, color: '#555', lineHeight: 20 }}>
-                                  {entry.description}
-                                </Text>
-                              ) : null}
-                              {entry.url ? (
-                                <Pressable
-                                  onPress={() => Linking.openURL(entry.url!)}
-                                  style={{ marginTop: 8, alignSelf: 'flex-start' }}
-                                >
-                                  <Text
-                                    style={{
-                                      fontSize: 13,
-                                      color: colors.waterBlue,
-                                      textDecorationLine: 'underline',
-                                    }}
-                                  >
-                                    View Resource
-                                  </Text>
-                                </Pressable>
-                              ) : null}
-                            </View>
-                          );
-                        })}
-                      </View>
-                    </View>
-                  ) : null}
+                  {/* Additional Study (ReadingGuide table, decision 12) */}
+                  <ReadingGuideList entries={locationData.readingGuide} titleColor={colors.earthBrown} linkColor={colors.waterBlue} />
                 </>
               ) : null}
 

@@ -217,7 +217,7 @@ export default function ClassDetailScreen() {
                   ]}
                 >
                   <Text style={styles.assignmentTypeText}>
-                    {assignment.assignmentType.replace('_', ' ')}
+                    {assignment.assignmentType.replace(/_/g, ' ')}
                   </Text>
                 </View>
                 <View style={styles.assignmentInfo}>

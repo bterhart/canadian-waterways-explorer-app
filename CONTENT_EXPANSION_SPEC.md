@@ -632,3 +632,83 @@ Thompson's and Harmon's journals; Catherine Sinclair; Nahovway; Mary Sinclair In
 5. Sources for authoring: Dictionary of Canadian Biography, The Canadian Encyclopedia, Library
    and Archives Canada, Hudson's Bay Company Archives (Archives of Manitoba), Champlain Society
    editions, Wikimedia Commons for imagery with licence recorded, OpenStreetMap for geometry.
+
+---
+
+## 9. Decisions taken and implementation status (2026-10-16, later the same day)
+
+The owner answered all twelve questions in section 6: 1 (b); 2, 4, 11 as recommended; 3 merge;
+5 yes with a grade filter; 6 yes, provided the real Mackenzie River's display is untouched;
+7 yes; 8 fix the type and screen, no alias; 9 record, do not retire; 10 build the screens;
+12 move the guides to Turso and identify grade-level gaps.
+
+### 9.1 Code phase (done, this branch)
+- Key figures may carry `notableFigureId` as well as `explorerId`; the Deep Dive screen opens
+  the Notable Figure screen for the former and takes the portrait from whichever record is
+  linked (`lessons/[id].tsx`, `types/education.ts`).
+- Documents list has a grade chip row; the server already filtered on `gradeLevel`.
+- `assessmentSuggestions` renamed to `assessment` in the type and both teacher screens.
+- Colour and label config added for `metis_leader`, `voyageur`, live pronunciation term types,
+  document types `report` and `inscription`, comparison types `perspectives`,
+  `trade_companies`, `trade_routes`, and the Blackfoot, Mohawk, Iroquois and Inuit labels.
+  Underscore replacement is now global in the four screens that only replaced the first one.
+- Exploration points: new table `UserExploration` and route `POST /api/gamification/explore`;
+  the server fixes the points (waterway 5, location 3, document 5, pronunciation 2) and awards
+  each (device, activity, record) once. Opening the detail sheet records waterway or location,
+  opening a document records it, and the pronunciation card gained an "I've learned this"
+  button. The twelve achievements of section 2.17 are reachable.
+- Screens `stories/[id]` and `vocabulary-quiz/[id]`; the cards on the Indigenous Languages
+  screen open them.
+- Related records are navigable: the server attaches `explorer`, `waterway`, `location`
+  objects to timeline events, What Happened Here events, documents and field-trip stops
+  (`backend/src/lib/related.ts`), notable-figure associated explorers gain a resolved
+  `explorerId` (exact or honorific-stripped name match), and the map accepts
+  `/?markerId=&markerType=` to open a record and `/?lat=&lng=` to centre. A shared
+  `RelatedLinks` component renders the chips.
+- Reading guides live in the new `ReadingGuide` table and are returned inside the waterway,
+  location, explorer and notable-figure detail responses; the two static files are deleted.
+
+### 9.2 Reading-guide import and the grade-level gap
+`2026-10-16-import-reading-guides.ts` moved the static entries into Turso (backup
+`backups/2026-10-16-reading-guides-import.json`).
+
+| Measure | Value |
+|---|---|
+| Entries in the static files | 1,047 |
+| Exact duplicates (same title, source and url) skipped | 60 |
+| Rows inserted | 986 (waterway 254, location 345, explorer 387) |
+| Targets covered | 68 waterways, 85 locations, 92 explorers |
+| Fields truncated at an apostrophe in the static files | 290 |
+| Of those restored to the full text (unambiguous titles and publishers) | 133 |
+| Of those kept as the fragment before the cut | 157 |
+| Entries dropped | 1 (Batoche: Diane Payment, Golden Dog Press, title lost entirely) |
+| Four dead keys remapped by the place their entries describe | Fort Simpson, Oxford House, Fort Edmonton (HBC), Rocky Mountain House (NWC) |
+
+**Grade bands.** No entry carried a reading level. Each row was given one by source type, a
+heuristic the owner can override per row: encyclopedias, Parks Canada, museums and Wikipedia
+pages read as 7-9; archival series, scholarly editions and monographs as 10-12.
+
+| Band | Entries | Targets with at least one entry |
+|---|---|---|
+| K-3 | 0 | 0 of 262 |
+| 4-6 | 0 | 0 of 262 |
+| 7-9 | 437 | all 245 covered targets have at least one encyclopedia-level entry |
+| 10-12 | 549 | all 245 covered targets |
+
+So the reading-guide gap is uniform: there is no K-3 or 4-6 "Additional Study" material for
+any waterway, location or explorer, and no guide at all for Hayes River, Kaministiquia River and
+fifteen locations (Lower Fort Garry, Fort Ellice, Fort Kaministiquia, Sault Ste. Marie Post,
+Fort Augustus (NWC), Fort George (NWC - Saskatchewan), Fort McLeod (BC), Fort George (NWC -
+BC), Fort Gibraltar, Fort Lac La Pluie, Fort Battleford, Fort Liard, Fort Simpson (BC), Fort
+McLoughlin, Rupert House). Notable figures have none yet; the fourteen people moving out of
+`Explorer` bring their guides with them in the data pass. Filling the K-3 and 4-6 bands means
+children's and middle-grade titles (picture books, Canadian Geographic Kids, Scholastic Canada
+biographies, Parks Canada learning pages), one or two per target, sourced at authoring time.
+
+### 9.3 Data phase (next)
+One script per decision under `backend/prisma/turso-migrations/`, each with a dry run, a
+committed backup and a verification step: duplicates (2), fort merges (3), taxonomies (4),
+Mackenzie River (Ontario) and the Roderick McKenzie entry (6), the fourteen people to
+NotableFigure with key-figure and reading-guide rewrites (1b), document grades proposed for
+approval before writing (5), then Bay of Fundy and Churchill River (Manitoba) with their
+geometry, imagery and explorers, and the two location moves (7).

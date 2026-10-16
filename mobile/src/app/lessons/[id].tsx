@@ -13,7 +13,7 @@ import {
   TouchableOpacity,
   Modal,
 } from 'react-native';
-import { useLocalSearchParams, Stack } from 'expo-router';
+import { useLocalSearchParams, Stack, useRouter } from 'expo-router';
 import {
   BookOpen,
   Clock,
@@ -22,7 +22,7 @@ import {
   ImageIcon,
   X,
 } from 'lucide-react-native';
-import { useLessonPlan, useTimelineEvent } from '@/lib/api/education-api';
+import { useLessonPlan, useTimelineEvent, useNotableFigure } from '@/lib/api/education-api';
 import { useExplorerDetail } from '@/lib/api/waterways-api';
 import { getGradeLevelColor, getGradeLevelLabel } from '@/lib/types/education';
 import type { KeyFigure, DeepDiveTimelineEvent, DeepDiveImage } from '@/lib/types/education';
@@ -57,23 +57,23 @@ function Section({ title, icon, children }: SectionProps) {
   );
 }
 
-// Key Figure Card Component - fetches explorer portrait when explorerId is present
+// Key Figure Card Component - the portrait comes from the linked record (explorer or
+// notable figure) when the figure carries an id, else from the JSON entry itself.
 interface KeyFigureCardProps {
   figure: KeyFigure;
   onPress?: () => void;
 }
 
 function KeyFigureCard({ figure, onPress }: KeyFigureCardProps) {
-  const explorerId = (figure as any).explorerId as string | undefined;
-  const { data: explorerData } = useExplorerDetail(explorerId ?? null);
+  const { data: explorerData } = useExplorerDetail(figure.explorerId ?? null);
+  const { data: notableFigureData } = useNotableFigure(figure.notableFigureId ?? null);
 
-  // Use explorer's imageUrl if available, fallback to figure.imageUrl
-  const imageUrl = explorerData?.imageUrl ?? figure.imageUrl;
+  const imageUrl = explorerData?.imageUrl ?? notableFigureData?.imageUrl ?? figure.imageUrl;
 
   // A plain touchable with a static style. The previous version picked Pressable or View at
   // render time and spread a function-valued style into it; on iOS (build 49) that card lost
   // its row layout and padding, so the text slid under the portrait and was clipped.
-  const pressable = !!explorerId && !!onPress;
+  const pressable = !!(figure.explorerId || figure.notableFigureId) && !!onPress;
 
   return (
     <TouchableOpacity
@@ -107,6 +107,7 @@ function KeyFigureCard({ figure, onPress }: KeyFigureCardProps) {
 
 export default function DeepDiveDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const router = useRouter();
   const { data: lesson, isLoading, isError } = useLessonPlan(id ?? null);
   const [selectedExplorerId, setSelectedExplorerId] = useState<string | null>(null);
   const [selectedTimelineEventId, setSelectedTimelineEventId] = useState<string | null>(null);
@@ -210,14 +211,13 @@ export default function DeepDiveDetailScreen() {
           icon={<Users size={20} color={colors.forestGreen} />}
         >
           {keyFigures.map((figure, index) => {
-            const explorerId = (figure as any).explorerId;
-            return (
-              <KeyFigureCard
-                key={index}
-                figure={figure}
-                onPress={explorerId ? () => setSelectedExplorerId(explorerId) : undefined}
-              />
-            );
+            const { explorerId, notableFigureId } = figure;
+            const onPress = explorerId
+              ? () => setSelectedExplorerId(explorerId)
+              : notableFigureId
+                ? () => router.push(`/notable-figures/${notableFigureId}`)
+                : undefined;
+            return <KeyFigureCard key={index} figure={figure} onPress={onPress} />;
           })}
         </Section>
       ) : null}
@@ -230,10 +230,11 @@ export default function DeepDiveDetailScreen() {
         >
           <View style={styles.timeline}>
             {timeline.map((event, index) => {
-              const eventId = (event as any).eventId;
+              const eventId = event.eventId ?? null;
               const ContentWrapper = Pressable;
               const contentProps = {
-                onPress: () => setSelectedTimelineEventId(eventId || null),
+                disabled: !eventId,
+                onPress: () => setSelectedTimelineEventId(eventId),
                 style: ({ pressed }: { pressed: boolean }) => [
                   styles.timelineContent,
                   pressed && styles.timelineContentPressed,

@@ -3,7 +3,7 @@ import React from 'react';
 import { View, Text, Image, ScrollView, Pressable, StyleSheet, Linking } from 'react-native';
 import { X, BookOpen } from 'lucide-react-native';
 import type { ExplorerDetail, ExplorerWaterwayDetail } from '@/lib/types/waterways';
-import { readingGuideData } from '@/data/readingGuideData';
+import { ReadingGuideList } from '@/components/ReadingGuideList';
 
 // Theme colors
 const colors = {
@@ -113,59 +113,10 @@ export default function ExplorerDetailModal({ explorer, onClose }: ExplorerDetai
             </View>
           ) : null}
 
-          {/* Additional Study */}
-          {readingGuideData[explorer.id] && readingGuideData[explorer.id].length > 0 ? (
+          {/* Additional Study (ReadingGuide table, decision 12) */}
+          {explorer.readingGuide && explorer.readingGuide.length > 0 ? (
             <View style={styles.section}>
-              <Text style={[styles.sectionTitle, styles.readingGuideTitle]}>
-                Additional Study
-              </Text>
-              <View style={styles.readingGuideContainer}>
-                {readingGuideData[explorer.id].map((entry, index) => {
-                  const isOdd = index % 2 === 1;
-                  return (
-                    <View
-                      key={index}
-                      style={[
-                        styles.readingEntry,
-                        { backgroundColor: isOdd ? '#FAF3E8' : '#F0E6D9' },
-                      ]}
-                    >
-                      {entry.title ? (
-                        <Text style={[styles.readingTitle, { color: isOdd ? '#333' : '#2A2520' }]}>
-                          {entry.title}
-                        </Text>
-                      ) : null}
-                      {entry.authorSource ? (
-                        <Text style={[styles.readingAuthor, { color: isOdd ? colors.earthBrown : '#6B4423' }]}>
-                          {entry.authorSource}
-                        </Text>
-                      ) : null}
-                      <View style={styles.readingMeta}>
-                        {entry.publisher ? (
-                          <Text style={styles.readingPublisher}>{entry.publisher}</Text>
-                        ) : null}
-                        {entry.publisher && entry.year ? (
-                          <Text style={styles.readingMetaSeparator}> · </Text>
-                        ) : null}
-                        {entry.year ? (
-                          <Text style={styles.readingYear}>{entry.year}</Text>
-                        ) : null}
-                      </View>
-                      {entry.description ? (
-                        <Text style={styles.readingDescription}>{entry.description}</Text>
-                      ) : null}
-                      {entry.url ? (
-                        <Pressable
-                          onPress={() => Linking.openURL(entry.url!)}
-                          style={styles.readingLink}
-                        >
-                          <Text style={styles.readingLinkText}>View Resource</Text>
-                        </Pressable>
-                      ) : null}
-                    </View>
-                  );
-                })}
-              </View>
+              <ReadingGuideList entries={explorer.readingGuide} titleColor={colors.earthBrown} linkColor={colors.waterBlue} />
             </View>
           ) : null}
         </ScrollView>

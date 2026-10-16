@@ -3,6 +3,7 @@ import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { db } from "../db";
 import { completeResource, POINTS } from "../lib/progress";
+import { loadRelated } from "../lib/related";
 
 const completeSchema = z.object({
   userId: z.string().min(1, "userId is required"), // device identity (mobile lib/identity.ts)
@@ -83,7 +84,18 @@ fieldTripsRouter.get("/:id", async (c) => {
     );
   }
 
-  return c.json({ data: fieldTrip });
+  // Each stop may point at the pin and the waterway it stands on; the app opens them
+  const maps = await loadRelated({
+    waterwayIds: fieldTrip.stops.map((s) => s.waterwayId),
+    locationIds: fieldTrip.stops.map((s) => s.locationId),
+  });
+  const stops = fieldTrip.stops.map((s) => ({
+    ...s,
+    location: s.locationId ? maps.locations.get(s.locationId) ?? null : null,
+    waterway: s.waterwayId ? maps.waterways.get(s.waterwayId) ?? null : null,
+  }));
+
+  return c.json({ data: { ...fieldTrip, stops } });
 });
 
 // POST /:id/complete - A device finished the field trip: points, achievements,

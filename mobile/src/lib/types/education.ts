@@ -20,20 +20,27 @@ export interface DeepDiveImage {
   credit?: string;
 }
 
-// Key historical figure type
+// Key historical figure type (an element of LessonPlan.keyFigures JSON).
+// A figure is tappable when it carries one of the two ids: `explorerId` opens the
+// explorer modal, `notableFigureId` opens the Notable Figure screen. Exactly one of
+// them is set in the live data (decision 1b, 2026-10-16).
 export interface KeyFigure {
   name: string;
   role: string;
   years?: string;
   description: string;
   imageUrl?: string;
+  explorerId?: string | null;
+  notableFigureId?: string | null;
 }
 
-// Deep Dive timeline event type
+// Deep Dive timeline event type (an element of LessonPlan.timeline JSON).
+// `eventId` points at a TimelineEvent row and makes the item tappable.
 export interface DeepDiveTimelineEvent {
   year: number;
   title: string;
   description: string;
+  eventId?: string | null;
 }
 
 // Canonical shape of every entry in LessonPlan.activities / teacherActivities.
@@ -60,7 +67,8 @@ export interface LessonPlanDetail extends LessonPlanSummary {
   materials: string[] | null;
   activities: LessonPlanActivity[] | null;
   discussionQuestions: string[] | null;
-  assessmentSuggestions: string | null;
+  // Column name in Turso is `assessment`; the public route spreads the row as-is.
+  assessment: string | null;
   extensionActivities: string | null;
   relatedQuizIds: string[] | null;
   relatedWaterwayIds: string[] | null;
@@ -91,7 +99,35 @@ export type TimelineTheme =
 
 export type EventImportance = 'major' | 'moderate' | 'minor';
 
-export interface TimelineEvent {
+// Related records the server attaches next to the raw id columns (backend lib/related.ts).
+// Null when the id is null or dangling.
+export interface RelatedExplorerRef {
+  id: string;
+  name: string;
+  imageUrl: string | null;
+}
+export interface RelatedWaterwayRef {
+  id: string;
+  name: string;
+  latitude: number;
+  longitude: number;
+  typeName: string;
+}
+export interface RelatedLocationRef {
+  id: string;
+  name: string;
+  latitude: number;
+  longitude: number;
+  locationType: string;
+  waterwayId: string;
+}
+export interface RelatedRefs {
+  explorer: RelatedExplorerRef | null;
+  waterway: RelatedWaterwayRef | null;
+  location: RelatedLocationRef | null;
+}
+
+export interface TimelineEvent extends RelatedRefs {
   id: string;
   title: string;
   description: string | null;
@@ -122,19 +158,24 @@ export interface FieldTripSummary {
   stopCount: number;
 }
 
+// Mirrors the FieldTripStop columns (there is no `narrative` column in Turso) plus the
+// related pin and waterway the server attaches when the stop carries their ids.
 export interface FieldTripStop {
   id: string;
-  fieldTripId: string;
+  tripId: string;
   title: string;
   description: string | null;
-  narrative: string | null;
   latitude: number | null;
   longitude: number | null;
   imageUrl: string | null;
   audioUrl: string | null;
+  funFact: string | null;
+  thinkQuestion: string | null;
   orderIndex: number;
   waterwayId: string | null;
   locationId: string | null;
+  location: RelatedLocationRef | null;
+  waterway: RelatedWaterwayRef | null;
 }
 
 export interface FieldTripDetail {
@@ -188,7 +229,7 @@ export interface DocumentSummary {
 }
 
 // Mirrors the PrimarySourceDocument columns the public detail route returns.
-export interface DocumentDetail extends DocumentSummary {
+export interface DocumentDetail extends DocumentSummary, RelatedRefs {
   originalText: string | null;
   transcription: string | null;
   historicalContext: string | null;
@@ -972,7 +1013,7 @@ export interface NearbyHistoryCategory {
   icon: string;
 }
 
-export interface HistoricalEvent {
+export interface HistoricalEvent extends RelatedRefs {
   id: string;
   title: string;
   description: string | null;
@@ -981,9 +1022,10 @@ export interface HistoricalEvent {
   day: number | null;
   latitude: number;
   longitude: number;
+  locationName: string | null;
   category: string;
+  significance: string;
   imageUrl: string | null;
-  sourceUrl: string | null;
   explorerId: string | null;
   waterwayId: string | null;
   locationId: string | null;
@@ -1068,9 +1110,24 @@ export interface NearbyLocationsResponse {
 
 export type FigureType = 'woman' | 'indigenous_leader' | 'guide' | 'interpreter' | 'trader';
 
+// An entry of NotableFigure.associatedExplorers. The server fills `explorerId` from the
+// stored value or by name match, so the app can open the explorer; null means text only.
 export interface AssociatedExplorer {
   name: string;
   relationship: string;
+  explorerId: string | null;
+}
+
+// Mirrors backend lib/reading-guides.ts (ReadingGuide table).
+export interface ReadingGuideItem {
+  id: string;
+  title: string;
+  authorSource: string | null;
+  publisher: string | null;
+  year: string | null;
+  url: string | null;
+  description: string | null;
+  gradeLevel: string | null;
 }
 
 export interface NotableFigureSummary {
@@ -1095,6 +1152,7 @@ export interface NotableFigureDetail extends NotableFigureSummary {
   associatedExplorers: AssociatedExplorer[] | null;
   achievements: string[] | null;
   associatedLocations: string[] | null;
+  readingGuide: ReadingGuideItem[];
   createdAt: string;
   updatedAt: string;
 }
@@ -1160,6 +1218,26 @@ export interface QuizAttemptResult {
 }
 
 // Returned by the server whenever a device completes something (quiz, lesson, field trip).
+// POST /api/gamification/explore. `awarded` is false when this device already earned
+// this record (server-side UserExploration row), in which case activity is null.
+export interface ExplorationResult {
+  awarded: boolean;
+  activity: {
+    pointsAdded: number;
+    newTotalPoints: number;
+    explorerRank: string;
+    rankedUp: boolean;
+    previousRank: string | null;
+  } | null;
+  newAchievements: { id: string; name: string; description: string; iconName: string; category: string }[];
+}
+
+export type ExplorationActivity =
+  | 'waterway_explored'
+  | 'location_visited'
+  | 'document_read'
+  | 'pronunciation_learned';
+
 export interface CompletionResult {
   activity: {
     pointsAdded: number;

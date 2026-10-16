@@ -1,5 +1,6 @@
 import { Hono } from "hono";
 import { db } from "../db";
+import { loadRelated, attachRelated } from "../lib/related";
 
 const documentsRouter = new Hono();
 
@@ -70,9 +71,16 @@ documentsRouter.get("/:id", async (c) => {
     );
   }
 
+  // Related explorer / waterway / location by name, so the app can open them
+  const maps = await loadRelated({
+    explorerIds: [document.explorerId],
+    waterwayIds: [document.waterwayId],
+    locationIds: [document.locationId],
+  });
+
   // Parse JSON fields
   const result = {
-    ...document,
+    ...attachRelated(document, maps),
     annotations: document.annotations ? JSON.parse(document.annotations) : null,
     vocabulary: document.vocabulary ? JSON.parse(document.vocabulary) : null,
     discussionQuestions: document.discussionQuestions

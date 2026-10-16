@@ -19,6 +19,8 @@ import {
 } from 'lucide-react-native';
 import { useDocument } from '@/lib/api/education-api';
 import { getGradeLevelColor, getGradeLevelLabel } from '@/lib/types/education';
+import { RelatedLinks } from '@/components/RelatedLinks';
+import { useExploration } from '@/lib/exploration';
 
 const colors = {
   forestGreen: '#2D5A3D',
@@ -47,6 +49,9 @@ function Section({ title, icon, children }: SectionProps) {
 export default function DocumentDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { data: document, isLoading, isError } = useDocument(id ?? null);
+
+  // Opening a document counts as reading it: 5 points once per device (decision 9)
+  useExploration('document_read', id, !!document);
 
   if (isLoading) {
     return (
@@ -123,6 +128,7 @@ export default function DocumentDetailScreen() {
             </View>
           ) : null}
         </View>
+        <RelatedLinks explorer={document.explorer} waterway={document.waterway} location={document.location} />
       </View>
 
       {/* Historical Context (present on all 48 live documents) */}

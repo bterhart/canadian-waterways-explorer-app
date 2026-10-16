@@ -3,8 +3,53 @@ import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { db } from "../db";
 import { requireAdmin } from "../lib/admin-middleware";
+import { getReadingGuide } from "../lib/reading-guides";
 
 const notableFiguresRouter = new Hono();
+
+interface AssociatedExplorerEntry {
+  name?: string;
+  relationship?: string;
+  explorerId?: string | null;
+}
+
+// Honorifics the figure JSON sometimes carries or omits relative to Explorer.name
+// ("John Franklin" vs "Sir John Franklin", "George Back" vs "Sir George Back").
+const normalizePersonName = (name: string): string =>
+  name
+    .toLowerCase()
+    .replace(/\b(sir|dr\.?|captain|lord)\b/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+
+/**
+ * Give every associated-explorer entry an `explorerId`: the stored one when present,
+ * otherwise the Explorer row whose name matches exactly or after dropping honorifics.
+ * Entries that match nothing keep explorerId null and render as plain text.
+ */
+async function resolveAssociatedExplorers(raw: string | null): Promise<AssociatedExplorerEntry[] | null> {
+  if (!raw) return null;
+  let entries: AssociatedExplorerEntry[];
+  try {
+    const parsed = JSON.parse(raw);
+    entries = Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return null;
+  }
+  const unresolved = entries.filter((e) => !e.explorerId && e.name);
+  if (unresolved.length === 0) return entries.map((e) => ({ ...e, explorerId: e.explorerId ?? null }));
+
+  const explorers = await db.explorer.findMany({ select: { id: true, name: true } });
+  const byExact = new Map(explorers.map((e) => [e.name, e.id]));
+  const byNormalized = new Map(explorers.map((e) => [normalizePersonName(e.name), e.id]));
+
+  return entries.map((e) => {
+    if (e.explorerId) return e;
+    const name = e.name ?? "";
+    const id = byExact.get(name) ?? byNormalized.get(normalizePersonName(name)) ?? null;
+    return { ...e, explorerId: id };
+  });
+}
 
 // Get all notable figures with optional filtering
 notableFiguresRouter.get("/", async (c) => {
@@ -159,16 +204,19 @@ notableFiguresRouter.get("/:id", async (c) => {
     );
   }
 
-  // Parse JSON fields
+  // Parse JSON fields; associated explorers gain an explorerId the app can open
+  const [associatedExplorers, readingGuide] = await Promise.all([
+    resolveAssociatedExplorers(figure.associatedExplorers),
+    getReadingGuide("notable_figure", figure.id),
+  ]);
   const parsedFigure = {
     ...figure,
-    associatedExplorers: figure.associatedExplorers
-      ? JSON.parse(figure.associatedExplorers)
-      : null,
+    associatedExplorers,
     achievements: figure.achievements ? JSON.parse(figure.achievements) : null,
     associatedLocations: figure.associatedLocations
       ? JSON.parse(figure.associatedLocations)
       : null,
+    readingGuide,
   };
 
   return c.json({ data: parsedFigure });

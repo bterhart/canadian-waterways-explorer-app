@@ -5,6 +5,7 @@ import { db } from "../db";
 import { requireAdmin, requireSuperAdmin } from "../lib/admin-middleware";
 import { buildGeometry, TIER_CONFIG } from "../lib/kml-geometry";
 import type { BBox, TierName, WaterwayGeometry } from "../lib/kml-geometry";
+import { getReadingGuide } from "../lib/reading-guides";
 
 const waterwaysRouter = new Hono();
 
@@ -250,6 +251,8 @@ const notableFigures = notableFigureRows
   }))
   .filter((figure) => figure.associatedLocations.includes(waterway.name));
 
+  const readingGuide = await getReadingGuide("waterway", waterway.id);
+
   // Raw KML is never sent to clients (up to 12.7 MB per row); the map draws the
   // boundary from GET /:id/geometry instead.
   const { kmlData, ...publicWaterway } = waterway;
@@ -259,6 +262,7 @@ const notableFigures = notableFigureRows
       ...publicWaterway,
       hasKml: !!kmlData,
       notableFigures,
+      readingGuide,
     }
   });
 });

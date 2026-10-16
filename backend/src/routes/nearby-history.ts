@@ -2,8 +2,21 @@ import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { db } from "../db";
+import { loadRelated, attachRelated } from "../lib/related";
 
 const nearbyHistoryRouter = new Hono();
+
+/** Attach related explorer / waterway / location objects to a batch of events. */
+async function withRelated<T extends { explorerId: string | null; waterwayId: string | null; locationId: string | null }>(
+  events: T[]
+) {
+  const maps = await loadRelated({
+    explorerIds: events.map((e) => e.explorerId),
+    waterwayIds: events.map((e) => e.waterwayId),
+    locationIds: events.map((e) => e.locationId),
+  });
+  return events.map((e) => attachRelated(e, maps));
+}
 
 /**
  * Haversine formula to calculate distance between two points on Earth
@@ -199,7 +212,7 @@ nearbyHistoryRouter.get(
 
     return c.json({
       data: {
-        events: nearbyEvents,
+        events: await withRelated(nearbyEvents),
         searchLocation: { latitude: lat, longitude: lng },
         radiusKm: radius,
         totalFound: nearbyEvents.length,
@@ -240,7 +253,7 @@ nearbyHistoryRouter.get(
 
     return c.json({
       data: {
-        events: nearbyEvents,
+        events: await withRelated(nearbyEvents),
         searchLocation: { latitude: lat, longitude: lng },
         radiusKm: radius,
         totalFound: nearbyEvents.length,
