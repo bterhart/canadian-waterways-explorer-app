@@ -108,7 +108,11 @@ export function useWaterwayGeometry(
       ),
     enabled: !!id,
     staleTime: 60 * 60 * 1000, // geometry only changes when an admin re-uploads KML
-    placeholderData: keepPreviousData,
+    // Keep the previous tier on screen while the next loads, but only for the SAME waterway.
+    // Plain keepPreviousData also carried river A's trace over to river B for a moment, and
+    // the zoom-to-extent animation then framed the wrong river.
+    placeholderData: (previous, previousQuery) =>
+      previousQuery && previousQuery.queryKey[1] === (id ?? '') ? previous : undefined,
   });
 }
 
