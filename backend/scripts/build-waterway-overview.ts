@@ -234,16 +234,34 @@ async function main(): Promise<void> {
 }
 
 function buildTier(paths: LngLat[][], toleranceDeg: number, geometryKind: GeometryKind): SimplifiedTier {
-  // A path that collapses to a single distinct point draws nothing and is unsafe as a native overlay.
-  const simplified = simplifyAllPaths(paths, toleranceDeg, geometryKind).filter(
-    (path) => new Set(path.map(([lng, lat]) => `${lng},${lat}`)).size >= 2
-  );
+  // Every tier must hold the SAME number of paths, in the same order, as every other tier:
+  // the app keeps one native overlay per path across zoom levels and only updates its
+  // coordinates. Adding or removing overlays while the map is mid-gesture has crashed the
+  // iOS map library ("insertObject:atIndex: object cannot be nil" during mounting). So a path
+  // that would collapse to a single distinct point is replaced by its two farthest-apart
+  // points instead of being dropped.
+  const simplified = paths.map((path) => {
+    const s = simplifyAllPaths([path], toleranceDeg, geometryKind)[0] ?? path;
+    return new Set(s.map(([lng, lat]) => `${lng},${lat}`)).size >= 2 ? s : twoFarthestPoints(path);
+  });
   return {
     toleranceDeg,
     pathCount: simplified.length,
     pointCount: countPoints(simplified),
     paths: simplified,
   };
+}
+
+/** The first point and the point farthest from it (a tiny but drawable line); the point itself twice if all are equal. */
+function twoFarthestPoints(path: LngLat[]): LngLat[] {
+  const first = path[0]!;
+  let far = first;
+  let best = -1;
+  for (const p of path) {
+    const d = (p[0] - first[0]) ** 2 + (p[1] - first[1]) ** 2;
+    if (d > best) { best = d; far = p; }
+  }
+  return [first, far];
 }
 
 main()

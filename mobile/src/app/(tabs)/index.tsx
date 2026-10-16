@@ -54,8 +54,6 @@ const OVERVIEW_STROKE_WIDTH: Record<OverviewTierName, number> = {
   local: 4,
 };
 
-const OVERVIEW_VIEWPORT_PADDING_FACTOR = 0.2;
-
 // Marker colors based on type
 const markerColors: Record<string, string> = {
   // Waterway types
@@ -123,30 +121,6 @@ const getOverviewTier = (region: Region): OverviewTierName => {
   }
 
   return 'local';
-};
-
-const bboxIntersectsRegion = (
-  bbox: [number, number, number, number] | null,
-  region: Region,
-  paddingFactor: number = 0,
-): boolean => {
-  if (!bbox) return true;
-
-  const [minLng, minLat, maxLng, maxLat] = bbox;
-  const latPadding = region.latitudeDelta * paddingFactor;
-  const lngPadding = region.longitudeDelta * paddingFactor;
-
-  const regionMinLat = region.latitude - region.latitudeDelta / 2 - latPadding;
-  const regionMaxLat = region.latitude + region.latitudeDelta / 2 + latPadding;
-  const regionMinLng = region.longitude - region.longitudeDelta / 2 - lngPadding;
-  const regionMaxLng = region.longitude + region.longitudeDelta / 2 + lngPadding;
-
-  return !(
-    maxLat < regionMinLat ||
-    minLat > regionMaxLat ||
-    maxLng < regionMinLng ||
-    minLng > regionMaxLng
-  );
 };
 
 const overviewPathToCoordinates = (path: [number, number][]) =>
@@ -419,13 +393,15 @@ export default function MapScreen() {
   const riverOverviewTier = useMemo(() => getOverviewTier(mapRegion), [mapRegion]);
   const riverOverviewStrokeWidth = OVERVIEW_STROKE_WIDTH[riverOverviewTier];
 
+  // Every overview record stays mounted while the overview is shown. Culling by viewport
+  // added and removed native overlays on every pan, and adding/removing MapView children
+  // while the map is moving crashed the iOS map library (build 54 crash log:
+  // "-[__NSArrayM insertObject:atIndex:]: object cannot be nil" during mounting). MapKit
+  // culls off-screen overlays itself; the whole set is ~420 small paths.
   const visibleRiverOverviewRecords = useMemo(() => {
     if (!shouldShowRiverOverview || !riverOverviewData?.waterways) return [];
-
-    return riverOverviewData.waterways.filter((record) =>
-      bboxIntersectsRegion(record.bbox, mapRegion, OVERVIEW_VIEWPORT_PADDING_FACTOR),
-    );
-  }, [shouldShowRiverOverview, riverOverviewData, mapRegion]);
+    return riverOverviewData.waterways;
+  }, [shouldShowRiverOverview, riverOverviewData]);
 
   // Get explorer's waterway IDs for filtering
   const explorerWaterwayIds = useMemo(() => {
@@ -824,11 +800,13 @@ export default function MapScreen() {
               return tierData.paths.map((path, index) => {
                 const coordinates = overviewPathToCoordinates(path);
 
+                // Keys carry no tier: a zoom level change updates each overlay's coordinates in
+                // place instead of unmounting and remounting hundreds of native overlays.
                 if (record.geometryKind === 'area') {
                   if (!isDrawablePolygon(coordinates)) return null;
                   return (
                     <Polygon
-                      key={`overview-area-${riverOverviewTier}-${record.id}-${index}`}
+                      key={`overview-area-${record.id}-${index}`}
                       coordinates={coordinates}
                       strokeColor={strokeColor}
                       fillColor={`${strokeColor}20`}
@@ -842,7 +820,7 @@ export default function MapScreen() {
                 if (!isDrawableLine(coordinates)) return null;
                 return (
                   <Polyline
-                    key={`overview-line-${riverOverviewTier}-${record.id}-${index}`}
+                    key={`overview-line-${record.id}-${index}`}
                     coordinates={coordinates}
                     strokeColor={strokeColor}
                     strokeWidth={riverOverviewStrokeWidth}
@@ -868,35 +846,45 @@ export default function MapScreen() {
             : selectedWaterway.type?.name === 'Bay' ? '#10B981'
             : '#0EA5E9';
 
-          return selectedWaterwayPaths.map((latLngs, index) => {
-            // Per-path kind lets a river carry its mapped water surface (filled) alongside its
-            // centreline (line); older servers send no pathKinds and fall back to the waterway kind.
+          // Per-path kind lets a river carry its mapped water surface (filled) alongside its
+          // centreline (line); older servers send no pathKinds and fall back to the waterway kind.
+          // Lines are rendered first and areas after, each numbered within its own group, so a
+          // change of zoom level updates existing overlays in place and only ever adds or removes
+          // overlays at the end of a group. These are the last MapView children for the same
+          // reason: a resize here never shifts the index of any other overlay.
+          const lines: { latitude: number; longitude: number }[][] = [];
+          const areas: { latitude: number; longitude: number }[][] = [];
+          selectedWaterwayPaths.forEach((latLngs, index) => {
             const pathIsArea = (selectedWaterwayGeometry.pathKinds?.[index] ?? (isArea ? 'area' : 'line')) === 'area';
-            if (pathIsArea ? !isDrawablePolygon(latLngs) : !isDrawableLine(latLngs)) return null;
             if (pathIsArea) {
-              return (
-                <Polygon
-                  key={`kml-poly-${index}`}
-                  coordinates={latLngs}
-                  strokeColor={color}
-                  fillColor={`${color}30`}
-                  strokeWidth={2}
-                  tappable
-                  onPress={handleSelectedOutlinePress}
-                />
-              );
+              if (isDrawablePolygon(latLngs)) areas.push(latLngs);
+            } else if (isDrawableLine(latLngs)) {
+              lines.push(latLngs);
             }
-            return (
+          });
+          return [
+            ...lines.map((latLngs, i) => (
               <Polyline
-                key={`kml-line-${index}`}
+                key={`trace-line-${i}`}
                 coordinates={latLngs}
                 strokeColor={color}
                 strokeWidth={3}
                 tappable
                 onPress={handleSelectedOutlinePress}
               />
-            );
-          });
+            )),
+            ...areas.map((latLngs, i) => (
+              <Polygon
+                key={`trace-area-${i}`}
+                coordinates={latLngs}
+                strokeColor={color}
+                fillColor={`${color}30`}
+                strokeWidth={2}
+                tappable
+                onPress={handleSelectedOutlinePress}
+              />
+            )),
+          ];
         })() : null}
       </MapView>
 
