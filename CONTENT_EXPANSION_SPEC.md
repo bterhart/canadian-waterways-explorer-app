@@ -756,8 +756,11 @@ Idempotent: a rerun reports everything as existing and writes nothing.
 | Reading-guide entries | 69 | Wikipedia and Canadian Encyclopedia at 7-9, Dictionary of Canadian Biography, Jesuit Relations and Parkman at 10-12 |
 | Images | 63 URLs | all Wikimedia Commons, public domain or CC BY / CC BY-SA, author and licence in every credit, served as `Special:FilePath` URLs until R2 keys are available |
 
-Not included on purpose: primary-source documents (no transcription was quoted that could not
-be verified against an edition in this session) and Indigenous vocabulary. The river overview was
+Added later the same day (`2026-10-17-primary-sources-new-france.ts`): 17 primary-source
+pointer documents, each saying what the source is, who made it and when, and exactly where it
+is readable today (archive, edition, verified URL), with no quoted transcription; linked to their
+explorer, waterway and location and graded (1 at 4-6, 10 at 7-9, 6 at 10-12). Still not
+included: Indigenous vocabulary. The river overview was
 rebuilt (37 rivers). The Fox River trip and the `FieldTripStop.narrative` field: the trip table has
 no introduction or conclusion columns, so that text stays in the pack file.
 
