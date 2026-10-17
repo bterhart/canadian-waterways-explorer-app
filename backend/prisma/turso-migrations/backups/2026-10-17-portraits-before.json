@@ -1,0 +1,36 @@
+{
+ "generatedAt": "2026-10-17T10:01:24.083Z",
+ "apply": true,
+ "rows": [
+  {
+   "table": "explorer",
+   "id": "ex_henry-kellett",
+   "name": "Henry Kellett",
+   "before": null
+  },
+  {
+   "table": "explorer",
+   "id": "ex_jens-munk",
+   "name": "Jens Munk",
+   "before": null
+  },
+  {
+   "table": "figure",
+   "id": "nf_eenoolooapik",
+   "name": "Eenoolooapik",
+   "before": null
+  },
+  {
+   "table": "figure",
+   "id": "nf_jane_franklin",
+   "name": "Lady Jane Franklin",
+   "before": null
+  },
+  {
+   "table": "figure",
+   "id": "nf_hans_hendrik",
+   "name": "Hans Hendrik",
+   "before": null
+  }
+ ]
+}

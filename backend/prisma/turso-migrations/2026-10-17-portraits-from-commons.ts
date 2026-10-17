@@ -24,11 +24,16 @@ const EXPLORERS: Record<string, { file: string; basis: string }> = {
   "Alexander Ross": { file: "Alexander Ross - Pelzhändler und Entdecker.jpg", basis: "Photograph (he died 1856); Manitoba Historical Society" },
   "Gabriel Franchère": { file: "Frachere.jpg", basis: "Portrait made before his death in 1863" },
   "Otto Sverdrup": { file: "No-nb bldsa 1c016.jpg", basis: "Photograph; National Library of Norway picture collection" },
+  "Jens Munk": { file: "Jens Eriksen Munk Image.jpg", basis: "Painted portrait, between the 1590s and his death in 1628" },
+  "Henry Kellett": { file: "Henry Kellett.jpg", basis: "Stephen Pearce, oil, 1850s; National Portrait Gallery, London" },
 };
 const FIGURES: Record<string, { file: string; basis: string }> = {
   "Tattannoeuck": { file: "Tattannoeuck.jpg", basis: "Robert Hood, watercolour, May 1821, with Hoeootoerock (Junius); Library and Archives Canada" },
   "Maquinna": { file: "Chief Maquinna.gif", basis: "Tomás de Suría, drawing from life, Nootka Sound, 1791" },
   "Alexander Baranov": { file: "Tikhanov - Alexandr Andreyevich Baranov (1818).png", basis: "Mikhail Tikhanov, oil, 1818; State Historical Museum, Moscow" },
+  "Lady Jane Franklin": { file: "LadyJaneFranklin.png", basis: "Amélie Romilly, drawing, Geneva, 1816" },
+  "Hans Hendrik": { file: "Hans Hendrik (cropped).jpg", basis: "Engraving by Ida Falander from a photograph, published in Nordenskiöld's Grönland (1886), in his lifetime" },
+  "Eenoolooapik": { file: "Eenoolooapik.jpg", basis: "Lithograph from Alexander M'Donald's memoir of him, 1841" },
 };
 
 async function alive(url: string) {

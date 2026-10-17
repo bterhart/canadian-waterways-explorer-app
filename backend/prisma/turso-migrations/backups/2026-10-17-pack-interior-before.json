@@ -1,0 +1,357 @@
+{
+ "generatedAt": "2026-10-17T11:13:01.191Z",
+ "apply": true,
+ "historicalEventsBackfilled": [
+  {
+   "id": "cmlhqohkg000gm2m4tpltfb4p",
+   "title": "Treaty 6 Signed at Fort Carlton",
+   "before": {
+    "explorerId": null,
+    "waterwayId": null,
+    "locationId": null
+   }
+  },
+  {
+   "id": "cmlhqohke000fm2m4em6vjnfa",
+   "title": "Battle of Seven Oaks",
+   "before": {
+    "explorerId": null,
+    "waterwayId": null,
+    "locationId": null
+   }
+  },
+  {
+   "id": "cmlhqohkd000em2m4f2exhf8f",
+   "title": "Selkirk Settlers Arrive",
+   "before": {
+    "explorerId": null,
+    "waterwayId": null,
+    "locationId": null
+   }
+  },
+  {
+   "id": "cmlhqohkb000dm2m4zfwgjnh6",
+   "title": "La Verendrye Builds Fort Rouge",
+   "before": {
+    "explorerId": null,
+    "waterwayId": null,
+    "locationId": null
+   }
+  },
+  {
+   "id": "cmlhqohll000zm2m4mclethqb",
+   "title": "Numbered Treaties Begin (Treaty 1)",
+   "before": {
+    "explorerId": null,
+    "waterwayId": null,
+    "locationId": null
+   }
+  },
+  {
+   "id": "voyageur_great_rendezvous_1793",
+   "title": "A Voyageur Great Rendezvous",
+   "before": {
+    "explorerId": null,
+    "waterwayId": null,
+    "locationId": null
+   }
+  },
+  {
+   "id": "cmlhqohle000wm2m4moga79v0",
+   "title": "Grand Portage Rendezvous",
+   "before": {
+    "explorerId": null,
+    "waterwayId": null,
+    "locationId": null
+   }
+  },
+  {
+   "id": "cmlhqohlg000xm2m4kjxw2jep",
+   "title": "Fort William Becomes NWC Headquarters",
+   "before": {
+    "explorerId": null,
+    "waterwayId": null,
+    "locationId": null
+   }
+  },
+  {
+   "id": "fort_st_charles_rediscovery_1908",
+   "title": "Rediscovery of Fort St. Charles",
+   "before": {
+    "explorerId": null,
+    "waterwayId": null,
+    "locationId": null
+   }
+  },
+  {
+   "id": "la_verendrye_reaches_lake_winnipeg_1733",
+   "title": "La Vérendrye Reaches Lake Winnipeg",
+   "before": {
+    "explorerId": null,
+    "waterwayId": null,
+    "locationId": null
+   }
+  },
+  {
+   "id": "cmlhqohl9000um2m44pxn8cte",
+   "title": "Hudson's Bay Company Founded",
+   "before": {
+    "explorerId": null,
+    "waterwayId": null,
+    "locationId": null
+   }
+  },
+  {
+   "id": "cmlhqohlb000vm2m4d64n80ug",
+   "title": "North West Company Formed",
+   "before": {
+    "explorerId": null,
+    "waterwayId": null,
+    "locationId": null
+   }
+  },
+  {
+   "id": "cmlhqohjk0002m2m4iuwbbwf2",
+   "title": "Battle of the Plains of Abraham",
+   "before": {
+    "explorerId": null,
+    "waterwayId": null,
+    "locationId": null
+   }
+  },
+  {
+   "id": "cmlhqohki000hm2m4hqxj4vzy",
+   "title": "Thompson Reaches the Prairies via Mandan Villages",
+   "before": {
+    "explorerId": null,
+    "waterwayId": null,
+    "locationId": null
+   }
+  }
+ ],
+ "timelineEventsBackfilled": [
+  {
+   "id": "cmligbkyo001im20zj2yavaqt",
+   "title": "Hudson's Bay Company Charter Granted",
+   "before": {
+    "explorerId": null,
+    "waterwayId": null,
+    "locationId": null
+   }
+  },
+  {
+   "id": "cmligbkyx001km20z2112at07",
+   "title": "Thanadelthur's Peace Mission",
+   "before": {
+    "explorerId": null,
+    "waterwayId": null,
+    "locationId": null
+   }
+  },
+  {
+   "id": "cmligbkz0001lm20zr9012m87",
+   "title": "La Verendrye Reaches Lake Winnipeg",
+   "before": {
+    "explorerId": null,
+    "waterwayId": null,
+    "locationId": null
+   }
+  },
+  {
+   "id": "cmligbkz2001mm20zq12u41re",
+   "title": "Cumberland House Founded",
+   "before": {
+    "explorerId": null,
+    "waterwayId": null,
+    "locationId": null
+   }
+  },
+  {
+   "id": "cmligbkz5001nm20z0rm0kptu",
+   "title": "North West Company Formed",
+   "before": {
+    "explorerId": null,
+    "waterwayId": null,
+    "locationId": null
+   }
+  },
+  {
+   "id": "cmligbkzd001qm20zzi49yg89",
+   "title": "Simon Fraser Descends Fraser River",
+   "before": {
+    "explorerId": null,
+    "waterwayId": null,
+    "locationId": null
+   }
+  },
+  {
+   "id": "cmligbkzf001rm20zn3mrrtpu",
+   "title": "David Thompson Reaches Pacific via Columbia",
+   "before": {
+    "explorerId": null,
+    "waterwayId": null,
+    "locationId": null
+   }
+  },
+  {
+   "id": "cmligbkzh001sm20zl3p8vx3z",
+   "title": "Battle of Seven Oaks",
+   "before": {
+    "explorerId": null,
+    "waterwayId": null,
+    "locationId": null
+   }
+  },
+  {
+   "id": "cmligbkzm001um20zw5hmtl3k",
+   "title": "Red River Resistance Begins",
+   "before": {
+    "explorerId": null,
+    "waterwayId": null,
+    "locationId": null
+   }
+  },
+  {
+   "id": "cmligbkzp001vm20zk567ec16",
+   "title": "Manitoba Becomes a Province",
+   "before": {
+    "explorerId": null,
+    "waterwayId": null,
+    "locationId": null
+   }
+  },
+  {
+   "id": "cmligbkzs001wm20zc5pvz6ki",
+   "title": "Northwest Resistance",
+   "before": {
+    "explorerId": null,
+    "waterwayId": null,
+    "locationId": null
+   }
+  },
+  {
+   "id": "cmlizphk3000km2yb84p923w5",
+   "title": "Lake of the Woods Massacre",
+   "before": {
+    "explorerId": null,
+    "waterwayId": null,
+    "locationId": null
+   }
+  }
+ ],
+ "locationsRelocated": [
+  {
+   "id": "cmlhasls40026m2zhpi43jsew",
+   "name": "Fort Edmonton",
+   "before": {
+    "waterwayId": "cmlhaslqy000sm2zhxfks60fd"
+   }
+  },
+  {
+   "id": "cmlhcpxnk001bm2a3bv60prh0",
+   "name": "Fort Augustus (NWC)",
+   "before": {
+    "waterwayId": "cmlhaslqy000sm2zhxfks60fd"
+   }
+  },
+  {
+   "id": "cmlhcpxpf0027m2a3vq60ln3h",
+   "name": "Fort Pitt",
+   "before": {
+    "waterwayId": "cmlhaslqy000sm2zhxfks60fd"
+   }
+  },
+  {
+   "id": "cmlhcpxno001dm2a3gc40a1u2",
+   "name": "Fort George (NWC - Saskatchewan)",
+   "before": {
+    "waterwayId": "cmlhaslqy000sm2zhxfks60fd"
+   }
+  },
+  {
+   "id": "cmlhcpxk40009m2a3ly9irieb",
+   "name": "Fort Carlton",
+   "before": {
+    "waterwayId": "cmlhaslqy000sm2zhxfks60fd"
+   }
+  },
+  {
+   "id": "cmlhcpxpi0029m2a36jgoptfh",
+   "name": "Fort Battleford",
+   "before": {
+    "waterwayId": "cmlhaslqy000sm2zhxfks60fd"
+   }
+  },
+  {
+   "id": "cmlhcpxka000dm2a38u2u5e1v",
+   "name": "Rocky Mountain House",
+   "before": {
+    "waterwayId": "cmlhaslqy000sm2zhxfks60fd"
+   }
+  },
+  {
+   "id": "cmligbl0s002em20zgl2s057e",
+   "name": "Batoche",
+   "before": {
+    "waterwayId": "cmlhaslqy000sm2zhxfks60fd"
+   }
+  },
+  {
+   "id": "cmlhcpxpl002bm2a35iiq5vzp",
+   "name": "Fort Liard",
+   "before": {
+    "waterwayId": "cmlhaslqp000mm2zh1z4uc8lw"
+   }
+  },
+  {
+   "id": "cmlhcpxp60023m2a3nk6v0ile",
+   "name": "Bas-de-la-Rivière (Fort Alexander)",
+   "before": {
+    "waterwayId": "cmlhaslri0014m2zhlrrx8pqe"
+   }
+  },
+  {
+   "id": "cmlk1ohtm000jm2atwndo0iu1",
+   "name": "Slave Falls Portage",
+   "before": {
+    "waterwayId": "cmlhaslri0014m2zhlrrx8pqe"
+   }
+  },
+  {
+   "id": "cmlk1oht50009m2atw1lxbena",
+   "name": "Rat Portage",
+   "before": {
+    "waterwayId": "cmlhaslri0014m2zhlrrx8pqe"
+   }
+  },
+  {
+   "id": "cmlhcpxp20021m2a32mlrbo8z",
+   "name": "Fort Lac La Pluie (Fort Frances)",
+   "before": {
+    "waterwayId": "cmlhaslra000ym2zh4pyu55je"
+   }
+  },
+  {
+   "id": "cmlhcpxlh000pm2a37jv1ad25",
+   "name": "Fort Qu'Appelle",
+   "before": {
+    "waterwayId": "cmlhbjrq30009m2mbjvc52rym"
+   }
+  },
+  {
+   "id": "cmlhbjrrn001bm2mbmbhxd2wx",
+   "name": "Fort St. James",
+   "before": {
+    "waterwayId": "cmlhaslqs000om2zh7u6tr7m8"
+   }
+  },
+  {
+   "id": "cmlhasls4002am2zhut4b7lsm",
+   "name": "Fort Témiscamingue",
+   "before": {
+    "waterwayId": "cmlhaslqu000qm2zh7ssejohe"
+   }
+  }
+ ],
+ "waterwaysGivenGeometry": []
+}
