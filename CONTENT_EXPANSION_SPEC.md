@@ -932,6 +932,42 @@ Mackenzie's 1793 journal). After the pack, every record in Turso has at least tw
 source among its reading guides (`2026-10-17-reading-guide-gaps.ts`, 172 guides in two passes),
 and no record is without one.
 
+### 9.10 Content pack 5, The Bay and the Barren Lands (applied 2026-10-17)
+Data in `backend/prisma/turso-migrations/packs/bay-and-barren-lands.ts`, applied by
+`2026-10-17-pack-bay-and-barren-lands.ts` (dry run, backup, apply, verify; idempotent). Scope:
+the rivers of Hudson Bay and James Bay that the earlier packs left as bare names or did not have
+at all: the Omushkego Cree rivers of the Ontario lowlands, the Eeyou Istchee rivers of the Quebec
+side, Lake Mistassini and Lake Abitibi on the overland routes, the Nunavik rivers to Ungava Bay,
+and the Sayisi Dene and Caribou Inuit rivers of the Barren Grounds to Baker Lake. People come from
+the Dictionary of Canadian Biography wherever it has them (thirteen explorers and all six figures);
+Low, Pike, Seton and J. W. Tyrrell, whom it does not cover, rest on Wikipedia, the Geological
+Survey reports and their own books, and every date in the pack was checked against those sources
+before it was written.
+
+| Added | Count | Notes |
+|---|---|---|
+| Waterways | 18 | Severn, Winisk, Attawapiskat, Rupert, Eastmain, Nottaway, Harricana, La Grande, Great Whale, Seal, Kazan, Dubawnt, Baker Lake, Ungava Bay, Koksoak, George, Lake Mistassini, Lake Abitibi. OpenStreetMap geometry for seventeen (Lake Mistassini thinned from 114,000 to 39,000 points; the Quebec rivers exported under their French OSM names); the Eastmain has no named OSM relation and stays a pin. Fur-trade rows for the Severn, Rupert, Eastmain and Koksoak |
+| Existing posts moved to the right river | 3 | York Factory to the Hayes (the Hayes had no post and no explorer), Fort Severn to the Severn, Rupert House to the Rupert; the backup records the old waterway ids |
+| Explorers | 17 | Albanel, Isham, Coats, Mitchell, Isbister, Graham, Wales, Erlandson, Finlayson, McLean, Bell, Low, Pike, Hanbury, Hornby, J. W. Tyrrell, Seton. Lifetime portraits for two only (Seton, Harris and Ewing photograph; Bell, the photograph in the Royal Society of Canada's Proceedings, dated no later than 1917). Commons has no lifetime likeness of Hornby, Hanbury, McLean, Pike, Low, Nickawa or Christian, and none exists for the eighteenth-century men |
+| Explorer–waterway links | 74 | Hearne on the Seal, Kazan, Dubawnt and Thelon; James and Foxe at the Severn; Groseilliers at the Rupert; de Troyes and Iberville on the Albany, Rupert, Moose, Abitibi, Severn and Hayes; Radisson and Kelsey on the Hayes; J. B. Tyrrell on the Dubawnt, Kazan, Baker Lake and Chesterfield Inlet; every new explorer has at least one. The Albany and the Hayes, which had none, now have four and four |
+| Locations | 12 | Henley House, Eastmain House, Fort George (Chisasibi), Fort Chimo, Fort Severight, Mistassini Post, Fort Richmond, Great Whale River Post, Baker Lake Post, Hornby Point, Winisk (Peawanuck), Attawapiskat. Fort Richmond has no image |
+| Notable figures | 6 | Miscomote, Wappisis, Abishabis, Inukjuarjuk, Zhauwuno-geezhigo-gaubow (Jack Fiddler), Frances Nickawa; all from the Dictionary of Canadian Biography. No lifetime likeness on Commons for any (Forster's 1921 portrait of Nickawa is not there) |
+| Timeline events | 33 new; the unlinked "Thanadelthur Captured by Cree Raiders" linked to Hudson Bay and York Factory | |
+| What Happened Here events | 10 new (Albanel at the Rupert, the taking of Fort Albany, the surrender of York Fort, the Albany hangings, the transit of Venus, Erlandson at Lake Melville, the death of Abishabis, the Tyrrells on the coast, Jack Fiddler at Norway House, the last entry at Hornby Point) | |
+| Pronunciations | 22 | Omushkego and Eeyou Cree, Inuktitut, Naskapi, Dene and Algonquin place names and nations, and windigo |
+| Quiz | 1 | "The Bay and the Barren Lands", 8 questions, grade 7-9 |
+| Deep Dive / lesson plan | 1 | "The Bay: Cree, Inuit, Dene and the Company on Hudson Bay", grade 7-9, Fur Trade |
+| Field trip | 1 | "The Thelon: Hornby Point and the Barren Lands", grade 7-9, six stops |
+| Reading-guide entries | 151 | Dictionary of Canadian Biography, Canadian Encyclopedia, Hudson's Bay Company Archives, Internet Archive editions of the sources, Parks Canada and Wikipedia; every URL verified (five Commons image URLs answered only 429 on the final check and were accepted on the strength of their file records) |
+| Images | 78 URLs | Commons, public domain or CC BY / CC BY-SA, credited; includes Andrew Graham's 1768-70 plan of the bay, Moses Norton's 1760 draught, Pierre Allemand's chart of the forts taken in 1686, Low's map of Lake Mistassini, the 1935 Seal River survey sheet, the Keewatin survey of the Winisk, the stove in Hornby's cabin from the NWT Archives, and the 1937 Hoare and Clarke photograph on the Thelon |
+
+Added the same day (`2026-10-17-primary-sources-bay.ts`): 17 primary-source pointer documents
+(Albanel's Relation of 1672, Isham's and Graham's Observations, Coats's Geography, Wales's
+Churchill journal, the Severn journal on Abishabis, Erlandson's crossing, McLean's Notes, Turner's
+Ethnology of Ungava, Bell's Attawapiskat report, Low's Labrador reports, Tyrrell's Dubawnt and
+Kazan report with his brother's book, Pike, Hanbury, Seton, Christian's diary, and Killing the
+Shamen).
+
 ### 9.4 Document grade bands (approved and applied 2026-10-17)
 Proposed from a Flesch-Kincaid estimate of each transcription (≤ 7 → 4-6, ≤ 11 → 7-9, above →
 10-12), checked against the fourteen documents that already had a band (their estimates run
