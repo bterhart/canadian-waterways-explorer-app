@@ -22,6 +22,7 @@ import {
 } from 'lucide-react-native';
 import { useFieldTrip } from '@/lib/api/education-api';
 import { MarkCompleteButton } from '@/components/MarkCompleteButton';
+import { RelatedLinks } from '@/components/RelatedLinks';
 import { getGradeLevelColor, getGradeLevelLabel } from '@/lib/types/education';
 import type { FieldTripStop } from '@/lib/types/education';
 
@@ -252,10 +253,25 @@ export default function FieldTripDetailScreen() {
               </Text>
             ) : null}
 
-            {currentStop.narrative ? (
+            {currentStop.funFact ? (
               <View style={styles.narrativeSection}>
-                <Text style={styles.narrativeLabel}>Learn More</Text>
-                <Text style={styles.narrativeText}>{currentStop.narrative}</Text>
+                <Text style={styles.narrativeLabel}>Did you know?</Text>
+                <Text style={styles.narrativeText}>{currentStop.funFact}</Text>
+              </View>
+            ) : null}
+
+            {currentStop.thinkQuestion ? (
+              <View style={styles.narrativeSection}>
+                <Text style={styles.narrativeLabel}>Think about it</Text>
+                <Text style={styles.narrativeText}>{currentStop.thinkQuestion}</Text>
+              </View>
+            ) : null}
+
+            {/* The pin and waterway this stop stands on (decision 11) */}
+            {currentStop.location || currentStop.waterway ? (
+              <View style={styles.narrativeSection}>
+                <Text style={styles.narrativeLabel}>On the map</Text>
+                <RelatedLinks location={currentStop.location} waterway={currentStop.waterway} />
               </View>
             ) : null}
 

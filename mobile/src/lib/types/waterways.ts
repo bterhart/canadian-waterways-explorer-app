@@ -55,6 +55,18 @@ export interface ExplorerWaterway {
   };
 }
 
+// One "Additional Study" entry (ReadingGuide table in Turso; decision 12, 2026-10-16).
+export interface ReadingGuideEntry {
+  id: string;
+  title: string;
+  authorSource: string | null;
+  publisher: string | null;
+  year: string | null;
+  url: string | null;
+  description: string | null;
+  gradeLevel: string | null;
+}
+
 export interface RelatedNotableFigure {
   id: string;
   name: string;
@@ -131,6 +143,7 @@ export interface WaterwayDetail {
   furTradeInfo: FurTradeInfo | null;
   locations: WaterwayLocation[];
   discoveries: ArchaeologicalDiscovery[];
+  readingGuide: ReadingGuideEntry[];
 }
 
 // Waterway overview geometry types
@@ -235,6 +248,7 @@ export interface LocationDetail {
     furTradeInfo: FurTradeInfo | null;
   };
   cartographer: Cartographer | null;
+  readingGuide: ReadingGuideEntry[];
 }
 
 // Explorer types
@@ -270,6 +284,7 @@ export interface ExplorerDetail {
   notableAchievements: string | null;
   imageUrl: string | null;
   waterways: ExplorerWaterwayDetail[];
+  readingGuide: ReadingGuideEntry[];
 }
 
 // Indigenous nation type

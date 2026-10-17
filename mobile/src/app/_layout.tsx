@@ -62,6 +62,8 @@ function RootLayoutNav({ colorScheme }: { colorScheme: 'light' | 'dark' | null |
         <Stack.Screen name="teacher/class/[id]" options={{ headerShown: true }} />
         <Stack.Screen name="teacher/assignment/new" options={{ headerShown: true }} />
         <Stack.Screen name="indigenous-languages" options={{ headerShown: true }} />
+        <Stack.Screen name="stories/[id]" options={{ headerShown: true }} />
+        <Stack.Screen name="vocabulary-quiz/[id]" options={{ headerShown: true }} />
         {/* Settings Screens */}
         <Stack.Screen name="settings/index" options={{ headerShown: true }} />
         <Stack.Screen name="settings/language" options={{ headerShown: true }} />

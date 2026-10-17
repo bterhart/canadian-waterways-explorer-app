@@ -10,7 +10,7 @@ import {
   FlatList,
   Dimensions,
 } from 'react-native';
-import { Stack } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import {
   BookOpen,
@@ -53,6 +53,10 @@ const languageColors: Record<string, { primary: string; secondary: string }> = {
   Inuktitut: { primary: '#8B5CF6', secondary: '#6D28D9' },
   "Mi'kmaq": { primary: '#EC4899', secondary: '#BE185D' },
   Dene: { primary: '#F97316', secondary: '#C2410C' },
+  Blackfoot: { primary: '#B45309', secondary: '#78350F' },
+  Mohawk: { primary: '#0EA5E9', secondary: '#0369A1' },
+  Iroquois: { primary: '#0EA5E9', secondary: '#0369A1' },
+  Inuit: { primary: '#8B5CF6', secondary: '#6D28D9' }, // story cards pass the nation name
   Multiple: { primary: '#10B981', secondary: '#047857' },
 };
 
@@ -60,6 +64,7 @@ const getLanguageColor = (language: string) =>
   languageColors[language] || { primary: '#6B7280', secondary: '#4B5563' };
 
 export default function IndigenousLanguagesScreen() {
+  const router = useRouter();
   const [selectedLanguage, setSelectedLanguage] = useState<string | undefined>();
 
   const { data: wordOfDay, isLoading: loadingWordOfDay } = useWordOfTheDay();
@@ -223,7 +228,7 @@ export default function IndigenousLanguagesScreen() {
   const renderQuizCard = ({ item }: { item: VocabularyQuizSummary }) => {
     const langColor = getLanguageColor(item.language);
     return (
-      <View style={styles.quizCard}>
+      <Pressable style={styles.quizCard} onPress={() => router.push(`/vocabulary-quiz/${item.id}`)}>
         <LinearGradient
           colors={[langColor.primary, langColor.secondary]}
           start={{ x: 0, y: 0 }}
@@ -241,14 +246,14 @@ export default function IndigenousLanguagesScreen() {
             </View>
           </View>
         </LinearGradient>
-      </View>
+      </Pressable>
     );
   };
 
   const renderStoryCard = ({ item }: { item: IndigenousStorySummary }) => {
     const langColor = getLanguageColor(item.nation);
     return (
-      <View style={styles.storyCard}>
+      <Pressable style={styles.storyCard} onPress={() => router.push(`/stories/${item.id}`)}>
         <View style={styles.storyCardContent}>
           <View
             style={[
@@ -271,7 +276,7 @@ export default function IndigenousLanguagesScreen() {
           </View>
           <ChevronRight size={20} color="#9CA3AF" />
         </View>
-      </View>
+      </Pressable>
     );
   };
 

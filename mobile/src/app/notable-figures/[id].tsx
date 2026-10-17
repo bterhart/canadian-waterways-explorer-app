@@ -1,5 +1,5 @@
 // Notable Figure Detail Screen
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -24,6 +24,9 @@ import {
 } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNotableFigure } from '@/lib/api/education-api';
+import { useExplorerDetail } from '@/lib/api/waterways-api';
+import ExplorerDetailModal from '@/components/ExplorerDetailModal';
+import { ReadingGuideList } from '@/components/ReadingGuideList';
 
 const colors = {
   forestGreen: '#2D5A3D',
@@ -67,6 +70,18 @@ const figureTypeConfig: Record<
     icon: Users,
     gradientColors: ['#F97316', '#C2410C'] as const,
   },
+  metis_leader: {
+    label: 'Métis Leader',
+    color: '#0EA5E9',
+    icon: Crown,
+    gradientColors: ['#0EA5E9', '#0369A1'] as const,
+  },
+  voyageur: {
+    label: 'Voyageur',
+    color: '#B45309',
+    icon: Compass,
+    gradientColors: ['#B45309', '#78350F'] as const,
+  },
 };
 
 function getTypeConfig(figureType: string) {
@@ -98,6 +113,9 @@ export default function NotableFigureDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const { data: figure, isLoading, isError } = useNotableFigure(id ?? null);
+  // An associated explorer with a resolved id opens the explorer modal (decision 11)
+  const [selectedExplorerId, setSelectedExplorerId] = useState<string | null>(null);
+  const { data: selectedExplorer } = useExplorerDetail(selectedExplorerId);
 
   if (isLoading) {
     return (
@@ -252,7 +270,15 @@ export default function NotableFigureDetailScreen() {
             <Text style={styles.sectionTitle}>Associated Explorers</Text>
             <View style={styles.explorersList}>
               {figure.associatedExplorers.map((explorer, index) => (
-                <View key={index} style={styles.explorerCard}>
+                <Pressable
+                  key={index}
+                  style={styles.explorerCard}
+                  disabled={!explorer.explorerId && !explorer.notableFigureId}
+                  onPress={() => {
+                    if (explorer.explorerId) setSelectedExplorerId(explorer.explorerId);
+                    else if (explorer.notableFigureId) router.push(`/notable-figures/${explorer.notableFigureId}`);
+                  }}
+                >
                   <View style={styles.explorerIcon}>
                     <Users size={20} color={colors.forestGreen} />
                   </View>
@@ -262,8 +288,8 @@ export default function NotableFigureDetailScreen() {
                       {explorer.relationship}
                     </Text>
                   </View>
-                  <ChevronRight size={20} color="#9CA3AF" />
-                </View>
+                  {explorer.explorerId || explorer.notableFigureId ? <ChevronRight size={20} color="#9CA3AF" /> : null}
+                </Pressable>
               ))}
             </View>
           </View>
@@ -284,8 +310,19 @@ export default function NotableFigureDetailScreen() {
           </View>
         ) : null}
 
+        {/* Additional Study (ReadingGuide table, decision 12) */}
+        {figure.readingGuide && figure.readingGuide.length > 0 ? (
+          <View style={styles.section}>
+            <ReadingGuideList entries={figure.readingGuide} titleColor={colors.forestGreen} />
+          </View>
+        ) : null}
+
         <View style={styles.bottomSpacer} />
       </ScrollView>
+
+      {selectedExplorerId && selectedExplorer ? (
+        <ExplorerDetailModal explorer={selectedExplorer} onClose={() => setSelectedExplorerId(null)} />
+      ) : null}
     </View>
   );
 }

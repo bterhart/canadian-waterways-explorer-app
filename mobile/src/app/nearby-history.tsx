@@ -41,6 +41,7 @@ import {
   useNearbyHistoryCategories,
 } from '@/lib/api/education-api';
 import type { HistoricalEvent, NearbyHistoryCategory } from '@/lib/types/education';
+import { RelatedLinks } from '@/components/RelatedLinks';
 
 const { width, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -746,6 +747,16 @@ export default function NearbyHistoryScreen() {
                       No additional details available for this event.
                     </Text>
                   )}
+
+                  {/* Linked explorer / waterway / location (decision 11) */}
+                  {selectedEvent.explorer || selectedEvent.waterway || selectedEvent.location ? (
+                    <RelatedLinks
+                      explorer={selectedEvent.explorer}
+                      waterway={selectedEvent.waterway}
+                      location={selectedEvent.location}
+                      onBeforeNavigate={() => setSelectedEvent(null)}
+                    />
+                  ) : null}
 
                   {/* View on Map Button */}
                   <Pressable

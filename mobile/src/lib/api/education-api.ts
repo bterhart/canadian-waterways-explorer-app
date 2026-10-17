@@ -45,6 +45,8 @@ import type {
   // Gamification types
   UserProgress,
   AddPointsResponse,
+  ExplorationResult,
+  ExplorationActivity,
   Achievement,
   UserAchievement,
   CheckAchievementsResponse,
@@ -979,6 +981,22 @@ export function useUserProgress(userId: string | null) {
     queryKey: gamificationKeys.progress(userId ?? ''),
     queryFn: () => api.get<UserProgress>(`/api/gamification/progress?userId=${userId}`),
     enabled: !!userId,
+  });
+}
+
+// Exploration points (decision 9, 2026-10-16): opening a waterway or location, reading a
+// document, marking a pronunciation learned. The server fixes the points and awards each
+// (device, activity, record) once; see lib/exploration.ts for the call sites' helper.
+export function useRecordExploration() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: { userId: string; activityType: ExplorationActivity; resourceId: string }) =>
+      api.post<ExplorationResult>('/api/gamification/explore', payload),
+    onSuccess: (result, variables) => {
+      if (!result.awarded) return;
+      queryClient.invalidateQueries({ queryKey: gamificationKeys.progress(variables.userId) });
+      queryClient.invalidateQueries({ queryKey: gamificationKeys.userAchievements(variables.userId) });
+    },
   });
 }
 

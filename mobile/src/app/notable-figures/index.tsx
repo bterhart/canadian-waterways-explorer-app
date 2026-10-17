@@ -71,6 +71,18 @@ const figureTypeConfig: Record<
     icon: Users,
     gradientColors: ['#F97316', '#C2410C'] as const,
   },
+  metis_leader: {
+    label: 'Métis Leaders',
+    color: '#0EA5E9',
+    icon: Crown,
+    gradientColors: ['#0EA5E9', '#0369A1'] as const,
+  },
+  voyageur: {
+    label: 'Voyageurs',
+    color: '#B45309',
+    icon: Compass,
+    gradientColors: ['#B45309', '#78350F'] as const,
+  },
 };
 
 function getTypeConfig(figureType: string) {

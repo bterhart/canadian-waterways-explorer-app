@@ -15,6 +15,7 @@ import { Stack } from 'expo-router';
 import { Calendar, Filter, MapPin, User, Droplets, X } from 'lucide-react-native';
 import { useTimelineEvents, useTimelineThemes } from '@/lib/api/education-api';
 import type { TimelineEvent } from '@/lib/types/education';
+import { RelatedLinks } from '@/components/RelatedLinks';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -168,25 +169,25 @@ export default function TimelineScreen() {
                 { color: getThemeColor(event.theme) },
               ]}
             >
-              {event.theme.replace('_', ' ')}
+              {event.theme.replace(/_/g, ' ')}
             </Text>
           </View>
-          {event.explorerId ? (
+          {event.explorer ? (
             <View style={styles.metaItem}>
               <User size={12} color="#6B7280" />
-              <Text style={styles.metaText}>Explorer</Text>
+              <Text style={styles.metaText} numberOfLines={1}>{event.explorer.name}</Text>
             </View>
           ) : null}
-          {event.waterwayId ? (
+          {event.waterway ? (
             <View style={styles.metaItem}>
               <Droplets size={12} color="#6B7280" />
-              <Text style={styles.metaText}>Waterway</Text>
+              <Text style={styles.metaText} numberOfLines={1}>{event.waterway.name}</Text>
             </View>
           ) : null}
-          {event.locationId ? (
+          {event.location ? (
             <View style={styles.metaItem}>
               <MapPin size={12} color="#6B7280" />
-              <Text style={styles.metaText}>Location</Text>
+              <Text style={styles.metaText} numberOfLines={1}>{event.location.name}</Text>
             </View>
           ) : null}
         </View>
@@ -251,7 +252,7 @@ export default function TimelineScreen() {
                     selectedTheme === theme && styles.filterChipTextActive,
                   ]}
                 >
-                  {theme.replace('_', ' ')}
+                  {theme.replace(/_/g, ' ')}
                 </Text>
               </Pressable>
             ))}
@@ -397,7 +398,7 @@ export default function TimelineScreen() {
                           { color: getThemeColor(selectedEvent.theme) },
                         ]}
                       >
-                        {selectedEvent.theme.replace('_', ' ')}
+                        {selectedEvent.theme.replace(/_/g, ' ')}
                       </Text>
                     </View>
                     <View
@@ -436,26 +437,17 @@ export default function TimelineScreen() {
                     </Text>
                   )}
 
-                  <View style={styles.modalMetaSection}>
-                    {selectedEvent.explorerId ? (
-                      <View style={styles.metaItem}>
-                        <User size={14} color="#6B7280" />
-                        <Text style={styles.metaText}>Related Explorer</Text>
-                      </View>
-                    ) : null}
-                    {selectedEvent.waterwayId ? (
-                      <View style={styles.metaItem}>
-                        <Droplets size={14} color="#6B7280" />
-                        <Text style={styles.metaText}>Related Waterway</Text>
-                      </View>
-                    ) : null}
-                    {selectedEvent.locationId ? (
-                      <View style={styles.metaItem}>
-                        <MapPin size={14} color="#6B7280" />
-                        <Text style={styles.metaText}>Related Location</Text>
-                      </View>
-                    ) : null}
-                  </View>
+                  {selectedEvent.explorer || selectedEvent.waterway || selectedEvent.location ? (
+                    <View style={styles.modalMetaSection}>
+                      <Text style={styles.metaText}>Related</Text>
+                      <RelatedLinks
+                        explorer={selectedEvent.explorer}
+                        waterway={selectedEvent.waterway}
+                        location={selectedEvent.location}
+                        onBeforeNavigate={() => setSelectedEvent(null)}
+                      />
+                    </View>
+                  ) : null}
                 </>
               ) : null}
             </ScrollView>

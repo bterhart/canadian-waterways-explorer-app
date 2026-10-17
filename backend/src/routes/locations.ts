@@ -1,5 +1,6 @@
 import { Hono } from "hono";
 import { db } from "../db";
+import { getReadingGuide } from "../lib/reading-guides";
 
 // Location router with imageUrl support
 const locationsRouter = new Hono();
@@ -129,13 +130,16 @@ const notableFigures = notableFigureRows
   }))
   .filter((figure) => figure.associatedLocations.includes(location.waterway.name));
 
+  const readingGuide = await getReadingGuide("location", location.id);
+
   return c.json({
     data: {
       ...location,
       waterway: {
         ...location.waterway,
         notableFigures,
-      }
+      },
+      readingGuide,
     }
   });
 });

@@ -281,13 +281,13 @@ export default function TeacherDeepDiveDetailScreen() {
       ) : null}
 
       {/* Assessment */}
-      {lesson.assessmentSuggestions ? (
+      {lesson.assessment ? (
         <Section
           title="Assessment Suggestions"
           icon={<Award size={20} color={colors.forestGreen} />}
         >
           <MarkdownContent
-            content={lesson.assessmentSuggestions}
+            content={lesson.assessment}
             accentColor={colors.forestGreen}
           />
         </Section>

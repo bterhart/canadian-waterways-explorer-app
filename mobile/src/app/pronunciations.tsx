@@ -10,7 +10,7 @@ import {
   ScrollView,
 } from 'react-native';
 import { Stack } from 'expo-router';
-import { Volume2, Filter, Play } from 'lucide-react-native';
+import { Volume2, Filter, Play, CheckCircle2 } from 'lucide-react-native';
 import { Audio } from 'expo-av';
 import {
   usePronunciations,
@@ -18,6 +18,7 @@ import {
   usePronunciationLanguages,
 } from '@/lib/api/education-api';
 import type { PronunciationGuide } from '@/lib/types/education';
+import { useExplorationAction } from '@/lib/exploration';
 
 const colors = {
   forestGreen: '#2D5A3D',
@@ -25,12 +26,24 @@ const colors = {
   darkGreen: '#1A3A24',
 };
 
+// Keys are the live PronunciationGuide.termType values (indigenous_nation,
+// indigenous_place, french, explorer) plus the older generic ones.
 const termTypeColors: Record<string, string> = {
+  indigenous_nation: '#EC4899',
+  indigenous_place: '#3B82F6',
+  french: '#8B5CF6',
   waterway: '#3B82F6',
   location: '#10B981',
   nation: '#EC4899',
   explorer: '#F97316',
   general: '#6B7280',
+};
+
+const termTypeLabels: Record<string, string> = {
+  indigenous_nation: 'Indigenous nation',
+  indigenous_place: 'Indigenous place name',
+  french: 'French / fur-trade term',
+  explorer: 'Explorer',
 };
 
 export default function PronunciationsScreen() {
@@ -62,6 +75,23 @@ export default function PronunciationsScreen() {
     }
   };
 
+  // "I've learned this": 2 points once per term per device (decision 9). The server
+  // remembers the award; this set only flips the button for the current session.
+  const learn = useExplorationAction('pronunciation_learned');
+  const [learnedIds, setLearnedIds] = useState<Set<string>>(new Set());
+  const handleLearned = async (id: string) => {
+    setLearnedIds((prev) => new Set(prev).add(id));
+    try {
+      await learn.record(id);
+    } catch {
+      setLearnedIds((prev) => {
+        const next = new Set(prev);
+        next.delete(id);
+        return next;
+      });
+    }
+  };
+
   const renderPronunciationCard = ({ item }: { item: PronunciationGuide }) => (
     <View style={styles.card}>
       <View style={styles.cardHeader}>
@@ -83,7 +113,7 @@ export default function PronunciationsScreen() {
               },
             ]}
           >
-            {item.termType}
+            {termTypeLabels[item.termType] ?? item.termType}
           </Text>
         </View>
         {item.language ? (
@@ -122,6 +152,17 @@ export default function PronunciationsScreen() {
           </Text>
         </Pressable>
       ) : null}
+
+      <Pressable
+        style={[styles.learnedButton, learnedIds.has(item.id) && styles.learnedButtonDone]}
+        onPress={() => handleLearned(item.id)}
+        disabled={learnedIds.has(item.id) || !learn.userId}
+      >
+        <CheckCircle2 size={16} color={learnedIds.has(item.id) ? 'white' : colors.forestGreen} />
+        <Text style={[styles.learnedButtonText, learnedIds.has(item.id) && styles.learnedButtonTextDone]}>
+          {learnedIds.has(item.id) ? 'Learned' : "I've learned this"}
+        </Text>
+      </Pressable>
     </View>
   );
 
@@ -390,6 +431,30 @@ const styles = StyleSheet.create({
   playButtonText: {
     fontSize: 14,
     fontWeight: '600',
+    color: 'white',
+  },
+  learnedButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    marginTop: 10,
+    paddingVertical: 8,
+    borderRadius: 8,
+    borderWidth: 1.5,
+    borderColor: colors.forestGreen,
+    backgroundColor: 'transparent',
+  },
+  learnedButtonDone: {
+    backgroundColor: '#10B981',
+    borderColor: '#10B981',
+  },
+  learnedButtonText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: colors.forestGreen,
+  },
+  learnedButtonTextDone: {
     color: 'white',
   },
   centerContainer: {
