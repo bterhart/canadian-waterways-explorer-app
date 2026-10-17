@@ -1,0 +1,132 @@
+{
+ "generatedAt": "2026-10-17T02:49:48.606Z",
+ "apply": false,
+ "historicalEventsBackfilled": [
+  {
+   "id": "cmlhqohjd0000m2m4vkyn44rg",
+   "title": "Cartier Raises Cross at Gaspe",
+   "before": {
+    "explorerId": "cmlhc4grf0001m2ogp7wnb7ss",
+    "waterwayId": "cmlhci06l0005m2rxruhm0g4o",
+    "locationId": "cmlhci08s0019m2rx3b2ipe6i"
+   }
+  },
+  {
+   "id": "cmlhqohjr0004m2m48493s9gh",
+   "title": "Cartier at Montreal (Hochelaga)",
+   "before": {
+    "explorerId": "cmlhc4grf0001m2ogp7wnb7ss",
+    "waterwayId": "cmlhaslql000km2zhocxl8zbv",
+    "locationId": "loc_hochelaga"
+   }
+  },
+  {
+   "id": "cmlhqohjg0001m2m42kbrntzc",
+   "title": "Champlain Founds Quebec City",
+   "before": {
+    "explorerId": "cmlhaslpl0004m2zhpjklxgyn",
+    "waterwayId": "cmlhaslql000km2zhocxl8zbv",
+    "locationId": "cmlhasls4001zm2zhg7ahjwlx"
+   }
+  },
+  {
+   "id": "cmlhqohjy0007m2m4ny5se2i6",
+   "title": "Brule Sees Lake Superior",
+   "before": {
+    "explorerId": "cmlijaie7000gm22r4e12wr89",
+    "waterwayId": "cmlhaslra000ym2zh4pyu55je",
+    "locationId": null
+   }
+  },
+  {
+   "id": "cmlhqohk6000bm2m468fdap2z",
+   "title": "Father Marquette at Michilimackinac",
+   "before": {
+    "explorerId": "cmlijaief000im22rw4wpvrxn",
+    "waterwayId": "cmlhaslrc0010m2zhzbcapn1v",
+    "locationId": "loc_michilimackinac"
+   }
+  },
+  {
+   "id": "cmlhqohk00008m2m4o4m7c0fy",
+   "title": "Fort Frontenac Established",
+   "before": {
+    "explorerId": null,
+    "waterwayId": "cmlhaslre0012m2zhg9f595d4",
+    "locationId": "loc_fort-frontenac"
+   }
+  },
+  {
+   "id": "cmlhqohk20009m2m4eumwb8nb",
+   "title": "La Salle at Niagara",
+   "before": {
+    "explorerId": "cmlijaieo000jm22r1xve4giy",
+    "waterwayId": "ww_niagara-river",
+    "locationId": null
+   }
+  },
+  {
+   "id": "cmlhqohk4000am2m4q3w0w1wl",
+   "title": "Founding of Detroit",
+   "before": {
+    "explorerId": "cmlijaiet000lm22rfjno0n11",
+    "waterwayId": "ww_detroit-river",
+    "locationId": "loc_fort-pontchartrain-du-detroit"
+   }
+  },
+  {
+   "id": "cmlhqohkx000om2m4bz7ehwkk",
+   "title": "Cook Arrives at Nootka Sound",
+   "before": {
+    "explorerId": "cmlhci07w000wm2rxysby44p6",
+    "waterwayId": "cmlhci06w000dm2rx3bn9gj7e",
+    "locationId": null
+   }
+  },
+  {
+   "id": "cmlhqohkk000im2m40oupl3h5",
+   "title": "Hearne Reaches Arctic Ocean",
+   "before": {
+    "explorerId": "cmlhaslq40007m2zhtmgblh1t",
+    "waterwayId": "cmlhbjrqa000dm2mb7n6w7y4w",
+    "locationId": null
+   }
+  },
+  {
+   "id": "cmlhqohkz000pm2m45gnoi7l4",
+   "title": "Mackenzie Reaches the Pacific",
+   "before": {
+    "explorerId": "cmlhaslpq0005m2zhbi5xrrt6",
+    "waterwayId": "dean-channel-waterway",
+    "locationId": null
+   }
+  },
+  {
+   "id": "cmlhqohl7000tm2m4y0sp57tj",
+   "title": "Thompson Reaches the Pacific via Columbia River",
+   "before": {
+    "explorerId": "cmlhaslpx0006m2zhsckolb5o",
+    "waterwayId": "cmlhaslr7000wm2zhi88te1r4",
+    "locationId": null
+   }
+  },
+  {
+   "id": "cmlhqohkt000mm2m45ienq763",
+   "title": "Frobisher Lands at Baffin Island",
+   "before": {
+    "explorerId": "cmlnewexp002frobisher",
+    "waterwayId": "frobisher-bay-waterway",
+    "locationId": null
+   }
+  },
+  {
+   "id": "cmlhqohk8000cm2m4vrrmsc4r",
+   "title": "Kelsey Reaches the Prairies",
+   "before": {
+    "explorerId": "cmlhc4gsr0007m2ogrr0m8vqf",
+    "waterwayId": "cmlhaslqy000sm2zhxfks60fd",
+    "locationId": null
+   }
+  }
+ ]
+}

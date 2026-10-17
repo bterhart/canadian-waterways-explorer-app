@@ -734,6 +734,33 @@ merged Fort Churchill moved onto it from Hudson Bay, beside Prince of Wales Fort
 Portage and Frog Portage. The home-map overview was rebuilt for the new name
 (`generated/river-overview.json`, 28 rivers).
 
+### 9.5 Content pack 1, New France to the Gulf (applied 2026-10-17)
+Data in `backend/prisma/turso-migrations/packs/new-france-to-the-gulf.ts`, applied by
+`2026-10-17-pack-new-france-to-the-gulf.ts` after a dry run that resolved every name to a live
+id and confirmed every image URL and KML file; backup of the backfilled events in `backups/`.
+Idempotent: a rerun reports everything as existing and writes nothing.
+
+| Added | Count | Notes |
+|---|---|---|
+| Waterways | 11 | Mississippi, Illinois, Wisconsin, Fox (Wisconsin), Richelieu, Lake Champlain, Hudson, Lake Nipissing, Mattawa, Detroit, Niagara; all with OpenStreetMap geometry (the Fox re-exported with a 25 km continuity gap so the Illinois Fox was not chained to it); Indigenous names only where the attestation is well known, language stated; fur-trade rows for the Mississippi and the Hudson |
+| Explorers | 4 | Hennepin, Dulhut, de Troyes, Tonti; no portraits (no verified likeness) |
+| Explorer–waterway links | 37 | Jolliet, Marquette, La Salle, Cadillac, Champlain, Hudson, Nicolet, Brûlé and Iberville now have waterways; Abitibi, Moose and Kaministiquia rivers gain their first explorer |
+| Locations | 21 | from Stadacona and Hochelaga to Fort Orange, New Amsterdam, Michilimackinac, Fort de Chartres, Kaskaskia and New Orleans; Fort Crèvecoeur, Stadacona and Hochelaga have no image (nothing suitable and licensed on Commons) |
+| Notable figures | 4 | Donnacona, Kondiaronk, Tessouat, Membertou; associated locations use exact waterway names so they appear on those waterways |
+| Timeline events | 17 | 1535 to 1763, each linked to its explorer, waterway or location |
+| What Happened Here events | 9 new, 14 existing events given their explorer/waterway/location links | |
+| Pronunciations | 17 | |
+| Quiz | 1 | 8 questions, grade 7-9, every question with `sourceType`/`sourceId` |
+| Deep Dive / lesson plan | 1 | grade 7-9, student and teacher faces, six key figures (five explorers, Kondiaronk as a figure), seven timeline items linked to events, related waterway/location/explorer/quiz ids filled |
+| Field trip | 1 | the first K-3 trip, Michilimackinac, five stops each linked to the pin and Lake Huron |
+| Reading-guide entries | 69 | Wikipedia and Canadian Encyclopedia at 7-9, Dictionary of Canadian Biography, Jesuit Relations and Parkman at 10-12 |
+| Images | 63 URLs | all Wikimedia Commons, public domain or CC BY / CC BY-SA, author and licence in every credit, served as `Special:FilePath` URLs until R2 keys are available |
+
+Not included on purpose: primary-source documents (no transcription was quoted that could not
+be verified against an edition in this session) and Indigenous vocabulary. The river overview was
+rebuilt (37 rivers). The Fox River trip and the `FieldTripStop.narrative` field: the trip table has
+no introduction or conclusion columns, so that text stays in the pack file.
+
 ### 9.4 Document grade bands (approved and applied 2026-10-17)
 Proposed from a Flesch-Kincaid estimate of each transcription (≤ 7 → 4-6, ≤ 11 → 7-9, above →
 10-12), checked against the fourteen documents that already had a band (their estimates run
