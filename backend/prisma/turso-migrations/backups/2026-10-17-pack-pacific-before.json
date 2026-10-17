@@ -1,0 +1,51 @@
+{
+ "generatedAt": "2026-10-17T05:20:03.164Z",
+ "apply": false,
+ "historicalEventsBackfilled": [
+  {
+   "id": "cmlhqohl1000qm2m46ntbprbi",
+   "title": "Vancouver Meets Galiano and Valdes",
+   "before": {
+    "explorerId": null,
+    "waterwayId": null,
+    "locationId": null
+   }
+  },
+  {
+   "id": "cmlhqohl5000sm2m40szlvfsd",
+   "title": "Fort Victoria Established",
+   "before": {
+    "explorerId": null,
+    "waterwayId": null,
+    "locationId": null
+   }
+  },
+  {
+   "id": "cmlhqohl3000rm2m44bokekev",
+   "title": "Juan de Fuca Strait Discovered",
+   "before": {
+    "explorerId": null,
+    "waterwayId": null,
+    "locationId": null
+   }
+  }
+ ],
+ "locationsRelocated": [
+  {
+   "id": "cmlhcpxmo000vm2a3n43nxs5n",
+   "name": "Fort Kamloops",
+   "before": {
+    "waterwayId": "cmlhaslqs000om2zh7u6tr7m8"
+   }
+  }
+ ],
+ "waterwaysGivenGeometry": [
+  {
+   "id": "cmlhci07b000nm2rxfad3b0er",
+   "name": "Georgia Strait",
+   "before": {
+    "kmlData": null
+   }
+  }
+ ]
+}
