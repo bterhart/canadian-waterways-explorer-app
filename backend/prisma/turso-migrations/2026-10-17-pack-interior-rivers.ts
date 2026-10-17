@@ -19,7 +19,7 @@ import * as pack from "./packs/interior-rivers";
 
 const KML_DIR = resolve(import.meta.dir, "..", "..", "generated", "kml-exports");
 const MANIFEST_DIR = process.env.COMMONS_MANIFEST_DIR ?? resolve(import.meta.dir, "backups");
-const MANIFESTS = [resolve(MANIFEST_DIR, "2026-10-17-commons-pack4-manifest.json")];
+const MANIFESTS = [resolve(MANIFEST_DIR, "2026-10-17-commons-pack4-manifest.json"), resolve(MANIFEST_DIR, "2026-10-17-commons-pack4b-manifest.json"), resolve(MANIFEST_DIR, "2026-10-17-commons-pack4-portraits-manifest.json")];
 // Existing waterway rows that had no geometry and whose KML this pack exported.
 const KML_UPDATES: Array<{ name: string; slug: string }> = [];
 
@@ -28,8 +28,22 @@ const SELECTION: Record<string, string[]> = {
   /* __SELECTION__ */
 };
 // Lifetime likenesses only. Key = the pack's `portrait` term; value = the Commons file.
+// Confirmed from the Commons file records: Dulongpré's oil of Joseph Frobisher (c. 1800);
+// photographs of Rowand's contemporaries are lacking, so Rowand stays without; Campbell,
+// Anderson, Hind and Hector in photographs taken in their lifetimes; Piapot (c. 1885), the
+// 1886 photograph of the four Cree chiefs for Mistawasis and Ahtahkakoop, and Jerry Potts.
+// No lifetime likeness was found for Thomas Frobisher, James Finlay, Howse, Rowand, McLeod,
+// Maskepetoon or Pierre Falcon.
 const PORTRAITS: Record<string, string> = {
-  /* __PORTRAITS__ */
+  "Joseph Frobisher portrait": "Joseph Frobisher.jpg",
+  "Robert Campbell Hudson's Bay Company explorer": "Robert Campbell 1808-1894.jpg",
+  "Alexander Caulfield Anderson": "Alexander-caulfield-anderson.jpg",
+  "Henry Youle Hind": "Henry Youle Hind.jpg",
+  "James Hector geologist": "James Hector 1900.jpg",
+  "Piapot Payipwat": "Piapot.gif",
+  "Mistawasis": "Four Cree Chiefs of Rupert s Land.jpg",
+  "Ahtahkakoop": "Four Cree Chiefs of Rupert s Land.jpg",
+  "Jerry Potts": "JerryPotts.jpg",
 };
 const LESSON_EXTRA_IMAGES: pack.PackImage[] = [];
 
