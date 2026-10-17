@@ -62,11 +62,27 @@ const SELECTION: Record<string, string[]> = {
   "Nulato Alaska": ["Woodyard and Nulato, Alaska circa 1908.jpg"],
   "Robert Service Yukon": ["Robert Service's Cabin Dawson City - panoramio.jpg"],
   "Joseph Ladue Dawson": ["The gold fields of the Klondike; fortune seekers' guide to the Yukon region of Alaska and British America; (1897) (14592180140).jpg"],
+  "Klondike River Dawson": ["Mouth of the Klondike River to the Yukon River.JPG", "Klondike River crossing Dempster Highway 1.JPG", "Klondike River crossing Dempster Highway 2.JPG"],
+  "Chilkoot Pass Golden Stairs 1898": ["ChilkootTrailGoldenStairs.jpg", "Golden Stairs (7968051762).jpg"],
+  "Klondike gold rush stampeders": ["Yukon Sternwheeler 1.jpg"],
+  "Lapierre House Rampart House": ["Porcupine River.jpg"],
   // @@SELECTION@@
 };
 // Lifetime likenesses only. Key = the pack's `portrait` term; value = the Commons file.
 const PORTRAITS: Record<string, string> = {
   "George Mercer Dawson geologist": "George Mercer Dawson - McCord Stewart Museum (II-97765).jpeg", // Notman studio photograph, McCord Stewart Museum; made in his lifetime
+  "Skookum Jim Mason Keish": "Skookum Jim Mason.png", // Duclos Photos, Dawson, 1898; Library and Archives Canada C-025640
+  "Bishop William Bompas": "William Carpenter Bompas.jpg", // photograph, public domain in Canada; he died 1906
+  "Frederick Schwatka": "Schwatka sm.jpg", // engraving, Illustrated London News, 1881
+  "William Ogilvie surveyor Yukon": "William Ogilvie (surveyor).jpg", // photograph before 1912, the year he died
+  "Jack McQuesten Yukon": "Mcquesten.jpg", // photograph no later than 1909, the year he died
+  "Arthur Harper Yukon prospector": "Fort Yukon trading post.jpg", // Charles O. Farciot, c. 1884: Harper with the missionary Sim and three Alaska Native men at the old Fort Yukon
+  "George Carmack": "George Carmack - 01.jpg", // H. J. Woodside, c. 1900; Library and Archives Canada PA-053228
+  "Jim Boss Kishxoot Ta'an Kwach'an": "Jim Boss.jpg", // photograph from the Parks Canada national historic designation record
+  "Lavrenty Zagoskin": "Lavrenty Zagoskin.jpg", // nineteenth-century portrait, public domain
+  "Sam Steele North-West Mounted Police": "Col SB Steele commanding Strathcona's Horse No 733 (HS85-10-11347) (cropped).jpg", // photograph, 1900; Picturing Canada, British Library
+  "Dawson Charlie Kaa Goox": "Dawson Charlie aka K̲áa Goox̱ - 01.jpg", // photograph between 1880 and 1908, the year he died; Library and Archives Canada C-025639
+  "Kate Carmack Shaaw Tlaa": "Shaaw Tláa.jpg", // photograph, public domain in the United States; she died 1920
   // @@PORTRAITS@@
 };
 const LESSON_EXTRA_IMAGES: pack.PackImage[] = [
