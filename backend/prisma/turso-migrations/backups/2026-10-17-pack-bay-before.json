@@ -1,0 +1,40 @@
+{
+ "generatedAt": "2026-10-17T19:46:36.697Z",
+ "apply": true,
+ "historicalEventsBackfilled": [],
+ "timelineEventsBackfilled": [
+  {
+   "id": "cmligbkys001jm20zcid29nlv",
+   "title": "Thanadelthur Captured by Cree Raiders",
+   "before": {
+    "explorerId": null,
+    "waterwayId": null,
+    "locationId": null
+   }
+  }
+ ],
+ "locationsRelocated": [
+  {
+   "id": "cmlhasls40021m2zhu35xikyc",
+   "name": "York Factory",
+   "before": {
+    "waterwayId": "cmlhaslrt001cm2zh9tknhhbe"
+   }
+  },
+  {
+   "id": "cmlhcpxjq0003m2a3mh417co2",
+   "name": "Fort Severn",
+   "before": {
+    "waterwayId": "cmlhaslrt001cm2zh9tknhhbe"
+   }
+  },
+  {
+   "id": "cmlhcpxqm002pm2a38i7y4iyx",
+   "name": "Rupert House (Fort Charles)",
+   "before": {
+    "waterwayId": "cmlhaslrv001em2zheht25x94"
+   }
+  }
+ ],
+ "waterwaysGivenGeometry": []
+}

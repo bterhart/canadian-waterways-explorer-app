@@ -240,7 +240,7 @@ async function main() {
   for (const d of DOCS) for (const w of d.whereToReadIt) { const m = w.match(/https?:\/\/\S+/); if (m) urls.add(m[0]); }
   for (const u of urls) await checkUrl(u, problems);
   const rows = DOCS.filter((d) => !existing.some((e) => e.title === d.title)).map((d, i) => ({
-    id: `psd_int_${String(i + 1).padStart(2, "0")}`, title: d.title, documentType: d.documentType, author: d.author, originalDate: d.originalDate, originalYear: d.originalYear,
+    id: `psd_bay_${String(i + 1).padStart(2, "0")}`, title: d.title, documentType: d.documentType, author: d.author, originalDate: d.originalDate, originalYear: d.originalYear,
     originalText: null, transcription: null, imageUrl: null,
     historicalContext: `${d.whatItIs}\n\nWhere to read it:\n${d.whereToReadIt.map((w) => `• ${w}`).join("\n")}`,
     annotations: null, vocabulary: JSON.stringify(d.vocabulary), discussionQuestions: JSON.stringify(d.discussionQuestions),
