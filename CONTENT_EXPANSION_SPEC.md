@@ -764,6 +764,50 @@ included: Indigenous vocabulary. The river overview was
 rebuilt (37 rivers). The Fox River trip and the `FieldTripStop.narrative` field: the trip table has
 no introduction or conclusion columns, so that text stays in the pack file.
 
+### 9.6 Content pack 2, The Pacific and the Russians (applied 2026-10-17)
+Data in `backend/prisma/turso-migrations/packs/pacific-and-russians.ts`, applied by
+`2026-10-17-pack-pacific-and-russians.ts` (dry run, backup of every row it changed, apply,
+verify; idempotent). Scope: the Northwest Coast from Bering (1741) to the Oregon Treaty (1846)
+and the sale of Alaska (1867): Spain and the Nootka Crisis, Cook and Vancouver, the
+Russian-American Company at Sitka, Astoria, the North West and Hudson's Bay companies west of
+the Rockies, Lewis and Clark, and the Indigenous leaders who dealt with all of them.
+
+| Added | Count | Notes |
+|---|---|---|
+| Waterways | 14 | Puget Sound, Prince William Sound, Cook Inlet, Sitka Sound, Dixon Entrance, Clayoquot Sound, Snake, Willamette, Kootenay, Thompson, Skeena, Stikine, Nass, Okanagan Lake. OpenStreetMap geometry for ten; the four Alaskan bodies (Prince William Sound, Cook Inlet, Sitka Sound, Dixon Entrance) are mapped in OSM as single nodes with no shoreline polygon and so are pins only. The existing Georgia Strait row, which had no geometry, was given its OSM polygon (719 KB). Fur-trade row for the Snake |
+| Explorers | 14 | Ogden, John Stuart, Samuel Black, Martínez, Quimper, Meares, C. W. Barkley, Puget, Alexander Ross, Franchère, David Stuart, Lewis, Clark, Jaco Finlay. One portrait: Meares, from W. Beechey's engraving in the 1790 *Voyages* (a lifetime likeness, confirmed from the Commons file's own record). No usable lifetime likeness was found on Commons for the others, so they have none |
+| Explorer–waterway links | 44 | Cook, Bering, Pérez, Vancouver, Gray, Quadra, Fraser, Thompson, McLoughlin, Douglas, Simpson and Harmon gain the new waterways; every new explorer has at least one |
+| Locations | 11 | Fort Okanogan, Fort Nisqually, Novo-Arkhangelsk (Sitka), Fort Fraser, Fort Boise, Fort Clatsop, Celilo Falls, Opitsaht, Fort Stikine, Howse Pass, Athabasca Pass. Fort Kamloops moved from the Fraser River row to the new Thompson River (it stands where the North and South Thompson meet; backup records the old waterway id) |
+| Notable figures | 9 | Maquinna, Wickaninnish, Comcomly, Kwah, Amelia Douglas, Frances Barkley, John Jacob Astor, Alexander Baranov, Grigory Shelikhov. Two portraits: Astor (Gilbert Stuart, 1794) and Lady Douglas (a photograph taken in her lifetime, NARA). Maquinna's biography notes that the Dictionary of Canadian Biography treats the chief of 1778-1795 and the chief who seized the *Boston* in 1803 as two men |
+| Timeline events | 28 | 1741 to 1867 |
+| What Happened Here events | 13 new; 3 existing Pacific events (Vancouver meets Galiano and Valdés, Fort Victoria established, Juan de Fuca Strait discovered) given their explorer/waterway/location links | |
+| Pronunciations | 17 | Nuu-chah-nulth, Chinook, Dakelh, Secwepemctsín, Nsyilxcən, Ktunaxa, Tlingit, Dena'ina, Haida and Russian terms |
+| Quiz | 1 | "The Pacific Contest", 8 questions, grade 7-9, every question sourced |
+| Deep Dive / lesson plan | 1 | "The Pacific Contest: Four Empires on the Northwest Coast, 1741-1846", grade 10-12, nine key figures (five explorers, four notable figures incl. Maquinna, Baranov, Astor and Amelia Douglas), ten timeline items linked to events |
+| Field trip | 1 | "Yuquot and the Nootka Crisis of 1789", grade 10-12, six stops at Friendly Cove and Nootka Sound |
+| Reading-guide entries | 73 | Wikipedia and Canadian Encyclopedia at 7-9, Dictionary of Canadian Biography and the Lewis and Clark journals site at 10-12 |
+| Images | 75 URLs | Wikimedia Commons, public domain or CC BY / CC BY-SA, author and licence in every credit; includes Webber's 1778 view of the houses at Nootka, the 1790 print of the Argonaut's seizure, Postels's 1827 view of Castle Hill, William Hind's Athabasca Pass (c. 1862), Clark's map of the Great Falls of the Columbia, Franchère's drawing of Astoria in 1813, and the 1911 Admiralty chart of Dixon Entrance |
+
+Two corrections made along the way. Wikimedia's API throttled this session's shared address on
+every endpoint, so the image search was rebuilt to use the ordinary HTML search page and each
+file's raw wikitext (same manifest shape; copy in `backups/2026-10-17-commons-pack2-manifest.json`).
+And biographi.ca answers 200 with a "Biography not found" page for any slug, so a status
+check proves nothing: the pack script now checks every DCB guide URL by page title, nine
+guessed slugs in the pack were corrected or replaced before applying, and an audit of the DCB
+guide URLs already in Turso found and fixed two wrong ones (Tonty, Tessouat;
+`2026-10-17-fix-dcb-guide-urls.ts`).
+
+Added the same day (`2026-10-17-primary-sources-pacific.ts`): 23 primary-source pointer
+documents (Cook's Nootka journal, Meares's Memorial and Voyages, the Nootka Convention and
+the 1790 official papers, Mozino, Vancouver, Jewitt, the Lewis and Clark journals, Franchère,
+Ross, Cox, Thompson's Narrative, Harmon, Lisiansky on the Battle of Sitka, Steller, Simpson's
+1824-25 journal, Ogden's Snake Country journals, McLoughlin's letters, Frances Barkley's
+reminiscences, Pérez's 1774 diary, Irving's Astoria, the Oregon Treaty, the Alaska cession
+treaty), each with what it is, who made it and when, and where it can be read (archive,
+edition, URL only where the page answered), linked and graded (12 at 7-9, 11 at 10-12).
+Documents now total 88 (11 at 4-6, 50 at 7-9, 27 at 10-12). The river overview was rebuilt
+(44 rivers). Data only: no mobile build is needed for this pack.
+
 ### 9.4 Document grade bands (approved and applied 2026-10-17)
 Proposed from a Flesch-Kincaid estimate of each transcription (≤ 7 → 4-6, ≤ 11 → 7-9, above →
 10-12), checked against the fourteen documents that already had a band (their estimates run
