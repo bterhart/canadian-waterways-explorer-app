@@ -1,0 +1,78 @@
+{
+ "generatedAt": "2026-10-17T09:29:08.234Z",
+ "apply": true,
+ "rows": [
+  {
+   "table": "explorer",
+   "id": "ex_alexander-ross",
+   "name": "Alexander Ross",
+   "before": null
+  },
+  {
+   "table": "explorer",
+   "id": "ex_esteban-jose-martinez",
+   "name": "Esteban José Martínez",
+   "before": null
+  },
+  {
+   "table": "explorer",
+   "id": "ex_gabriel-franchere",
+   "name": "Gabriel Franchère",
+   "before": null
+  },
+  {
+   "table": "explorer",
+   "id": "ex_louis-hennepin",
+   "name": "Louis Hennepin",
+   "before": null
+  },
+  {
+   "table": "explorer",
+   "id": "ex_manuel-quimper",
+   "name": "Manuel Quimper",
+   "before": null
+  },
+  {
+   "table": "explorer",
+   "id": "ex_meriwether-lewis",
+   "name": "Meriwether Lewis",
+   "before": null
+  },
+  {
+   "table": "explorer",
+   "id": "ex_otto-sverdrup",
+   "name": "Otto Sverdrup",
+   "before": null
+  },
+  {
+   "table": "explorer",
+   "id": "ex_peter-skene-ogden",
+   "name": "Peter Skene Ogden",
+   "before": null
+  },
+  {
+   "table": "explorer",
+   "id": "ex_william-clark",
+   "name": "William Clark",
+   "before": null
+  },
+  {
+   "table": "figure",
+   "id": "cmlhvyhh50008m2vxmv1p9bpl",
+   "name": "Tattannoeuck",
+   "before": null
+  },
+  {
+   "table": "figure",
+   "id": "nf_maquinna",
+   "name": "Maquinna",
+   "before": null
+  },
+  {
+   "table": "figure",
+   "id": "nf_baranov",
+   "name": "Alexander Baranov",
+   "before": null
+  }
+ ]
+}
