@@ -38,6 +38,18 @@ touching anything:
 - **Do not change** the JWT auth flow without explicit instruction — it
   invalidates all active user sessions
 - **Do not commit** directly to `main` — all changes go to a feature branch
+- **CLAUDE MERGES. CLAUDE LEVELS. NEVER THE OWNER.** When work is ready, Claude
+  opens the pull request, merges it with a merge commit (`merge_pull_request`,
+  method `merge`), fetches `main`, and force-levels both working branches
+  (`feat/river-overview-home-layer` and the current `claude/...` branch) onto
+  `main`, then verifies all three refs are identical. The owner is never handed
+  git commands for merging or levelling. On 2026-10-17 the owner was given
+  levelling commands "to run after the merge"; they were run before it, which
+  reset the branch to `main`, auto-closed the PR, and left six commits of work
+  only in a cloud session. Never again: no conditional or two-step git
+  instructions to the owner, ever. The only git the owner runs is `git pull`
+  before an EAS build, and only after Claude has confirmed the merge is on
+  `main`.
 
 ---
 
