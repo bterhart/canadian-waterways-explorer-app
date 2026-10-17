@@ -899,6 +899,39 @@ and a general concern that the content leans on single sources. Findings and act
   books and editions. The next pass adds a scholarly or archival source to every single-source
   record and guides to the 22 without.
 
+### 9.9 Content pack 4, The Interior Rivers (applied 2026-10-17)
+Data in `backend/prisma/turso-migrations/packs/interior-rivers.ts`, applied by
+`2026-10-17-pack-interior-rivers.ts` (dry run, backup, apply, verify; idempotent). Scope, from the
+owner's report of the missing Slave River and Saskatchewan branches: the water highways of the
+interior fur trade from Georgian Bay and the Pigeon River to the two branches of the
+Saskatchewan, the Sturgeon-Weir and Clearwater links to the Athabasca, the Slave and the Liard,
+and the New Caledonia rivers, told as Indigenous routes the traders followed.
+
+| Added | Count | Notes |
+|---|---|---|
+| Waterways | 21 | Slave, North Saskatchewan, South Saskatchewan, Liard, Winnipeg River, Rainy River, Rainy Lake, Sturgeon-Weir, Clearwater, Bow, Qu'Appelle, Finlay, Parsnip, Nechako, Stuart Lake, Bella Coola, Georgian Bay, Lake Timiskaming, Lake Winnipegosis, Lake Manitoba, Pigeon River. OpenStreetMap polygons or centrelines for twenty (Rainy Lake thinned from 149,000 to 50,000 points); Georgian Bay is a single OSM node and stays a pin. Fur-trade rows for the Slave, North Saskatchewan, Winnipeg and Clearwater |
+| Existing posts moved to the right river | 16 | Fort Edmonton, Fort Augustus, Fort Pitt, Fort George (Saskatchewan), Fort Carlton, Fort Battleford and Rocky Mountain House to the North Saskatchewan; Batoche to the South Saskatchewan; Fort Liard to the Liard; Bas-de-la-Rivière, Slave Falls Portage and Rat Portage to the Winnipeg River; Fort Lac La Pluie to the Rainy River; Fort Qu'Appelle to the Qu'Appelle; Fort St. James to Stuart Lake; Fort Témiscamingue to Lake Timiskaming (backup records every old waterway id) |
+| Explorers | 10 | Joseph and Thomas Frobisher, James Finlay, Joseph Howse, John Rowand, Robert Campbell, John McLeod, Alexander Caulfield Anderson, Henry Youle Hind, James Hector. Lifetime portraits for five (Frobisher by Dulongpré c. 1800; photographs of Campbell, Anderson, Hind and Hector) |
+| Explorer–waterway links | 93 | Henday, Cocking, Tomison, Pond, Thompson, Fidler, Franklin, Palliser and the La Vérendryes on the new rivers; every new explorer has at least one |
+| Locations | 16 | Fort Smith, Fort Halkett, Fort St. Pierre, Fort Dauphin, South Branch House, Chesterfield House, Hudson House, Buckingham House, Fort Calgary, Blackfoot Crossing, Fort Espérance, Fort Charlotte, Île-à-la-Crosse, Mackenzie Rock, Sainte-Marie among the Hurons, Penetanguishene. Five have no image (nothing suitable and licensed on Commons): Fort Halkett, South Branch House, Hudson House, Île-à-la-Crosse, Mackenzie Rock |
+| Notable figures | 6 | Maskepetoon, Payipwat (Piapot), Mistawasis, Ahtahkakoop, Jerry Potts, Pierre Falcon. Lifetime portraits for four: Piapot (photograph c. 1885), Mistawasis and Ahtahkakoop (the 1886 photograph of four Cree chiefs), Potts (photograph) |
+| Timeline events | 37 new; 12 existing unlinked timeline events given their links (HBC charter, Thanadelthur's mission, Cumberland House with Hearne, Fraser's descent, Thompson's arrival on the Pacific, Seven Oaks, Red River Resistance, Manitoba, Northwest Resistance with Batoche, Lake of the Woods massacre, and others) | |
+| What Happened Here events | 15 new; 14 existing unlinked events given links (Treaty 6 at Fort Carlton, Seven Oaks, Selkirk settlers, Fort Rouge, Treaty 1, the rendezvous at Grand Portage and Fort William, Fort St. Charles, HBC founded, NWC formed, Plains of Abraham, Thompson's Mandan journey, and others) | |
+| Pronunciations | 18 | Cree, Blackfoot, Dene, Dakelh, Sekani, Nuxalk, Kaska, Anishinaabe, Nakoda and Wendat terms, and pemmican |
+| Quiz | 1 | "Rivers of the Fur Trade Interior", 8 questions, grade 7-9 |
+| Deep Dive / lesson plan | 1 | "River Highways: How Indigenous Routes Became the Fur Trade's Roads", grade 4-6, Indigenous Routes |
+| Field trip | 1 | "Sainte-Marie among the Hurons, 1639-1649", grade 4-6, six stops |
+| Reading-guide entries | 119 | Dictionary of Canadian Biography, Canadian Encyclopedia, Parks Canada, Hudson's Bay Company Archives and Wikipedia, every URL verified |
+| Images | 88 URLs | Commons, public domain or CC BY / CC BY-SA, credited; includes Franklin's 1828 plate of the Clearwater valley from Methye Portage, Pond's 1785 map, Fidler's copy of Ac ko mok ki's 1801 map, Thompson's 1814 map, Palliser's general map, Fort Carlton in 1877, Back's buffalo pound, the 1878 photograph of the police at Fort Calgary, and the 1908 water-power plan of the Winnipeg River |
+
+Added the same day (`2026-10-17-primary-sources-interior.ts`): 14 primary-source pointer
+documents (Brébeuf's and Ragueneau's Relations, the La Vérendrye journals, Henday, Cocking,
+Pond, Henry the Younger, Fidler and the Ac ko mok ki map, Hind, the Palliser reports, Anderson's
+gold-rush handbook, Morris's Treaties with Erasmus's Buffalo Days and Nights, Falcon's song,
+Mackenzie's 1793 journal). After the pack, every record in Turso has at least two kinds of
+source among its reading guides (`2026-10-17-reading-guide-gaps.ts`, 172 guides in two passes),
+and no record is without one.
+
 ### 9.4 Document grade bands (approved and applied 2026-10-17)
 Proposed from a Flesch-Kincaid estimate of each transcription (≤ 7 → 4-6, ≤ 11 → 7-9, above →
 10-12), checked against the fourteen documents that already had a band (their estimates run
