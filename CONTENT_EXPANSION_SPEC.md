@@ -715,7 +715,7 @@ biographies, Parks Canada learning pages), one or two per target, sourced at aut
 | 4 taxonomies | `2026-10-16-canonical-taxonomies.ts` | locationType: Fort 53, Trading Post 16, Portage 14, Cultural Site 12, Settlement 5; WaterwayType `lake` folded (Lake 13); nationality reduced to 16 values with 11 biographies gaining one sentence of detail; tradingCompany to 10 full-name spellings |
 | 3 fort pairs | `2026-10-16-merge-fort-pairs.ts` | 94 locations; Fort William, Fort Edmonton, Fort Churchill, Upper Fort Garry (absorbing Fort Garry and Fort Garry (Upper)), Rocky Mountain House each hold the merged notes, gallery, earliest year and reading guide; Riel's associated location "Fort Garry" rewritten |
 | 7 waterways | `2026-10-16-bay-of-fundy-and-churchill.ts` | see below |
-| 5 grades | `2026-10-16-document-grades.ts` | **written, not applied**: the 34 proposed bands await the owner's approval (section 9.4) |
+| 5 grades | `2026-10-16-document-grades.ts` | applied 2026-10-17 after approval: no document without a band; 4-6 ×10, 7-9 ×28, 10-12 ×10 |
 
 **Bay of Fundy.** New waterway (type Bay, anchor 45.1 N 65.6 W, region New Brunswick / Nova
 Scotia). Geometry from OpenStreetMap through the exporter's bay branch: one relation, 15,148
@@ -734,7 +734,7 @@ merged Fort Churchill moved onto it from Hudson Bay, beside Prince of Wales Fort
 Portage and Frog Portage. The home-map overview was rebuilt for the new name
 (`generated/river-overview.json`, 28 rivers).
 
-### 9.4 Awaiting approval: document grade bands
+### 9.4 Document grade bands (approved and applied 2026-10-17)
 Proposed from a Flesch-Kincaid estimate of each transcription (≤ 7 → 4-6, ≤ 11 → 7-9, above →
 10-12), checked against the fourteen documents that already had a band (their estimates run
 4.4 to 10.9 for 7-9 and 5.6 to 9.3 for 4-6). Result: 5 at 4-6 (Champlain's founding of Quebec
