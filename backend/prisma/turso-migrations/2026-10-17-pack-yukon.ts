@@ -25,13 +25,55 @@ const KML_UPDATES: Array<{ name: string; slug: string }> = [];
 
 // Commons file chosen for each image key used in the pack (filled from the manifests).
 const SELECTION: Record<string, string[]> = {
+  "Yukon River Whitehorse": ["Yukon River at Whitehorse -b.jpg", "Yukon River, Whitehorse (16209595096).jpg", "Ice Fog, Yukon River, Whitehorse (16235486355).jpg"],
+  "Yukon River Dawson City": ["Dawson City from Yukon River.jpg", "Dawson City Lookout Yukon River 3264px.jpg", "Yukon River at Dawson City (48709316823).jpg"],
+  "Pelly River Yukon": ["Pelly River at Pelly Crossing.JPG", "Puente sobre el río Pelly, Pelly Crossing, Yukón, Canadá, 2017-08-27, DD 12.jpg"],
+  "Stewart River Yukon": ["Stewart River near Mayo, Yukon, Canada -a.jpg", "Stewart River.jpg", "Puente sobre el río Stewart, Stewart Crossing, Yukón, Canadá, 2017-08-27, DD 13-21 PAN.jpg"],
+  "Teslin River Yukon": ["Teslin-Yukon river 1988 4.jpg", "Teslin-Yukon river 1988 2.jpg"],
+  "White River Yukon": ["Río Blanco, Beaver Creek, Yukón, Canadá, 2017-08-25, DD 31.jpg", "Autopista Alaska sobre el río Blanco, Beaver Creek, Yukón, Canadá, 2017-08-25, DD 25-30 PAN.jpg"],
+  "Porcupine River Alaska Yukon": ["Porcupine River.jpg"],
+  "Peel River Yukon": ["Midnight Sunset - From Peel River Ferry - Near Fort McPherson - Yukon Territory - Canada.jpg", "Peel River ferry (48680947101).jpg", "Peel River NWT 1845.jpg"],
+  "Dease River British Columbia": ["Dease River Moose 70mm.jpg"],
+  "Lake Laberge": ["Lago Laberge, Yukón, Canadá, 2017-08-26, DD 162.jpg", "Crossing Lake Laberge (13672948844).jpg", "Lake Laberge.JPG"],
+  "Bennett Lake Carcross": ["Sunrise on Bennett Lake.jpg", "Bennett Lake at Carcross.jpg", "View of Bennett Lake from Carcross, Yukon, Aug 2016.jpg"],
+  "Tagish Lake Yukon": ["Lago Tagish, Yukón, Canadá, 2017-08-26, DD 88.jpg", "Tagish lake reflections.jpg", "Bove Island, Tagish Lake, Yukon 5.jpg"],
+  "Kluane Lake Yukon": ["Lago Kluane, Destruction Bay, Yukón, Canadá, 2017-08-25, DD 68.jpg", "Lago Kluane, Destruction Bay, Yukón, Canadá, 2017-08-25, DD 70-76 PAN.jpg", "Kluane lake -trail head- (31173770348).jpg"],
+  "Teslin Lake": ["Teslin Bridge 671.jpg", "Canada Department of Mines. Bureau of Economic Geology, Geological Survey, Map 350 A. Teslin-Quiet Lake area, Yukon Territory - btv1b532060107.jpg"],
+  "Atlin Lake": ["Little Atlin Lake - Yukon Territory (12448145375).jpg", "Little Atlin Lake - Yukon Territory (12448286093).jpg"],
+  "Marsh Lake Yukon": ["Marsh Lake, Yukon, ca. 1899 - DPLA - 8ce12ce606aeff749f8e290778d0d7e6.jpg", "Marsh Lake - Yukon Territory (12448654704).jpg"],
+  "Fortymile River Yukon": ["Fortymile WSR Alaska.jpg", "Fortymile National WSR (9379818447).jpg"],
+  "Fort Selkirk Yukon": ["Fort Selkirk Yukon.jpg"],
+  "Fort Yukon Alaska": ["Fort Yukon village lies within the boundaries of the Yukon flats.jpg", "Fort Yukon, Alaska (ASTER).jpg"],
+  "Forty Mile Yukon": ["Yukon River near Forty Mile, ca. 1899 - DPLA - e9a6cfa96ca51f1f8e311c9cb1c38eed.jpg", "Forty Mile Yukon.jpg", "Fourty Mile NWMP.jpg", "Junction Forty Mile and Yukon rivers BCMR 10-97 p14 large 2 photos.JPG"],
+  "Dawson City Yukon historic": ["Quinta Avenida, Dawson City, Yukón, Canadá, 2017-08-27, DD 30.jpg", "Hotel El Dorado, Dawson City, Yukón, Canadá, 2017-08-27, DD 50.jpg", "Hotel Westminster, Dawson City, Yukón, Canadá, 2017-08-27, DD 45.jpg"],
+  "Bonanza Creek Klondike": ["BOILLOT(1899) p177 BONANZA CREEK.-DESSIN DE TAYLOR, PHOTOGRAPHIE DE LA ROCHE, À SEATTLE.jpg"],
+  "Chilkoot Trail": ["Chilkoot Trail Summit.jpg", "British Customhouse - Chilkoot Trail.jpg", "Hiking the Chilkoot Trail, near Crater Lake.jpg"],
+  "White Pass Yukon Route railway": ["WhitePassYukonAlaska-poole-1919.jpg", "White Pass & Yukon Route Railway - out of Skagway.jpg"],
+  "Dyea Alaska": ["Dyea Alaska.jpg", "Gold rush building, Dyea, Alaska (13582535435).jpg"],
+  "Miles Canyon Yukon": ["Cañón Miles, Yukón, Canadá, 2017-08-26, DD 144-154 PAN.jpg", "Cañón Miles, Yukón, Canadá, 2017-08-26, DD 161.jpg", "Cañón Miles, Yukón, Canadá, 2017-08-26, DD 130-132 PAN.jpg"],
+  "Five Finger Rapids Yukon": ["Five Finger Rapids Yukon 1.jpg", "Yukon River at Five Finger Rapids, Yukon -a.jpg", "Five Finger Rapids, Yukon River.jpg"],
+  "Moosehide Yukon": ["Trondek-home-page-landscape - Moosehide (Yukon).jpg", "Moosehide Gathering 2018 - Closing.jpg"],
+  "Carcross Yukon": ["Carcross, Yukón, Canadá, 2017-08-26, DD 98.jpg", "Carcross, Yukon Territory 2.jpg", "View of Carcross, Yukon, Aug 2016.jpg"],
+  "Fort McPherson Northwest Territories": ["Grave of NWMP Lost Patrol with Anglican Church at Rear - Fort McPherson - Northwest Territories - Canada.jpg", "FortMcPhersonNWT.JPG"],
+  "Herschel Island whaling": ["2025-08-21 Qikiqtaruk Herschel Island 47.jpg", "2025-08-21 Qikiqtaruk Herschel Island 27.jpg"],
+  "George Mercer Dawson geologist": ["George Mercer Dawson - McCord Stewart Museum (II-97765).jpeg", "George Mercer Dawson - McCord Stewart Museum (II-95313).jpeg"],
+  "Robert Kennicott": ["Robert Kennicott 01.jpg"],
+  "Klondike sternwheeler SS Klondike": ["SS Klondike paddlewheeler - National Historic Site - Whitehorse, Yukon.jpg", "SS Klondike.jpg"],
+  "Nulato Alaska": ["Woodyard and Nulato, Alaska circa 1908.jpg"],
+  "Robert Service Yukon": ["Robert Service's Cabin Dawson City - panoramio.jpg"],
+  "Joseph Ladue Dawson": ["The gold fields of the Klondike; fortune seekers' guide to the Yukon region of Alaska and British America; (1897) (14592180140).jpg"],
   // @@SELECTION@@
 };
 // Lifetime likenesses only. Key = the pack's `portrait` term; value = the Commons file.
 const PORTRAITS: Record<string, string> = {
+  "George Mercer Dawson geologist": "George Mercer Dawson - McCord Stewart Museum (II-97765).jpeg", // Notman studio photograph, McCord Stewart Museum; made in his lifetime
   // @@PORTRAITS@@
 };
 const LESSON_EXTRA_IMAGES: pack.PackImage[] = [
+  { file: "Peel River Yukon", caption: "A. K. Isbister's sketch map of the Peel River, 1845" },
+  { file: "Forty Mile Yukon", caption: "The Yukon near Forty Mile, about 1899" },
+  { file: "Marsh Lake Yukon", caption: "Marsh Lake on the stampeders' route, about 1899" },
+  { file: "Joseph Ladue Dawson", caption: "A page from a fortune seekers' guide to the Klondike, 1897" },
   // @@EXTRA@@
 ];
 
