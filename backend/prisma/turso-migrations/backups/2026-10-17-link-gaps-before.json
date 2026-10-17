@@ -1,0 +1,11 @@
+{
+ "generatedAt": "2026-10-17T09:15:18.409Z",
+ "apply": true,
+ "textFixes": [
+  {
+   "id": "chesterfield-inlet-waterway",
+   "field": "historicalSignificance",
+   "before": "Explored by Samuel Hearne in 1770 while searching for copper deposits. Named after Philip Stanhope, 4th Earl of Chesterfield. The inlet was long thought to be a potential route to the Northwest Passage."
+  }
+ ]
+}

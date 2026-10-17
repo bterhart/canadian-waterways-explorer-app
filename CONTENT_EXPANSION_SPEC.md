@@ -840,14 +840,64 @@ Dictionary of Canadian Biography or Wikipedia pages (each candidate tested live 
 and deleted the one with no working replacement; all three pack scripts now check those two
 hosts by content. Reading guides total 1,117 after the repair.
 
-Added the same day (`2026-10-17-primary-sources-arctic.ts`): 28 primary-source pointer
+Added the same day (`2026-10-17-primary-sources-arctic.ts`): 26 primary-source pointer
 documents, from Best's True Discourse (1578), Davis, Prickett on Hudson, Baffin, Munk and
 Middleton through Parry, Franklin's two Narratives, Beechey, Kotzebue, John Ross, Simpson, Rae,
 the Victory Point record, McClintock, McClure and Miertsching, Kennedy and Bellot, Kane and
 Hans Hendrik, Hall's two books and the Inuit testimony, Richardson, Amundsen, Bernier,
 Sverdrup and Stefansson; each with what it is, who made it and when, and where it can be read
-(archive, edition, URL only where the page answered), linked and graded (11 at 7-9, 17 at
-10-12). Data only: no mobile build is needed.
+(archive, edition, URL only where the page answered), linked and graded (12 at 7-9, 14 at
+10-12). Documents now total 114 (11 at 4-6, 62 at 7-9, 41 at 10-12). Data only: no mobile
+build is needed.
+
+### 9.8 Gaps reported by the owner on 2026-10-17, and the first repairs
+The owner reported, on the production app: no Slave River, North Saskatchewan or South
+Saskatchewan; the Mattawa River narrative names Champlain and Brûlé but the explorer panel
+does not show them; many explorers without portraits where likenesses exist (Lewis, Clark);
+and a general concern that the content leans on single sources. Findings and actions:
+
+- **Narrative links.** A database-wide read of every waterway's text for explorer names with
+  no link, and of every explorer's text for waterway names with no link, found 36 real gaps
+  (after discarding false hits such as "Hudson's Bay Company" for Henry Hudson). All 36 links
+  were written with a year and a sentence checked against the Dictionary of Canadian Biography
+  or the explorer's narrative (`2026-10-17-link-gaps.ts`): Brûlé on the Mattawa, French River and
+  Lake Nipissing; Button, Foxe and James on Hudson Bay; Groseilliers on Lake Superior and Hudson
+  Bay; the Hudson's Bay Company's inland men (Kelsey, Henday, Hearne, Cocking, Turnor, Tomison)
+  on the bay and the Saskatchewan; Roderick Mackenzie on Lake Athabasca; Galiano and Valdés on
+  Burrard Inlet; and others. One wrong sentence was corrected with a backup: Chesterfield Inlet
+  was explored in 1762 by Moses Norton, not by Hearne in 1770. The Mattawa River on production
+  now returns Champlain (1615) and Brûlé (1610); Champlain was already linked in the data before
+  this, so if the panel showed neither on the device, the app was showing cached data.
+- **Portraits.** Every explorer and notable figure without an image was checked against the
+  lead image of its Wikipedia article and the Commons record of that file, and a Commons search
+  was run for the rest. Twelve lifetime likenesses were confirmed and set
+  (`2026-10-17-portraits-from-commons.ts`): Lewis (Peale, c. 1807) and Clark (Peale, 1810), as
+  the owner pointed out; Hennepin (1694 engraving); Ogden (photograph before 1854); Martínez
+  (Spanish naval portrait, c. 1785); Quimper (c. 1790); Alexander Ross (photograph); Franchère
+  (before 1863); Sverdrup (photograph, National Library of Norway); Tattannoeuck (Robert Hood,
+  1821); Maquinna (Suría, 1791); Baranov (Tikhanov, 1818). Not set, because no likeness made in
+  the person's lifetime exists or could be found: Sacagawea (every image is a twentieth-century
+  statue or painting; the owner may decide whether a labelled depiction is acceptable),
+  Thompson, Thanadelthur, Charlotte Small, Isabel Gunn, Saukamappee, Keskarrah (Hood's 1821
+  drawing of him exists at Library and Archives Canada but is not on Commons), Donnacona,
+  Kondiaronk, Tessouat (the Codex canadensis "one-eyed captain" is c. 1700, posthumous),
+  Membertou, Wickaninnish, Kwah, Comcomly (Catlin's portrait is posthumous), John Ross (the BnF
+  image is a later reproduction), Kane (Hicks's portrait is 1858, after his death), Shelikhov
+  and Kotzebue (undated), Bellot, Kennedy, Dease, Middleton, Munk, Penny, Kellett, Eenoolooapik,
+  Lady Franklin, Hans Hendrik, and the eighteenth-century Hudson's Bay Company men.
+- **Missing waterways.** The roster was compared with a list of the fur-trade and exploration
+  rivers and lakes; 33 exports from OpenStreetMap are running for a fourth pack (Slave, North
+  and South Saskatchewan, Liard, Winnipeg River, Rainy River and Lake, Sturgeon-Weir, Clearwater,
+  Bow, Qu'Appelle, Finlay, Parsnip, Nechako, Stuart Lake, Bella Coola, Georgian Bay, Lake
+  Timiskaming, Lakes Winnipegosis and Manitoba, Pigeon, Dease, Pelly, Kazan, Dubawnt, Seal,
+  Severn, Rupert, Eastmain, Ungava Bay, Lakes Mistassini and Abitibi, Gulf of St. Lawrence).
+- **Sources.** 327 records carry reading guides; 47 of them point to a single kind of source and
+  22 have none (Hayes and Kaministiquia rivers, fourteen posts, and the figures Sacagawea,
+  Saukamappee, Tattannoeuck, Keskarrah and Roderick McKenzie). Overall the guides cite 348
+  Wikipedia pages, 129 Canadian Encyclopedia articles, 89 Hudson's Bay Company Archives
+  references, 41 Parks Canada pages, 35 Dictionary of Canadian Biography entries and some 300
+  books and editions. The next pass adds a scholarly or archival source to every single-source
+  record and guides to the 22 without.
 
 ### 9.4 Document grade bands (approved and applied 2026-10-17)
 Proposed from a Flesch-Kincaid estimate of each transcription (≤ 7 → 4-6, ≤ 11 → 7-9, above →
