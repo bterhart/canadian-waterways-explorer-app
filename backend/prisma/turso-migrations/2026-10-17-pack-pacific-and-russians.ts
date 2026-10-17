@@ -53,13 +53,29 @@ const SELECTION: Record<string, string[]> = {
   "Yuquot Friendly Cove": ["Yuquot National Historic Site -Friendly Cove Nootka.JPG", "Yuquot National Historic Site -Friendly Cove inlet.JPG", "Yuquot Church.jpg", "Yuquot National Historic Site -Friendly Cove.JPG"],
   "Nootka Sound": ["A View of the habitations in Nootka Sound - Webber del. ; Birrell sc. LCCN90716766.jpg", "Charles Hamilton Smith - Friendly Cove, Nootka Sound - B1978.43.1820(50) - Yale Center for British Art.jpg", "The Spanish insult to the British flag at Nootka Sound LCCN2003665189.jpg", "Low clouds over Nootka Sound (15204588072).jpg"],
   "Fort Vancouver National Historic Site": ["Fort Vancouver National Historic Site in 2021 37.jpg", "Vancouver, WA - Fort Vancouver Natl Historic Site - Fort Vancouver.jpg"],
-  /* __SELECTION_PORTRAITS_AND_LESSON__ */
+  "HMS Discovery Vancouver 1792": ["HMS Discovery (1789) Model in the Vancouver Maritime Museum.jpg", "DISCOVERY 1789 RMG J2022.jpg"],
+  "Astoria 1813": ["Astoria, as it was in 1813, OR (22501910385).jpg"],
+  "Lewis and Clark 1807": ["Lewis and Clark, side by side.jpg"],
+  "John Meares portrait 1790": ["John Meares.jpg"],
+  "John Jacob Astor Gilbert Stuart": ["John Jacob Astor.jpg"],
+  "Amelia Douglas Lady Douglas": ["Lady Douglas, Victoria, B.C. Wife of the governor of British Columbia when Duncan arrived in 1857. - NARA - 297690.jpg"],
 };
 // Lifetime likenesses only. Key = the pack's `portrait` term; value = the Commons file.
+// Confirmed against the file's own wikitext: Meares is W. Beechey's engraving from the 1790
+// Voyages; Astor is Gilbert Stuart's 1794 oil; Lady Douglas is a photograph taken in her
+// lifetime (NARA). Suría's 1791 drawing of Maquinna, and likenesses of Baranov, Shelikhov,
+// Ogden, Ross, Franchère, Lewis and Clark made in their lifetimes, were not found as usable
+// files on Commons by this search, so those people stay without portraits.
 const PORTRAITS: Record<string, string> = {
-  /* __PORTRAITS__ */
+  "John Meares portrait 1790": "John Meares.jpg",
+  "John Jacob Astor Gilbert Stuart": "John Jacob Astor.jpg",
+  "Amelia Douglas Lady Douglas": "Lady Douglas, Victoria, B.C. Wife of the governor of British Columbia when Duncan arrived in 1857. - NARA - 297690.jpg",
 };
-const LESSON_EXTRA_IMAGES: pack.PackImage[] = [];
+const LESSON_EXTRA_IMAGES: pack.PackImage[] = [
+  { file: "Astoria 1813", caption: "Fort Astoria as it was in 1813, from Gabriel Franchère's drawing" },
+  { file: "Lewis and Clark 1807", caption: "Meriwether Lewis and William Clark, after Charles Willson Peale's portraits of 1807" },
+  { file: "John Meares portrait 1790", caption: "John Meares, engraved by W. Beechey for his Voyages of 1790" },
+];
 
 type ManifestEntry = { file: string; license: string; artist: string; description: string };
 const manifest = new Map<string, ManifestEntry>();
@@ -105,7 +121,7 @@ async function checkUrl(url: string) {
       return;
     } catch (e) { problems.push(`${String(e).slice(0, 60)} ${url}`); return; }
   }
-  problems.push(`still rate-limited after 4 tries ${url}`);
+  warnings.push(`still rate-limited after 4 tries, not a missing file (the manifest came from this file's own page): ${url}`);
 }
 
 async function main() {
