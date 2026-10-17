@@ -25,7 +25,55 @@ const KML_UPDATES: Array<{ name: string; slug: string }> = [];
 
 // Commons file chosen for each image key used in the pack (filled from the manifest).
 const SELECTION: Record<string, string[]> = {
-  /* __SELECTION__ */
+  "Slave River": ["Fort Smith Nashornpelikane 1 98-07-01.jpg", "Fort Smith Nashornpelikan 98-07-01.jpg"],
+  "Slave River rapids Fort Smith": ["Fort Smith Nashornpelikane 2 98-07-01.jpg"],
+  "North Saskatchewan River": ["N Sask at Eagle Point.jpg", "North Saskatchewan River in the Rockies.jpg", "North Saskatchewan River circa 1913.jpg"],
+  "Fort Edmonton 1860s": ["Fort Edmonton Cabin.jpg"],
+  "South Saskatchewan River": ["Wanuskewin Heritage Park view of South Saskatchewan River.jpg", "Cabri Regional Park.jpg", "South Saskatchewan River (Northern View from Railway Bridge).jpg"],
+  "Liard River": ["Liard River at Blackstone Territorial Park NT.jpg", "Liard River (6456294023).jpg", "Scow on the Liard River in 1922.jpg"],
+  "Winnipeg River": ["Pinawa, during 2025 wildfires.jpg", "Route of the Expedition A. D. 1825, from Fort William to the Saskatchewan River (1828).jpg", "Plan of part of the Province of Manitoba showing the water powers on the Winnipeg River between the west boundary of Ontario and Lake Winnipeg (1908).jpg"],
+  "Rainy River Fort Frances": ["Rainy River, Fort Frances, Ontario (43925782222).jpg", "Rainy River, Fort Frances, Ontario (29036248947).jpg"],
+  "Rainy Lake": ["Voyageurs rainy lake.JPG", "Morans Bay Rainy Lake.JPG", "Rainy Lake by Sentinel-2.jpg"],
+  "Sturgeon-Weir River": ["Storm over Amisk Lake SK.jpg", "Frog Portage into the Churchill River.jpg"],
+  "Clearwater River Saskatchewan": ["Clearwater River, northeast Alberta, in Fall.jpg", "Clearwater River valley (from Highway 63).JPG", "Franklin 1828 Plate 01 narrativeofsecon00fran 0045.jpg"],
+  "Methye Portage": ["Franklin 1828 Plate 01 narrativeofsecon00fran 0045.jpg", "Lac La Loche 92915115.jpg"],
+  "Bow River Calgary": ["Bow River, Calgary (48725187796).jpg", "Banff and Bow Valley.jpg", "Bow River and Peace Bridge, Calgary 20240819 1.jpg"],
+  "Qu'Appelle River valley": ["Sask Highway 11 Qu'Appelle Valley.jpg", "Aerial - Saskatchewan Highway 99 northeast of Craven, Saskatchewan 01 (10618513223) (2).jpg", "Echo Lake Dam.jpg"],
+  "Finlay River": ["Finlay River (244012345).jpg", "Finlay River emptying into the north end of Williston Lake.jpg", "Up the Williston Lake Trench (244011643).jpg"],
+  "Parsnip River": ["ParsnipRiverBridge.jpg", "Up Williston Lake (299240439).jpg"],
+  "Nechako River": ["Nechako cutbanks.jpg", "Paddlewheel serenity.jpg"],
+  "Stuart Lake Fort St. James": ["Stuart Lake, British Columbia - 01.jpg", "FORT ST. JAMES NATIONAL HISTORIC SITE , BRITISH COLUMBIA.jpg", "FortSt.James-NHS-2008.jpg"],
+  "Bella Coola River": ["Bella Coola Valley (16861758517).jpg"],
+  "Georgian Bay": ["Georgian Bay - Lighthouse Point.jpg", "Georgian bay in autumn.jpg", "Georgian Bay Twp.JPG"],
+  "Lake Timiskaming": ["Opemican-nuit.jpg", "Canada Department of Mines. Geological Survey. Map 18 A. Lake Timiskaming mining region, Ontario and Quebec - btv1b53204323f.jpg"],
+  "Lake Winnipegosis": ["WinnipegosisBeach.JPG", "Ice clings to Lakes Winnipeg and Winnipegosis (MODIS 2021-05-11).jpg"],
+  "Lake Manitoba": ["Lake Manitoba comin' at ya near Steep Rock, Manitoba, Canada. (36378663843).jpg", "Delta Beach Manitoba Canada.JPG"],
+  "Pigeon River Grand Portage": ["Pigeon River High Falls.jpg", "Autumn on the Pigeon River - Grand Portage State Park, Minnesota (36725300514).jpg", "Pigeon River.jpg"],
+  "Fort Smith Northwest Territories": ["Fort Smith (109838394).jpg", "Boat building in Fort Smith, NWT.jpg"],
+  "Fort St. Pierre Rainy Lake": ["Fort Frances ON 2.JPG", "Rainy River, Fort Frances, Ontario (43974393361).jpg"],
+  "Fort Dauphin Manitoba": ["Fort Dauphin Museum.1.JPG"],
+  "Chesterfield House 1800": ["Fidler Journal Map of the Missouri River (1801).jpg"],
+  "Buckingham House Alberta": ["Fort George and Buckingham House (14990627139).jpg", "Map. Location of Buckingham House (HBC) and other trading posts in Canada.png"],
+  "Fort Calgary": ["North-West Mounted Police, Fort Calgary, 1878.jpg", "Fort Calgary (9588824528).jpg"],
+  "Blackfoot Crossing": ["Blackfoot Crossing National Historic Site of Canada.JPG", "Blackfoot crossing Alberta Canada (16667664495).jpg"],
+  "Fort Esperance Qu'Appelle": ["Fort Esperance.jpg"],
+  "Fort Charlotte Pigeon River": ["Fort Charlotte map4.jpg", "Grand Portage National Monument (29398124624).jpg"],
+  "Sainte-Marie among the Hurons": ["Sainte-Marie among the Hurons (35046298152).jpg", "St Marie Hurons 1.jpg", "Sainte-Marie among the Hurons Jesuit chapel.JPG", "Sainte-Marie among the Hurons native section.JPG"],
+  "Penetanguishene naval establishment": ["Discovery Harbour, Penetanguishene - panoramio.jpg"],
+  "Palliser expedition 1858": ["A Section of a General Map of the Routes in British North America Explored by the Expedition Under Captain Palliser (1865) (2211818555).jpg"],
+  "Fort Carlton": ["Fort Carlton, vers 1877.png", "A buffalo pound.png"],
+  "David Thompson map 1814": ["Map of Western British North America (David Thompson 1813-1814).jpg"],
+  "Peter Fidler": ["Map of Swan River and Upper Assiniboine River (Peter Fidler 1795).jpg"],
+  "Peter Pond map 1785": ["Hudson's Bay's Country (Peter Pond 1785).jpg"],
+  "Joseph Frobisher portrait": ["Joseph Frobisher.jpg"],
+  "Robert Campbell Hudson's Bay Company explorer": ["Robert Campbell 1808-1894.jpg"],
+  "Alexander Caulfield Anderson": ["Alexander-caulfield-anderson.jpg"],
+  "Henry Youle Hind": ["Henry Youle Hind.jpg"],
+  "James Hector geologist": ["James Hector 1900.jpg"],
+  "Piapot Payipwat": ["Piapot.gif"],
+  "Mistawasis": ["Four Cree Chiefs of Rupert s Land.jpg"],
+  "Ahtahkakoop": ["Four Cree Chiefs of Rupert s Land.jpg"],
+  "Jerry Potts": ["JerryPotts.jpg"],
 };
 // Lifetime likenesses only. Key = the pack's `portrait` term; value = the Commons file.
 // Confirmed from the Commons file records: Dulongpré's oil of Joseph Frobisher (c. 1800);
@@ -45,7 +93,12 @@ const PORTRAITS: Record<string, string> = {
   "Ahtahkakoop": "Four Cree Chiefs of Rupert s Land.jpg",
   "Jerry Potts": "JerryPotts.jpg",
 };
-const LESSON_EXTRA_IMAGES: pack.PackImage[] = [];
+const LESSON_EXTRA_IMAGES: pack.PackImage[] = [
+  { file: "Fort Carlton", caption: "Fort Carlton on the North Saskatchewan, about 1877" },
+  { file: "Peter Pond map 1785", caption: "Peter Pond's map of the Hudson's Bay country and the Athabasca, 1785" },
+  { file: "David Thompson map 1814", caption: "David Thompson's map of western British North America, 1813-1814" },
+  { file: "Chesterfield House 1800", caption: "Fidler's copy of Ac ko mok ki's map of the Missouri and the Rockies, 1801" },
+];
 
 type ManifestEntry = { file: string; license: string; artist: string; description: string };
 const manifest = new Map<string, ManifestEntry>();
