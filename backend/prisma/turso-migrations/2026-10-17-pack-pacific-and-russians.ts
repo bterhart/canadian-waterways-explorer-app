@@ -24,7 +24,36 @@ const KML_UPDATES: Array<{ name: string; slug: string }> = [{ name: "Georgia Str
 
 // Commons file chosen for each image key used in the pack (filled from the manifest).
 const SELECTION: Record<string, string[]> = {
-  /* __SELECTION__ */
+  "Puget Sound": ["Mt. Rainier over Puget Sound.jpg", "Anderson Island and Puget Sound from Steilacoom.jpg", "ISS058-E-11009 - View of Puget Sound.jpg"],
+  "Prince William Sound Alaska": ["Prince William Sound, Whittier, Alaska.jpg", "Prince William Sound, Alaska (MODIS).jpg", "Sterna paradisaea, Prince William Sound, Alaska 2016-07-06.jpg"],
+  "Cook Inlet Alaska": ["Cook Inlet, photographed from Glen Alps. Anchorage, Alaska.jpg", "Cook Inlet, near Anchorage, Alaska.JPG", "Anchorage and Cook Inlet.jpg"],
+  "Sitka Sound": ["Sitka Sound.jpg", "Solitary boat on Sitka Sound 010.jpg", "FMIB 45324 Sitka Sound - Viewed from the Castle, looking South June 9, 1874.jpeg"],
+  "Dixon Entrance": ["Admiralty Chart No 3754 Dixon Entrance, Published 1911, New Edition 1921.jpg", "Dixon entrance boundary dispute.jpg", "Contour map of Dixon Entrance.png"],
+  "Clayoquot Sound": ["Clayoquot Sound - Near Tofino - Vancouver Island BC - Canada - 08.jpg", "Clayoquot Sound - Vargas Island.jpg", "Low Tide in Clayoquot Sound Unesco Biosphere Preserve.jpg"],
+  "Snake River Hells Canyon": ["Hells Canyon Dam - 2.jpg", "In and around the Hells Canyon dam sites on the Snake River on the Idaho-Oregon border - (28652525471).jpg"],
+  "Willamette River": ["A view of the Willamette river from Burlington Northern Railroad bridge, Oregon.jpg", "Willamette Falls high winter flow frontal view Oregon City 2026.jpg", "Willamette Falls panoramic with former Blue Heron mill Oregon City 2026.jpg"],
+  "Kootenay River": ["Kootenay River - 1 (6783008246).jpg", "Kootenay River with Bonner's Ferry; Elmo Fire in the background.jpg", "Kootenay valley.JPG"],
+  "Thompson River British Columbia": ["Thompson River - Thompson-Nicola Regional District, British Columbia, Canada - July 1990.jpg", "South Thompson River - Kamloops, British Columbia, Canada - July 1990.jpg", "Thomson Frasier Confluence Lytton.JPG"],
+  "Skeena River": ["Skeena River.jpg", "Skeena River (601275239).jpg"],
+  "Stikine River": ["Stikine River delta in Alaska.jpg", "Mouth of Stikine River, ca. 1899 - DPLA - 4e786ce8847fb91cb504c806bf344881.jpg", "Stikine Delta.jpg"],
+  "Nass River": ["Nass River Valley.jpg", "NASS RIVER BRIDGE, BRITISH COLUMBIA.jpg", "Nass Valley.jpg"],
+  "Okanagan Lake": ["Okanagan Lake, Kelowna, BC, Canada.jpg", "Okanagan Lake Bridge lift span.jpg", "Okanagan Lake, Kelowna, BC, Canada3.jpg"],
+  "Fort Okanogan": ["Site of Fort Okanogan.jpg", "Fort Okanogan Interpretive Center NRHP 100002814 Okanogan County, WA.jpg"],
+  "Fort Nisqually": ["Factor's House at Fort Nisqually.jpg", "The Fort Nisqually Granary.jpg"],
+  "Sitka Alaska Russian Bishop House": ["Sitka, AK - Russian Bishop's House 01.jpg", "Russian Bishop House August 2005.JPG"],
+  "Baranof Castle Sitka": ["1827 illustration of Castle Hill (Old Sitka, Alaska) by Postels.jpg", "Sitka, AK - view from Castle Hill 01.jpg"],
+  "Fort Fraser British Columbia": ["Beaumont bench.jpg", "Mt Fraser - Pine Beetle Damage.JPG"],
+  "Fort Boise": ["Fort Boise on the Snake River near the mouth of the Boise River-Idaho-1849.jpg", "Snake River at HBC Fort Boise - Canyon County Idaho.jpg"],
+  "Fort Clatsop": ["Fort Clatsop replica 2007.jpg", "2018-01-14 Fort Clatsop -08.jpg"],
+  "Celilo Falls": ["Celilo Falls on the Columbia River.jpg", "Tumwater (Celilo) Falls.png", "Great Falls of Columbia River.png"],
+  "Meares Island Clayoquot": ["Meares Island (4106098006).jpg", "Meares Island boardwalk.jpg"],
+  "Fort Stikine Wrangell": ["Wrangell downtown.JPG"],
+  "Howse Pass": ["Howse Pass 2013.jpg", "Mount Murchison.jpg"],
+  "Athabasca Pass": ["William Hind - Athabasca Pass, Mount Murchison, AB (c. 1862).jpg"],
+  "Yuquot Friendly Cove": ["Yuquot National Historic Site -Friendly Cove Nootka.JPG", "Yuquot National Historic Site -Friendly Cove inlet.JPG", "Yuquot Church.jpg", "Yuquot National Historic Site -Friendly Cove.JPG"],
+  "Nootka Sound": ["A View of the habitations in Nootka Sound - Webber del. ; Birrell sc. LCCN90716766.jpg", "Charles Hamilton Smith - Friendly Cove, Nootka Sound - B1978.43.1820(50) - Yale Center for British Art.jpg", "The Spanish insult to the British flag at Nootka Sound LCCN2003665189.jpg", "Low clouds over Nootka Sound (15204588072).jpg"],
+  "Fort Vancouver National Historic Site": ["Fort Vancouver National Historic Site in 2021 37.jpg", "Vancouver, WA - Fort Vancouver Natl Historic Site - Fort Vancouver.jpg"],
+  /* __SELECTION_PORTRAITS_AND_LESSON__ */
 };
 // Lifetime likenesses only. Key = the pack's `portrait` term; value = the Commons file.
 const PORTRAITS: Record<string, string> = {
