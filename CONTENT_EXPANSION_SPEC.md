@@ -808,6 +808,97 @@ edition, URL only where the page answered), linked and graded (12 at 7-9, 11 at 
 Documents now total 88 (11 at 4-6, 50 at 7-9, 27 at 10-12). The river overview was rebuilt
 (44 rivers). Data only: no mobile build is needed for this pack.
 
+### 9.7 Content pack 3, The Arctic Searches (applied 2026-10-17)
+Data in `backend/prisma/turso-migrations/packs/arctic-searches.ts`, applied by
+`2026-10-17-pack-arctic-searches.ts` (dry run, backup, apply, verify; idempotent). Scope: the
+Northwest Passage from Frobisher (1576) to Amundsen (1906) and Bernier (1909), approached from
+the Atlantic (Davis Strait, Hudson Strait, Lancaster Sound) and from the Pacific (Bering Strait,
+the Beaufort Sea), the Franklin search of 1848-1859 as the decade that mapped the archipelago,
+and the Inuit who guided, interpreted for and finally explained the fate of the expeditions.
+
+| Added | Count | Notes |
+|---|---|---|
+| Waterways | 16 | Hudson Strait, Beaufort Sea, Bering Strait, Coronation Gulf, Victoria Strait, Peel Sound, Prince Regent Inlet, Wellington Channel, Viscount Melville Sound, Prince of Wales Strait, Smith Sound, Simpson Strait, Amundsen Gulf, Repulse Bay (Naujaat), Wager Bay (Ukkusiksalik), Kotzebue Sound. OpenStreetMap polygons for fifteen; Kotzebue Sound, and the existing Davis Strait and Parry Channel rows, are single OSM nodes and stay pins. The Hudson Strait polygon (331,000 points, 8.6 MB) was thinned to every fifth point (2.2 MB); the full export is kept outside the repository. Seas and gulfs use the Bay type, as Queen Maud Gulf already did |
+| Explorers | 20 | John Ross, James Clark Ross, Richardson, Thomas Simpson, Dease, McClintock, Collinson, Beechey, Kotzebue, Kane, Hall, William Kennedy, Bellot, Crozier, Middleton, Munk, Sverdrup, Bernier, Penny, Kellett. Portraits for eight, all lifetime likenesses confirmed from the Commons file records: J. C. Ross (1852 print), Richardson, McClintock, Collinson and Beechey (Stephen Pearce, 1850s), Crozier (Beard daguerreotype, 1845), Hall (the only known photograph), Bernier (Bain photograph) |
+| Explorer–waterway links | 100 | Frobisher, Hudson, Button, Bylot, Baffin, Foxe, James, Cook, Parry, Franklin, Back, Rae, McClure, Amundsen, Stefansson, Hearne and Mackenzie gain Arctic waterways; Button, Bylot, James and Amundsen had none before |
+| Locations | 15 | Beechey Island, Fort Enterprise, Fort Franklin (Délı̨nę), Fort Confidence, Winter Harbour, Victory Point, Gjoa Haven (Uqsuqtuuq), Fort Hope, Kodlunarn Island, Mercy Bay, Felix Harbour, Herschel Island (Qikiqtaruk), Icy Cape, Port Leopold, Dealy Island. Fort Confidence and Victory Point have no image (nothing suitable and licensed on Commons) |
+| Notable figures | 11 | Kalicho, Arnaq, Ouligbuck, William Ouligbuck, In-nook-poo-zhe-jook, Tookoolito, Ebierbing, Eenoolooapik, Lady Jane Franklin, Hans Hendrik, Qillarsuaq. Portraits for four: John White's 1577 watercolours of Kalicho and of Arnaq with Nutaaq, the tintype of Tookoolito and Ebierbing, the Smithsonian photograph of Ebierbing |
+| Timeline events | 36 | 1577 to 1913; the two unlinked Mackenzie timeline events were given their explorer and waterway (new `timelineBackfill` in the pack format) |
+| What Happened Here events | 17 new; 11 existing events linked (Franklin departs, ships trapped, Erebus and Terror found, Amundsen, Hearne's three expeditions, surrender of Prince of Wales Fort, creation of Nunavut, Bloody Falls ceremony) | |
+| Pronunciations | 18 | Inuktitut, Inuinnaqtun and Inuvialuktun terms |
+| Quiz | 1 | "The Search for the Northwest Passage", 8 questions, grade 7-9 |
+| Deep Dive / lesson plan | 1 | "Two Oceans, One Passage: The Arctic Searches, 1576-1909", grade 10-12; twelve key figures (seven explorers, five notable figures); the existing 7-9 lesson "The Northwest Passage: Dreams and Disasters" is untouched |
+| Field trip | 1 | "Beechey Island: Franklin's First Winter", grade 7-9, six stops |
+| Reading-guide entries | 112 | every Dictionary of Canadian Biography and Canadian Encyclopedia link verified by page content, every Wikipedia link by HEAD, before applying |
+| Images | 74 URLs | Commons, public domain or CC BY / CC BY-SA, credited; includes John White's 1577 skirmish at Bloody Point, Parry's 1826 view of Prince Regent Inlet, the 1862 Admiralty chart of Wellington Channel and Melville Island, McDougall's watercolour of the Investigator in Mercy Bay, the Fox, Hecla and Griper at Winter Harbour, the Beechey Island graves, and the Library of Congress chart of the coast from the Mackenzie to Bering Strait |
+
+Link repair found on the way: with a browser user agent the Canadian Encyclopedia can be
+checked after all (404 for a missing article), and 48 of the 164 Canadian Encyclopedia guide
+links already in Turso were dead, guessed slugs from the October 16 import.
+`2026-10-17-fix-tce-guide-urls.ts` replaced 47 of them with verified Canadian Encyclopedia,
+Dictionary of Canadian Biography or Wikipedia pages (each candidate tested live at dry run)
+and deleted the one with no working replacement; all three pack scripts now check those two
+hosts by content. Reading guides total 1,117 after the repair.
+
+Added the same day (`2026-10-17-primary-sources-arctic.ts`): 26 primary-source pointer
+documents, from Best's True Discourse (1578), Davis, Prickett on Hudson, Baffin, Munk and
+Middleton through Parry, Franklin's two Narratives, Beechey, Kotzebue, John Ross, Simpson, Rae,
+the Victory Point record, McClintock, McClure and Miertsching, Kennedy and Bellot, Kane and
+Hans Hendrik, Hall's two books and the Inuit testimony, Richardson, Amundsen, Bernier,
+Sverdrup and Stefansson; each with what it is, who made it and when, and where it can be read
+(archive, edition, URL only where the page answered), linked and graded (12 at 7-9, 14 at
+10-12). Documents now total 114 (11 at 4-6, 62 at 7-9, 41 at 10-12). Data only: no mobile
+build is needed.
+
+### 9.8 Gaps reported by the owner on 2026-10-17, and the first repairs
+The owner reported, on the production app: no Slave River, North Saskatchewan or South
+Saskatchewan; the Mattawa River narrative names Champlain and Brûlé but the explorer panel
+does not show them; many explorers without portraits where likenesses exist (Lewis, Clark);
+and a general concern that the content leans on single sources. Findings and actions:
+
+- **Narrative links.** A database-wide read of every waterway's text for explorer names with
+  no link, and of every explorer's text for waterway names with no link, found 36 real gaps
+  (after discarding false hits such as "Hudson's Bay Company" for Henry Hudson). All 36 links
+  were written with a year and a sentence checked against the Dictionary of Canadian Biography
+  or the explorer's narrative (`2026-10-17-link-gaps.ts`): Brûlé on the Mattawa, French River and
+  Lake Nipissing; Button, Foxe and James on Hudson Bay; Groseilliers on Lake Superior and Hudson
+  Bay; the Hudson's Bay Company's inland men (Kelsey, Henday, Hearne, Cocking, Turnor, Tomison)
+  on the bay and the Saskatchewan; Roderick Mackenzie on Lake Athabasca; Galiano and Valdés on
+  Burrard Inlet; and others. One wrong sentence was corrected with a backup: Chesterfield Inlet
+  was explored in 1762 by Moses Norton, not by Hearne in 1770. The Mattawa River on production
+  now returns Champlain (1615) and Brûlé (1610); Champlain was already linked in the data before
+  this, so if the panel showed neither on the device, the app was showing cached data.
+- **Portraits.** Every explorer and notable figure without an image was checked against the
+  lead image of its Wikipedia article and the Commons record of that file, and a Commons search
+  was run for the rest. Twelve lifetime likenesses were confirmed and set
+  (`2026-10-17-portraits-from-commons.ts`): Lewis (Peale, c. 1807) and Clark (Peale, 1810), as
+  the owner pointed out; Hennepin (1694 engraving); Ogden (photograph before 1854); Martínez
+  (Spanish naval portrait, c. 1785); Quimper (c. 1790); Alexander Ross (photograph); Franchère
+  (before 1863); Sverdrup (photograph, National Library of Norway); Tattannoeuck (Robert Hood,
+  1821); Maquinna (Suría, 1791); Baranov (Tikhanov, 1818). Not set, because no likeness made in
+  the person's lifetime exists or could be found: Sacagawea (every image is a twentieth-century
+  statue or painting; the owner may decide whether a labelled depiction is acceptable),
+  Thompson, Thanadelthur, Charlotte Small, Isabel Gunn, Saukamappee, Keskarrah (Hood's 1821
+  drawing of him exists at Library and Archives Canada but is not on Commons), Donnacona,
+  Kondiaronk, Tessouat (the Codex canadensis "one-eyed captain" is c. 1700, posthumous),
+  Membertou, Wickaninnish, Kwah, Comcomly (Catlin's portrait is posthumous), John Ross (the BnF
+  image is a later reproduction), Kane (Hicks's portrait is 1858, after his death), Shelikhov
+  and Kotzebue (undated), Bellot, Kennedy, Dease, Middleton, Munk, Penny, Kellett, Eenoolooapik,
+  Lady Franklin, Hans Hendrik, and the eighteenth-century Hudson's Bay Company men.
+- **Missing waterways.** The roster was compared with a list of the fur-trade and exploration
+  rivers and lakes; 33 exports from OpenStreetMap are running for a fourth pack (Slave, North
+  and South Saskatchewan, Liard, Winnipeg River, Rainy River and Lake, Sturgeon-Weir, Clearwater,
+  Bow, Qu'Appelle, Finlay, Parsnip, Nechako, Stuart Lake, Bella Coola, Georgian Bay, Lake
+  Timiskaming, Lakes Winnipegosis and Manitoba, Pigeon, Dease, Pelly, Kazan, Dubawnt, Seal,
+  Severn, Rupert, Eastmain, Ungava Bay, Lakes Mistassini and Abitibi, Gulf of St. Lawrence).
+- **Sources.** 327 records carry reading guides; 47 of them point to a single kind of source and
+  22 have none (Hayes and Kaministiquia rivers, fourteen posts, and the figures Sacagawea,
+  Saukamappee, Tattannoeuck, Keskarrah and Roderick McKenzie). Overall the guides cite 348
+  Wikipedia pages, 129 Canadian Encyclopedia articles, 89 Hudson's Bay Company Archives
+  references, 41 Parks Canada pages, 35 Dictionary of Canadian Biography entries and some 300
+  books and editions. The next pass adds a scholarly or archival source to every single-source
+  record and guides to the 22 without.
+
 ### 9.4 Document grade bands (approved and applied 2026-10-17)
 Proposed from a Flesch-Kincaid estimate of each transcription (≤ 7 → 4-6, ≤ 11 → 7-9, above →
 10-12), checked against the fourteen documents that already had a band (their estimates run

@@ -1,0 +1,390 @@
+{
+ "generatedAt": "2026-10-17T08:24:13.357Z",
+ "apply": true,
+ "rows": [
+  {
+   "id": "rg_location_cmlhasls4002am2zhut4b7lsm_2",
+   "title": "Fort Témiscamingue",
+   "url": "https://www.thecanadianencyclopedia.ca/en/article/fort-temiscamingue",
+   "authorSource": "The Canadian Encyclopedia",
+   "targetType": "location",
+   "targetId": "cmlhasls4002am2zhut4b7lsm"
+  },
+  {
+   "id": "rg_waterway_cmlhbjrqm000lm2mb54fxoup5_2",
+   "title": "Lake Erie",
+   "url": "https://www.thecanadianencyclopedia.ca/en/article/lake-erie",
+   "authorSource": "The Canadian Encyclopedia",
+   "targetType": "waterway",
+   "targetId": "cmlhbjrqm000lm2mb54fxoup5"
+  },
+  {
+   "id": "rg_waterway_cmlhbjrqo000nm2mb16337n49_1",
+   "title": "Lake Michigan",
+   "url": "https://www.thecanadianencyclopedia.ca/en/article/lake-michigan (related Great Lakes)",
+   "authorSource": "The Canadian Encyclopedia",
+   "targetType": "waterway",
+   "targetId": "cmlhbjrqo000nm2mb16337n49"
+  },
+  {
+   "id": "rg_location_cmlhbjrrd0013m2mbr25pwdi0_2",
+   "title": "Fort Albany",
+   "url": "https://www.thecanadianencyclopedia.ca/en/article/fort-albany",
+   "authorSource": "The Canadian Encyclopedia",
+   "targetType": "location",
+   "targetId": "cmlhbjrrd0013m2mbr25pwdi0"
+  },
+  {
+   "id": "rg_location_cmlhcpxjq0003m2a3mh417co2_2",
+   "title": "Fort Severn",
+   "url": "https://www.thecanadianencyclopedia.ca/en/article/fort-severn",
+   "authorSource": "The Canadian Encyclopedia",
+   "targetType": "location",
+   "targetId": "cmlhcpxjq0003m2a3mh417co2"
+  },
+  {
+   "id": "rg_location_cmlhcpxjz0007m2a39z07cplj_2",
+   "title": "Oxford House",
+   "url": "https://www.thecanadianencyclopedia.ca/en/article/oxford-house",
+   "authorSource": "The Canadian Encyclopedia",
+   "targetType": "location",
+   "targetId": "cmlhcpxjz0007m2a39z07cplj"
+  },
+  {
+   "id": "rg_location_cmlhcpxl2000hm2a35zf7u98t_2",
+   "title": "Fort Norman",
+   "url": "https://www.thecanadianencyclopedia.ca/en/article/fort-norman (related Mackenzie posts)",
+   "authorSource": "The Canadian Encyclopedia",
+   "targetType": "location",
+   "targetId": "cmlhcpxl2000hm2a35zf7u98t"
+  },
+  {
+   "id": "rg_location_cmlhcpxmo000vm2a3n43nxs5n_2",
+   "title": "Fort Kamloops",
+   "url": "https://www.thecanadianencyclopedia.ca/en/article/fort-kamloops",
+   "authorSource": "The Canadian Encyclopedia",
+   "targetType": "location",
+   "targetId": "cmlhcpxmo000vm2a3n43nxs5n"
+  },
+  {
+   "id": "rg_location_cmlhcpxmx0011m2a3ip116duw_2",
+   "title": "Fort Yukon",
+   "url": "https://www.thecanadianencyclopedia.ca/en/article/fort-yukon (related northern posts)",
+   "authorSource": "The Canadian Encyclopedia",
+   "targetType": "location",
+   "targetId": "cmlhcpxmx0011m2a3ip116duw"
+  },
+  {
+   "id": "rg_location_cmlhcpxnw001hm2a3vu8g9i5h_2",
+   "title": "Fort Dunvegan",
+   "url": "https://www.thecanadianencyclopedia.ca/en/article/fort-dunvegan",
+   "authorSource": "The Canadian Encyclopedia",
+   "targetType": "location",
+   "targetId": "cmlhcpxnw001hm2a3vu8g9i5h"
+  },
+  {
+   "id": "rg_location_cmlhcpxob001nm2a3t1ddlxuc_2",
+   "title": "Fort Alexandria",
+   "url": "https://www.thecanadianencyclopedia.ca/en/article/fort-alexandria",
+   "authorSource": "The Canadian Encyclopedia",
+   "targetType": "location",
+   "targetId": "cmlhcpxob001nm2a3t1ddlxuc"
+  },
+  {
+   "id": "rg_location_cmlhcpxp60023m2a3nk6v0ile_3",
+   "title": "Fort Alexander",
+   "url": "https://www.thecanadianencyclopedia.ca/en/article/fort-alexander (related Red River forts)",
+   "authorSource": "The Canadian Encyclopedia",
+   "targetType": "location",
+   "targetId": "cmlhcpxp60023m2a3nk6v0ile"
+  },
+  {
+   "id": "rg_location_cmlhcpxpp002dm2a3enfqyhkk_2",
+   "title": "Fort Rae",
+   "url": "https://www.thecanadianencyclopedia.ca/en/article/fort-rae",
+   "authorSource": "The Canadian Encyclopedia",
+   "targetType": "location",
+   "targetId": "cmlhcpxpp002dm2a3enfqyhkk"
+  },
+  {
+   "id": "rg_location_cmlhcpxq0002jm2a3phk4pbzy_2",
+   "title": "Fort Rupert",
+   "url": "https://www.thecanadianencyclopedia.ca/en/article/fort-rupert",
+   "authorSource": "The Canadian Encyclopedia",
+   "targetType": "location",
+   "targetId": "cmlhcpxq0002jm2a3phk4pbzy"
+  },
+  {
+   "id": "rg_location_cmlk1ohtb000dm2ati96rxt36_2",
+   "title": "Ottawa River Portages",
+   "url": "https://www.thecanadianencyclopedia.ca/en/article/ottawa-river (related routes)",
+   "authorSource": "The Canadian Encyclopedia",
+   "targetType": "location",
+   "targetId": "cmlk1ohtb000dm2ati96rxt36"
+  },
+  {
+   "id": "rg_waterway_frobisher-bay-waterway_4",
+   "title": "Martin Frobisher",
+   "url": "https://www.thecanadianencyclopedia.ca/en/article/martin-frobisher",
+   "authorSource": "The Canadian Encyclopedia",
+   "targetType": "waterway",
+   "targetId": "frobisher-bay-waterway"
+  },
+  {
+   "id": "rg_location_massacre_island_location_2",
+   "title": "Jean-Baptiste de La Vérendrye",
+   "url": "https://www.thecanadianencyclopedia.ca/en/article/jean-baptiste-de-la-verendrye (related)",
+   "authorSource": "The Canadian Encyclopedia",
+   "targetType": "location",
+   "targetId": "massacre_island_location"
+  },
+  {
+   "id": "rg_waterway_mercy-bay-waterway_1",
+   "title": "Sir Robert McClure",
+   "url": "https://www.thecanadianencyclopedia.ca/en/article/sir-robert-mcclure",
+   "authorSource": "The Canadian Encyclopedia",
+   "targetType": "waterway",
+   "targetId": "mercy-bay-waterway"
+  },
+  {
+   "id": "rg_waterway_queen-maud-gulf-waterway_1",
+   "title": "Queen Maud Gulf",
+   "url": "https://www.thecanadianencyclopedia.ca/en/article/queen-maud-gulf",
+   "authorSource": "The Canadian Encyclopedia",
+   "targetType": "waterway",
+   "targetId": "queen-maud-gulf-waterway"
+  },
+  {
+   "id": "rg_waterway_terror-bay-waterway_1",
+   "title": "Terror Bay",
+   "url": "https://www.thecanadianencyclopedia.ca/en/article/terror-bay (related Arctic sites)",
+   "authorSource": "The Canadian Encyclopedia",
+   "targetType": "waterway",
+   "targetId": "terror-bay-waterway"
+  },
+  {
+   "id": "rg_explorer_cmlhaslpx0006m2zhsckolb5o_8",
+   "title": "David Thompson",
+   "url": "https://www.thecanadianencyclopedia.ca/en/article/david-thompson-explorer",
+   "authorSource": "The Canadian Encyclopedia",
+   "targetType": "explorer",
+   "targetId": "cmlhaslpx0006m2zhsckolb5o"
+  },
+  {
+   "id": "rg_explorer_cmlhc4gt00009m2ogntt9le4v_2",
+   "title": "La Vérendrye",
+   "url": "https://www.thecanadianencyclopedia.ca/en/article/pierre-gaultier-de-varennes-sieur-de-la-verendrye",
+   "authorSource": "The Canadian Encyclopedia",
+   "targetType": "explorer",
+   "targetId": "cmlhc4gt00009m2ogntt9le4v"
+  },
+  {
+   "id": "rg_explorer_cmlhc4gue000fm2ogcq03p325_2",
+   "title": "Sir Robert McClure",
+   "url": "https://www.thecanadianencyclopedia.ca/en/article/sir-robert-mcclure",
+   "authorSource": "The Canadian Encyclopedia",
+   "targetType": "explorer",
+   "targetId": "cmlhc4gue000fm2ogcq03p325"
+  },
+  {
+   "id": "rg_explorer_cmlhc4guh000gm2ogiopu6egu_2",
+   "title": "Joseph Burr Tyrrell",
+   "url": "https://www.thecanadianencyclopedia.ca/en/article/joseph-burr-tyrrell",
+   "authorSource": "The Canadian Encyclopedia",
+   "targetType": "explorer",
+   "targetId": "cmlhc4guh000gm2ogiopu6egu"
+  },
+  {
+   "id": "rg_explorer_cmlijai0o0002m22rzehhz6sf_2",
+   "title": "Matthew Cocking",
+   "url": "https://www.thecanadianencyclopedia.ca/en/article/matthew-cocking (related inland explorers)",
+   "authorSource": "The Canadian Encyclopedia",
+   "targetType": "explorer",
+   "targetId": "cmlijai0o0002m22rzehhz6sf"
+  },
+  {
+   "id": "rg_explorer_cmlijaieo000jm22r1xve4giy_2",
+   "title": "René-Robert Cavelier Sieur de La Salle",
+   "url": "https://www.thecanadianencyclopedia.ca/en/article/rene-robert-cavelier-sieur-de-la-salle",
+   "authorSource": "The Canadian Encyclopedia",
+   "targetType": "explorer",
+   "targetId": "cmlijaieo000jm22r1xve4giy"
+  },
+  {
+   "id": "rg_explorer_cmlijaif2000om22ru83xdxmj_6",
+   "title": "Akaitcho",
+   "url": "https://www.thecanadianencyclopedia.ca/en/article/akaitcho",
+   "authorSource": "The Canadian Encyclopedia",
+   "targetType": "notable_figure",
+   "targetId": "cmlhvyhh30007m2vxvq25r5hl"
+  },
+  {
+   "id": "rg_explorer_cmlijaifd000qm22rsz5ua3as_2",
+   "title": "Big Bear",
+   "url": "https://www.thecanadianencyclopedia.ca/en/article/big-bear-mistahimaskwa",
+   "authorSource": "The Canadian Encyclopedia",
+   "targetType": "notable_figure",
+   "targetId": "big_bear_leader"
+  },
+  {
+   "id": "rg_explorer_cmlijaifh000rm22rettbduta_1",
+   "title": "Crowfoot",
+   "url": "https://www.thecanadianencyclopedia.ca/en/article/crowfoot-isapo-muxika",
+   "authorSource": "The Canadian Encyclopedia",
+   "targetType": "notable_figure",
+   "targetId": "crowfoot_leader"
+  },
+  {
+   "id": "rg_explorer_cmlijaifk000sm22rva4ktjom_0",
+   "title": "Chief Peguis",
+   "url": "https://www.thecanadianencyclopedia.ca/en/article/chief-peguis",
+   "authorSource": "The Canadian Encyclopedia",
+   "targetType": "notable_figure",
+   "targetId": "nf_chief_peguis"
+  },
+  {
+   "id": "rg_explorer_cmlijaifo000um22rf0tkyc67_2",
+   "title": "Marie-Anne Gaboury",
+   "url": "https://www.thecanadianencyclopedia.ca/en/article/marie-anne-gaboury",
+   "authorSource": "The Canadian Encyclopedia",
+   "targetType": "notable_figure",
+   "targetId": "cmlhvyhgo0002m2vx0dbu02v4"
+  },
+  {
+   "id": "rg_explorer_cmlijaig40010m22r2xcwlf62_2",
+   "title": "Jean-Baptiste Lagimodière",
+   "url": "https://www.thecanadianencyclopedia.ca/en/article/jean-baptiste-lagimodiere (related)",
+   "authorSource": "The Canadian Encyclopedia",
+   "targetType": "notable_figure",
+   "targetId": "cmligbkvl000bm20zil3d8n6z"
+  },
+  {
+   "id": "rg_explorer_cmlizwip80002m29msy1twu28_2",
+   "title": "La Vérendrye",
+   "url": "https://www.thecanadianencyclopedia.ca/en/article/pierre-gaultier-de-varennes-sieur-de-la-verendrye (family)",
+   "authorSource": "The Canadian Encyclopedia",
+   "targetType": "explorer",
+   "targetId": "cmlizwip80002m29msy1twu28"
+  },
+  {
+   "id": "rg_explorer_cmlnewexp006davis_2",
+   "title": "John Davis",
+   "url": "https://www.thecanadianencyclopedia.ca/en/article/john-davis (related Arctic explorers)",
+   "authorSource": "The Canadian Encyclopedia",
+   "targetType": "explorer",
+   "targetId": "cmlnewexp006davis"
+  },
+  {
+   "id": "rg_explorer_cmlijaifr000vm22rca2sltu0_2",
+   "title": "Isabel Gunn",
+   "url": "https://www.thecanadianencyclopedia.ca/en/article/isabel-gunn",
+   "authorSource": "The Canadian Encyclopedia",
+   "targetType": "notable_figure",
+   "targetId": "cmlhvyhgs0003m2vxls38ek73"
+  },
+  {
+   "id": "rg_explorer_cmlizphix0004m2ybqo51uf96_2",
+   "title": "Jacques de Noyon",
+   "url": "https://www.thecanadianencyclopedia.ca/en/article/jacques-de-noyon",
+   "authorSource": "The Canadian Encyclopedia",
+   "targetType": "explorer",
+   "targetId": "cmlizphix0004m2ybqo51uf96"
+  },
+  {
+   "id": "rg_explorer_cmlhc4gsv0008m2og133agz6f_2",
+   "title": "James Knight",
+   "url": "https://www.thecanadianencyclopedia.ca/en/article/james-knight",
+   "authorSource": "The Canadian Encyclopedia",
+   "targetType": "explorer",
+   "targetId": "cmlhc4gsv0008m2og133agz6f"
+  },
+  {
+   "id": "rg_explorer_cmlhc4grm0003m2ogxu6zoigl_2",
+   "title": "Jean Nicolet de Belleborne",
+   "url": "https://www.thecanadianencyclopedia.ca/en/article/jean-nicolet-de-belleborne",
+   "authorSource": "The Canadian Encyclopedia",
+   "targetType": "explorer",
+   "targetId": "cmlhc4grm0003m2ogxu6zoigl"
+  },
+  {
+   "id": "rg_explorer_cmliirala0002m2ee63e6kdje_2",
+   "title": "Moses Norton",
+   "url": "https://www.thecanadianencyclopedia.ca/en/article/moses-norton",
+   "authorSource": "The Canadian Encyclopedia",
+   "targetType": "explorer",
+   "targetId": "cmliirala0002m2ee63e6kdje"
+  },
+  {
+   "id": "rg_explorer_cmlizwip50001m29mggra6ipo_2",
+   "title": "Pierre Gaultier de La Vérendrye fils",
+   "url": "https://www.thecanadianencyclopedia.ca/en/article/pierre-gaultier-de-la-verendrye-fils",
+   "authorSource": "The Canadian Encyclopedia",
+   "targetType": "explorer",
+   "targetId": "cmlizwip50001m29mggra6ipo"
+  },
+  {
+   "id": "rg_explorer_cmlijaieq000km22rlw2psvbd_2",
+   "title": "Pierre Le Moyne d'Iberville",
+   "url": "https://www.thecanadianencyclopedia.ca/en/article/pierre-le-moyne-d-iberville",
+   "authorSource": "The Canadian Encyclopedia",
+   "targetType": "explorer",
+   "targetId": "cmlijaieq000km22rlw2psvbd"
+  },
+  {
+   "id": "rg_waterway_ww_mississippi-river_1",
+   "title": "Mississippi River",
+   "url": "https://www.thecanadianencyclopedia.ca/en/article/mississippi-river",
+   "authorSource": "The Canadian Encyclopedia",
+   "targetType": "waterway",
+   "targetId": "ww_mississippi-river"
+  },
+  {
+   "id": "rg_waterway_ww_richelieu-river_1",
+   "title": "Richelieu River",
+   "url": "https://www.thecanadianencyclopedia.ca/en/article/richelieu-river",
+   "authorSource": "The Canadian Encyclopedia",
+   "targetType": "waterway",
+   "targetId": "ww_richelieu-river"
+  },
+  {
+   "id": "rg_location_loc_michilimackinac_1",
+   "title": "Michilimackinac",
+   "url": "https://www.thecanadianencyclopedia.ca/en/article/michilimackinac",
+   "authorSource": "The Canadian Encyclopedia",
+   "targetType": "location",
+   "targetId": "loc_michilimackinac"
+  },
+  {
+   "id": "rg_notable_figure_nf_kondiaronk_1",
+   "title": "Great Peace of Montreal, 1701",
+   "url": "https://www.thecanadianencyclopedia.ca/en/article/great-peace-of-montreal-1701",
+   "authorSource": "The Canadian Encyclopedia",
+   "targetType": "notable_figure",
+   "targetId": "nf_kondiaronk"
+  },
+  {
+   "id": "rg_notable_figure_nf_membertou_1",
+   "title": "Membertou",
+   "url": "https://www.thecanadianencyclopedia.ca/en/article/membertou",
+   "authorSource": "The Canadian Encyclopedia",
+   "targetType": "notable_figure",
+   "targetId": "nf_membertou"
+  },
+  {
+   "id": "rg_waterway_ww_kootenay-river_1",
+   "title": "Ktunaxa (Kootenay)",
+   "url": "https://www.thecanadianencyclopedia.ca/en/article/kootenay-ktunaxa",
+   "authorSource": "The Canadian Encyclopedia",
+   "targetType": "waterway",
+   "targetId": "ww_kootenay-river"
+  },
+  {
+   "id": "rg_notable_figure_nf_amelia_douglas_0",
+   "title": "Amelia Douglas",
+   "url": "https://www.thecanadianencyclopedia.ca/en/article/amelia-douglas",
+   "authorSource": "The Canadian Encyclopedia",
+   "targetType": "notable_figure",
+   "targetId": "nf_amelia_douglas"
+  }
+ ]
+}

@@ -1,0 +1,127 @@
+{
+ "generatedAt": "2026-10-17T09:13:28.092Z",
+ "apply": true,
+ "historicalEventsBackfilled": [
+  {
+   "id": "cmlhqohjo0003m2m49kzmet2j",
+   "title": "Franklin Expedition Departs",
+   "before": {
+    "explorerId": null,
+    "waterwayId": null,
+    "locationId": null
+   }
+  },
+  {
+   "id": "cmlhqohkm000jm2m4y72awhbd",
+   "title": "Franklin's Ships Trapped in Ice",
+   "before": {
+    "explorerId": null,
+    "waterwayId": null,
+    "locationId": null
+   }
+  },
+  {
+   "id": "cmlhqohkp000km2m4h3l3cx53",
+   "title": "Discovery of HMS Erebus",
+   "before": {
+    "explorerId": null,
+    "waterwayId": null,
+    "locationId": null
+   }
+  },
+  {
+   "id": "cmlhqohkr000lm2m42hdvupdd",
+   "title": "Discovery of HMS Terror",
+   "before": {
+    "explorerId": null,
+    "waterwayId": null,
+    "locationId": null
+   }
+  },
+  {
+   "id": "cmlhqohkv000nm2m49e3nwoxv",
+   "title": "Amundsen Completes Northwest Passage",
+   "before": {
+    "explorerId": null,
+    "waterwayId": null,
+    "locationId": null
+   }
+  },
+  {
+   "id": "hearne_first_expedition_1769",
+   "title": "Hearne's First Arctic Expedition Begins",
+   "before": {
+    "explorerId": null,
+    "waterwayId": null,
+    "locationId": null
+   }
+  },
+  {
+   "id": "hearne_second_expedition_1770",
+   "title": "Hearne's Second Arctic Expedition",
+   "before": {
+    "explorerId": null,
+    "waterwayId": null,
+    "locationId": null
+   }
+  },
+  {
+   "id": "hearne_third_expedition_1770",
+   "title": "Hearne's Successful Third Expedition Begins",
+   "before": {
+    "explorerId": null,
+    "waterwayId": null,
+    "locationId": null
+   }
+  },
+  {
+   "id": "surrender_prince_of_wales_fort_1782",
+   "title": "Surrender of Prince of Wales Fort",
+   "before": {
+    "explorerId": null,
+    "waterwayId": null,
+    "locationId": null
+   }
+  },
+  {
+   "id": "cmlhqohln0010m2m4uo55ako3",
+   "title": "Creation of Nunavut",
+   "before": {
+    "explorerId": null,
+    "waterwayId": null,
+    "locationId": null
+   }
+  },
+  {
+   "id": "1996_bloody_falls_reconciliation",
+   "title": "Bloody Falls Reconciliation Ceremony",
+   "before": {
+    "explorerId": null,
+    "waterwayId": null,
+    "locationId": null
+   }
+  }
+ ],
+ "timelineEventsBackfilled": [
+  {
+   "id": "cmligbkz8001om20zu2i3f3tj",
+   "title": "Mackenzie Reaches Arctic Ocean",
+   "before": {
+    "explorerId": null,
+    "waterwayId": null,
+    "locationId": null
+   }
+  },
+  {
+   "id": "cmligbkza001pm20z2hyo4tyq",
+   "title": "Mackenzie Reaches Pacific Ocean",
+   "before": {
+    "explorerId": null,
+    "waterwayId": null,
+    "locationId": null
+   }
+  }
+ ],
+ "locationsRelocated": [],
+ "waterwaysGivenGeometry": []
+}
