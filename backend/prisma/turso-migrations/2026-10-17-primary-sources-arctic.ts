@@ -1,0 +1,369 @@
+// Primary-source pointers for The Arctic Searches (2026-10-17).
+//   bun run prisma/turso-migrations/2026-10-17-primary-sources-arctic.ts [--apply]
+//
+// Same rules as the earlier sets: each PrimarySourceDocument row says what the source is, who
+// made it and when, what it covers, and exactly where it can be read today, with URLs only
+// where this session confirmed the page answers. No transcription is quoted. Rows link to the
+// explorer, waterway and location they belong to and carry a grade band. Run after the Arctic
+// pack, which creates several of the names used here. Idempotent by title.
+import { db } from "../../src/db";
+import { APPLY, writeBackup, report } from "./lib/migration";
+
+const IA = (id: string) => `https://archive.org/details/${id}`;
+
+interface Doc {
+  title: string; documentType: "journal" | "report" | "letter" | "map" | "treaty";
+  author: string; originalDate: string; originalYear: number;
+  whatItIs: string; whereToReadIt: string[];
+  vocabulary: { word: string; definition: string }[]; discussionQuestions: string[];
+  gradeLevel: "4-6" | "7-9" | "10-12"; explorer?: string; waterway?: string; location?: string;
+}
+
+const DOCS: Doc[] = [
+  {
+    title: "George Best's True Discourse of Frobisher's Voyages, 1578", documentType: "report", author: "George Best, officer on the second and third voyages", originalDate: "1578", originalYear: 1578,
+    whatItIs: "The fullest contemporary account of Frobisher's three voyages of 1576-78, by one of his captains. Best describes the first sight of Baffin Island, the Inuit who came out in kayaks to trade, the five sailors who rowed ashore in 1576 and were never seen again, the seizure of Kalicho and of Arnaq and her child in 1577 and their behaviour in England, the mining of the black ore on Kodlunarn Island, and the storm that drove the fleet into the Mistaken Strait in 1578. Dionyse Settle's and Thomas Ellis's shorter accounts, and the surgeon Edward Dodding's report on Kalicho's death, belong with it.",
+    whereToReadIt: [
+      `Richard Collinson, ed., The Three Voyages of Martin Frobisher (Hakluyt Society, 1867), which reprints Best, Settle and Ellis — ${IA("threevoyagesofma00bestuoft")}`,
+      "Original: A True Discourse of the Late Voyages of Discoverie (London, 1578); copies in the British Library and the Huntington Library.",
+      "John White's watercolours of Kalicho and of Arnaq with Nutaaq (1577): British Museum, London; reproduced in most modern accounts of the voyages.",
+    ],
+    vocabulary: [{ word: "Cathay", definition: "China, the goal of the Northwest Passage searches" }, { word: "ore", definition: "Rock mined for metal; Frobisher's 'gold' ore was worthless iron pyrite and hornblende" }, { word: "Meta Incognita", definition: "'The unknown limit', Queen Elizabeth's name for the land Frobisher found, now the south coast of Baffin Island" }],
+    discussionQuestions: ["How does Best describe the Inuit, and what does he assume about them?", "Why did Frobisher take captives, and what did the English expect to learn from them?", "What happened to the five sailors of 1576, according to Best and according to the Inuit who spoke to Hall in 1861?"],
+    gradeLevel: "10-12", explorer: "Martin Frobisher", waterway: "Frobisher Bay", location: "Kodlunarn Island",
+  },
+  {
+    title: "The Voyages of John Davis, 1585-1587", documentType: "journal", author: "John Davis and John Janes", originalDate: "1585-1587, published 1589", originalYear: 1587,
+    whatItIs: "The accounts of Davis's three voyages to the strait between Greenland and Baffin Island, written by Davis and by the merchant John Janes who sailed with him, as Hakluyt printed them. They record the music and dancing with which Davis's men met the Inuit of Greenland, the trading of kayaks and seal skins, Cumberland Sound, Exeter Sound and the Cape of God's Mercy, and the run north in 1587 to 72° at Hope Sanderson. Davis's own book The Worldes Hydrographical Discription (1595) argues the passage exists.",
+    whereToReadIt: [
+      `Albert Hastings Markham, ed., The Voyages and Works of John Davis the Navigator (Hakluyt Society, 1880) — ${IA("voyagesandworks00wriggoog")}`,
+      "Hakluyt's Principal Navigations (1589 and 1598-1600), where the narratives first appeared; many editions.",
+    ],
+    vocabulary: [{ word: "Hope Sanderson", definition: "Davis's farthest north in 1587, at 72°12' on the Greenland coast, named for his backer William Sanderson" }, { word: "pinnace", definition: "A small boat carried by a ship for inshore work" }, { word: "hydrography", definition: "The surveying and charting of seas and coasts" }],
+    discussionQuestions: ["How did Davis's dealings with the Greenland Inuit differ from Frobisher's?", "What did Davis learn about ice and seasons that later navigators used?", "Why did Davis believe the passage was still there after three failures?"],
+    gradeLevel: "10-12", explorer: "John Davis", waterway: "Davis Strait",
+  },
+  {
+    title: "Abacuk Prickett's Account of Hudson's Last Voyage, 1610-1611", documentType: "journal", author: "Abacuk Prickett, with Hudson's own fragment", originalDate: "1610-1611, published 1625", originalYear: 1611,
+    whatItIs: "The only full account of the Discovery's voyage through Hudson Strait, the winter in James Bay, and the mutiny of June 1611 that set Hudson, his son and seven men adrift in a boat. Prickett was one of the mutineers' party who got home, and wrote to clear himself; Hudson's own journal survives only in a fragment to August 1610. The documents were gathered by Purchas in 1625 and edited with the trial records in 1860.",
+    whereToReadIt: [
+      `G. M. Asher, ed., Henry Hudson the Navigator: The Original Documents in which his Career is Recorded (Hakluyt Society, 1860) — ${IA("henryhudsonnavig27ashe")}`,
+      "Purchas his Pilgrimes, vol. 3 (London, 1625), where Prickett's account was first printed.",
+      "The High Court of Admiralty examinations of the survivors (1611-1618): The National Archives, Kew.",
+    ],
+    vocabulary: [{ word: "mutiny", definition: "A crew's rebellion against its officers" }, { word: "Hudson Strait", definition: "The strait Hudson sailed through in 1610, which the Inuit had crossed for centuries" }, { word: "Purchas", definition: "Samuel Purchas, who published the voyages collected by Hakluyt after his death" }],
+    discussionQuestions: ["Why might Prickett's account be unreliable, and how can we tell?", "What did Hudson's crew suffer in the winter of 1610-11?", "What became of Hudson? What does the record not tell us?"],
+    gradeLevel: "7-9", explorer: "Henry Hudson", waterway: "Hudson Strait",
+  },
+  {
+    title: "The Voyages of William Baffin, 1612-1622", documentType: "journal", author: "William Baffin", originalDate: "1615-1616, published 1625", originalYear: 1616,
+    whatItIs: "Baffin's journals of the Discovery's voyages of 1615, through Hudson Strait to Foxe Channel, and 1616, round the bay that bears his name to Smith Sound at 78° north, the farthest north any ship reached for 236 years. Baffin, the pilot, was the best navigator of his age: his longitude by lunar observation is the first recorded at sea. His letter to the sponsor Sir John Wolstenholme says plainly there is no passage through Davis Strait, and the openings he named, Smith, Jones and Lancaster sounds, were doubted until Ross and Parry sailed into them in 1818-19.",
+    whereToReadIt: [
+      `Clements R. Markham, ed., The Voyages of William Baffin, 1612-1622 (Hakluyt Society, 1881) — ${IA("voyageswilliamb00baffgoog")}`,
+      "Purchas his Pilgrimes, vol. 3 (1625), for the first printing; Baffin's 1615 chart is in the British Library.",
+    ],
+    vocabulary: [{ word: "lunar distance", definition: "A method of finding longitude from the angle between the moon and a star; Baffin was the first to use it at sea" }, { word: "Smith Sound", definition: "The strait at the head of Baffin Bay, named by Baffin for Sir Thomas Smith" }, { word: "farthest north", definition: "The highest latitude reached by an expedition" }],
+    discussionQuestions: ["Why did Baffin conclude there was no passage, and why was he wrong about Lancaster Sound?", "Why did nobody return to Baffin Bay for two hundred years?", "What made Baffin's navigation better than his contemporaries'?"],
+    gradeLevel: "10-12", explorer: "William Baffin", waterway: "Smith Sound",
+  },
+  {
+    title: "Jens Munk's Navigatio Septentrionalis, 1624", documentType: "journal", author: "Jens Munk", originalDate: "1619-1620, published 1624", originalYear: 1624,
+    whatItIs: "Munk's own diary of the Danish expedition of 1619-20: the passage of Hudson Strait, the winter at the mouth of the Churchill River, the deaths from scurvy one by one through the spring, recorded by name and date until only Munk and two sailors were left, and the voyage home of the three in the Lamprey. It is the most harrowing document of the early searches and the first description of the Churchill estuary, where the Hudson's Bay Company built its forts a century later.",
+    whereToReadIt: [
+      `English translation in C. C. A. Gosch, ed., Danish Arctic Expeditions, 1605 to 1620, Book II (Hakluyt Society, 1897) — ${IA("danisharcticexp03munkgoog")}`,
+      `Book I of the same work, the Greenland voyages of 1605-07 — ${IA("danisharcticexp01munkgoog")}`,
+      "Danish original: Navigatio Septentrionalis (Copenhagen, 1624); Royal Library, Copenhagen.",
+    ],
+    vocabulary: [{ word: "scurvy", definition: "The vitamin C deficiency that killed Munk's men; fresh meat or plants would have prevented it" }, { word: "Nova Dania", definition: "'New Denmark', Munk's name for the Churchill country" }, { word: "estuary", definition: "The tidal mouth of a river" }],
+    discussionQuestions: ["Why did Munk's men die when Inuit and Dene lived through the same winters nearby?", "What does Munk's diary record about the land and animals around Churchill?", "How did three men sail a ship across the Atlantic?"],
+    gradeLevel: "7-9", explorer: "Jens Munk", waterway: "Churchill River", location: "Prince of Wales Fort",
+  },
+  {
+    title: "Middleton's Vindication of his Voyage to Hudson Bay, 1743", documentType: "report", author: "Christopher Middleton", originalDate: "1743", originalYear: 1743,
+    whatItIs: "Middleton's printed defence against Arthur Dobbs's charge that he had been bribed by the Hudson's Bay Company to hide a passage. It reprints his journal of the 1741-42 voyage: the winter at Churchill, the scurvy, the exploration of Wager Bay and Repulse Bay in July and August 1742, and the Frozen Strait. The pamphlet war that followed, with Dobbs's replies and Middleton's rejoinders, kept the Northwest Passage before Parliament and led to the Act of 1745 offering £20,000 for its discovery.",
+    whereToReadIt: [
+      `A Vindication of the Conduct of Captain Christopher Middleton (London, 1743) — ${IA("cihm_39047")}`,
+      "Dobbs's An Account of the Countries adjoining to Hudson's Bay (1744) and the later pamphlets: British Library; several are on the Internet Archive.",
+      "Middleton's log of the Furnace: The National Archives, Kew (Admiralty records).",
+    ],
+    vocabulary: [{ word: "vindication", definition: "A written defence of one's conduct" }, { word: "Frozen Strait", definition: "The ice-filled strait Middleton saw between Southampton Island and the mainland, which Parry proved a true strait in 1821" }, { word: "Copley Medal", definition: "The Royal Society's highest award, given to Middleton in 1742 for his observations on cold and magnetism" }],
+    discussionQuestions: ["What exactly did Dobbs accuse Middleton of, and what evidence did each side use?", "Why did people in London so badly want the passage to exist?", "How did the quarrel affect the Hudson's Bay Company?"],
+    gradeLevel: "10-12", explorer: "Christopher Middleton", waterway: "Wager Bay",
+  },
+  {
+    title: "Parry's Journal of the Voyage of the Hecla and Griper, 1819-1820", documentType: "journal", author: "William Edward Parry", originalDate: "1819-1820, published 1821", originalYear: 1821,
+    whatItIs: "The official narrative of the first voyage to winter in the Arctic Archipelago: the run through Lancaster Sound past Ross's imaginary mountains, the passage of 110° west and the prize, the ten months at Winter Harbour on Melville Island with the theatre, the newspaper and the schooling that kept the men well, and the wall of ice beyond. Parry's practical appendices on ice, provisions and health were the handbook for every Arctic expedition that followed.",
+    whereToReadIt: [
+      `Journal of a Voyage for the Discovery of a North-West Passage (London, 1821) — ${IA("journalofvoyage00parr")}`,
+      "The Winter Chronicle, the newspaper Parry's officers wrote at Winter Harbour, was printed in London in 1821 and is on the Internet Archive.",
+      "Parry's logs and journals: The National Archives, Kew; Scott Polar Research Institute, Cambridge.",
+    ],
+    vocabulary: [{ word: "Winter Harbour", definition: "Parry's anchorage on Melville Island, 1819-20" }, { word: "theatricals", definition: "Plays staged by the crew for amusement and health through the dark months" }, { word: "antiscorbutic", definition: "A food or medicine that prevents scurvy; Parry grew mustard and cress aboard" }],
+    discussionQuestions: ["How did Parry keep 94 men healthy and sane through ten months of ice and dark?", "What did he learn about the ice west of Melville Island, and why did it matter in 1845?", "Compare Parry's winter with Munk's at Churchill two hundred years before."],
+    gradeLevel: "7-9", explorer: "Sir William Edward Parry", waterway: "Viscount Melville Sound", location: "Winter Harbour",
+  },
+  {
+    title: "Franklin's Narrative of a Journey to the Shores of the Polar Sea, 1819-1822", documentType: "journal", author: "John Franklin, with John Richardson, George Back and Robert Hood", originalDate: "1819-1822, published 1823", originalYear: 1823,
+    whatItIs: "Franklin's account of his first overland expedition: the journey from York Factory to Fort Enterprise, the help of Akaitcho's Yellowknives and the Dene guides, the canoe voyage down the Coppermine and along Coronation Gulf in 1821, and the return across the Barren Lands on which eleven men died, including Hood, shot by the voyageur Michel. Richardson's and Back's journals and Hood's drawings are included. It is one of the most read exploration narratives of the century, and the Dene who fed the survivors appear in it by name.",
+    whereToReadIt: [
+      `Narrative of a Journey to the Shores of the Polar Sea in the Years 1819, 20, 21 and 22 (London, 1823) — ${IA("Narrativejourne00Fran")}`,
+      "Richard C. Davis, ed., Sir John Franklin's Journals and Correspondence: The First Arctic Land Expedition (Champlain Society, 1995), for the original journals.",
+      "Robert Hood's journal and watercolours: C. Stuart Houston, ed., To the Arctic by Canoe (1974); Library and Archives Canada.",
+    ],
+    vocabulary: [{ word: "Barren Lands", definition: "The treeless tundra between the forest and the Arctic coast" }, { word: "tripe de roche", definition: "A rock lichen the starving party boiled and ate" }, { word: "Yellowknives", definition: "The Dene nation, Akaitcho's people, who guided and fed the expedition" }],
+    discussionQuestions: ["What did Franklin's party depend on Akaitcho's people for, and how does Franklin acknowledge it?", "Why did the expedition fail, by Franklin's account and by later judgement?", "How does Franklin tell the story of Hood's death and Michel's?"],
+    gradeLevel: "7-9", explorer: "Sir John Franklin", waterway: "Coronation Gulf", location: "Fort Enterprise",
+  },
+  {
+    title: "Franklin's Narrative of a Second Expedition to the Shores of the Polar Sea, 1825-1827", documentType: "journal", author: "John Franklin and John Richardson", originalDate: "1825-1827, published 1828", originalYear: 1828,
+    whatItIs: "The account of the well-planned second expedition: two comfortable winters at Fort Franklin on Great Bear Lake, the descent of the Mackenzie in 1826, Franklin's boat journey west along the coast to Return Reef, where Beechey's barge had just missed him, the Inuvialuit encounter at Pillage Point, and Richardson's eastern survey to the Coppermine. Richardson's appendix on the Dene and Inuit, and the natural history, make it a scientific as well as a travel record.",
+    whereToReadIt: [
+      `Narrative of a Second Expedition to the Shores of the Polar Sea in the Years 1825, 1826 and 1827 (London, 1828) — ${IA("cihm_35179")}`,
+      "Richard C. Davis, ed., Sir John Franklin's Journals and Correspondence: The Second Arctic Land Expedition (Champlain Society, 1998).",
+    ],
+    vocabulary: [{ word: "Return Reef", definition: "Franklin's farthest west on the Alaskan coast, 18 August 1826" }, { word: "Inuvialuit", definition: "The Inuit of the western Arctic, whom Franklin met at the Mackenzie Delta" }, { word: "Fort Franklin", definition: "The expedition's base on Great Bear Lake, now Délı̨nę" }],
+    discussionQuestions: ["What did Franklin do differently the second time, and why did it work?", "What happened at Pillage Point, from each side's point of view?", "How close did Franklin and Beechey come to meeting, and what would it have proved?"],
+    gradeLevel: "10-12", explorer: "Sir John Franklin", waterway: "Beaufort Sea", location: "Fort Franklin",
+  },
+  {
+    title: "Beechey's Narrative of a Voyage to the Pacific and Beering's Strait, 1825-1828", documentType: "journal", author: "Frederick William Beechey", originalDate: "1825-1828, published 1831", originalYear: 1831,
+    whatItIs: "Beechey's account of the Blossom's voyage to meet Franklin from the Pacific side: two seasons waiting at Kotzebue Sound in 1826 and 1827, the barge's journey to Point Barrow under Thomas Elson, and the first extended description of the Iñupiat of the Alaskan coast, their trade fair, boats and winter houses. Between seasons the Blossom visited Pitcairn Island, where Beechey interviewed the last Bounty mutineer, and San Francisco.",
+    whereToReadIt: [
+      `Narrative of a Voyage to the Pacific and Beering's Strait (London, 1831), vol. 1 — ${IA("narrativeavoyag02beecgoog")}`,
+      "Beechey's logs: The National Archives, Kew. The Blossom's natural history was published separately as The Zoology of Captain Beechey's Voyage (1839).",
+    ],
+    vocabulary: [{ word: "Beering's Strait", definition: "The old spelling of Bering Strait" }, { word: "barge", definition: "The ship's large decked boat, which could go where the ship could not" }, { word: "Iñupiat", definition: "The Inuit of northern Alaska" }],
+    discussionQuestions: ["What did Beechey's crew see of Iñupiat life at Kotzebue Sound?", "Why could the Blossom not go east along the coast herself?", "What did the two near-misses of 1826 show about coordinating expeditions across a continent?"],
+    gradeLevel: "10-12", explorer: "Frederick William Beechey", waterway: "Kotzebue Sound",
+  },
+  {
+    title: "Kotzebue's Voyage of Discovery into the South Sea and Beering's Straits, 1815-1818", documentType: "journal", author: "Otto von Kotzebue, with Adelbert von Chamisso", originalDate: "1815-1818, published 1821", originalYear: 1821,
+    whatItIs: "The narrative of the Russian brig Rurik's voyage, financed by Count Rumyantsev to seek a passage from the Pacific: the discovery of Kotzebue Sound in August 1816, the Iñupiat met there and in St. Lawrence Island, the frozen cliffs with mammoth bones at Elephant Point, and the second season cut short by Kotzebue's illness. The poet and naturalist Chamisso's observations fill the third volume, and Louis Choris's drawings of the people of the Bering Strait are the earliest from the region.",
+    whereToReadIt: [
+      `A Voyage of Discovery into the South Sea and Beering's Straits (London, 1821), English translation — ${IA("voyageofdiscover00kotz")}`,
+      "German original: Entdeckungs-Reise in die Süd-See und nach der Berings-Strasse (Weimar, 1821). Choris's Voyage pittoresque autour du monde (Paris, 1822) for the drawings.",
+    ],
+    vocabulary: [{ word: "Rurik", definition: "Kotzebue's brig, named for the founder of the Russian state" }, { word: "Chamisso", definition: "The French-born German poet who sailed as naturalist; Chamisso Island in the sound is named for him" }, { word: "Elephant Point", definition: "Where the Rurik's men found mammoth tusks in the frozen cliffs" }],
+    discussionQuestions: ["What did the Russians hope to find north of Bering Strait?", "How does Chamisso describe the Iñupiat, compared with Beechey ten years later?", "What did the Rurik's scientists discover that had nothing to do with the passage?"],
+    gradeLevel: "10-12", explorer: "Otto von Kotzebue", waterway: "Kotzebue Sound",
+  },
+  {
+    title: "John Ross's Narrative of a Second Voyage in Search of a North-West Passage, 1829-1833", documentType: "journal", author: "John Ross, with James Clark Ross", originalDate: "1829-1833, published 1835", originalYear: 1835,
+    whatItIs: "Ross's account of the Victory's four winters on the Boothia Peninsula: the failure of the steam engine, the arrival of the Netsilik band in January 1830 and the months of trade, visits and map-drawing that followed, James Clark Ross's sledge journeys to King William Island and the North Magnetic Pole, the abandonment of the ship, the winter at Fury Beach on Parry's stores, and the rescue by the whaler Isabella in Lancaster Sound. The appendix has one of the fullest early accounts of Inuit life.",
+    whereToReadIt: [
+      `Narrative of a Second Voyage in Search of a North-West Passage, and of a Residence in the Arctic Regions during the Years 1829-1833 (London, 1835) — ${IA("narrativeasecon00rossgoog")}`,
+      `Ross's first voyage: A Voyage of Discovery ... in His Majesty's Ships Isabella and Alexander (London, 1819) — ${IA("voyageofdiscover02ross")}`,
+      "Ross's papers: Scott Polar Research Institute, Cambridge; National Library of Scotland.",
+    ],
+    vocabulary: [{ word: "Boothia", definition: "The peninsula Ross named for his sponsor Felix Booth, the northernmost point of the North American mainland" }, { word: "Netsilik", definition: "The Natsilingmiut, the Inuit of the Boothia and King William Island country" }, { word: "Fury Beach", definition: "Where Parry's Fury was wrecked in 1825 and her stores saved Ross's crew in 1833" }],
+    discussionQuestions: ["What did the Netsilik and the Victory's crew each want from the other, and what did each learn?", "How did Ross's men survive four winters when Franklin's later died in two?", "Why does Ross's account of his own conduct need to be read carefully?"],
+    gradeLevel: "10-12", explorer: "Sir John Ross", waterway: "Prince Regent Inlet", location: "Felix Harbour",
+  },
+  {
+    title: "Thomas Simpson's Narrative of the Discoveries on the North Coast of America, 1836-1839", documentType: "journal", author: "Thomas Simpson", originalDate: "1836-1839, published 1843", originalYear: 1843,
+    whatItIs: "The Hudson's Bay Company's own Arctic expedition, told by the man who did most of the walking and was dead before the book appeared: the descent of the Mackenzie and the walk from Return Reef to Point Barrow in 1837, the two seasons east along Coronation Gulf from Fort Confidence, and the passage of Simpson Strait to the Back River in 1839 that completed the survey of the continental coast. Simpson is unfair to Dease and to almost everyone else, and exact about the coast; the interpreter Ouligbuck appears throughout.",
+    whereToReadIt: [
+      `Narrative of the Discoveries on the North Coast of America, Effected by the Officers of the Hudson's Bay Company during the Years 1836-39 (London, 1843) — ${IA("narrativediscov00simpgoog")}`,
+      "Dease's journals: William Barr, ed., From Barrow to Boothia: The Arctic Journal of Chief Factor Peter Warren Dease, 1836-1839 (McGill-Queen's, 2002).",
+      "Originals: Hudson's Bay Company Archives, Archives of Manitoba, Winnipeg.",
+    ],
+    vocabulary: [{ word: "Point Barrow", definition: "The northernmost point of Alaska, which Simpson reached on foot in 1837" }, { word: "Fort Confidence", definition: "The expedition's base on Great Bear Lake" }, { word: "Simpson Strait", definition: "The strait between King William Island and the mainland, which the boats passed in 1839" }],
+    discussionQuestions: ["Why did the Hudson's Bay Company take up Arctic exploration in the 1830s?", "How does Simpson's account of Dease compare with Dease's own journal?", "What did the 1839 survey leave unknown, and why did that matter to Franklin in 1845?"],
+    gradeLevel: "10-12", explorer: "Thomas Simpson", waterway: "Simpson Strait", location: "Fort Confidence",
+  },
+  {
+    title: "Rae's Narrative of an Expedition to the Shores of the Arctic Sea, 1846-1847", documentType: "journal", author: "John Rae", originalDate: "1846-1847, published 1850", originalYear: 1850,
+    whatItIs: "Rae's account of the Hudson's Bay Company expedition that wintered at Repulse Bay in a stone house, Fort Hope, living on the caribou and fish the party hunted, and surveyed Committee Bay in the spring of 1847, proving Boothia a peninsula and closing the last gap in the coast of the mainland. It is the first description of an Arctic expedition living as the Inuit lived, with snow houses, fur clothing and hunting, and the Inuit of Repulse Bay and Ouligbuck are in it on every page.",
+    whereToReadIt: [
+      `Narrative of an Expedition to the Shores of the Arctic Sea in 1846 and 1847 (London, 1850) — ${IA("india.history.resource.40888")}`,
+      "Rae's correspondence: E. E. Rich, ed., John Rae's Correspondence with the Hudson's Bay Company on Arctic Exploration, 1844-1855 (Hudson's Bay Record Society, 1953).",
+      "Rae's unpublished autobiography: Scott Polar Research Institute, Cambridge.",
+    ],
+    vocabulary: [{ word: "Fort Hope", definition: "Rae's stone winter house at Repulse Bay" }, { word: "Committee Bay", definition: "The southern arm of the Gulf of Boothia, which Rae surveyed in 1847" }, { word: "living off the land", definition: "Feeding an expedition by hunting and fishing rather than from stores" }],
+    discussionQuestions: ["What did Rae do that no Royal Navy expedition had done, and why did the Navy not copy him?", "How does Rae describe the Inuit of Repulse Bay?", "What did proving Boothia a peninsula mean for the search for the passage?"],
+    gradeLevel: "7-9", explorer: "Dr. John Rae", waterway: "Repulse Bay", location: "Fort Hope",
+  },
+  {
+    title: "The Victory Point Record, 1847-1848", documentType: "report", author: "Graham Gore (1847); Francis Crozier and James Fitzjames (1848)", originalDate: "28 May 1847 and 25 April 1848", originalYear: 1848,
+    whatItIs: "A printed Admiralty form, filled in by Lieutenant Gore in May 1847 to say the ships had wintered at Beechey Island and all was well, and written round the margins eleven months later by Crozier and Fitzjames: Franklin dead on 11 June 1847, nine officers and fifteen men dead, Erebus and Terror abandoned on 22 April 1848 after nineteen months beset, and the 105 survivors starting south for the Back River. It was found in a cairn at Victory Point by Lieutenant Hobson of the Fox on 6 May 1859 and is the only written account of the expedition's end.",
+    whereToReadIt: [
+      "Original: National Maritime Museum, Greenwich, London.",
+      `Facsimile and transcription in McClintock, The Voyage of the 'Fox' in the Arctic Seas (London, 1859) — ${IA("voyageoffoxinarc00mcli_0")}`,
+      "Photographs of the record are freely available on Wikimedia Commons.",
+    ],
+    vocabulary: [{ word: "cairn", definition: "A pile of stones built as a marker, in which Arctic expeditions left records" }, { word: "beset", definition: "Held fast in the ice" }, { word: "Back's Fish River", definition: "The Back River, toward which the survivors marched" }],
+    discussionQuestions: ["What does the record say, and what does it leave out?", "Why was the same form used twice, a year apart?", "What do the two messages tell us about the state of the expedition in 1847 and in 1848?"],
+    gradeLevel: "7-9", explorer: "Francis Crozier", waterway: "Victoria Strait", location: "Victory Point",
+  },
+  {
+    title: "McClintock's Voyage of the Fox in the Arctic Seas, 1857-1859", documentType: "journal", author: "Francis Leopold McClintock", originalDate: "1857-1859, published 1859", originalYear: 1859,
+    whatItIs: "The narrative of Lady Franklin's last expedition: the winter adrift in the Baffin Bay pack, the passage of Bellot Strait, the winter at Port Kennedy on Boothia, the Inuit met near the Magnetic Pole who had seen the ships and sold relics, and the sledge journeys of 1859 on which Hobson found the Victory Point record and McClintock found the boat with two skeletons and the scattered remains along the shore of King William Island. The book sold enormously and fixed the Franklin story in British memory.",
+    whereToReadIt: [
+      `The Voyage of the 'Fox' in the Arctic Seas: A Narrative of the Discovery of the Fate of Sir John Franklin and his Companions (London, 1859) — ${IA("voyageoffoxinarc00mcli_0")}`,
+      "McClintock's and Hobson's journals: Scott Polar Research Institute, Cambridge; National Maritime Museum, Greenwich.",
+    ],
+    vocabulary: [{ word: "Bellot Strait", definition: "The narrow strait between Somerset Island and Boothia, which the Fox was the first ship to pass" }, { word: "the boat place", definition: "Where McClintock found a ship's boat on a sledge with two skeletons and a mass of useless goods" }, { word: "relics", definition: "Objects from the lost expedition, bought from the Inuit or found on the shore" }],
+    discussionQuestions: ["What did the Inuit tell McClintock, and how does it compare with what they told Rae?", "What did the boat and its contents suggest about the survivors' last months?", "Why did McClintock's account satisfy the British public when Rae's had not?"],
+    gradeLevel: "7-9", explorer: "Sir Francis Leopold McClintock", waterway: "Victoria Strait", location: "Victory Point",
+  },
+  {
+    title: "The Discovery of the North-West Passage by HMS Investigator, 1850-1854", documentType: "journal", author: "Robert McClure, edited by Sherard Osborn", originalDate: "1850-1854, published 1856", originalYear: 1856,
+    whatItIs: "McClure's journal, edited by his fellow officer Osborn: the voyage through Bering Strait, the discovery of Prince of Wales Strait, the sight of Melville Sound on 26 October 1850, the two winters frozen in Mercy Bay with the crew starving and going mad, Pim's arrival across the ice, and the walk to Kellett's ships that made McClure's men the first to pass from the Pacific to the Atlantic. The Moravian missionary Johann Miertsching, the ship's Inuktitut interpreter, kept a franker diary, published in English in 1967.",
+    whereToReadIt: [
+      `The Discovery of the North-West Passage by H.M.S. Investigator (London, 1856) — ${IA("india.history.resource.40131")}`,
+      `Johann Miertsching, Frozen Ships: The Arctic Diary of Johann Miertsching, 1850-1854, translated by L. H. Neatby (1967), borrowable at the Internet Archive — ${IA("frozenshipsarcti0000mier")}`,
+      "Alexander Armstrong, the ship's surgeon, A Personal Narrative of the Discovery of the North-West Passage (1857), for a third view.",
+    ],
+    vocabulary: [{ word: "Mercy Bay", definition: "The bay on Banks Island where the Investigator was frozen in from 1851 and abandoned in 1853" }, { word: "Prince of Wales Strait", definition: "The strait between Banks and Victoria islands that McClure discovered" }, { word: "Inuktitut interpreter", definition: "Miertsching had learned the language at the Moravian missions in Labrador" }],
+    discussionQuestions: ["Did McClure discover the Northwest Passage? What did Parliament decide, and why?", "How do McClure's and Miertsching's accounts of the Mercy Bay winters differ?", "What did McClure's men learn from the Inuvialuit they met on Victoria Island?"],
+    gradeLevel: "10-12", explorer: "Sir Robert McClure", waterway: "Prince of Wales Strait", location: "Mercy Bay",
+  },
+  {
+    title: "Kennedy's Short Narrative of the Second Voyage of the Prince Albert, 1851-1852", documentType: "journal", author: "William Kennedy", originalDate: "1851-1852, published 1853", originalYear: 1853,
+    whatItIs: "The account by the Métis commander of Lady Franklin's Prince Albert of the winter at Batty Bay in Prince Regent Inlet and the great sledge journey of 1852 with Bellot, on which they found Bellot Strait and crossed Somerset and Prince of Wales islands, 1,800 kilometres in dog sledges and snow houses, using the Hudson's Bay Company travelling methods Kennedy had learned as a boy. Bellot's own journal, published after his death, tells the same journey from the French side.",
+    whereToReadIt: [
+      `A Short Narrative of the Second Voyage of the Prince Albert in Search of Sir John Franklin (London, 1853) — ${IA("shortnarrativeof00kenn")}`,
+      `Memoirs of Lieutenant Joseph René Bellot, with his Journal of a Voyage in the Polar Seas (London, 1855) — ${IA("memoirslieutena01bellgoog")}`,
+    ],
+    vocabulary: [{ word: "Batty Bay", definition: "The Prince Albert's winter harbour on Somerset Island, 1851-52" }, { word: "snow house", definition: "The igluvigaq; Kennedy's party built them each night on the sledge journey" }, { word: "Métis", definition: "People of mixed Indigenous and European descent; Kennedy's mother was Cree" }],
+    discussionQuestions: ["What did Kennedy do differently from the naval searchers, and where had he learned it?", "How did Kennedy and Bellot, from such different worlds, work together?", "Why did finding Bellot Strait matter, and why did it not help find Franklin?"],
+    gradeLevel: "7-9", explorer: "William Kennedy", waterway: "Bellot Strait",
+  },
+  {
+    title: "Kane's Arctic Explorations: the Second Grinnell Expedition, 1853-1855", documentType: "journal", author: "Elisha Kent Kane", originalDate: "1853-1855, published 1856", originalYear: 1856,
+    whatItIs: "Kane's account of the Advance's two winters at Rensselaer Harbour in Smith Sound in search of Franklin and an open polar sea: scurvy, the loss of the dogs, the sledge journeys north, the Inughuit of Etah who fed the party and the Greenlander Hans Hendrik who hunted for it, the abandonment of the ship and the boat journey to Upernavik. Written for a popular audience with Kane's own drawings, it was the best-selling American travel book of its time and made Smith Sound the American road to the Pole.",
+    whereToReadIt: [
+      `Arctic Explorations: The Second Grinnell Expedition in Search of Sir John Franklin (Philadelphia, 1856), vol. 1 — ${IA("arcticexplorati00kanegoog")}`,
+      `The Inuit side: Memoirs of Hans Hendrik, the Arctic Traveller (London, 1878), translated from the Greenlandic — ${IA("memoirsofhanshen00hendrich")}`,
+    ],
+    vocabulary: [{ word: "Rensselaer Harbour", definition: "The Advance's anchorage in Smith Sound, 1853-55" }, { word: "Inughuit", definition: "The Inuit of northwest Greenland, the northernmost people in the world" }, { word: "open polar sea", definition: "The mistaken theory that ice-free water lay around the North Pole" }],
+    discussionQuestions: ["How did Kane's party survive, and whose doing was it?", "Compare Kane's picture of Hans Hendrik with Hendrik's own memoir.", "Why did Americans take up the Franklin search and the Smith Sound route?"],
+    gradeLevel: "7-9", explorer: "Elisha Kent Kane", waterway: "Smith Sound",
+  },
+  {
+    title: "Hall's Life with the Esquimaux, 1860-1862", documentType: "journal", author: "Charles Francis Hall", originalDate: "1860-1862, published 1864", originalYear: 1864,
+    whatItIs: "Hall's account of two years living with the Inuit of Frobisher Bay as the first person to go north with no ship of his own: his meeting with Tookoolito and Ebierbing, his adoption of Inuit food, clothing and travel, and the oral tradition of ships and white men long ago that he followed, with Tookoolito interpreting, to Kodlunarn Island and the remains of Frobisher's mine of 1578. It is the first book by a European to take Inuit historical memory seriously as evidence.",
+    whereToReadIt: [
+      `Life with the Esquimaux: A Narrative of Arctic Experience in Search of Survivors of Sir John Franklin's Expedition (London, 1864; one-volume edition 1865) — ${IA("lifewithesquimau00hall_1")}`,
+      "Hall's field notebooks and papers: Smithsonian Institution Archives, Washington.",
+    ],
+    vocabulary: [{ word: "Esquimaux", definition: "The nineteenth-century spelling of a name for the Inuit that is no longer used in Canada" }, { word: "oral tradition", definition: "History passed on by telling, which led Hall to the Frobisher site" }, { word: "Kodlunarn", definition: "Qallunaat Island, 'white men's island', the Frobisher mine" }],
+    discussionQuestions: ["What did the Inuit of Frobisher Bay remember about Frobisher's voyages, 284 years later?", "How did Hall test the tradition against the ground, and what did he find?", "What did Tookoolito and Ebierbing make possible that Hall could not have done alone?"],
+    gradeLevel: "7-9", explorer: "Charles Francis Hall", waterway: "Frobisher Bay", location: "Kodlunarn Island",
+  },
+  {
+    title: "Hall's Second Arctic Expedition and the Inuit Testimony, 1864-1869", documentType: "report", author: "Charles Francis Hall, edited by J. E. Nourse", originalDate: "1864-1869, published 1879", originalYear: 1879,
+    whatItIs: "The record of Hall's five years among the Aivilingmiut of Repulse Bay and his 1869 journey to King William Island with Tookoolito and Ebierbing, compiled from his notebooks after his death. It contains the fullest body of Inuit testimony about the Franklin expedition: accounts of the ships in the ice, of a ship that sank and one that drifted south, of the camp at Terror Bay, of starving men met by Inuit families, of the bodies found, given by In-nook-poo-zhe-jook, Too-shoo-art-thariu and others, with Hall's sketches and the map In-nook-poo-zhe-jook drew. The 2014 and 2016 discoveries confirmed much of it.",
+    whereToReadIt: [
+      `Narrative of the Second Arctic Expedition made by Charles F. Hall (Washington, 1879) — ${IA("narrativeofseco00hall")}`,
+      `Analysis of the testimony: David C. Woodman, Unravelling the Franklin Mystery: Inuit Testimony (McGill-Queen's, 1991), borrowable at the Internet Archive — ${IA("unravellingfrank0000wood")}`,
+      "Hall's original notebooks: Smithsonian Institution Archives, Washington; Dorothy Harley Eber, Encounters on the Passage: Inuit Meet the Explorers (2008), for twentieth-century Inuit accounts.",
+    ],
+    vocabulary: [{ word: "Aivilingmiut", definition: "The Inuit of the Repulse Bay region" }, { word: "testimony", definition: "An account given by a witness; the Inuit testimony is evidence, not legend" }, { word: "Terror Bay", definition: "The bay on King William Island where Inuit saw a camp and where HMS Terror was found in 2016" }],
+    discussionQuestions: ["What did the Inuit witnesses see, and how did Hall record and test what they said?", "Why was Inuit testimony doubted for so long, and what changed in 2014 and 2016?", "What does Hall's method owe to Tookoolito?"],
+    gradeLevel: "10-12", explorer: "Charles Francis Hall", waterway: "Simpson Strait",
+  },
+  {
+    title: "Richardson's Arctic Searching Expedition, 1847-1849", documentType: "journal", author: "John Richardson", originalDate: "1847-1849, published 1851", originalYear: 1851,
+    whatItIs: "The first Franklin search overland, told by Franklin's old companion, then sixty: the boat voyage down the Mackenzie with John Rae in 1848, the search of the coast east to the Coppermine, the winter at Fort Confidence on Great Bear Lake, and Rae's attempt on Victoria Island in 1849. Half the book is Richardson's survey of the peoples, plants, animals and geology of the north, the summary of a lifetime's observation.",
+    whereToReadIt: [
+      `Arctic Searching Expedition: A Journal of a Boat-Voyage through Rupert's Land and the Arctic Sea (London, 1851), vol. 1 — ${IA("arcticsearchinge01rich")}`,
+      "Richardson's Arctic journals and correspondence: Scott Polar Research Institute, Cambridge.",
+    ],
+    vocabulary: [{ word: "Rupert's Land", definition: "The Hudson's Bay Company's chartered territory, through which the expedition travelled" }, { word: "boat voyage", definition: "The expedition used the company's boats and voyageurs rather than ships" }, { word: "Fort Confidence", definition: "Dease and Simpson's old base, reoccupied in 1848" }],
+    discussionQuestions: ["Why did the Admiralty send an overland search as well as ships?", "What did Richardson and Rae look for, and why did they look in the wrong place?", "What does the second half of the book tell us about the Arctic of 1848?"],
+    gradeLevel: "10-12", explorer: "Sir John Richardson", waterway: "Coronation Gulf", location: "Fort Confidence",
+  },
+  {
+    title: "Amundsen's The North West Passage, 1903-1907", documentType: "journal", author: "Roald Amundsen, with Godfred Hansen", originalDate: "1903-1906, published 1908", originalYear: 1908,
+    whatItIs: "Amundsen's account of the Gjøa's voyage: the passage of Lancaster Sound and Peel Sound in Franklin's wake, the two winters at Gjoa Haven with the magnetic observatory and the Netsilik families who taught the Norwegians to live on the ice, the voyage west along the mainland coast in 1905, the winter at King Point and the sledge journey to Eagle, Alaska, to telegraph the news. The second volume describes the Netsilik at length. It is the record of the first ship through the passage, and of how an Inuit education made it possible.",
+    whereToReadIt: [
+      `Roald Amundsen's 'The North West Passage', being the Record of a Voyage of Exploration of the Ship Gjøa, 1903-1907 (London, 1908), vol. 1 — ${IA("cu31924092506652")}`,
+      `Vol. 2, with Godfred Hansen's account of his sledge journey and the chapters on the Netsilik — ${IA("northwestpassage02amun")}`,
+      "The Gjøa herself is at the Fram Museum, Oslo; Amundsen's Netsilik collection is in the Museum of Cultural History there.",
+    ],
+    vocabulary: [{ word: "Gjøa", definition: "Amundsen's 47-ton herring sloop, the first ship through the Northwest Passage" }, { word: "Gjoa Haven", definition: "Uqsuqtuuq, the harbour on King William Island where the Gjøa wintered twice" }, { word: "King Point", definition: "The Yukon coast where the Gjøa spent the winter of 1905-06" }],
+    discussionQuestions: ["What did Amundsen learn from the Netsilik, and how did he use it in the Antarctic later?", "Why did a small ship succeed where big ones had failed?", "How does Amundsen describe the Netsilik, and what does he not see?"],
+    gradeLevel: "7-9", explorer: "Roald Amundsen", waterway: "Simpson Strait", location: "Gjoa Haven",
+  },
+  {
+    title: "Bernier's Report on the Canadian Government Expedition to the Arctic Islands, 1908-1909", documentType: "report", author: "Joseph-Elzéar Bernier", originalDate: "1908-1909, published 1910", originalYear: 1910,
+    whatItIs: "The official report of the Arctic's second voyage under Bernier: the winter at Winter Harbour on Melville Island, the sledge journeys to the islands of the Parry Channel, the proclamations and cairns left at each landing, and the plaque fixed to Parry's Rock on 1 July 1909 claiming the whole archipelago for Canada. With the reports of the 1906-07 and 1910-11 voyages it is the documentary basis of Canada's Arctic sovereignty.",
+    whereToReadIt: [
+      `Report on the Dominion of Canada Government Expedition to the Arctic Islands and Hudson Strait on board the D.G.S. 'Arctic' (Ottawa, 1910) — ${IA("reportondominio00bern")}`,
+      "Bernier's memoir, Master Mariner and Arctic Explorer (Ottawa, 1939). His papers: Library and Archives Canada.",
+    ],
+    vocabulary: [{ word: "sovereignty", definition: "A state's ownership of and authority over territory" }, { word: "D.G.S.", definition: "Dominion Government Ship" }, { word: "sector principle", definition: "The claim to all land between a country's coast and the Pole within its longitudes, which Bernier's plaque asserted" }],
+    discussionQuestions: ["On what grounds did Canada claim islands that British sailors had found and Inuit lived on?", "What did Bernier actually do at each landing, and why?", "How did Sverdrup's Norwegian discoveries complicate the claim?"],
+    gradeLevel: "10-12", explorer: "Joseph-Elzéar Bernier", waterway: "Viscount Melville Sound", location: "Winter Harbour",
+  },
+  {
+    title: "Sverdrup's New Land: Four Years in the Arctic Regions, 1898-1902", documentType: "journal", author: "Otto Sverdrup", originalDate: "1898-1902, published 1904", originalYear: 1904,
+    whatItIs: "Sverdrup's account of the second Fram expedition: the winter in Smith Sound, the turn west to Jones Sound when the ice blocked the way north, three more winters on Ellesmere Island, and the sledge journeys that mapped Axel Heiberg, Ellef Ringnes and Amund Ringnes islands and the west coast of Ellesmere, 260,000 square kilometres no one had seen. The Inughuit of Etah appear in the first winter, and the book is a manual of Norwegian ski and dog travel.",
+    whereToReadIt: [
+      `New Land: Four Years in the Arctic Regions (London, 1904), vol. 1 — ${IA("newlandfouryears01sveruoft")}`,
+      "Norwegian original: Nyt Land (Kristiania, 1903). The Fram is at the Fram Museum, Oslo.",
+    ],
+    vocabulary: [{ word: "Fram", definition: "Nansen's polar ship, built to be lifted by the ice, used by Sverdrup and later Amundsen" }, { word: "Sverdrup Islands", definition: "Axel Heiberg and the Ringnes islands, which Norway claimed until 1930" }, { word: "Jones Sound", definition: "The sound south of Ellesmere Island, Sverdrup's way west" }],
+    discussionQuestions: ["How did the Norwegians travel so far by sledge, and what had they learned from the Inuit and from Nansen?", "Why did Norway give up its claim to the islands, and what did Canada pay?", "What was left to discover in the archipelago after Sverdrup?"],
+    gradeLevel: "10-12", explorer: "Otto Sverdrup", waterway: "Smith Sound",
+  },
+  {
+    title: "Stefansson's The Friendly Arctic, 1913-1918", documentType: "journal", author: "Vilhjalmur Stefansson", originalDate: "1913-1918, published 1921", originalYear: 1921,
+    whatItIs: "Stefansson's account of the Canadian Arctic Expedition: the loss of the Karluk in the Beaufort Sea ice with eleven dead, which he tells from his own side, the journeys over the moving sea ice north of the Beaufort Sea living on seals, the discovery of the last islands of the archipelago, and his argument that a man who knew Inuit methods could live anywhere in the Arctic. The book is a polemic as much as a narrative, and the Karluk survivors disputed it; Bartlett's and McKinlay's accounts should be read with it.",
+    whereToReadIt: [
+      `The Friendly Arctic: The Story of Five Years in Polar Regions (New York, 1921) — ${IA("the-friendly-arctic-five-years-in-the-polar-regions")}`,
+      "Robert Bartlett, The Last Voyage of the Karluk (1916), and William Laird McKinlay, Karluk (1976), for the ship's company.",
+      "Stefansson's papers: Dartmouth College Library.",
+    ],
+    vocabulary: [{ word: "Karluk", definition: "The expedition's flagship, carried off in the ice in 1913 and crushed in January 1914" }, { word: "Canadian Arctic Expedition", definition: "The government expedition of 1913-18, with a northern party under Stefansson and a southern under Rudolph Anderson" }, { word: "living off the sea ice", definition: "Stefansson's method of travelling with no supplies, hunting seals through the ice" }],
+    discussionQuestions: ["What did Stefansson mean by 'friendly', and who disagreed?", "What happened to the Karluk's people, and what was Stefansson's responsibility?", "How did the expedition change the map and the government's interest in the Arctic?"],
+    gradeLevel: "7-9", explorer: "Vilhjalmur Stefansson", waterway: "Beaufort Sea",
+  },
+];
+
+async function checkUrl(url: string, problems: string[]) {
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const res = await fetch(url, { method: "HEAD", redirect: "follow", headers: { "User-Agent": "CanadianWaterwaysExplorer/1.0 (content check)" } });
+      if (res.ok) return;
+      if (res.status === 429) { await new Promise((r) => setTimeout(r, 15_000 * (attempt + 1))); continue; }
+      if (res.status === 405 || res.status === 403) { const g = await fetch(url, { headers: { "User-Agent": "CanadianWaterwaysExplorer/1.0 (content check)" } }); if (g.ok) return; problems.push(`${g.status} ${url}`); return; }
+      problems.push(`${res.status} ${url}`); return;
+    } catch (e) { problems.push(`${String(e).slice(0, 60)} ${url}`); return; }
+  }
+  problems.push(`rate-limited ${url}`);
+}
+
+async function main() {
+  const [explorers, waterways, locations, existing] = await Promise.all([
+    db.explorer.findMany({ select: { id: true, name: true } }),
+    db.waterway.findMany({ select: { id: true, name: true } }),
+    db.location.findMany({ select: { id: true, name: true } }),
+    db.primarySourceDocument.findMany({ select: { title: true } }),
+  ]);
+  const ex = new Map(explorers.map((e) => [e.name, e.id])); const ww = new Map(waterways.map((w) => [w.name, w.id])); const loc = new Map(locations.map((l) => [l.name, l.id]));
+  const need = (m: Map<string, string>, k: string, what: string) => { const v = m.get(k); if (!v) throw new Error(`${what} not found: ${k}`); return v; };
+  const problems: string[] = [];
+  const urls = new Set<string>();
+  for (const d of DOCS) for (const w of d.whereToReadIt) { const m = w.match(/https?:\/\/\S+/); if (m) urls.add(m[0]); }
+  for (const u of urls) await checkUrl(u, problems);
+
+  const rows = DOCS.filter((d) => !existing.some((e) => e.title === d.title)).map((d, i) => ({
+    id: `psd_arc_${String(i + 1).padStart(2, "0")}`, title: d.title, documentType: d.documentType, author: d.author, originalDate: d.originalDate, originalYear: d.originalYear,
+    originalText: null, transcription: null, imageUrl: null,
+    historicalContext: `${d.whatItIs}\n\nWhere to read it:\n${d.whereToReadIt.map((w) => `• ${w}`).join("\n")}`,
+    annotations: null, vocabulary: JSON.stringify(d.vocabulary), discussionQuestions: JSON.stringify(d.discussionQuestions),
+    explorerId: d.explorer ? need(ex, d.explorer, "explorer") : null, waterwayId: d.waterway ? need(ww, d.waterway, "waterway") : null, locationId: d.location ? need(loc, d.location, "location") : null,
+    gradeLevel: d.gradeLevel, isPublished: true,
+  }));
+
+  const backupFile = writeBackup("2026-10-17-primary-sources-arctic-plan", { rows });
+  report("primary sources: The Arctic Searches", { toInsert: rows.map((r) => `${r.gradeLevel} | ${r.documentType} | ${r.title}`), skippedExisting: DOCS.length - rows.length, urlsChecked: urls.size, problems, backupFile });
+  if (problems.length) throw new Error("Fix the URLs above before applying.");
+  if (!APPLY) return;
+  await db.$transaction(async (tx) => { for (const r of rows) await tx.primarySourceDocument.create({ data: r }); });
+  report("verify", { documents: await db.primarySourceDocument.count(), byGrade: await db.primarySourceDocument.groupBy({ by: ["gradeLevel"], _count: true }), withExplorer: await db.primarySourceDocument.count({ where: { explorerId: { not: null } } }), withWaterway: await db.primarySourceDocument.count({ where: { waterwayId: { not: null } } }), withLocation: await db.primarySourceDocument.count({ where: { locationId: { not: null } } }) });
+}
+
+main().catch((e) => { console.error(e); process.exitCode = 1; }).finally(() => db.$disconnect());
