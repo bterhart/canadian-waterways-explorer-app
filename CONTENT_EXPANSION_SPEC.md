@@ -968,6 +968,49 @@ Ethnology of Ungava, Bell's Attawapiskat report, Low's Labrador reports, Tyrrell
 Kazan report with his brother's book, Pike, Hanbury, Seton, Christian's diary, and Killing the
 Shamen).
 
+### 9.11 Content pack 6, The Yukon (applied 2026-10-17)
+Data in `backend/prisma/turso-migrations/packs/yukon.ts`, applied by `2026-10-17-pack-yukon.ts`
+(dry run, backup, apply, verify; idempotent). Scope: the Yukon, which existed as a row with no
+explorers and one post, and everything around it: the tributaries and headwater lakes, the two
+routes by which the Hudson's Bay Company reached the river from the Mackenzie in the 1840s, the
+surveys of the 1880s, the Klondike, and the Hän, Tagish and Ta'an Kwäch'än response to it. The
+Yukon row itself went from no explorers and one post to 17 explorers and 7 posts and sites. People rest on the Dictionary
+of Canadian Biography where it has them (ten explorers, four figures, each entry read in full) and
+on Wikipedia and their own books for the Americans it does not (McQuesten, Harper, Ladue,
+Carmack, Ogilvie, Kennicott, Zagoskin, Jim Boss).
+
+| Added | Count | Notes |
+|---|---|---|
+| Waterways | 16 | Pelly, Stewart, Klondike, Teslin River, White, Porcupine, Peel, Dease River, Fortymile, Lake Laberge, Bennett Lake, Tagish Lake, Kluane Lake, Teslin Lake, Atlin Lake, Frances Lake; OpenStreetMap geometry for all sixteen. Fur-trade rows for the Pelly and the Porcupine |
+| Explorers | 17 | Bell, Murray, Hardisty, Schwatka, Whymper, Dawson, Bompas, Constantine, Steele, Zagoskin, Kennicott, McQuesten, Harper, Ogilvie, Carmack, Ladue, and Campbell's links extended. Lifetime likenesses for eight (Schwatka, 1881 engraving; Dawson, Notman photograph 1892; Bompas; Steele, 1900; Zagoskin; McQuesten; Ogilvie; Harper in Farciot's 1884 group at Fort Yukon; Carmack by Woodside c. 1900). None exists on Commons for Bell, Murray, Hardisty, Whymper, Constantine, Kennicott (an engraving of uncertain date was passed over) or Ladue |
+| Explorer–waterway links | 56 | Campbell on the Frances, Pelly, Yukon, Stewart and Dease; Bell on the Peel, Porcupine and Yukon; Franklin on the Peel; the Yukon row goes from no explorers to seventeen |
+| Locations | 15 | Fort Selkirk, Frances Lake Post, Lapierre House, Fort Reliance (Yukon), Forty Mile, Fort Constantine, Tr'ochëk, Moosehide, Dawson City, Bonanza Creek Discovery Claim, Carcross, Bennett, Chilkoot Pass, Miles Canyon, Five Finger Rapids. Three have no image (Frances Lake Post, Fort Reliance, Fort Constantine) |
+| Notable figures | 5 | Keish (Skookum Jim), Káa Goox (Dawson Charlie), Shaaw Tláa (Kate Carmack), Isaac, Jim Boss. Lifetime photographs for four (Keish by Duclos, Dawson, 1898; Káa Goox and Carmack from Library and Archives Canada; Shaaw Tláa; Jim Boss from the Parks Canada designation record); none on Commons for Chief Isaac |
+| Timeline events | 30 | From McLeod on the Dease (1831) to the World Heritage inscription (2023) | 
+| What Happened Here events | 8 | Campbell's walk to the Pelly, Fort Yukon in Russian territory, the sack of Fort Selkirk, Schwatka in Miles Canyon, gold on Rabbit Creek, the Hän leaving Tr'ochëk, Steele's rules at Bennett, Keish's return to Carcross | 
+| Pronunciations | 21 | Hän, Northern and Southern Tutchone, Gwich'in, Tlingit, Tagish and Kaska names |
+| Quiz | 1 | "The Yukon: River, Company and Klondike", 8 questions, grade 7-9 |
+| Deep Dive / lesson plan | 1 | "The Yukon: A River Road from the Company to the Klondike", grade 7-9 |
+| Field trip | 1 | "Klondike, 1896-1898: From Tr'ochëk to Dawson", grade 7-9, six stops |
+| Reading-guide entries | 135 | Dictionary of Canadian Biography, Canadian Encyclopedia, Hudson's Bay Company Archives, Parks Canada, Internet Archive editions and Wikipedia; every URL verified, with the Canadian Encyclopedia slugs checked individually (it has no articles on most of the Yukon's rivers) |
+| Images | 76 URLs | Commons, public domain or CC BY / CC BY-SA, credited; includes Isbister's 1845 sketch map of the Peel, Marsh Lake and Forty Mile about 1899, the 1899 Bonanza Creek drawing, and a 1897 fortune-seekers' guide |
+
+Added the same day (`2026-10-17-primary-sources-yukon.ts`): 15 primary-source pointer documents
+(Campbell's Discovery and Exploration of the Youcon, Murray's Journal of the Yukon, Hardisty's
+Loucheux Indians, Whymper with Dall, Schwatka's book and report, Dawson's 1887 report, Ogilvie's
+1897 pamphlet and Early Days, Hayne's Pioneers of the Klondyke, Adney's Klondike Stampede, Steele's
+Forty Years, Haskell's Two Years, Carmack's My Experiences, Zagoskin's Travels, Martha Black's My
+Seventy Years, and Angela Sidney's Tagish account of the discovery).
+
+Owner's review of 2026-10-17, to be taken up after this pack: the Parsnip River has no fur-trade
+record or posts, and the app has no waterway-to-waterway relation at all (the Peace, Finlay and
+Parsnip are joined only in prose); the Kaministiquia route (Dog Lake, Dog River, Lac des Mille
+Lacs) is absent though Great Dog Portage exists; and a full sweep of every template field for
+every record is required once the packs are done. Measured on 2026-10-17 across 150 waterways:
+118 without a fur-trade record, 111 with no connected notable figure, 144 with no archaeological
+discovery, 81 without video, 64 without a post or site, 55 without an Indigenous name, 16 without
+an explorer, 9 without geometry.
+
 ### 9.4 Document grade bands (approved and applied 2026-10-17)
 Proposed from a Flesch-Kincaid estimate of each transcription (≤ 7 → 4-6, ≤ 11 → 7-9, above →
 10-12), checked against the fourteen documents that already had a band (their estimates run
