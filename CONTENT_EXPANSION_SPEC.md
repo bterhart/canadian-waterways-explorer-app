@@ -1224,15 +1224,39 @@ document as a sourced pointer, and restore a quotation only where it can be chec
 published edition. The list is in the audit output of 2026-10-18 and will be attached to the pass
 that acts on it.
 
-**Header images.** Every waterway and location must have one. After pass 7, 3 waterways (Savanne
-River, Lac des Mille Lacs, McLeod Lake) and 12 locations had none on Commons at the size the search
-accepted; a second search at a lower size threshold is running, and where it too finds nothing the
-header will be a labelled image of the place's own waterway or of a map, never a likeness.
+**Header images, done (passes 8 and 10).** Every card now has an image. Pass 8
+(`2026-10-18-sweep-8-people-header-images.ts`): the 81 explorers and 29 figures without a lifetime
+likeness carry as header the primary image of the waterway they are most tied to (the earliest-dated
+link for an explorer, the first associated waterway for a figure), two set by hand (François de La
+Vérendrye: Lake of the Woods; Saukamappee: Bow River); these are landscapes, maps and posts, never a
+person, so nothing reads as a portrait. Pass 10 (`2026-10-18-sweep-10-header-images.ts`): a second
+Commons search at a lower size threshold found period images for eight locations (Everette's 1884
+drawing of Fort Reliance, the 1820 view of the Île-à-la-Crosse forts, Pike's 1896 Frances River, the
+Smith River falls at Fort Halkett's site, the Mounted Police post at Forty Mile for Fort Constantine,
+a nineteenth-century painting of Cartier at Stadacona, the Richmond Gulf satellite view, the map of
+the Saskatchewan posts for Hudson House) and a historical view of Fort McLeod for McLeod Lake; Fort
+Confidence, Victory Point, South Branch House and Mackenzie Rock take their own waterway's image, and
+the Savanne River and Lac des Mille Lacs, which have no photograph on Commons, take the Seine River's,
+the river that drains the lake. After: 0 waterways, 0 locations, 0 explorers, 0 figures without an image.
 
-**Video.** Approved channels: Parks Canada, Historica Canada (Heritage Minutes), the Canadian
-Encyclopedia, provincial and territorial archives. A video is attached only after its title and
-channel are confirmed from the video's own metadata and it is found to concern the waterway; no video
-is acceptable where none fits.
+**Video, done (pass 9).** `2026-10-18-sweep-9-videos.ts`. Approved channels: Parks Canada / Parcs
+Canada, Historica Canada (Heritage Minutes), the Canadian Encyclopedia, provincial and territorial
+archives. First the 69 waterways with a video from the original seed data were checked against
+YouTube's own record of each video (title and channel): not one was from an approved channel (travel
+vlogs, "FactSpark", "Amazing Planet", Manitoba Hydro, a Reindeer Lake fishing film attached to the
+Coppermine, a "Sucker fishing" clip on the Atikokan), and eleven no longer existed; all were removed,
+with a backup, except the one Parks Canada video on Terror Bay. Then 31 videos were added from a
+YouTube search of each waterway's historic sites, kept only where the channel is approved and the
+subject is the waterway's history, and each confirmed from its metadata before it was written: the
+Heritage Minutes on Cartier (Gaspé), Cabot (Cabot Strait, Bonavista Bay), Frontenac (Lake Ontario),
+Nicollet (Lake Michigan, Fox River), Sam Steele (Yukon), Laura Secord (Niagara), the Grosse Île
+Orphans (St. Lawrence), Treaty 9 (James Bay) and the Acadian Deportation (Minas Basin); Parks Canada
+on Red Bay, the Klondike sites, the Chilkoot, Fort Langley, Kluane, Batoche, the York boats of Lower
+Fort Garry, Fort St. James, Rocky Mountain House, Fort Chambly, the Erebus wreck, Castle Hill, the
+Sault canal, the Rideau Canal, Fort Malden, Mingan, the Gulf Islands clam garden and Fort Rodd Hill;
+and Historica's fur-trade summary on Lake Superior. After: 32 waterways with a video, 160 without,
+which is acceptable by the owner's rule. Nature and promotional videos from the same channels were
+passed over as not about the waterway's history.
 
 ### 9.4 Document grade bands (approved and applied 2026-10-17)
 Proposed from a Flesch-Kincaid estimate of each transcription (≤ 7 → 4-6, ≤ 11 → 7-9, above →

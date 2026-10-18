@@ -1,0 +1,351 @@
+{
+ "generatedAt": "2026-10-18T04:16:51.163Z",
+ "apply": true,
+ "removals": [
+  {
+   "id": "cmlhaslql000km2zhocxl8zbv",
+   "name": "St. Lawrence River",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=0wgqmHpK2tc\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=zuPSz5BK1Kg\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=jrOu8qDFYjw\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cmlhaslqp000mm2zh1z4uc8lw",
+   "name": "Mackenzie River",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=2WoA6WGT8JI\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=i2jexPzNZbE\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=umT32nGc5pg\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cmlhaslqs000om2zh7u6tr7m8",
+   "name": "Fraser River",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=rtcg-jdnoAg\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=p_IWBl1PLL4\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=5d-gLMIaSzU\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cmlhaslqu000qm2zh7ssejohe",
+   "name": "Ottawa River",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=-E7wsRXAaqY\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=uAbMfC7ZnUk\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=41otftouNao\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cmlhaslqy000sm2zhxfks60fd",
+   "name": "Saskatchewan River",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=724EOMCRjhs\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=1FipsvFkzuM\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=GuKocrbyV8c\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cmlhaslr1000um2zh1ohr52f9",
+   "name": "Churchill River",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=WWxtI1LhH10\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=1VTtt8M043o\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=V0KNXy9r4hY\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cmlhaslr7000wm2zhi88te1r4",
+   "name": "Columbia River",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=jdYIY6pT9Qs\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=aaV7_BQ3k2s\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=jHhS24ENiQM\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cmlhaslra000ym2zh4pyu55je",
+   "name": "Lake Superior",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=eKQ6dLU7f3g\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=mDCnduvku8w\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=shfYWGqZMak\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cmlhaslrc0010m2zhzbcapn1v",
+   "name": "Lake Huron",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=YHstIA-PQKM\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=Q7Q6tV6T7lE\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=H94ApGZQ7IA\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cmlhaslre0012m2zhg9f595d4",
+   "name": "Lake Ontario",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=Xmtq8_T7Dck\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=jzzyjrPK0ds\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=nsjCSaRJb6Q\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cmlhaslri0014m2zhlrrx8pqe",
+   "name": "Lake Winnipeg",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=IAuy6f3pXao\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=XBvFWM3gG9Q\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=uMz-6NVdv48\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cmlhaslrl0016m2zh71casjqv",
+   "name": "Great Slave Lake",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=KyYMaK6x14s\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=9g9Yqa4cW4Q\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=hK8PcL72mSc\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cmlhaslro0018m2zh54ssf898",
+   "name": "Great Bear Lake",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=kJXBUbVwBNo\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=Zg5deP8MRwI\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=of88A0lOLCU\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cmlhaslrq001am2zhud0snm8t",
+   "name": "Lake Athabasca",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=Atlihn_mek8\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=kJzQtJtK4w8\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cmlhaslrt001cm2zh9tknhhbe",
+   "name": "Hudson Bay",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=MG9emfuTQVc\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=6T_q7Ng6N14\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=RnvWzeTAN3c\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cmlhaslrv001em2zheht25x94",
+   "name": "James Bay",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=y4GD4ckvijE\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=XUO-bLE2YrQ\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=ugGIPbDIkm4\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cmlhbjrpt0001m2mb70w5ub4a",
+   "name": "Nelson River",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=bHb7nvsGKBo\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=_IEq03whiNI\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=w_NguVDSLQc\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cmlhbjrpw0003m2mbmmpa8102",
+   "name": "Athabasca River",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=aUVSLrTcGuY\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=B8e6Ok1fKtk\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cmlhbjrpy0005m2mbsanafmlo",
+   "name": "Peace River",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=jvHw-oXV5kM\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=Sbuw_iFuidQ\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=d5zQmTSAEVg\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cmlhbjrq10007m2mb166687ob",
+   "name": "Red River",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=t2xv32PwOTw\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=D5sC5-zm4to\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=5JRMcLqSBMg\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cmlhbjrq30009m2mbjvc52rym",
+   "name": "Assiniboine River",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=fZ-LnRNggsM\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=N90gFH3I1E0\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=pvS2N-X9WWU\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cmlhbjrq5000bm2mbpbrh6i7v",
+   "name": "Yukon River",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=fOr8fLqhWpE\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=8MdYfdoWI6E\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=OdtDh-FhNko\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cmlhbjrqa000dm2mb7n6w7y4w",
+   "name": "Coppermine River",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=bzaF2ygk354\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cmlhbjrqd000fm2mb9j2kl8w0",
+   "name": "Thelon River",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=Ld_IY5k_2RM\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=zT5gQWCyFcQ\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cmlhbjrqg000hm2mbrxd1csg3",
+   "name": "Saguenay River",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=WPjICKOdaNw\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=LSR1F4Dx19g\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=mx_isSUsDA4\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cmlhbjrqk000jm2mbu4c80xzn",
+   "name": "Saint John River",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=Od4bySq3X3A\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=QF8dlSvKU4A\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=zBKF-wJCork\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cmlhbjrqm000lm2mb54fxoup5",
+   "name": "Lake Erie",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=o9qxZdszQWs\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=b2ze9wVzMyo\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=lLZDNKgJYDg\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cmlhbjrqo000nm2mb16337n49",
+   "name": "Lake Michigan",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=9gZRenhTOR0\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=FbRF3YbZaaI\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=R9LTwMtIAR0\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cmlhbjrqs000pm2mb2n5b8ozi",
+   "name": "Reindeer Lake",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=bzaF2ygk354\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cmlhbjrqu000rm2mb2jzjv5dc",
+   "name": "Lake Nipigon",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=xZv57PjdFKQ\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=7jcTvdkZgC0\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cmlhbjrqx000tm2mb8efa6a4y",
+   "name": "Lesser Slave Lake",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=YH9dsm5kAYY\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=IUIV_O6VGhc\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cmlhci06g0003m2rxvk2z3kyo",
+   "name": "Baie des Chaleurs",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=H5NIq6PXeeQ\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=Dk3WZkkxouE\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cmlhci06l0005m2rxruhm0g4o",
+   "name": "Gaspé Bay",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=sgq1IemyXGU\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=XXudH29pkTc\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cmlhci06o0007m2rx0b9040b1",
+   "name": "Strait of Belle Isle",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=j6hJLI_Qgbg\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=Whonzycnl40\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=XIa4yt3kioQ\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cmlhci06q0009m2rx52k6015h",
+   "name": "Bonavista Bay",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=18LLAjNef_E\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=svW1scFYKdg\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cmlhci06u000bm2rx0mhic71i",
+   "name": "Placentia Bay",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=-A6GHo9WICg\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=YUq72e6obC8\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cmlhci06w000dm2rx3bn9gj7e",
+   "name": "Nootka Sound",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=BZZ-QVcN3QM\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=i5XHvFy7uTM\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=LbCSYgGS8HE\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cmlhci06z000fm2rx9a0q3kpo",
+   "name": "Burrard Inlet",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=8UVwd2yRTbw\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=wvp_wQ56TdU\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=cWZ4f53jI7E\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cmlhci072000hm2rxsiy2pofi",
+   "name": "English Bay",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=3Q5RagtgnmM\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=nfyii9ic1VE\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=XMGkF6vYhYQ\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cmlhci075000jm2rxv7atyc59",
+   "name": "Friendly Cove (Yuquot)",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=o38gFc7dHhw\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=jzjTCuam6-I\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cmlhci078000lm2rxus8do5zj",
+   "name": "Juan de Fuca Strait",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=ClJdkqr-YV0\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=LasZ_YFPp-0\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=Sm4RlTOGvM8\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cmlhci07b000nm2rxfad3b0er",
+   "name": "Georgia Strait",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=UJIVM-TgZJ0\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=TdNuXGY5JIQ\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=F2KrH4QQnms\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cmlhci07e000pm2rxpaiz59r9",
+   "name": "Queen Charlotte Sound",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=sRR-sDn9vbE\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=JJv54gdhrd4\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=an4R12V_G1E\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cmlhci07g000rm2rxgqu76lmi",
+   "name": "Lituya Bay",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=r7y76R8ggKw\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=XGIXlk50yos\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=Ph7ND3F0Zu4\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cmligbkuv0001m20z88hvpgz2",
+   "name": "Hayes River",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=WvaGBMXRxp8\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=fGj9Xs8w6SI\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cmligbkuz0003m20z3seyhxbw",
+   "name": "Moose River",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=WXa4rEz9t1w\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=DbTHWMmyQFo\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cmligbkv20005m20zmpiyg4ag",
+   "name": "Albany River",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=lkM8V7eciYo\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=GxJe_vWODvA\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cmligbkv50007m20z56lg1di6",
+   "name": "Abitibi River",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=IVmtiAxGgzI\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cmlizphim0001m2ybbm7btaxk",
+   "name": "Kaministiquia River",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=8xfq9tZ6OJM\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=M7aMWyZrd3Q\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=bAsW9QnEEE4\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cmlk2w3jm0002m2636jrqvptl",
+   "name": "Lake of the Woods",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=UoQdXDeQz3U\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=Xf2Ph7nvoOA\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=RTlfPlRc9cQ\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "terror-bay-waterway",
+   "name": "Terror Bay",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=UvI4ZpAR618\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=_pclyCak3rY\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "mercy-bay-waterway",
+   "name": "Mercy Bay",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=UMGazNWWfbs\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=KyGBvDOIOsM\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "queen-maud-gulf-waterway",
+   "name": "Queen Maud Gulf",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=fvcB56WyTZw\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=AWY120avqYE\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "dean-channel-waterway",
+   "name": "Dean Channel",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=27ZtOJxCTu8\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=9Q_Gf4jf_-Q\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "foxe-basin-waterway",
+   "name": "Foxe Basin",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=fcxF9jWu9dc\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=4hkGn0sjOAg\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "davis-strait-waterway",
+   "name": "Davis Strait",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=QJ0xe7fuGkQ\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=rbwz5m5_L2g\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "baffin-bay-waterway",
+   "name": "Baffin Bay",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=5sxvdGlx6Kc\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "lancaster-sound-waterway",
+   "name": "Lancaster Sound",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=FK1Ra_VoV_s\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=Z5AnTPFtMYc\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "frobisher-bay-waterway",
+   "name": "Frobisher Bay",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=f9HMe2CFnfY\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=Eahp0mtZJQY\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "cumberland-sound-waterway",
+   "name": "Cumberland Sound",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=-4uOMnazhK0\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "parry-channel-waterway",
+   "name": "Parry Channel",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=_mLUoL7fzDM\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=y0t1LC0Ggng\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "bellot-strait-waterway",
+   "name": "Bellot Strait",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=xnBlTkjUNIs\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=p6mfrEQkgvo\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "back-river-waterway",
+   "name": "Back River",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=RmzYtatnuVQ\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "chesterfield-inlet-waterway",
+   "name": "Chesterfield Inlet",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=EqPe2rsnncs\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=DH6DKtQ0wDM\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "seine-river-ontario-waterway",
+   "name": "Seine River",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=xyH8u_0wYQg\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=xDVq1y9LoOw\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "atikokan-river-waterway",
+   "name": "Atikokan River",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=JXM97vZNZHs\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "souris-river-waterway",
+   "name": "Souris River",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=19YDWL7FDxI\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "red-deer-river-alberta-waterway",
+   "name": "Red Deer River",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=afBd3wUYoMw\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=rHLrkXv2jUQ\", \"type\": \"youtube\"}]"
+  },
+  {
+   "id": "french-river-waterway",
+   "name": "French River",
+   "videoUrl": "[{\"url\": \"https://www.youtube.com/watch?v=qHYjTaZ8Jq0\", \"type\": \"youtube\"}, {\"url\": \"https://www.youtube.com/watch?v=4ch1ud3GglA\", \"type\": \"youtube\"}]"
+  }
+ ]
+}

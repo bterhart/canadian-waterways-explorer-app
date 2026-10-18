@@ -1,0 +1,448 @@
+{
+ "generatedAt": "2026-10-18T04:11:31.394Z",
+ "apply": true,
+ "explorers": [
+  {
+   "id": "cmlhc4gsv0008m2og133agz6f",
+   "imageUrl": null
+  },
+  {
+   "id": "cmliiral50000m2ee409m0fpk",
+   "imageUrl": null
+  },
+  {
+   "id": "cmliiral80001m2eeu9bfeu1p",
+   "imageUrl": null
+  },
+  {
+   "id": "cmliirala0002m2ee63e6kdje",
+   "imageUrl": null
+  },
+  {
+   "id": "cmliiralc0003m2eekg1c5xny",
+   "imageUrl": null
+  },
+  {
+   "id": "cmlijai0j0000m22rgzrz5osg",
+   "imageUrl": null
+  },
+  {
+   "id": "cmlijai0l0001m22rao6jkv13",
+   "imageUrl": null
+  },
+  {
+   "id": "cmlijai0o0002m22rzehhz6sf",
+   "imageUrl": null
+  },
+  {
+   "id": "cmlijaid30008m22r2rzrllga",
+   "imageUrl": null
+  },
+  {
+   "id": "cmlijaidm000bm22rkxzxt8yp",
+   "imageUrl": null
+  },
+  {
+   "id": "cmlijaidp000cm22rrsields8",
+   "imageUrl": null
+  },
+  {
+   "id": "cmlijaidu000dm22rplupmq13",
+   "imageUrl": null
+  },
+  {
+   "id": "cmlijaie5000fm22r56jpxu2p",
+   "imageUrl": null
+  },
+  {
+   "id": "cmlizphix0004m2ybqo51uf96",
+   "imageUrl": null
+  },
+  {
+   "id": "cmlizwip10000m29mfpu5xckv",
+   "imageUrl": null
+  },
+  {
+   "id": "cmlizwip50001m29mggra6ipo",
+   "imageUrl": null
+  },
+  {
+   "id": "cmlizwip80002m29msy1twu28",
+   "imageUrl": null
+  },
+  {
+   "id": "cmlnewexp005james",
+   "imageUrl": null
+  },
+  {
+   "id": "cmlnewexp008bylot",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_daniel-greysolon-dulhut",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_pierre-de-troyes",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_john-stuart",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_samuel-black",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_charles-william-barkley",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_peter-puget",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_david-stuart",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_jaco-finlay",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_thomas-simpson",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_peter-warren-dease",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_otto-von-kotzebue",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_elisha-kent-kane",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_william-kennedy",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_joseph-rene-bellot",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_christopher-middleton",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_thomas-frobisher",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_james-finlay",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_joseph-howse",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_john-rowand",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_john-mcleod",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_charles-albanel",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_james-isham",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_william-coats",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_thomas-mitchell",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_joseph-isbister",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_andrew-graham",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_william-wales",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_erland-erlandson",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_nicol-finlayson",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_john-mclean",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_warburton-pike",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_david-hanbury",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_john-hornby",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_john-bell",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_alexander-hunter-murray",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_william-lucas-hardisty",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_frederick-whymper",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_charles-constantine",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_joseph-ladue",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_zacharie-robutel-de-la-noue",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_gaspar-corte-real",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_giovanni-da-verrazzano",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_jean-alfonse-jean-fonteneau",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_sir-humphrey-gilbert",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_edward-hayes",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_john-guy",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_john-mason",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_sir-richard-whitbourne",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_sir-david-kirke",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_pierre-du-gua-de-monts",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_jean-de-biencourt-de-poutrincourt",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_marc-lescarbot",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_charles-de-saint-etienne-de-la-tour",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_isaac-de-razilly",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_nicolas-denys",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_sir-samuel-argall",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_louis-fornel",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_pierre-michel-laure",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_jens-haven",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_david-buchan",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_william-eppes-cormack",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_henry-wolsey-bayfield",
+   "imageUrl": null
+  }
+ ],
+ "figures": [
+  {
+   "id": "cmlhvyhgh0000m2vxaipe1ond",
+   "imageUrl": null
+  },
+  {
+   "id": "cmlhvyhgl0001m2vx6gflkznr",
+   "imageUrl": null
+  },
+  {
+   "id": "cmlhvyhgs0003m2vxls38ek73",
+   "imageUrl": null
+  },
+  {
+   "id": "cmlhvyhh00006m2vx0mf1uf15",
+   "imageUrl": null
+  },
+  {
+   "id": "roderick-mckenzie-notable-figure",
+   "imageUrl": null
+  },
+  {
+   "id": "nf_donnacona",
+   "imageUrl": null
+  },
+  {
+   "id": "nf_kondiaronk",
+   "imageUrl": null
+  },
+  {
+   "id": "nf_tessouat",
+   "imageUrl": null
+  },
+  {
+   "id": "nf_membertou",
+   "imageUrl": null
+  },
+  {
+   "id": "nf_wickaninnish",
+   "imageUrl": null
+  },
+  {
+   "id": "nf_comcomly",
+   "imageUrl": null
+  },
+  {
+   "id": "nf_kwah",
+   "imageUrl": null
+  },
+  {
+   "id": "nf_frances_barkley",
+   "imageUrl": null
+  },
+  {
+   "id": "nf_shelikhov",
+   "imageUrl": null
+  },
+  {
+   "id": "nf_ouligbuck",
+   "imageUrl": null
+  },
+  {
+   "id": "nf_william_ouligbuck",
+   "imageUrl": null
+  },
+  {
+   "id": "nf_innookpoozhejook",
+   "imageUrl": null
+  },
+  {
+   "id": "nf_qillarsuaq",
+   "imageUrl": null
+  },
+  {
+   "id": "nf_maskepetoon",
+   "imageUrl": null
+  },
+  {
+   "id": "nf_pierre_falcon",
+   "imageUrl": null
+  },
+  {
+   "id": "nf_miscomote",
+   "imageUrl": null
+  },
+  {
+   "id": "nf_wappisis",
+   "imageUrl": null
+  },
+  {
+   "id": "nf_abishabis",
+   "imageUrl": null
+  },
+  {
+   "id": "nf_inukjuarjuk",
+   "imageUrl": null
+  },
+  {
+   "id": "nf_zhauwuno_geezhigo_gaubow",
+   "imageUrl": null
+  },
+  {
+   "id": "nf_frances_nickawa",
+   "imageUrl": null
+  },
+  {
+   "id": "nf_isaac",
+   "imageUrl": null
+  },
+  {
+   "id": "nf_nonosabasut",
+   "imageUrl": null
+  },
+  {
+   "id": "nf_tuglavina",
+   "imageUrl": null
+  }
+ ]
+}
