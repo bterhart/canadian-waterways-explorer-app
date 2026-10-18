@@ -1180,6 +1180,60 @@ waterway-to-waterway relation (tributary, confluence, outlet) first proposed in 
 schema and client change, so that the Parsnip, Finlay and Peace, or the Exploits and Beothuk Lake,
 are joined in the app and not only in prose.
 
+### 9.15 Owner decisions of 2026-10-18: waterway connections, the Richard Stuart row, header images, video
+The owner answered the three questions of section 9.14 on 2026-10-18: video from the approved
+institutional channels only, and no video is acceptable; every waterway and location must have a
+header image; build the waterway-to-waterway relation and populate it; delete the "Richard Stuart" row.
+
+**Waterway connections (schema and client change).** New table `WaterwayConnection` (fromId, toId,
+relation, notes), declared in `schema.prisma` and created in Turso with the CREATE-only DDL
+`2026-10-18-waterway-connections.sql`. Relations: `flows_into` (a river into a river, lake, bay or
+sea; a lake into the body it drains to), `outlet_of` (a river that drains a lake), `part_of` (an arm,
+basin or bay of a larger body) and `joins` (a strait or channel between two bodies). `GET
+/api/waterways/:id` returns `connections`, each with the other waterway (id, name, type, coordinates),
+the relation and a direction read from the viewed waterway's side; the detail sheet shows them as a
+tappable "Connected Waterways" card that opens the other waterway on the map through the existing
+`/?markerId=&markerType=` route. Populated by `2026-10-18-waterway-connections-data.ts` with 165
+links over 174 waterways, each checked against the source, mouth, inflow, outflow and part-of fields
+of the waterways' Wikipedia articles or the geography sourced in the packs; where the water passes
+through a river or lake that is not a row (the St. Marys River, the Rivière des Rochers, the
+Waterhen) the note says so. The 18 waterways left unconnected are coastal bodies whose parent water
+is not a row (Bonavista, Trinity, Conception, Placentia and Lituya bays, Terror and Mercy bays, the
+Alaska sounds, Bering Strait, the Back, Hudson and Stikine rivers, Sandwich and Nain bays). Verified
+end to end on the local backend: the Parsnip now shows the Pack flowing in and itself flowing into
+the Peace; Lake Winnipeg shows the Red, Winnipeg and Saskatchewan rivers and Lake Manitoba flowing in
+and the Nelson as its outlet. The client change needs an EAS build to reach phones.
+
+**The Richard Stuart row.** Deleted with its two reading guides, and its three documents with it.
+The row described an eighteenth-century Hudson's Bay Company servant who "accompanied William
+Stuart" from York Factory; no such person is in the Dictionary of Canadian Biography, and the
+documents under his name were quoted journals and letters of 1715-17 that cannot exist. He is not
+the real Richard Stuart (PhD, LSE; Parks Canada historian, Dawson historian 1976-84, died 2005),
+whom the owner had in mind for a moment; the two are unrelated and the deletion stands. Backups:
+`2026-10-18-delete-richard-stuart-before.json` and `...-documents-before.json`.
+
+**Audit finding, awaiting the owner.** The same check found 44 other primary-source documents from
+the original seed data that carry quoted transcriptions nobody has checked. Some are plausibly
+adapted from real texts (Mackenzie's rock inscription of 22 July 1793; Cartier's cross at Gaspé;
+Hearne at the Coppermine). Others cannot be real as written: "Letter from Matonabbee to Samuel
+Hearne, 1772", "York Factory Trade Record, 1780" with an exact count of 34,567 pelts, Moses
+Norton's "journal" of 1762, La Pérouse's "letter to the minister" in invented wording, and the three
+"William Stuart" and three "Philip Turnor" pieces. The owner's standing rule is no quoted
+transcription unless checked. Recommended: strip the transcription text from all 44, keep each
+document as a sourced pointer, and restore a quotation only where it can be checked against a
+published edition. The list is in the audit output of 2026-10-18 and will be attached to the pass
+that acts on it.
+
+**Header images.** Every waterway and location must have one. After pass 7, 3 waterways (Savanne
+River, Lac des Mille Lacs, McLeod Lake) and 12 locations had none on Commons at the size the search
+accepted; a second search at a lower size threshold is running, and where it too finds nothing the
+header will be a labelled image of the place's own waterway or of a map, never a likeness.
+
+**Video.** Approved channels: Parks Canada, Historica Canada (Heritage Minutes), the Canadian
+Encyclopedia, provincial and territorial archives. A video is attached only after its title and
+channel are confirmed from the video's own metadata and it is found to concern the waterway; no video
+is acceptable where none fits.
+
 ### 9.4 Document grade bands (approved and applied 2026-10-17)
 Proposed from a Flesch-Kincaid estimate of each transcription (≤ 7 → 4-6, ≤ 11 → 7-9, above →
 10-12), checked against the fourteen documents that already had a band (their estimates run
