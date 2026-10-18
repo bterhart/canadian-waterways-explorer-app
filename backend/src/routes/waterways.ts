@@ -207,13 +207,24 @@ waterwaysRouter.get("/:id", async (c) => {
       locations: {
         include: { cartographer: true }
       },
-      discoveries: true
+      discoveries: true,
+      // Hydrological links (WaterwayConnection, 2026-10-18): stored once per pair, returned in both directions below.
+      connectionsFrom: { include: { to: { select: { id: true, name: true, latitude: true, longitude: true, type: { select: { name: true } } } } } },
+      connectionsTo: { include: { from: { select: { id: true, name: true, latitude: true, longitude: true, type: { select: { name: true } } } } } }
     }
   });
 
   if (!waterway) {
     return c.json({ error: { message: "Waterway not found", code: "NOT_FOUND" } }, 404);
   }
+
+  // One list of connected waterways. `direction` says how this waterway relates to the other:
+  // "outgoing" = this waterway <relation> other (e.g. this flows_into other); "incoming" = other <relation> this.
+  const { connectionsFrom, connectionsTo, ...waterwayRest } = waterway;
+  const connections = [
+    ...connectionsFrom.map((x) => ({ id: x.id, relation: x.relation, direction: "outgoing" as const, notes: x.notes, waterway: x.to })),
+    ...connectionsTo.map((x) => ({ id: x.id, relation: x.relation, direction: "incoming" as const, notes: x.notes, waterway: x.from })),
+  ].sort((a, b) => a.waterway.name.localeCompare(b.waterway.name));
 
   const notableFigureRows = await db.notableFigure.findMany({
   where: {
@@ -255,13 +266,14 @@ const notableFigures = notableFigureRows
 
   // Raw KML is never sent to clients (up to 12.7 MB per row); the map draws the
   // boundary from GET /:id/geometry instead.
-  const { kmlData, ...publicWaterway } = waterway;
+  const { kmlData, ...publicWaterway } = waterwayRest;
 
   return c.json({
     data: {
       ...publicWaterway,
       hasKml: !!kmlData,
       notableFigures,
+      connections,
       readingGuide,
     }
   });

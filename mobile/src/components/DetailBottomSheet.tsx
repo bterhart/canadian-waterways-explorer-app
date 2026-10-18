@@ -125,6 +125,19 @@ const parseVideoData = (videoUrlField: string | null): VideoItem[] => {
 
 const { width: screenWidth } = Dimensions.get('window');
 
+
+// Plain-language label for a waterway connection, read from the viewed waterway's side.
+function describeConnection(relation: string, direction: 'outgoing' | 'incoming', here: string, other: string): string {
+  const out = direction === 'outgoing';
+  switch (relation) {
+    case 'flows_into': return out ? `${here} flows into ${other}` : `${other} flows into ${here}`;
+    case 'outlet_of': return out ? `${here} is the outlet of ${other}` : `${other} is the outlet of ${here}`;
+    case 'part_of': return out ? `${here} is part of ${other}` : `${other} is part of ${here}`;
+    case 'joins': return out ? `${here} joins ${other}` : `${other} joins ${here}`;
+    default: return out ? `${here} connects to ${other}` : `${other} connects to ${here}`;
+  }
+}
+
 interface DetailBottomSheetProps {
   markerId: string | null;
   markerType: MarkerType | null;
@@ -649,6 +662,47 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                               </View>
                             </Pressable>
                           </View>
+                        ))}
+                      </View>
+                    </View>
+                  ) : null}
+
+                  {/* Connected Waterways (WaterwayConnection table, 2026-10-18): tap one to open it on the map */}
+                  {waterwayData.connections && waterwayData.connections.length > 0 ? (
+                    <View className="mb-4">
+                      <Text
+                        className="text-lg font-bold mb-2"
+                        style={{ color: colors.waterBlue }}
+                      >
+                        Connected Waterways
+                      </Text>
+                      <View className="p-4 rounded-xl" style={{ backgroundColor: '#E6F3F8' }}>
+                        {waterwayData.connections.map((connection, index) => (
+                          <Pressable
+                            key={connection.id}
+                            className={index < waterwayData.connections.length - 1 ? 'mb-3 pb-3 border-b border-gray-200' : ''}
+                            onPress={() =>
+                              router.push(
+                                `/?markerId=${connection.waterway.id}&markerType=waterway&lat=${connection.waterway.latitude}&lng=${connection.waterway.longitude}`
+                              )
+                            }
+                            accessibilityRole="button"
+                            accessibilityLabel={`Open ${connection.waterway.name}`}
+                          >
+                            <View className="flex-row items-center justify-between">
+                              <View className="flex-1 pr-2">
+                                <Text className="font-semibold text-base" style={{ color: '#333' }}>
+                                  {connection.waterway.name}
+                                </Text>
+                                <Text className="text-sm mt-1 text-gray-600">
+                                  {describeConnection(connection.relation, connection.direction, waterwayData.name, connection.waterway.name)}
+                                </Text>
+                              </View>
+                              <Text className="text-xs" style={{ color: colors.waterBlue }}>
+                                {connection.waterway.type?.name || 'Waterway'}
+                              </Text>
+                            </View>
+                          </Pressable>
                         ))}
                       </View>
                     </View>

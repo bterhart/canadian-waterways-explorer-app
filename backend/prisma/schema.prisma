@@ -36,11 +36,30 @@ model Waterway {
   furTradeInfo           FurTradeInfo?
   locations              Location[]
   contributions          UserContribution[]
+  connectionsFrom        WaterwayConnection[]      @relation("WaterwayConnectionFrom")
+  connectionsTo          WaterwayConnection[]      @relation("WaterwayConnectionTo")
   type                   WaterwayType              @relation(fields: [typeId], references: [id])
 
   @@index([regionName])
   @@index([typeId])
   @@index([name])
+}
+
+// A hydrological link between two waterways (2026-10-18, owner decision): a river flowing into a
+// lake, bay or larger river; an arm, basin or channel that is part of a larger body; a strait that
+// joins two bodies. Stored once per direction-bearing pair; the API returns both directions.
+model WaterwayConnection {
+  id         String   @id @default(cuid())
+  fromId     String
+  toId       String
+  relation   String   // flows_into | part_of | joins | outlet_of
+  notes      String?
+  createdAt  DateTime @default(now())
+  from       Waterway @relation("WaterwayConnectionFrom", fields: [fromId], references: [id])
+  to         Waterway @relation("WaterwayConnectionTo", fields: [toId], references: [id])
+
+  @@unique([fromId, toId, relation])
+  @@index([toId])
 }
 
 model Location {
