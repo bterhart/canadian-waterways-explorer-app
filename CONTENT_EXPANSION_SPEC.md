@@ -1254,9 +1254,21 @@ Orphans (St. Lawrence), Treaty 9 (James Bay) and the Acadian Deportation (Minas 
 on Red Bay, the Klondike sites, the Chilkoot, Fort Langley, Kluane, Batoche, the York boats of Lower
 Fort Garry, Fort St. James, Rocky Mountain House, Fort Chambly, the Erebus wreck, Castle Hill, the
 Sault canal, the Rideau Canal, Fort Malden, Mingan, the Gulf Islands clam garden and Fort Rodd Hill;
-and Historica's fur-trade summary on Lake Superior. After: 32 waterways with a video, 160 without,
-which is acceptable by the owner's rule. Nature and promotional videos from the same channels were
-passed over as not about the waterway's history.
+and Historica's fur-trade summary on Lake Superior. After pass 9: 32 waterways with a video, 160 without.
+
+**Correction (pass 11, `2026-10-18-sweep-11-restore-videos-strip-transcriptions.ts`).** Pass 9 read
+the owner's channel list too narrowly. The owner's rule, restated the same day: YouTube at large is
+acceptable, the expanded list is in addition, and videos are not to be scrubbed for being off that list
+(Bloody Falls on the Coppermine was the example). Every video pass 9 removed was restored from its
+backup except the eleven that YouTube no longer serves, placed after the approved-channel video where
+one was added. After: 82 waterways with a video, 110 without. Nature and promotional videos from the
+approved channels were still passed over as not about the waterway's history.
+
+**Documents, decided.** The owner has read the 44 seed documents with unchecked quoted transcriptions
+and wants them kept as sourced pointers, which they are: pass 11 set their `transcription` and
+`originalText` to null and left title, author, date, context, vocabulary and questions in place. A
+quotation goes back only when it has been checked against a published edition. 173 documents remain;
+none now carries an unchecked quotation.
 
 ### 9.4 Document grade bands (approved and applied 2026-10-17)
 Proposed from a Flesch-Kincaid estimate of each transcription (≤ 7 → 4-6, ≤ 11 → 7-9, above →
