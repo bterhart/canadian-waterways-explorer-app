@@ -1,0 +1,28 @@
+{
+ "generatedAt": "2026-10-18T08:10:56.591Z",
+ "apply": true,
+ "documents": [
+  {
+   "id": "cmlitwdb60000m2hgkv817kql",
+   "title": "Alexander Mackenzie's Rock Inscription at Bella Coola, July 1793",
+   "transcription": null,
+   "originalText": null,
+   "historicalContext": "On July 22, 1793, Alexander Mackenzie became the first European to complete a transcontinental crossing of North America north of Mexico. After an arduous journey from Fort Fork (near present-day Peace River, Alberta), traveling up the Peace River, crossing the Rocky Mountains via the Parsnip and Fraser watersheds, and finally descending to the Pacific Ocean at Bella Coola, Mackenzie inscribed this message on a rock using vermillion and bear grease. He later had it re-inscribed in more permanent form. This simple inscription marks one of the most significant achievements in Canadian exploration history. Mackenzie's journey proved that a land route to the Pacific existed and established British territorial claims that would eventually lead to British Columbia joining Canada. The journey took 74 days each way and covered over 2,400 kilometers through some of the most challenging terrain in North America. Mackenzie's Indigenous guides from the Sekani, Carrier, and Nuxalk nations made the journey possible by providing food, shelter, canoes, and geographic knowledge."
+  },
+  {
+   "id": "cmlmsw8te0003m22soy6y49ik",
+   "title": "Cartier's Account of First Contact at Gaspé, July 1534",
+   "transcription": null,
+   "originalText": null,
+   "historicalContext": "Cartier's planting of the cross at Gaspé Peninsula marked France's claim to the territory, but the encounter with Chief Donnacona of the St. Lawrence Iroquoians reveals early tensions over sovereignty and land rights that would shape centuries of Canadian history."
+  },
+  {
+   "id": "cmlirhtnb000mm2hcbvv1aoop",
+   "title": "Samuel Hearne's Journey to the Coppermine River, July 1771",
+   "transcription": null,
+   "originalText": null,
+   "historicalContext": "Samuel Hearne's 1771 journey to the Arctic Ocean was one of the most remarkable expeditions in Canadian history. Guided by Chipewyan leader Matonabbee and traveling entirely on foot, Hearne became the first European to reach the Arctic Ocean overland. This journal entry describes his arrival at the Coppermine River, which Indigenous peoples had described as rich in copper. The expedition covered over 5,600 kilometers through some of the harshest terrain on Earth."
+  }
+ ],
+ "links": "inserts only"
+}
