@@ -1125,6 +1125,17 @@ Erebus Bay finds of 1859. Six candidates (Agawa Rock, Skraeling Island, Fort Van
 Yuquot) were held back because the excavation dates and names could not be confirmed in the sources
 read today; they go to a later pass with other sources. After: 26 discoveries on 23 waterways.
 
+**Pass 6** (`2026-10-18-sweep-6-portraits.ts`): for the 88 explorers and 30 figures without an image,
+the cited Wikipedia article's portrait and its Commons file record were read, and a Commons search by
+name run. Seven lifetime likenesses found and set: Henri de Tonti (attributed to Nicolaes Maes), Sir
+John Ross (c. 1833, Royal Museums Greenwich), William Penny (Stephen Pearce, 1853), A. P. Low (1894
+photograph), James William Tyrrell (1900), Robert Kennicott (Smithsonian photograph) and Keskarrah
+(Robert Hood's watercolour of 1821). Everything else was passed over for the owner's rule: posthumous
+engravings (Thomas Simpson 1845, Verrazzano 1768), imagined portraits (Comcomly, Membertou, Lescarbot by
+Jefferys), undated images (McGillivray, Rowand, Shelikhov, Kotzebue) and the many people for whom no
+likeness exists. Denys's 1672 description of the Restigouche added as a link. After: 82 explorers and
+29 figures without an image; 14 waterways without an explorer.
+
 **Also measured, no change possible yet:** the twelve waterways without geometry were tried again
 against OpenStreetMap (Georgian Bay, Davis Strait, Cook Inlet, Prince William Sound, Dixon Entrance,
 Kotzebue Sound, Sitka Sound, Parry Channel); none has a named relation there, so they stay as pins.
@@ -1149,8 +1160,8 @@ should be deleted or sourced.
 5. Done above for eighteen sites; the six held back and a general pass: a sourced set for the sites the data already names (Red Bay,
    L'Anse aux Meadows, Boyd's Cove, Port-Royal, Sainte-Marie, Fort Chipewyan, Yuquot, Beechey Island,
    Erebus and Terror, and the others) before any general pass.
-6. Images: the 88 explorers and 30 figures without one, lifetime likenesses only; the 14 locations
-   and 4 waterways without an image; galleries of one brought to two.
+6. Done above for people, as far as lifetime likenesses exist; still to do: the 14 locations and 4
+   waterways without an image, and galleries of one brought to two.
 7. Location years and Indigenous names; the 12 waterways without geometry (the Arctic channels,
    the Gulf, the Humber) where OpenStreetMap has a usable relation.
 

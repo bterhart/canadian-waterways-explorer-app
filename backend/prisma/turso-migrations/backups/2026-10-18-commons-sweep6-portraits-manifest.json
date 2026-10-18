@@ -1,0 +1,74 @@
+{
+ "portraits": [
+  {
+   "file": "Henri de Tonti.jpg",
+   "width": 1300,
+   "height": 1644,
+   "mime": "image/jpeg",
+   "license": "Public domain",
+   "artist": "attributed to Nicolaes Maes (1634-1693)",
+   "description": "Portrait of Henri de Tonti attributed to Nicolaes Maes; History Museum of Mobile",
+   "date": ""
+  },
+  {
+   "file": "British School - Sir John Ross (1777–1856) - BHC2983 - Royal Museums Greenwich.jpg",
+   "width": 938,
+   "height": 1200,
+   "mime": "image/jpeg",
+   "license": "Public domain",
+   "artist": "British school, c. 1833",
+   "description": "Sir John Ross, oil portrait c. 1833, Royal Museums Greenwich BHC2983",
+   "date": ""
+  },
+  {
+   "file": "William Penny by Stephen Pearce.jpg",
+   "width": 2400,
+   "height": 3067,
+   "mime": "image/jpeg",
+   "license": "Public domain",
+   "artist": "Stephen Pearce, 1853",
+   "description": "Captain William Penny by Stephen Pearce, 1853",
+   "date": "1853"
+  },
+  {
+   "file": "A.P. Low Hamilton River Picnic 1894.jpg",
+   "width": 800,
+   "height": 536,
+   "mime": "image/jpeg",
+   "license": "Public domain",
+   "artist": "A. P. Low party, 1894",
+   "description": "A. P. Low and party on a hauling picnic up Lake Winokapau, Hamilton River, 1894",
+   "date": "1894"
+  },
+  {
+   "file": "James Williams Tyrrell - 1900.jpg",
+   "width": 402,
+   "height": 580,
+   "mime": "image/jpeg",
+   "license": "Public domain",
+   "artist": "unknown photographer, 1900",
+   "description": "James William Tyrrell at Fort Reliance, 1900",
+   "date": "|Author="
+  },
+  {
+   "file": "Robert Kennicott (Smithsonian Archive SIA 000095 B27C 111) - crop.jpg",
+   "width": 1727,
+   "height": 2124,
+   "mime": "image/jpeg",
+   "license": "CC0",
+   "artist": "Smithsonian Institution Archives, 1860s",
+   "description": "Robert Kennicott, photograph; Smithsonian Institution Archives SIA 000095",
+   "date": ""
+  },
+  {
+   "file": "Keskarrah and daughter.jpg",
+   "width": 600,
+   "height": 476,
+   "mime": "image/jpeg",
+   "license": "Public domain",
+   "artist": "Robert Hood, 1821",
+   "description": "Keskarrah and his daughter Green Stockings, watercolour by Robert Hood, 1821",
+   "date": "1821"
+  }
+ ]
+}
