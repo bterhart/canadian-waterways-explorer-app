@@ -1,0 +1,111 @@
+{
+ "generatedAt": "2026-10-18T02:25:22.144Z",
+ "apply": true,
+ "figures": [
+  {
+   "id": "cmlhvyhgl0001m2vx6gflkznr",
+   "associatedLocations": "[\"York Factory\",\"Fort Churchill\",\"Barren Lands\",\"Northwest Territories\"]"
+  },
+  {
+   "id": "cmlhvyhgo0002m2vx0dbu02v4",
+   "associatedLocations": "[\"Maskinonge, Quebec\",\"Pembina\",\"Red River Settlement\",\"St. Boniface\"]"
+  },
+  {
+   "id": "cmlhvyhgs0003m2vxls38ek73",
+   "associatedLocations": "[\"Orkney Islands\",\"Moose Factory\",\"Pembina\",\"York Factory\",\"Albany Factory\"]"
+  },
+  {
+   "id": "cmlhvyhh80009m2vx8cuihkij",
+   "associatedLocations": "[\"Great Slave Lake region\",\"Coppermine River area\"]"
+  },
+  {
+   "id": "cmligbkvd0008m20z60rb75dq",
+   "associatedLocations": "[\"Red River Settlement\",\"Upper Fort Garry\",\"Batoche\",\"Regina\",\"St. Boniface\",\"Montana\"]"
+  },
+  {
+   "id": "cmligbkvg0009m20zuuyrgvf3",
+   "associatedLocations": "[\"Batoche\",\"Fish Creek\",\"Duck Lake\",\"Red River Settlement\",\"Montana\",\"Saskatchewan prairies\"]"
+  },
+  {
+   "id": "cmligbkvj000am20z1othnafb",
+   "associatedLocations": "[\"Seven Oaks\",\"Grantown (White Horse Plain)\",\"Red River Settlement\",\"Fort Tremblante\"]"
+  },
+  {
+   "id": "cmligbkvl000bm20zil3d8n6z",
+   "associatedLocations": "[\"Red River Settlement\",\"Maskinonge, Quebec\",\"Pembina\",\"Montreal\"]"
+  },
+  {
+   "id": "crowfoot_leader",
+   "associatedLocations": null
+  },
+  {
+   "id": "poundmaker_leader",
+   "associatedLocations": null
+  },
+  {
+   "id": "big_bear_leader",
+   "associatedLocations": null
+  },
+  {
+   "id": "nf_chief_peguis",
+   "associatedLocations": null
+  },
+  {
+   "id": "nf_shawnadithit",
+   "associatedLocations": null
+  }
+ ],
+ "waterways": [
+  {
+   "id": "ww_attawapiskat-river",
+   "indigenousName": null,
+   "indigenousLanguage": "Cree (Omushkego)"
+  },
+  {
+   "id": "ww_fox-river-wisconsin",
+   "indigenousName": null,
+   "indigenousLanguage": null
+  },
+  {
+   "id": "ww_kootenay-river",
+   "indigenousName": null,
+   "indigenousLanguage": "Ktunaxa"
+  },
+  {
+   "id": "ww_liard-river",
+   "indigenousName": null,
+   "indigenousLanguage": "Kaska / Dene Zhatié"
+  },
+  {
+   "id": "ww_snake-river",
+   "indigenousName": null,
+   "indigenousLanguage": null
+  },
+  {
+   "id": "ww_stewart-river",
+   "indigenousName": null,
+   "indigenousLanguage": "Northern Tutchone / Hän"
+  },
+  {
+   "id": "ww_white-river",
+   "indigenousName": null,
+   "indigenousLanguage": "Hän / Upper Tanana"
+  },
+  {
+   "id": "terror-bay-waterway",
+   "indigenousName": null,
+   "indigenousLanguage": null
+  },
+  {
+   "id": "bay-of-fundy-waterway",
+   "indigenousName": null,
+   "indigenousLanguage": null
+  }
+ ],
+ "explorers": [
+  {
+   "id": "cmliiralc0003m2eekg1c5xny",
+   "biography": "William Stuart was a Hudson's Bay Company explorer who in 1715-1716 traveled inland from York Factory with Chipewyan guides, becoming one of the first Europeans to venture into the northern interior. He was sent to encourage northern First Nations to come trade at HBC posts. His journey, though not well documented, preceded Henry Kelsey's more famous travels and provided early intelligence about the peoples and geography of the northern interior. Stuart's reports helped establish the commercial importance of the Chipewyan trade network."
+  }
+ ]
+}

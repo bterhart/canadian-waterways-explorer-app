@@ -1059,6 +1059,72 @@ Strait, the Fornel page numbers, Jukes's later career, Bayfield's exact end date
 material follows the DCB entries on Demasduwit and Shawnadithit closely. Verify after apply:
 192 waterways, 187 explorers, 618 explorer-waterway links, 199 locations, 65 notable figures, 244 timeline events, 132 What Happened Here events, 172 pronunciations, 15 quizzes, 33 lessons, 13 field trips, 2,002 reading guides, 176 primary-source documents (85 for grades 10-12, 80 for 7-9, 11 for 4-6). Gulf of St. Lawrence 6 explorers; Annapolis Basin 7 explorers and Port-Royal; Hamilton Inlet 5 explorers, North West River and Rigolet. The production API served all 192 waterways, 187 explorers and 65 figures within a minute of the apply. Three timeline and four What Happened Here events from older packs remain unlinked and go to the sweep.
 
+### 9.14 Template-field sweep, pass 1 (applied 2026-10-18)
+The owner's instruction of 2026-10-17: once the packs are done, sweep the whole app so that as many
+as possible of the template fields on every waterway and call-out are populated, because those
+call-outs are the gate to further research. The sweep is run as numbered passes, each a migration
+script with a dry run, a backup and a verify block, each committed with its before-and-after counts.
+
+**Baseline after pack 7 (192 waterways, 199 locations, 187 explorers, 65 figures):**
+
+| Field | Missing before pass 1 |
+|---|---|
+| Waterway: Indigenous name | 78 (language 28) |
+| Waterway: fur-trade record | 150 (47 of them have a fort or trading post attached) |
+| Waterway: connected notable figure | 143 |
+| Waterway: archaeological discovery | 186 (8 discoveries exist in all) |
+| Waterway: video | 123 |
+| Waterway: no explorer / no location / no geometry | 22 / 88 / 12 |
+| Waterway: image / gallery of two or more | 4 / 12 |
+| Location: image / year / Indigenous name | 14 / 17 / 103 |
+| Explorer: image / no waterway link | 88 / 11 |
+| Figure: image / no waterway in associatedLocations | 30 / 14 |
+
+**Pass 1** (`2026-10-18-sweep-1-links-figures-names.ts`): the connections the detail sheets key on.
+13 figures given the waterways their own biographies and the Dictionary of Canadian Biography name
+(Riel, Dumont, Grant and Lagimodière to the Red; Poundmaker and Big Bear to the North Saskatchewan;
+Crowfoot to the Bow; Shawnadithit to the Exploits, Beothuk Lake and Notre Dame Bay; and so on);
+22 explorer-waterway links added from the DCB (Norton, William Stuart and Colen on the Hayes and
+Churchill; McTavish and McGillivray at Grand Portage and Fort William; McDonald of Garth on the North
+Saskatchewan and Columbia; Anderson on the Fraser and Thompson; Finlay on the Saskatchewan; La
+Vérendrye and Harmon on the Assiniboine; La Salle and Jolliet on Lake Erie; Champlain on the Minas
+Basin; Thompson on Reindeer Lake; Buchan on Notre Dame Bay; Schwatka on Tagish Lake and the White);
+9 Indigenous names set from the waterways' Wikipedia articles (Attawapiskat, Fox, Kootenay, Liard,
+Snake, Stewart, White, Terror Bay, Bay of Fundy); one sentence in the William Stuart row that put
+Kelsey after Stuart corrected. After: 640 links; 15 waterways without an explorer; 2 explorers
+without a waterway; 1 figure (Saukamappee) without a waterway; 69 waterways without an Indigenous name.
+
+**Flagged for the owner, not changed:** the explorer row "Richard Stuart" (said to have accompanied
+William Stuart inland from York Factory) matches no one in the Dictionary of Canadian Biography or
+the Hudson's Bay Company record as far as could be found; it looks like an invented seed row and
+should be deleted or sourced.
+
+**Passes still to run, in order:**
+2. Fur-trade records for the 47 waterways that already carry a fort or trading post, written from
+   the posts' own sourced rows and the DCB (Albany, Assiniboine, Great Slave Lake, Hayes, Liard,
+   Yukon, Queen Charlotte Sound and the rest of the list in the pass-2 script).
+3. Indigenous names for the remaining 69 waterways from the Canadian Encyclopedia, the provincial
+   and territorial place-name records and Indigenous-nation sources, each with its language; the
+   103 locations without one treated the same way.
+4. Explorer links for the 15 waterways still without one (Atlin, Kluane, Nass, Skeena, Harricana,
+   Nottaway, La Grande, Winisk, Savanne, Atikokan, Restigouche, Chignecto, Sitka Sound, Teslin,
+   Lesser Slave Lake), where a documented visit exists.
+5. Archaeological discoveries: a sourced set for the sites the data already names (Red Bay,
+   L'Anse aux Meadows, Boyd's Cove, Port-Royal, Sainte-Marie, Fort Chipewyan, Yuquot, Beechey Island,
+   Erebus and Terror, and the others) before any general pass.
+6. Images: the 88 explorers and 30 figures without one, lifetime likenesses only; the 14 locations
+   and 4 waterways without an image; galleries of one brought to two.
+7. Location years and Indigenous names; the 12 waterways without geometry (the Arctic channels,
+   the Gulf, the Humber) where OpenStreetMap has a usable relation.
+
+**Needing the owner's decision before they are touched:** (a) video: 123 waterways have none, and
+no video should be attached that has not been watched and found accurate, so the sweep proposes a
+short list of institutional channels (Parks Canada, Historica's Heritage Minutes, the Canadian
+Encyclopedia, provincial archives) for the owner to approve before any URL is written; (b) the
+waterway-to-waterway relation (tributary, confluence, outlet) first proposed in section 9.12, a
+schema and client change, so that the Parsnip, Finlay and Peace, or the Exploits and Beothuk Lake,
+are joined in the app and not only in prose.
+
 ### 9.4 Document grade bands (approved and applied 2026-10-17)
 Proposed from a Flesch-Kincaid estimate of each transcription (≤ 7 → 4-6, ≤ 11 → 7-9, above →
 10-12), checked against the fourteen documents that already had a band (their estimates run
