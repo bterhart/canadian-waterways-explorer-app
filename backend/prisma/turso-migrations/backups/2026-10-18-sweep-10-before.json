@@ -1,0 +1,71 @@
+{
+ "generatedAt": "2026-10-18T04:18:15.375Z",
+ "apply": true,
+ "locations": [
+  {
+   "id": "loc_stadacona",
+   "imageUrl": null
+  },
+  {
+   "id": "loc_fort-halkett",
+   "imageUrl": null
+  },
+  {
+   "id": "loc_hudson-house",
+   "imageUrl": null
+  },
+  {
+   "id": "loc_ile-a-la-crosse",
+   "imageUrl": null
+  },
+  {
+   "id": "loc_fort-richmond",
+   "imageUrl": null
+  },
+  {
+   "id": "loc_frances-lake-post",
+   "imageUrl": null
+  },
+  {
+   "id": "loc_fort-reliance-yukon",
+   "imageUrl": null
+  },
+  {
+   "id": "loc_fort-constantine",
+   "imageUrl": null
+  },
+  {
+   "id": "loc_fort-confidence",
+   "imageUrl": null
+  },
+  {
+   "id": "loc_victory-point",
+   "imageUrl": null
+  },
+  {
+   "id": "loc_south-branch-house",
+   "imageUrl": null
+  },
+  {
+   "id": "loc_mackenzie-rock",
+   "imageUrl": null
+  }
+ ],
+ "waterways": [
+  {
+   "id": "ww_mcleod-lake",
+   "imageUrl": null,
+   "galleryImages": "[]"
+  },
+  {
+   "id": "ww_lac-des-mille-lacs",
+   "imageUrl": null,
+   "galleryImages": "[]"
+  },
+  {
+   "id": "ww_savanne-river",
+   "imageUrl": null,
+   "galleryImages": "[]"
+  }
+ ]
+}
