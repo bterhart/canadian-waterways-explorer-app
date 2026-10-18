@@ -1011,6 +1011,26 @@ every record is required once the packs are done. Measured on 2026-10-17 across 
 discovery, 81 without video, 64 without a post or site, 55 without an Indigenous name, 16 without
 an explorer, 9 without geometry.
 
+### 9.12 Gap pack: the Kaministiquia route and the Parsnip (applied 2026-10-18)
+From the owner's review of 2026-10-17. Data in `packs/kaministiquia-and-parsnip.ts`, applied by
+`2026-10-18-gap-kaministiquia-parsnip.ts`, a copy of the pack machinery with the lesson and field
+trip made optional and a `furTradeForExisting` list for rows that lacked a fur-trade record.
+
+| Added or changed | Notes |
+|---|---|
+| Waterways (6) | Dog Lake, Dog River, Lac des Mille Lacs, Savanne River (no OpenStreetMap geometry; a pin), Pack River, McLeod Lake; geometry for the other five |
+| Fur-trade records (4) | Parsnip River and Kaministiquia River (existing rows that had none), Dog Lake and McLeod Lake |
+| Explorer | Zacharie Robutel de La Noue, who built Fort Kaministiquia in 1717 (Dictionary of Canadian Biography) |
+| Links (8) | de Noyon on Dog Lake, Dog River and Lac des Mille Lacs (1688); La Noue on the Kaministiquia and Lake Superior; Dulhut on Lake Superior; Fraser and Stuart on the Pack and McLeod Lake (1805); Mackenzie on the Peace (1793) |
+| Location | Kakabeka Falls, the Mountain Portage of the Kaministiquia route |
+| Posts moved | Fort Kaministiquia from the Lake Superior row to the Kaministiquia; Fort McLeod (BC) from the Peace to McLeod Lake, which the Parsnip and the Pack reach |
+| Events, pronunciations, quiz | 3 timeline events, 2 What Happened Here events (La Noue's post; Mackenzie at Finlay Forks), 3 pronunciations, a four-question quiz; 20 reading guides |
+
+Still open from the same review: the data model has no waterway-to-waterway relation, so the
+Parsnip, Finlay and Peace are joined only in prose. A tributary or confluence relation is proposed
+as a code change for the owner's approval before the template-field sweep (section 9.11, last
+paragraph) begins.
+
 ### 9.4 Document grade bands (approved and applied 2026-10-17)
 Proposed from a Flesch-Kincaid estimate of each transcription (≤ 7 → 4-6, ≤ 11 → 7-9, above →
 10-12), checked against the fourteen documents that already had a band (their estimates run

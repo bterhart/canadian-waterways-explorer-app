@@ -1,0 +1,23 @@
+{
+ "generatedAt": "2026-10-18T00:34:00.284Z",
+ "apply": true,
+ "historicalEventsBackfilled": [],
+ "timelineEventsBackfilled": [],
+ "locationsRelocated": [
+  {
+   "id": "cmlhcpxnc0017m2a37uwth5fr",
+   "name": "Fort Kaministiquia",
+   "before": {
+    "waterwayId": "cmlhaslra000ym2zh4pyu55je"
+   }
+  },
+  {
+   "id": "cmlhcpxo0001jm2a36ckmzggi",
+   "name": "Fort McLeod (BC)",
+   "before": {
+    "waterwayId": "cmlhbjrpy0005m2mbsanafmlo"
+   }
+  }
+ ],
+ "waterwaysGivenGeometry": []
+}
