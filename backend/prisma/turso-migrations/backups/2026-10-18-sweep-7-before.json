@@ -1,0 +1,21 @@
+{
+ "generatedAt": "2026-10-18T03:00:35.708Z",
+ "apply": true,
+ "locations": [
+  {
+   "id": "loc_fort-crevecoeur",
+   "imageUrl": null
+  },
+  {
+   "id": "loc_hochelaga",
+   "imageUrl": null
+  }
+ ],
+ "waterways": [
+  {
+   "id": "ww_pack-river",
+   "imageUrl": null,
+   "galleryImages": "[]"
+  }
+ ]
+}

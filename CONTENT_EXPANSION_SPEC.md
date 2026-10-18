@@ -1136,6 +1136,13 @@ Jefferys), undated images (McGillivray, Rowand, Shelikhov, Kotzebue) and the man
 likeness exists. Denys's 1672 description of the Restigouche added as a link. After: 82 explorers and
 29 figures without an image; 14 waterways without an explorer.
 
+**Pass 7** (`2026-10-18-sweep-7-location-images.ts`): a Commons search for each of the 14 locations and 4
+waterways without an image found a usable, freely licensed one for three: Fort Crèvecoeur (a 1932 book
+illustration), Hochelaga (the national historic site's landscape at Montreal) and the Pack River. The
+one hit for Fort Reliance (Yukon) was the ruin of Back's Fort Reliance on Great Slave Lake and was
+rejected. After: 12 locations and 3 waterways without an image (Savanne River, Lac des Mille Lacs,
+McLeod Lake), none of which has a photograph on Commons.
+
 **Also measured, no change possible yet:** the twelve waterways without geometry were tried again
 against OpenStreetMap (Georgian Bay, Davis Strait, Cook Inlet, Prince William Sound, Dixon Entrance,
 Kotzebue Sound, Sitka Sound, Parry Channel); none has a named relation there, so they stay as pins.
@@ -1160,8 +1167,8 @@ should be deleted or sourced.
 5. Done above for eighteen sites; the six held back and a general pass: a sourced set for the sites the data already names (Red Bay,
    L'Anse aux Meadows, Boyd's Cove, Port-Royal, Sainte-Marie, Fort Chipewyan, Yuquot, Beechey Island,
    Erebus and Terror, and the others) before any general pass.
-6. Done above for people, as far as lifetime likenesses exist; still to do: the 14 locations and 4
-   waterways without an image, and galleries of one brought to two.
+6. Done above for people and, in pass 7, for the three places Commons has a photograph of; the 12
+   locations and 3 waterways still without one have nothing on Commons.
 7. Location years and Indigenous names; the 12 waterways without geometry (the Arctic channels,
    the Gulf, the Humber) where OpenStreetMap has a usable relation.
 
