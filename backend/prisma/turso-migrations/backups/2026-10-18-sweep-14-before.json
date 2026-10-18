@@ -1,0 +1,79 @@
+{
+ "generatedAt": "2026-10-18T08:25:37.220Z",
+ "apply": true,
+ "waterways": [
+  {
+   "id": "ww_eastmain-river",
+   "indigenousName": null,
+   "indigenousLanguage": "Cree (Eeyou)"
+  },
+  {
+   "id": "ww_prince-of-wales-strait",
+   "indigenousName": null,
+   "indigenousLanguage": "Inuvialuktun"
+  },
+  {
+   "id": "ww_naskaupi-river",
+   "indigenousName": null,
+   "indigenousLanguage": "Innu-aimun"
+  },
+  {
+   "id": "ww_okanagan-lake",
+   "indigenousName": null,
+   "indigenousLanguage": "Nsyilxcən"
+  },
+  {
+   "id": "ww_humber-river-newfoundland",
+   "indigenousName": null,
+   "indigenousLanguage": "Mi'kmaq"
+  },
+  {
+   "id": "ww_beothuk-lake",
+   "indigenousName": null,
+   "indigenousLanguage": "Beothuk"
+  },
+  {
+   "id": "ww_miramichi-river",
+   "indigenousName": null,
+   "indigenousLanguage": "Mi'kmaq"
+  },
+  {
+   "id": "ww_restigouche-river",
+   "indigenousName": null,
+   "indigenousLanguage": "Mi'kmaq"
+  },
+  {
+   "id": "ww_rainy-river",
+   "indigenousName": null,
+   "indigenousLanguage": "Anishinaabemowin"
+  }
+ ],
+ "locations": [
+  {
+   "id": "cmlhcpxq9002nm2a3kn445t0w",
+   "indigenousName": null,
+   "indigenousLanguage": null
+  },
+  {
+   "id": "loc_fort-stikine",
+   "indigenousName": null,
+   "indigenousLanguage": "Tlingit"
+  },
+  {
+   "id": "loc_trois-rivieres",
+   "indigenousName": null,
+   "indigenousLanguage": null
+  },
+  {
+   "id": "loc_placentia-plaisance",
+   "indigenousName": null,
+   "indigenousLanguage": null
+  },
+  {
+   "id": "loc_lapierre-house",
+   "indigenousName": null,
+   "indigenousLanguage": "Gwich'in"
+  }
+ ],
+ "links": "inserts only"
+}

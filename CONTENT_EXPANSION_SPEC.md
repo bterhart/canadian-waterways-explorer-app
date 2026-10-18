@@ -1270,6 +1270,61 @@ and wants them kept as sourced pointers, which they are: pass 11 set their `tran
 quotation goes back only when it has been checked against a published edition. 173 documents remain;
 none now carries an unchecked quotation.
 
+### 9.16 Passes 12 to 14 (applied 2026-10-18): held-back sites, checked quotations, names from records
+
+Worked in the order the owner approved: Indigenous names from provincial and nation records, the six
+archaeological sites held back in pass 5, explorer visits for the explorer-less waterways, and checked
+quotations back into the documents. Data only; no build needed.
+
+**Pass 12, the six held-back sites** (`2026-10-18-sweep-12-discoveries-held-back.ts`). Pass 5 held
+these back because their dates and names could not be confirmed in the Wikipedia articles. Each is now
+confirmed from a better source and inserted with it: Debert Palaeo-Indian Site, 1948 (Canadian
+Encyclopedia; MacDonald 1968), Agawa Rock Pictographs, 1958 (Canadian Encyclopedia; Dewdney and Kidd
+1962), Norse artifacts on Skraeling Island, 1978 (Schledermann, Arctic 1980), Namu, 1969 (Simon Fraser
+University archaeology press; the 2011 reburial), Yuquot excavations, 1966 (Dewhirst, Parks Canada
+1980; Ha-Shilth-Sa 2018), Fort Vancouver excavations, 1947 (U.S. National Park Service administrative
+history; Caywood 1955). After: 32 discoveries on 28 waterways.
+
+**Pass 13, checked quotations** (`2026-10-18-sweep-13-checked-quotations.ts`). Three of the 44
+stripped documents get their quotation back, each read in the full text of the edition on the Internet
+Archive, with a line in `historicalContext` naming the edition: Mackenzie's inscription from *Voyages
+from Montreal* (1801), the full sentence with the memorial in Mackenzie's own words ("the twenty-second
+of July, one thousand seven hundred and ninety-three"; the seed's "22d July 1793" is the monument's
+abbreviation); Cartier's cross at Gaspé from Biggar's 1924 edition, English with Biggar's bracketed
+insertions and the French text as `originalText`, the chief unnamed as in the narrative; Hearne at the
+Coppermine from the Champlain Society edition of 1911, whose sentences (one hundred and eighty yards
+wide, three falls in sight, the mine "an entire jumble of rocks and gravel", one piece of copper
+"above four pounds") replace a seed passage ("thirty yards wide", "several pieces of ore") that is not
+in the published *Journey*. The other 41 stay as pointers until each is checked. Also links Jacques de
+Noyon to the Savanne River, 1688: his Kaministiquia route (DCB) runs from Dog Lake over the height of
+land and down the Savanne to Lac des Mille Lacs, and he was already linked to every other waterway on it.
+
+**Pass 14, Indigenous names from records** (`2026-10-18-sweep-14-indigenous-names-records.ts`). All 66
+waterways and 100 locations still without a name were looked up in the Canadian Geographical Names
+Database (official names with a language code, by feature), BC Geographical Names (with origin notes),
+the Commission de toponymie du Québec (its "variante traditionnelle autochtone" records), and Wikidata's
+native-label statements as leads; then, where those gave nothing, in nation sources. Fourteen names were
+found and set, each citing its record: Eastmain River, Iismeniiu-siipii (Cree; Commission de toponymie);
+Prince of Wales Strait, Ikirahak (Inuinnaqtun; official, NWT 2006); Naskaupi River, Meshikamau-shipu
+(Innu-aimun; official, Newfoundland and Labrador 2015); Okanagan Lake, kɬúsx̌nítkʷ (Nsyilxcən; syilx
+sources, BC names records the language); Humber River and Beothuk Lake, Maqtukwek and Mekwe'jite'wey
+(Mi'kmaq; Qalipu First Nation's Ktaqmkuk handbook); Miramichi River, Listuguji'j (Mi'kmaq; the
+Mi'gmaq-Mi'kmaq Online dictionary, Listuguj); Restigouche River, Listuguj (Mi'kmaq origin per the
+federal and Quebec records); Rainy River, Manidoo Ziibi (Anishinaabemowin; Rainy River First Nations
+usage); and the locations Fort McLoughlin, Q̓ḷc (Heiltsuk, from the Heiltsuk Nation's 2025 submission to
+BC names), Fort Stikine, Ḵaachx̱an.áakʼw (Tlingit; Sealaska), Trois-Rivières, Mad8baloden (Abenaki;
+Commission de toponymie), Placentia, Plisantek (Mi'kmaq; Ktaqmkuk handbook), Lapierre House, Zheh
+Gwatsal (Gwich'in; Yukon alternate official name 2018). Official English names that are themselves
+Indigenous words (Tagish Lake, Winnipegosis, Clayoquot, Nootka, Stikine, Bella Coola) were not copied
+into the field. After: 57 waterways and 95 locations without an Indigenous name; these have no recorded
+name in any of the sources above (the Arctic straits and sounds, most fur-trade posts, the United States
+rows) and stay null rather than invented. Pass 14 also adds three explorer links from the DCB: Peter
+Skene Ogden at the Nass, 1831 (Fort Nass, later Fort Simpson); Pierre Du Gua de Monts and Samuel de
+Champlain at Chignecto, June 1604. Eleven waterways remain without an explorer (Lesser Slave Lake,
+Atikokan, Sitka Sound, Skeena, Winisk, Nottaway, Harricana, La Grande, Teslin, Kluane, Atlin): the DCB
+biographies checked (Thompson, Bell, Constantine, Schwatka) do not place an explorer in the database on
+them, and no link is added without a source.
+
 ### 9.4 Document grade bands (approved and applied 2026-10-17)
 Proposed from a Flesch-Kincaid estimate of each transcription (≤ 7 → 4-6, ≤ 11 → 7-9, above →
 10-12), checked against the fourteen documents that already had a band (their estimates run
