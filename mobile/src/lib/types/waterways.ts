@@ -122,6 +122,17 @@ export interface ArchaeologicalDiscovery {
   sources: string | null;
 }
 
+// A hydrological link to another waterway (WaterwayConnection table in Turso, 2026-10-18).
+// direction "outgoing": this waterway <relation> other (this flows_into other); "incoming": other <relation> this.
+export type WaterwayRelation = 'flows_into' | 'part_of' | 'joins' | 'outlet_of';
+export interface WaterwayConnection {
+  id: string;
+  relation: WaterwayRelation | string;
+  direction: 'outgoing' | 'incoming';
+  notes: string | null;
+  waterway: { id: string; name: string; latitude: number; longitude: number; type: { name: string } };
+}
+
 export interface WaterwayDetail {
   id: string;
   name: string;
@@ -143,6 +154,7 @@ export interface WaterwayDetail {
   furTradeInfo: FurTradeInfo | null;
   locations: WaterwayLocation[];
   discoveries: ArchaeologicalDiscovery[];
+  connections: WaterwayConnection[];
   readingGuide: ReadingGuideEntry[];
 }
 
