@@ -1031,6 +1031,34 @@ Parsnip, Finlay and Peace are joined only in prose. A tributary or confluence re
 as a code change for the owner's approval before the template-field sweep (section 9.11, last
 paragraph) begins.
 
+### 9.13 Content pack 7, The Atlantic (applied 2026-10-18)
+Atlantic Canada was the thinnest part of the data (Newfoundland and Labrador had three waterways,
+New Brunswick one). Data in `packs/atlantic.ts`, applied by `2026-10-18-pack-atlantic.ts`; primary
+sources by `2026-10-18-primary-sources-atlantic.ts`. The Gulf of St. Lawrence, Newfoundland, Labrador
+and the Maritimes from the Bristol and Portuguese voyages to the Admiralty surveys, with the Mi'kmaq,
+Wolastoqiyik, Beothuk, Innu and Labrador Inuit at the centre. People rest on the Dictionary of
+Canadian Biography (34 biographies read in full) and on Wikipedia for Mina Hubbard and Nonosabasut.
+
+| Added or changed | Notes |
+|---|---|
+| Waterways (21) | Gulf of St. Lawrence (no single OpenStreetMap geometry; a pin at 48°N 62°W), Exploits River, Beothuk Lake (Red Indian Lake), Notre Dame Bay, Trinity Bay, Conception Bay, Humber River (Newfoundland; no OSM geometry, a pin), Hamilton Inlet (with Lake Melville's geometry), Churchill River (Labrador), Naskaupi River, Sandwich Bay, Nain Bay, Miramichi, Restigouche, Annapolis Basin, Minas Basin, Northumberland Strait, Cabot Strait, Bras d'Or Lake, Chignecto Bay; 19 with geometry |
+| Fur-trade records (4) | Hamilton Inlet (Fornel 1743, Hudson's Bay Company 1836), Sandwich Bay (Cartwright 1775), Annapolis Basin (de Monts to d'Aulnay), Bras d'Or Lake (Denys 1654-69) |
+| Explorers (28) | Corte-Real, Verrazzano, Roberval, Jean Alfonse, Gilbert, Edward Hayes, John Guy, John Mason, Whitbourne, Kirke, de Monts, Poutrincourt, Lescarbot, La Tour, Razilly, Denys, Argall, Fornel, Laure, Palliser, Cartwright, Jens Haven, Buchan, Cormack, Jukes, Bayfield, DesBarres, Mina Benson Hubbard |
+| Portraits (8) | Lifetime likenesses only: Roberval (Clouet sketch, c. 1540), Palliser (attr. Dance, c. 1775), Cartwright (Hilton, c. 1791), DesBarres (credited to Peachey), Jukes (photograph c. 1860), Mina Hubbard (1905), and the figures Demasduit (Lady Hamilton, 1819) and Mikak (Russell, 1769). No lifetime likeness could be confirmed for the other twenty; they are left without portraits rather than given a later imagining |
+| Notable figures (4) | Demasduit, Nonosabasut, Mikak, Tuglavina (Shawnadithit and Membertou already existed) |
+| Links (66) | Including the existing Cabot, Cartier, Champlain, Cook, Jolliet (the 1694 Labrador voyage), John Davis (Hamilton Inlet, 1586), d'Iberville (Placentia, 1696), McLean and Erlandson (the Grand Falls, 1839) and A. P. Low (1894); new links on the existing Strait of Belle Isle, Placentia Bay, Baie des Chaleurs, Saguenay, Saint John, Bay of Fundy, St. Lawrence and George River rows |
+| Locations (14) | Cupids, Trinity, Boyd's Cove Beothuk Site, Placentia (Plaisance), North West River, Rigolet, Cartwright, Nain Moravian Mission, Fort La Tour, Grand-Pré, Fort Beauséjour, Saint-Pierre (St. Peter's), Nipisiguit, Miscou Post |
+| Post moved | Port-Royal (Habitation) from the Bay of Fundy row to the new Annapolis Basin |
+| Events, pronunciations | 37 timeline events, 10 What Happened Here events (Gilbert at St. John's; Sainte-Croix; the Théâtre de Neptune; Bull Arm; Fornel; Chateau Bay; Buchan's marines; the taking of Demasduit; Shawnadithit's drawings; the Grand Falls), 26 pronunciations (Mi'kmaq, Wolastoqey, Beothuk, Innu-aimun, Inuttitut) |
+| Quiz, lesson, field trip | Quiz "The Atlantic Gateway" (8 questions); lesson "The Atlantic Gateway: Where Europe First Met the Northeast" (grades 7-9); field trip "Port-Royal, 1606-1607: The Winter of Good Cheer" (grades 4-6, six stops) |
+| Primary sources (16) | The Cabot and Corte-Real letters (Biggar), Hayes on Gilbert (Hakluyt), Guy's letters (Purchas, Cell), Mason's and Whitbourne's Discourses, Champlain's and Lescarbot's Acadia, Biard's Relation of 1616, Denys (Ganong), Fornel's Relation, Cartwright's Journal, Cormack's Narrative, Shawnadithit's drawings and the Beothuk record (Howley), Jukes, Bayfield's Sailing Directions, Mina Hubbard; every Internet Archive identifier checked |
+
+Rules kept: every statement was read in the Dictionary of Canadian Biography or Wikipedia during
+authoring, and details that could not be found there were cut (Cartier's return through the Cabot
+Strait, the Fornel page numbers, Jukes's later career, Bayfield's exact end date). The Beothuk
+material follows the DCB entries on Demasduwit and Shawnadithit closely. Verify after apply:
+192 waterways, 187 explorers, 618 explorer-waterway links, 199 locations, 65 notable figures, 244 timeline events, 132 What Happened Here events, 172 pronunciations, 15 quizzes, 33 lessons, 13 field trips, 2,002 reading guides, 176 primary-source documents (85 for grades 10-12, 80 for 7-9, 11 for 4-6). Gulf of St. Lawrence 6 explorers; Annapolis Basin 7 explorers and Port-Royal; Hamilton Inlet 5 explorers, North West River and Rigolet. The production API served all 192 waterways, 187 explorers and 65 figures within a minute of the apply. Three timeline and four What Happened Here events from older packs remain unlinked and go to the sweep.
+
 ### 9.4 Document grade bands (approved and applied 2026-10-17)
 Proposed from a Flesch-Kincaid estimate of each transcription (≤ 7 → 4-6, ≤ 11 → 7-9, above →
 10-12), checked against the fourteen documents that already had a band (their estimates run
