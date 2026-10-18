@@ -1,0 +1,38 @@
+{
+ "generatedAt": "2026-10-18T02:38:44.065Z",
+ "apply": true,
+ "waterways": [
+  {
+   "id": "ww_richelieu-river",
+   "indigenousName": null,
+   "indigenousLanguage": null
+  },
+  {
+   "id": "ww_nottaway-river",
+   "indigenousName": null,
+   "indigenousLanguage": "Cree (Eeyou)"
+  },
+  {
+   "id": "ww_dubawnt-river",
+   "indigenousName": null,
+   "indigenousLanguage": "Inuktitut / Dene Sųłıné"
+  }
+ ],
+ "locations": [
+  {
+   "id": "loc_fort-carillon",
+   "indigenousName": null,
+   "indigenousLanguage": null
+  },
+  {
+   "id": "cmlhcpxp60023m2a3nk6v0ile",
+   "indigenousName": null,
+   "indigenousLanguage": null
+  },
+  {
+   "id": "cmlhcpxot001xm2a3nzh39xs0",
+   "indigenousName": null,
+   "indigenousLanguage": null
+  }
+ ]
+}

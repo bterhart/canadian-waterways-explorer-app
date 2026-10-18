@@ -1106,6 +1106,33 @@ bases (Chignecto, Placentia, Richelieu, Lake Champlain, Bow, Coppermine, Repulse
 were left without a record on purpose. After: 80 fur-trade records; 112 waterways without one, most
 of them Arctic channels, bays and rivers with no post.
 
+**Pass 3** (`2026-10-18-sweep-3-indigenous-names.ts`): the Wikipedia and Canadian Encyclopedia
+articles cited on all 69 waterways and 103 locations without an Indigenous name were read for one;
+six were found and set (Richelieu: Masoliantekw, Abenaki; Nottaway: Natuweu Nipi, Cree; Dubawnt:
+Tobotua, Dene Sųłıné; Fort Carillon: Tekontaró:ken, Mohawk; Bas-de-la-Rivière: Zaagiing, Ojibwe; Fort
+Gibraltar: Nistawâyâw, Cree). The remaining 66 waterways and 100 locations have no recorded name in
+those sources; a later pass will go to the provincial and territorial place-name records and the
+nations' own sources rather than invent one.
+
+**Pass 5** (`2026-10-18-sweep-5-discoveries.ts`): archaeological discoveries, which 186 waterways had
+nothing for. Three existing rows were pointed at the wrong waterway and moved (L'Anse aux Meadows and
+Red Bay from the St. Lawrence to the Strait of Belle Isle; the Beechey Island graves from Hudson Bay to
+Wellington Channel). Eighteen sites added from their Wikipedia articles: Port au Choix, Boyd's Cove,
+Sainte-Marie among the Hurons, Bluefish Caves, Fort Michilimackinac, Fort Saint Charles, Wanuskewin,
+Charlesbourg-Royal, Saint Croix Island, Kodlunarn Island, The Forks, Kay-Nah-Chi-Wah-Nung, Whitefish
+Island, Xá:ytem, Marpole Midden, Charlie Lake Cave, Sheguiandah, and McClintock's Victory Point and
+Erebus Bay finds of 1859. Six candidates (Agawa Rock, Skraeling Island, Fort Vancouver, Namu, Debert,
+Yuquot) were held back because the excavation dates and names could not be confirmed in the sources
+read today; they go to a later pass with other sources. After: 26 discoveries on 23 waterways.
+
+**Also measured, no change possible yet:** the twelve waterways without geometry were tried again
+against OpenStreetMap (Georgian Bay, Davis Strait, Cook Inlet, Prince William Sound, Dixon Entrance,
+Kotzebue Sound, Sitka Sound, Parry Channel); none has a named relation there, so they stay as pins.
+Of the 15 waterways without an explorer, the Wikipedia articles name no documented visit by anyone in
+the data for Atlin, Kluane, Nass, Skeena, Harricana, Nottaway, La Grande, Winisk, Savanne, Atikokan,
+Chignecto, Teslin, Lesser Slave Lake or Sitka Sound; Denys's 1672 description of the Restigouche is the
+one lead and goes into pass 4 with the others when they are sourced.
+
 **Flagged for the owner, not changed:** the explorer row "Richard Stuart" (said to have accompanied
 William Stuart inland from York Factory) matches no one in the Dictionary of Canadian Biography or
 the Hudson's Bay Company record as far as could be found; it looks like an invented seed row and
@@ -1113,13 +1140,13 @@ should be deleted or sourced.
 
 **Passes still to run, in order:**
 2. Done above.
-3. Indigenous names for the remaining 69 waterways from the Canadian Encyclopedia, the provincial
+3. Done above for what the cited articles hold; the remaining 66 waterways from the Canadian Encyclopedia, the provincial
    and territorial place-name records and Indigenous-nation sources, each with its language; the
    103 locations without one treated the same way.
 4. Explorer links for the 15 waterways still without one (Atlin, Kluane, Nass, Skeena, Harricana,
    Nottaway, La Grande, Winisk, Savanne, Atikokan, Restigouche, Chignecto, Sitka Sound, Teslin,
    Lesser Slave Lake), where a documented visit exists.
-5. Archaeological discoveries: a sourced set for the sites the data already names (Red Bay,
+5. Done above for eighteen sites; the six held back and a general pass: a sourced set for the sites the data already names (Red Bay,
    L'Anse aux Meadows, Boyd's Cove, Port-Royal, Sainte-Marie, Fort Chipewyan, Yuquot, Beechey Island,
    Erebus and Terror, and the others) before any general pass.
 6. Images: the 88 explorers and 30 figures without one, lifetime likenesses only; the 14 locations
