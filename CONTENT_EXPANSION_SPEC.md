@@ -974,7 +974,7 @@ Data in `backend/prisma/turso-migrations/packs/yukon.ts`, applied by `2026-10-17
 explorers and one post, and everything around it: the tributaries and headwater lakes, the two
 routes by which the Hudson's Bay Company reached the river from the Mackenzie in the 1840s, the
 surveys of the 1880s, the Klondike, and the Hän, Tagish and Ta'an Kwäch'än response to it. The
-Yukon row itself received 20 explorer links and 7 posts and sites. People rest on the Dictionary
+Yukon row itself went from no explorers and one post to 17 explorers and 7 posts and sites. People rest on the Dictionary
 of Canadian Biography where it has them (ten explorers, four figures, each entry read in full) and
 on Wikipedia and their own books for the Americans it does not (McQuesten, Harper, Ladue,
 Carmack, Ogilvie, Kennicott, Zagoskin, Jim Boss).
@@ -983,7 +983,7 @@ Carmack, Ogilvie, Kennicott, Zagoskin, Jim Boss).
 |---|---|---|
 | Waterways | 16 | Pelly, Stewart, Klondike, Teslin River, White, Porcupine, Peel, Dease River, Fortymile, Lake Laberge, Bennett Lake, Tagish Lake, Kluane Lake, Teslin Lake, Atlin Lake, Frances Lake; OpenStreetMap geometry for all sixteen. Fur-trade rows for the Pelly and the Porcupine |
 | Explorers | 17 | Bell, Murray, Hardisty, Schwatka, Whymper, Dawson, Bompas, Constantine, Steele, Zagoskin, Kennicott, McQuesten, Harper, Ogilvie, Carmack, Ladue, and Campbell's links extended. Lifetime likenesses for eight (Schwatka, 1881 engraving; Dawson, Notman photograph 1892; Bompas; Steele, 1900; Zagoskin; McQuesten; Ogilvie; Harper in Farciot's 1884 group at Fort Yukon; Carmack by Woodside c. 1900). None exists on Commons for Bell, Murray, Hardisty, Whymper, Constantine, Kennicott (an engraving of uncertain date was passed over) or Ladue |
-| Explorer–waterway links | 56 | Campbell on the Frances, Pelly, Yukon, Stewart and Dease; Bell on the Peel, Porcupine and Yukon; Franklin on the Peel; the Yukon row goes from no explorers to twenty |
+| Explorer–waterway links | 56 | Campbell on the Frances, Pelly, Yukon, Stewart and Dease; Bell on the Peel, Porcupine and Yukon; Franklin on the Peel; the Yukon row goes from no explorers to seventeen |
 | Locations | 15 | Fort Selkirk, Frances Lake Post, Lapierre House, Fort Reliance (Yukon), Forty Mile, Fort Constantine, Tr'ochëk, Moosehide, Dawson City, Bonanza Creek Discovery Claim, Carcross, Bennett, Chilkoot Pass, Miles Canyon, Five Finger Rapids. Three have no image (Frances Lake Post, Fort Reliance, Fort Constantine) |
 | Notable figures | 5 | Keish (Skookum Jim), Káa Goox (Dawson Charlie), Shaaw Tláa (Kate Carmack), Isaac, Jim Boss. Lifetime photographs for four (Keish by Duclos, Dawson, 1898; Káa Goox and Carmack from Library and Archives Canada; Shaaw Tláa; Jim Boss from the Parks Canada designation record); none on Commons for Chief Isaac |
 | Timeline events | 30 | From McLeod on the Dease (1831) to the World Heritage inscription (2023) | 
