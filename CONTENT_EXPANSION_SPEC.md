@@ -1094,15 +1094,25 @@ Snake, Stewart, White, Terror Bay, Bay of Fundy); one sentence in the William St
 Kelsey after Stuart corrected. After: 640 links; 15 waterways without an explorer; 2 explorers
 without a waterway; 1 figure (Saukamappee) without a waterway; 69 waterways without an Indigenous name.
 
+**Pass 2** (`2026-10-18-sweep-2-fur-trade.ts`): fur-trade records for 38 waterways that carried a
+fort or trading post but had nothing behind the "Fur Trade History" card, written from the posts' own
+sourced rows (Lake Huron, Lake Ontario, Great Slave Lake, Nelson, Assiniboine, Yukon, Saint John, Baie
+des Chaleurs, Juan de Fuca Strait, Queen Charlotte Sound, Hayes, Moose, Albany, Lake of the Woods,
+Illinois, Fox, Detroit, Niagara, Puget Sound, Thompson, Stikine, South Saskatchewan, Liard, Rainy River
+and Lake, Qu'Appelle, Stuart Lake, Georgian Bay, Lake Timiskaming, Lake Winnipegosis, Pigeon, La Grande,
+Great Whale, Baker Lake, George River, Lake Mistassini, Fortymile, Frances Lake). Fur species are named
+only where the rows name them. Eight waterways whose posts were garrisons, police posts or expedition
+bases (Chignecto, Placentia, Richelieu, Lake Champlain, Bow, Coppermine, Repulse Bay, Great Bear Lake)
+were left without a record on purpose. After: 80 fur-trade records; 112 waterways without one, most
+of them Arctic channels, bays and rivers with no post.
+
 **Flagged for the owner, not changed:** the explorer row "Richard Stuart" (said to have accompanied
 William Stuart inland from York Factory) matches no one in the Dictionary of Canadian Biography or
 the Hudson's Bay Company record as far as could be found; it looks like an invented seed row and
 should be deleted or sourced.
 
 **Passes still to run, in order:**
-2. Fur-trade records for the 47 waterways that already carry a fort or trading post, written from
-   the posts' own sourced rows and the DCB (Albany, Assiniboine, Great Slave Lake, Hayes, Liard,
-   Yukon, Queen Charlotte Sound and the rest of the list in the pass-2 script).
+2. Done above.
 3. Indigenous names for the remaining 69 waterways from the Canadian Encyclopedia, the provincial
    and territorial place-name records and Indigenous-nation sources, each with its language; the
    103 locations without one treated the same way.
