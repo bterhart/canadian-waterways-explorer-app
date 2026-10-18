@@ -1,0 +1,36 @@
+{
+ "generatedAt": "2026-10-18T02:49:35.884Z",
+ "apply": true,
+ "explorers": [
+  {
+   "id": "ex_henri-de-tonti",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_sir-john-ross",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_william-penny",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_albert-peter-low",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_james-william-tyrrell",
+   "imageUrl": null
+  },
+  {
+   "id": "ex_robert-kennicott",
+   "imageUrl": null
+  }
+ ],
+ "figures": [
+  {
+   "id": "cmlhvyhh80009m2vx8cuihkij",
+   "imageUrl": null
+  }
+ ]
+}
