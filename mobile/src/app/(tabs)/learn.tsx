@@ -30,6 +30,7 @@ import {
   HelpCircle,
   Info,
   Compass,
+  History,
 } from 'lucide-react-native';
 import { Users as ClassIcon } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -246,7 +247,14 @@ export default function LearnHubScreen() {
             icon={<Users size={28} color="white" />}
             gradientColors={['#8B5CF6', '#6D28D9'] as const}
             onPress={() => router.push('/notable-figures')}
-            isLarge
+          />
+          {/* Who was here when (roadmap item 1): the decade view */}
+          <FeatureCard
+            title={t('whoWasHere')}
+            description={t('whoWasHereDesc')}
+            icon={<History size={28} color="white" />}
+            gradientColors={['#B45309', '#78350F'] as const}
+            onPress={() => router.push('/decades')}
           />
         </View>
       </View>

@@ -39,6 +39,7 @@ import { adminImageHealthRouter } from "./routes/admin-image-health";
 import { citationsRouter } from "./routes/citations";
 import { expeditionsRouter } from "./routes/expeditions";
 import { historicalMapsRouter } from "./routes/historical-maps";
+import { decadesRouter } from "./routes/decades";
 import { scheduleImageHealthCheck } from "./jobs/image-health-check";
 import { logger } from "hono/logger";
 import { readFileSync } from "fs";
@@ -125,6 +126,7 @@ app.route("/api/admin/image-health", adminImageHealthRouter);
 app.route("/api/citations", citationsRouter);
 app.route("/api/expeditions", expeditionsRouter);
 app.route("/api/historical-maps", historicalMapsRouter);
+app.route("/api/decades", decadesRouter);
 
 // Schedule daily image URL health check (runs at 02:00 server time)
 scheduleImageHealthCheck();

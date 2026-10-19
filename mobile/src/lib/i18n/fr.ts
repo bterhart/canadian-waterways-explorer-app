@@ -13,6 +13,8 @@ export const fr: Record<TranslationKey, string> = {
   historicMapsDesc: 'Les cartes qui ont fait le pays, superposées au territoire',
   mapOverlay: 'Superposition de carte',
   nearYou: 'Près de vous',
+  whoWasHere: 'Qui était là, et quand',
+  whoWasHereDesc: 'Choisissez une décennie : explorateurs sur l\'eau, postes fondés, documents écrits',
   quizzes: 'Quiz',
   explorers: 'Explorateurs',
   admin: 'Admin',

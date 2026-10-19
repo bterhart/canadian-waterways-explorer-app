@@ -1,6 +1,8 @@
 import { Hono } from "hono";
 import { db } from "../db";
 import { getReadingGuide } from "../lib/reading-guides";
+import { getExplorerConnections } from "../lib/connections";
+import { attachRelated, loadRelated } from "../lib/related";
 
 const explorersRouter = new Hono();
 
@@ -56,7 +58,29 @@ explorersRouter.get("/:id", async (c) => {
     select: { id: true, name: true, startYear: true, endYear: true, summary: true, color: true, source: true, _count: { select: { legs: true } } },
   });
 
-  return c.json({ data: { ...explorer, readingGuide, expeditions: expeditions.map(({ _count, ...e }) => ({ ...e, legCount: _count.legs })) } });
+  // Everything about this person (roadmap item 1): the records that name the explorer, each
+  // openable in the app. Documents, events and maps link by id; discoveries, notable figures and
+  // lesson key figures link by name, matched after dropping honorifics.
+  const connections = await getExplorerConnections(explorer);
+  const refs = await loadRelated({
+    waterwayIds: [...connections.timelineEvents, ...connections.historicalEvents, ...connections.discoveries].map((e) => e.waterwayId),
+    locationIds: [...connections.timelineEvents, ...connections.historicalEvents].map((e) => e.locationId),
+  });
+
+  return c.json({
+    data: {
+      ...explorer,
+      readingGuide,
+      expeditions: expeditions.map(({ _count, ...e }) => ({ ...e, legCount: _count.legs })),
+      documents: connections.documents,
+      timelineEvents: connections.timelineEvents.map((e) => attachRelated(e, refs)),
+      historicalEvents: connections.historicalEvents.map((e) => attachRelated(e, refs)),
+      discoveries: connections.discoveries.map((d) => ({ ...d, waterway: d.waterwayId ? refs.waterways.get(d.waterwayId) ?? null : null })),
+      notableFigures: connections.notableFigures,
+      maps: connections.maps,
+      lessonPlans: connections.lessonPlans,
+    },
+  });
 });
 
 // Search explorers by name

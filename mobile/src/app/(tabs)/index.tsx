@@ -4,8 +4,9 @@ import { View, Text, ActivityIndicator, StyleSheet, TouchableOpacity, ScrollView
 import MapView, { Marker, PROVIDER_DEFAULT, Region, Polyline, Polygon, Overlay, type MapPressEvent } from 'react-native-maps';
 import { useHistoricalMap } from '@/lib/api/historical-maps-api';
 import type { LayoutChangeEvent } from 'react-native';
-import { Menu, ChevronDown, ChevronRight, Globe2, X, Route, Layers } from 'lucide-react-native';
+import { Menu, ChevronDown, ChevronRight, Globe2, X, Route, Layers, Network, History } from 'lucide-react-native';
 import { useExpeditions, useExpedition } from '@/lib/api/expeditions-api';
+import { useWaterwaySystem, useDecade } from '@/lib/api/connections-api';
 import type { ExpeditionLeg, ExpeditionSummary } from '@/lib/types/expeditions';
 import {
   useWaterways,
@@ -303,6 +304,14 @@ export default function MapScreen() {
   const [expeditionsExpanded, setExpeditionsExpanded] = useState(false);
   const { data: expeditions } = useExpeditions();
   const { data: expedition } = useExpedition(expeditionId);
+
+  // Connection highlights (roadmap item 1, 2026-10-19): a set of waters drawn over the map with a
+  // strip of chips. Either a river system (`/?systemId=`, from Follow the Water) or the waters
+  // explorers were on in one decade (`/?decade=`, from the decade view).
+  const [systemId, setSystemId] = useState<string | null>(null);
+  const [decade, setDecade] = useState<number | null>(null);
+  const { data: system } = useWaterwaySystem(systemId);
+  const { data: decadeData } = useDecade(decade);
 
   // Historic map overlay (roadmap item 15): a georeferenced map image laid over the live map at
   // its bounds, opened from a map's page (`/?mapOverlayId=`), with an opacity control.
@@ -665,12 +674,22 @@ export default function MapScreen() {
   // Opened from another screen (decision 11, 2026-10-16): `/?markerId=&markerType=` selects
   // that waterway or location and opens its detail sheet; `/?lat=&lng=` (What Happened Here)
   // centres the map on an event. Each distinct param set is handled once.
-  const params = useLocalSearchParams<{ markerId?: string; markerType?: string; lat?: string; lng?: string; expeditionId?: string; mapOverlayId?: string }>();
+  const params = useLocalSearchParams<{ markerId?: string; markerType?: string; lat?: string; lng?: string; expeditionId?: string; mapOverlayId?: string; systemId?: string; decade?: string }>();
   const handledParamsRef = useRef<string | null>(null);
   useEffect(() => {
-    const { markerId, markerType, lat, lng, expeditionId: paramExpeditionId, mapOverlayId: paramOverlayId } = params;
-    const key = `${markerId ?? ''}|${markerType ?? ''}|${lat ?? ''}|${lng ?? ''}|${paramExpeditionId ?? ''}|${paramOverlayId ?? ''}`;
-    if (key === '|||||' || handledParamsRef.current === key) return;
+    const { markerId, markerType, lat, lng, expeditionId: paramExpeditionId, mapOverlayId: paramOverlayId, systemId: paramSystemId, decade: paramDecade } = params;
+    const key = `${markerId ?? ''}|${markerType ?? ''}|${lat ?? ''}|${lng ?? ''}|${paramExpeditionId ?? ''}|${paramOverlayId ?? ''}|${paramSystemId ?? ''}|${paramDecade ?? ''}`;
+    if (key === '|||||||' || handledParamsRef.current === key) return;
+
+    if (paramSystemId || paramDecade) {
+      handledParamsRef.current = key;
+      closePreview();
+      setSelectedMarker(null);
+      setExpeditionId(null);
+      setSystemId(paramSystemId ?? null);
+      setDecade(paramDecade && Number.isFinite(Number(paramDecade)) ? Number(paramDecade) : null);
+      return;
+    }
 
     if (paramOverlayId) {
       handledParamsRef.current = key;
@@ -772,8 +791,106 @@ export default function MapScreen() {
     closePreview();
     setSelectedMarker(null);
     setLegendVisible(false);
+    setSystemId(null);
+    setDecade(null);
     setExpeditionId((current) => (current === id ? null : id));
   }, [closePreview]);
+
+  // The highlighted set of waters: a river system or a decade's visited waters, in one shape
+  const highlight = useMemo(() => {
+    if (systemId && system) {
+      const items = [
+        { ...system.waterway, meta: 'this water', isHere: true },
+        ...system.downstream.map((s) => ({ ...s, meta: 'downstream', isHere: false })),
+        ...system.upstream.map((s) => ({ ...s, meta: s.depth === 1 ? 'tributary' : 'upstream', isHere: false })),
+        ...system.partOf.map((s) => ({ ...s, meta: 'part of', isHere: false })),
+        ...system.parts.map((s) => ({ ...s, meta: 'arm', isHere: false })),
+        ...system.joins.map((s) => ({ ...s, meta: 'joined', isHere: false })),
+      ];
+      return {
+        key: `system:${system.waterway.id}`,
+        kind: 'system' as const,
+        title: `${system.waterway.name} system`,
+        subtitle: `${items.length} connected ${items.length === 1 ? 'water' : 'waters'} · tap a chip to go there`,
+        color: '#0E7490',
+        items,
+        detailsLabel: null as string | null,
+        onDetails: null as (() => void) | null,
+      };
+    }
+    if (decade !== null && decadeData) {
+      const byWater = new Map<string, { id: string; name: string; latitude: number; longitude: number; explorers: string[] }>();
+      decadeData.explorers.forEach((g) =>
+        g.visits.forEach((v) => {
+          const row = byWater.get(v.waterway.id) ?? { ...v.waterway, explorers: [] };
+          if (!row.explorers.includes(g.explorer.name)) row.explorers.push(g.explorer.name);
+          byWater.set(v.waterway.id, row);
+        })
+      );
+      const items = [...byWater.values()].map((w) => ({ id: w.id, name: w.name, latitude: w.latitude, longitude: w.longitude, meta: w.explorers.join(', '), isHere: false }));
+      return {
+        key: `decade:${decade}`,
+        kind: 'decade' as const,
+        title: `The ${decade}s`,
+        subtitle: `${decadeData.explorers.length} ${decadeData.explorers.length === 1 ? 'explorer' : 'explorers'} on ${items.length} ${items.length === 1 ? 'water' : 'waters'}`,
+        color: '#6D28D9',
+        items,
+        detailsLabel: 'Who was here',
+        onDetails: () => router.push(`/decades/${decade}`),
+      };
+    }
+    return null;
+  }, [systemId, system, decade, decadeData, router]);
+
+  // Each highlighted water's overview geometry; waters without geometry get a dot at their centre
+  const highlightDrawing = useMemo(() => {
+    if (!highlight) return null;
+    const records = new Map((riverOverviewData?.waterways ?? []).map((r) => [r.id, r]));
+    const paths: { key: string; coordinates: { latitude: number; longitude: number }[]; isArea: boolean; isHere: boolean }[] = [];
+    const dots: { id: string; name: string; latitude: number; longitude: number }[] = [];
+    highlight.items.forEach((item) => {
+      const record = records.get(item.id);
+      const tier = record?.tiers[riverOverviewTier];
+      let drawn = 0;
+      tier?.paths?.forEach((path, index) => {
+        const coordinates = overviewPathToCoordinates(path);
+        const isArea = record!.geometryKind === 'area';
+        if (isArea ? isDrawablePolygon(coordinates) : isDrawableLine(coordinates)) {
+          paths.push({ key: `hl-${item.id}-${index}`, coordinates, isArea, isHere: item.isHere });
+          drawn++;
+        }
+      });
+      if (drawn === 0) dots.push({ id: item.id, name: item.name, latitude: item.latitude, longitude: item.longitude });
+    });
+    return { paths, dots };
+  }, [highlight, riverOverviewData, riverOverviewTier]);
+
+  // Fit the camera to the highlighted set once per set
+  const fittedHighlightRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (!highlight || !highlightDrawing || !mapRef.current) return;
+    if (fittedHighlightRef.current === highlight.key) return;
+    fittedHighlightRef.current = highlight.key;
+    const points = [
+      ...highlight.items.map((i) => ({ latitude: i.latitude, longitude: i.longitude })),
+      ...highlightDrawing.paths.flatMap((p) => p.coordinates),
+    ];
+    const region = getRegionForCoordinates(points);
+    if (region) mapRef.current.animateToRegion(region, 700);
+  }, [highlight, highlightDrawing]);
+
+  const closeHighlight = useCallback(() => {
+    setSystemId(null);
+    setDecade(null);
+    fittedHighlightRef.current = null;
+  }, []);
+
+  // A highlight chip or dot: move to that water and preview it like a pin tap
+  const handleHighlightPress = useCallback((item: { id: string; latitude: number; longitude: number }) => {
+    mapRef.current?.animateToRegion({ latitude: item.latitude, longitude: item.longitude, latitudeDelta: 1.5, longitudeDelta: 1.5 }, 500);
+    setSelectedMarker(null);
+    setPreview({ id: item.id, type: 'waterway', fromOverview: true });
+  }, []);
 
   const closeExpedition = useCallback(() => {
     setExpeditionId(null);
@@ -1038,6 +1155,32 @@ export default function MapScreen() {
             ]
           : null}
 
+        {/* Connection highlight: a river system or a decade's waters in one colour, with dots
+            for waters that have no drawn geometry (roadmap item 1) */}
+        {highlight && highlightDrawing
+          ? [
+              ...highlightDrawing.paths.map((p) =>
+                p.isArea ? (
+                  <Polygon key={p.key} coordinates={p.coordinates} strokeColor={highlight.color} fillColor={`${highlight.color}${p.isHere ? '66' : '33'}`} strokeWidth={p.isHere ? 4 : 2} zIndex={5} />
+                ) : (
+                  <Polyline key={p.key} coordinates={p.coordinates} strokeColor={highlight.color} strokeWidth={p.isHere ? 6 : 4} zIndex={5} />
+                )
+              ),
+              ...highlightDrawing.dots.map((d) => (
+                <Marker
+                  key={`hl-dot-${d.id}`}
+                  coordinate={{ latitude: d.latitude, longitude: d.longitude }}
+                  anchor={{ x: 0.5, y: 0.5 }}
+                  zIndex={19}
+                  tracksViewChanges={false}
+                  onPress={() => handleHighlightPress(d)}
+                >
+                  <View style={[styles.highlightDot, { backgroundColor: highlight.color }]} />
+                </Marker>
+              )),
+            ]
+          : null}
+
         {/* KML overlay for selected waterway */}
         {selectedWaterwayPaths && selectedWaterwayGeometry && selectedWaterway ? (() => {
           const isArea = selectedWaterwayGeometry.geometryKind === 'area';
@@ -1146,7 +1289,7 @@ export default function MapScreen() {
 
       {/* Historic map overlay control: title, year, opacity steps and close (roadmap item 15) */}
       {overlayMap?.bounds ? (
-        <View style={[styles.expeditionStrip, { borderLeftColor: '#8B5A2B', top: expedition ? 150 : 16 }]}>
+        <View style={[styles.expeditionStrip, { borderLeftColor: '#8B5A2B', top: expedition || highlight ? 150 : 16 }]}>
           <View style={styles.expeditionStripHeader}>
             <Layers size={16} color="#8B5A2B" />
             <View style={{ flex: 1 }}>
@@ -1168,6 +1311,37 @@ export default function MapScreen() {
               <Text style={styles.opacityAboutText}>About</Text>
             </TouchableOpacity>
           </View>
+        </View>
+      ) : null}
+
+      {/* Connection highlight strip: the system or decade, then a chip per water (roadmap item 1) */}
+      {highlight ? (
+        <View style={[styles.expeditionStrip, { borderLeftColor: highlight.color }]}>
+          <View style={styles.expeditionStripHeader}>
+            {highlight.kind === 'system' ? <Network size={16} color={highlight.color} /> : <History size={16} color={highlight.color} />}
+            <View style={{ flex: 1 }}>
+              <Text style={styles.expeditionStripTitle} numberOfLines={1}>{highlight.title}</Text>
+              <Text style={styles.expeditionStripSubtitle} numberOfLines={1}>{highlight.subtitle}</Text>
+            </View>
+            {highlight.onDetails ? (
+              <TouchableOpacity onPress={highlight.onDetails} style={styles.opacityAbout}>
+                <Text style={styles.opacityAboutText}>{highlight.detailsLabel}</Text>
+              </TouchableOpacity>
+            ) : null}
+            <TouchableOpacity onPress={closeHighlight} hitSlop={8} accessibilityLabel={t('close')} style={styles.previewCloseButton}>
+              <X size={16} color="#6B7280" strokeWidth={2.5} />
+            </TouchableOpacity>
+          </View>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.legChips}>
+            {highlight.items.map((item) => (
+              <TouchableOpacity key={item.id} style={[styles.legChip, { borderColor: highlight.color }, item.isHere && { backgroundColor: `${highlight.color}22` }]} onPress={() => handleHighlightPress(item)} activeOpacity={0.8}>
+                <View>
+                  <Text style={styles.legChipName} numberOfLines={1}>{item.name}</Text>
+                  <Text style={styles.legChipMeta} numberOfLines={1}>{item.meta}</Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
         </View>
       ) : null}
 
@@ -1628,6 +1802,7 @@ const styles = StyleSheet.create({
   opacityAbout: { marginLeft: 'auto', paddingHorizontal: 8, paddingVertical: 3 },
   opacityAboutText: { fontSize: 11, color: '#3B82A3', textDecorationLine: 'underline', fontWeight: '600' },
   legMarker: { width: 24, height: 24, borderRadius: 12, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: 'white' },
+  highlightDot: { width: 14, height: 14, borderRadius: 7, borderWidth: 2, borderColor: 'white' },
   legMarkerText: { color: 'white', fontSize: 12, fontWeight: '700' },
   legendButton: {
     position: 'absolute',

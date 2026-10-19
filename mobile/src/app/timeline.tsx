@@ -11,8 +11,9 @@ import {
   Modal,
   Dimensions,
 } from 'react-native';
-import { Stack } from 'expo-router';
-import { Calendar, Filter, MapPin, User, Droplets, X } from 'lucide-react-native';
+import { Stack, useRouter } from 'expo-router';
+import { Calendar, Filter, MapPin, User, Droplets, X, History } from 'lucide-react-native';
+import { decadeOf } from '@/lib/types/connections';
 import { useTimelineEvents, useTimelineThemes } from '@/lib/api/education-api';
 import type { TimelineEvent } from '@/lib/types/education';
 import { RelatedLinks } from '@/components/RelatedLinks';
@@ -23,6 +24,7 @@ const colors = {
   forestGreen: '#2D5A3D',
   creamWhite: '#FFFEF7',
   darkGreen: '#1A3A24',
+  earthBrown: '#8B5A2B',
 };
 
 const themeColors: Record<string, string> = {
@@ -69,6 +71,7 @@ function formatDate(event: TimelineEvent): string {
 }
 
 export default function TimelineScreen() {
+  const router = useRouter();
   const [selectedTheme, setSelectedTheme] = useState<string | undefined>();
   const [selectedImportance, setSelectedImportance] = useState<string | undefined>();
   const [selectedEvent, setSelectedEvent] = useState<TimelineEvent | null>(null);
@@ -448,6 +451,19 @@ export default function TimelineScreen() {
                       />
                     </View>
                   ) : null}
+
+                  {/* Who was here in this decade (roadmap item 1) */}
+                  <Pressable
+                    style={({ pressed }) => [styles.decadeLink, pressed && { opacity: 0.7 }]}
+                    onPress={() => {
+                      setSelectedEvent(null);
+                      router.push(`/decades/${decadeOf(selectedEvent.year)}`);
+                    }}
+                    accessibilityRole="button"
+                  >
+                    <History size={14} color={colors.earthBrown} />
+                    <Text style={styles.decadeLinkText}>Who else was here in the {decadeOf(selectedEvent.year)}s</Text>
+                  </Pressable>
                 </>
               ) : null}
             </ScrollView>
@@ -702,6 +718,8 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     marginBottom: 16,
   },
+  decadeLink: { flexDirection: 'row', alignItems: 'center', gap: 6, alignSelf: 'flex-start', marginTop: 12, paddingVertical: 6, paddingHorizontal: 10, borderRadius: 14, backgroundColor: '#FDF6EC', borderWidth: 1, borderColor: '#E7D9C4' },
+  decadeLinkText: { fontSize: 13, fontWeight: '600', color: '#8B5A2B' },
   modalMetaSection: {
     flexDirection: 'row',
     flexWrap: 'wrap',
