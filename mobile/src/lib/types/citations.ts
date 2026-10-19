@@ -1,5 +1,5 @@
 // Structured citations (roadmap item 14, 2026-10-19). Mirrors backend/src/lib/citations.ts.
-export type CitationTargetType = 'waterway' | 'location' | 'explorer' | 'notable_figure' | 'document' | 'discovery';
+export type CitationTargetType = 'waterway' | 'location' | 'explorer' | 'notable_figure' | 'document' | 'discovery' | 'historical_map';
 
 export interface Citation {
   id: string;

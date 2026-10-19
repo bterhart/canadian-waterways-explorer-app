@@ -21,6 +21,7 @@ async function recordTitle(targetType: CitationTargetType, id: string): Promise<
     case "notable_figure": return (await db.notableFigure.findUnique({ where: { id }, select: { name: true } }))?.name ?? null;
     case "document": return (await db.primarySourceDocument.findUnique({ where: { id }, select: { title: true } }))?.title ?? null;
     case "discovery": return (await db.archaeologicalDiscovery.findUnique({ where: { id }, select: { name: true } }))?.name ?? null;
+    case "historical_map": return (await db.historicalMap.findUnique({ where: { id }, select: { title: true } }))?.title ?? null;
   }
 }
 

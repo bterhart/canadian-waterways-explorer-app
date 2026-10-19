@@ -144,6 +144,7 @@ model Cartographer {
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
   locations   Location[]
+  maps        HistoricalMap[]
 }
 
 model IndigenousNation {
@@ -951,6 +952,39 @@ model ReadingGuide {
   updatedAt    DateTime @updatedAt
 
   @@index([targetType, targetId])
+}
+
+// A map that made the country (roadmap item 15, 2026-10-19): the cartography gallery. Optional
+// overlay bounds let the app draw the image over the live map; related ids are JSON string arrays.
+model HistoricalMap {
+  id                 String        @id @default(cuid())
+  title              String
+  mapmaker           String
+  mapmakerNation     String?
+  cartographerId     String?
+  year               Int
+  yearLabel          String?
+  description        String
+  whatItShows        String?
+  whatItGotWrong     String?
+  region             String?
+  imageUrl           String
+  imageCredit        String
+  imageLicense       String
+  sourceUrl          String?
+  sourceNote         String?
+  boundsSwLat        Float?
+  boundsSwLng        Float?
+  boundsNeLat        Float?
+  boundsNeLng        Float?
+  relatedWaterwayIds String?
+  relatedExplorerIds String?
+  sortOrder          Int           @default(0)
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  cartographer       Cartographer? @relation(fields: [cartographerId], references: [id])
+
+  @@index([year])
 }
 
 // A dated journey by one explorer, drawn on the map as its legs' waterway geometry in order
