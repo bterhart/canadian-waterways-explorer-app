@@ -31,6 +31,7 @@ import {
   Info,
   Compass,
   History,
+  Search as SearchIcon,
 } from 'lucide-react-native';
 import { Users as ClassIcon } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -138,6 +139,16 @@ export default function LearnHubScreen() {
         <Text style={styles.heroSubtitle}>
           {t('exploreSubtitle')}
         </Text>
+        {/* Search across everything (roadmap item 3): opens the search screen */}
+        <Pressable
+          onPress={() => router.push('/search')}
+          style={({ pressed }) => [styles.searchBar, pressed && { opacity: 0.8 }]}
+          accessibilityRole="search"
+          accessibilityLabel={t('searchEverything')}
+        >
+          <SearchIcon size={18} color="#6B7280" />
+          <Text style={styles.searchBarText}>{t('searchEverything')}</Text>
+        </Pressable>
       </View>
 
       {/* My Progress Card */}
@@ -398,6 +409,19 @@ const styles = StyleSheet.create({
     color: '#6B7280',
     lineHeight: 22,
   },
+  searchBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginTop: 14,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    backgroundColor: 'white',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+  },
+  searchBarText: { fontSize: 15, color: '#6B7280' },
   section: {
     padding: 16,
     paddingTop: 8,

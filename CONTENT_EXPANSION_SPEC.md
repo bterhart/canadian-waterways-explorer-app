@@ -1537,6 +1537,31 @@ Discoveries and Deep Dives sections, every row a link; its waterway rows now ope
 map and its years open the decade. Franklin's view, for example, now walks to two documents, six
 events, three discoveries, Akaitcho, Lady Jane Franklin and the 1823 route map.
 
+### 10.10 Search across everything (item 3, delivered 2026-10-19; build required)
+
+`GET /api/search?q=&types=&limit=` (`backend/src/lib/search.ts`). The searchable corpus is about
+1,800 rows, so it is read from Turso into one in-memory index (rebuilt every ten minutes) and
+searched there: waterways (name, Indigenous name and language, region, description, significance,
+fur-trade company and notes, and the explorers and years linked to them), places, explorers,
+notable figures (with alternate names), published documents including their transcription,
+original text and context, timeline and "what happened here" events, deep dives (with their key
+figures), field trips, historic maps, Indigenous words and pronunciations, expeditions,
+discoveries, quizzes and stories. Matching is accent-insensitive (verendrye finds La Vérendrye;
+nehiyaw finds nēhiyawēwin), ranked (an exact name, then a name that starts with the query, then a
+word in the name, then every term among the names, then the phrase or every term in the body), and
+a 3- or 4-digit query also matches every record dated to that year and offers the decade view.
+Body matches carry a snippet cut around the first match. In the app a **Search** screen (search
+bar on the Discover hub, magnifier on the map) debounces typing, shows type chips with counts to
+narrow the results, groups hits by type in rank order, and opens each hit in its record: waters
+and places on the map, explorers in the person view, figures, documents, deep dives, field trips,
+maps, quizzes and stories on their pages, expeditions drawn on the map, events at their place,
+years in the decade view, words and pronunciations in their guides. No new tables.
+
+**Expedition camera fix (same batch).** Tapping an expedition leg flew the camera to the leg and
+then, because the leg's water was previewed, the zoom-to-extent animation flew it again to the
+whole water, so a Mackenzie leg zoomed in and straight back out across the country. The leg tap
+(and a highlight chip) now marks the extent as already shown, so the camera stays on the leg.
+
 ### 10.6 Order of work
 10.5's three features first (citations, then expedition routes, then the cartography gallery, because routes and maps both cite); then 1, 3, 5, 16, 18, 6, 7, 9, 10, 11, 13, 12, 17, 4; item 8 when recordings exist.
 
