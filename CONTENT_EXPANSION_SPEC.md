@@ -1471,6 +1471,32 @@ image over the live map at its south-west and north-east corners (`/?mapOverlayI
 control (30, 50, 70, 100 percent) and an About link back to the page. The seed of maps is recorded in
 10.8 as it lands.
 
+### 10.8 Cartography gallery seed (applied 2026-10-19)
+
+`2026-10-19-historical-maps-seed.ts`: sixteen maps, each image found on Wikimedia Commons with its
+licence and author taken from the file record, and each examined at 1600 pixels before its
+description was written, so that "what it shows" and "what it got wrong" name only features read on
+the sheet or stated in the DCB article cited on the record. Oldest first: the Harleian mappemonde
+(c. 1544, Dieppe school); Champlain's Carte de la Nouvelle France (1632, in the 1850 Albany
+facsimile, so marked); Sanson's Le Canada ou Nouvelle France (1656, the first printed map with all
+five Great Lakes, Superior and Michigan open at their western ends); Bressani's Jesuit map (1657,
+halftone reproduction, so marked); Jaillot's Partie de la Nouvelle France (1685, the posts against
+the Hudson Bay trade); Coronelli's Partie occidentale (1688, with the Marquette-Jolliet and La Salle
+notes) and La Louisiana (1696); Lahontan's Rivière Longue (1703, the invented river, with the
+Gnacsitares' deerskin map); Delisle's Carte du Canada (1703, carrying Lahontan's river with a caveat);
+Bellin's Carte de la Baye de Hudson (1744, with the posts named and "cette partie n'est pas connue"
+on the east coast); Mitchell (1755); Pond's Hudson's Bay's Country (1785, in Kohl's copy, the river
+from Slave Lake to a "Mer du Nord West"); Arrowsmith's Map Exhibiting all the New Discoveries (1795,
+later state); Mackenzie's track map (1801, the Tacoutche Tesse carried to the sea as the Columbia);
+Thompson's Map of the North-West Territory (1814, Archives of Ontario sheet); and Franklin's route
+map of 1819-20 (1823). Two carry approximate overlay bounds read from their printed graticules
+(Bellin 1744, converted from the Paris meridian; Franklin 1823, from Greenwich); the rest display as
+images. Four are linked to cartographer rows (Champlain, Bellin, Arrowsmith, Thompson); every map
+carries its related waterways and explorers and one or more citations (BnF Gallica, Library of
+Congress, Archives of Ontario, NYPL, JCB, DCB). Not found on Commons at usable size, to be added as
+copies are located: Hearne's 1795 map, Ac ko mok ki's 1801 map for Fidler (HBCA), Auchagah's map for
+La Vérendrye, Iligliuk's chart for Parry, Franquelin 1688 (only a 942-pixel copy), Dawson 1887.
+
 ### 10.6 Order of work
 10.5's three features first (citations, then expedition routes, then the cartography gallery, because routes and maps both cite); then 1, 3, 5, 16, 18, 6, 7, 9, 10, 11, 13, 12, 17, 4; item 8 when recordings exist.
 
