@@ -4,6 +4,7 @@ import { View, Text, Image, ScrollView, Pressable, StyleSheet, Linking } from 'r
 import { X, BookOpen } from 'lucide-react-native';
 import type { ExplorerDetail, ExplorerWaterwayDetail } from '@/lib/types/waterways';
 import { ReadingGuideList } from '@/components/ReadingGuideList';
+import { SourcesList } from '@/components/SourcesList';
 
 // Theme colors
 const colors = {
@@ -112,6 +113,11 @@ export default function ExplorerDetailModal({ explorer, onClose }: ExplorerDetai
               </View>
             </View>
           ) : null}
+
+          {/* Sources (Citation table, roadmap item 14) */}
+          <View style={styles.section}>
+            <SourcesList targetType="explorer" targetId={explorer.id} titleColor={colors.earthBrown} linkColor={colors.waterBlue} />
+          </View>
 
           {/* Additional Study (ReadingGuide table, decision 12) */}
           {explorer.readingGuide && explorer.readingGuide.length > 0 ? (

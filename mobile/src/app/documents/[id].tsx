@@ -18,6 +18,7 @@ import {
   GraduationCap,
 } from 'lucide-react-native';
 import { useDocument } from '@/lib/api/education-api';
+import { SourcesList } from '@/components/SourcesList';
 import { getGradeLevelColor, getGradeLevelLabel } from '@/lib/types/education';
 import { RelatedLinks } from '@/components/RelatedLinks';
 import { useExploration } from '@/lib/exploration';
@@ -129,6 +130,11 @@ export default function DocumentDetailScreen() {
           ) : null}
         </View>
         <RelatedLinks explorer={document.explorer} waterway={document.waterway} location={document.location} />
+      </View>
+
+      {/* Sources (Citation table, roadmap item 14) */}
+      <View style={styles.section}>
+        <SourcesList targetType="document" targetId={document.id} titleColor={colors.forestGreen} />
       </View>
 
       {/* Historical Context (present on all 48 live documents) */}

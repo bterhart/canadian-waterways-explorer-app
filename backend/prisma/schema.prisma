@@ -950,6 +950,30 @@ model ReadingGuide {
   @@index([targetType, targetId])
 }
 
+// A structured source for a record: what it was written from and cites (roadmap item 14,
+// 2026-10-19). targetType: waterway | location | explorer | notable_figure | document | discovery.
+// kind: dcb | encyclopedia | edition | archive | place_name_record | parks_canada | book | article | web.
+model Citation {
+  id         String   @id @default(cuid())
+  targetType String
+  targetId   String
+  sortOrder  Int      @default(0)
+  kind       String
+  author     String?
+  title      String
+  container  String?
+  publisher  String?
+  year       String?
+  pages      String?
+  url        String?
+  accessed   String?
+  note       String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([targetType, targetId])
+}
+
 // One row per (device, activity, record) so exploration points are awarded once
 // (decision 9, 2026-10-16). activityType: waterway_explored | location_visited |
 // document_read | pronunciation_learned.

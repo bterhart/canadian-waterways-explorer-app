@@ -9,6 +9,7 @@ import ContributeModal from './ContributeModal';
 import ExplorerDetailModal from './ExplorerDetailModal';
 import type { MarkerType, WaterwayDetail, LocationDetail, UserContribution, ArchaeologicalDiscovery } from '@/lib/types/waterways';
 import { ReadingGuideList } from './ReadingGuideList';
+import { SourcesList } from './SourcesList';
 import { useExploration } from '@/lib/exploration';
 import { useRouter } from 'expo-router';
 
@@ -896,6 +897,9 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                     </View>
                   ) : null}
 
+                  {/* Sources (Citation table, roadmap item 14) */}
+                  <SourcesList targetType="waterway" targetId={waterwayData.id} titleColor={colors.earthBrown} linkColor={colors.waterBlue} />
+
                   {/* Additional Study (ReadingGuide table, decision 12) */}
                   <ReadingGuideList entries={waterwayData.readingGuide} titleColor={colors.earthBrown} linkColor={colors.waterBlue} />
                 </>
@@ -1154,6 +1158,9 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                       </View>
                     </View>
                   ) : null}
+
+                  {/* Sources (Citation table, roadmap item 14) */}
+                  <SourcesList targetType="location" targetId={locationData.id} titleColor={colors.earthBrown} linkColor={colors.waterBlue} />
 
                   {/* Additional Study (ReadingGuide table, decision 12) */}
                   <ReadingGuideList entries={locationData.readingGuide} titleColor={colors.earthBrown} linkColor={colors.waterBlue} />
