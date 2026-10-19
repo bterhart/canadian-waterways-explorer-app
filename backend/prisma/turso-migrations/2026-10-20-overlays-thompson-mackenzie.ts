@@ -76,6 +76,55 @@ const SPECS: OverlaySpec[] = [
       out: { west: -108.26, east: -91.79, north: 57.10, south: 52.81, width: 1920, height: 871 },
     },
   },
+  {
+    id: "cmveuoedl00117dwphrqyp79s", title: "Pond 1785", width: 2400, local: `${SCRATCH}/pond1785.jpg`,
+    // Longitude labels along the top, 130 W at x=408 to 65 W at x=3586 (48.9 px per degree, straight);
+    // latitudes on the right, 60 N at y=577 to 40 N at y=2443 (93.4 px per degree, uniform). Full sheet.
+    georef: {
+      lat: { kind: "linear", y1: 577, lat1: 60, y2: 2443, lat2: 40 },
+      lon: { lonRef: -130, top: { y: 0, x: 408, k: 48.9 }, bottom: { y: 2943, x: 408, k: 48.9 } },
+      out: { west: -138.3, east: -59.8, north: 66.2, south: 34.7, width: 3840, height: 2943 },
+    },
+  },
+  {
+    id: "cmveuoe8f000y7dwp1trjr3hn", title: "Mitchell 1755", width: 2400, local: `${SCRATCH}/mitchell1755.jpg`,
+    // Longitudes west of London: 107 W at x=67 to 52 W at x=3730 along the top (66.6 px per degree)
+    // but 96 W at x=264 to 60 W at x=3710 along the bottom (95.7 px per degree): meridians converge
+    // in the ratio of the cosines of 52 N and 30 N, a trapezoid. Latitudes 52 N at y=30 to 29 N at
+    // y=2584, near uniform. Output is the rectangle inscribed in the neatline.
+    georef: {
+      lat: { kind: "linear", y1: 30, lat1: 52, y2: 2584, lat2: 29 },
+      lon: { lonRef: -107, top: { y: 30, x: 67, k: 66.6 }, bottom: { y: 2680, x: 264 + (96 - 107) * 95.7, k: 95.7 } },
+      out: { west: -98.4, east: -59.1, north: 52.0, south: 28.1, width: 3840, height: 2650 },
+    },
+  },
+  {
+    id: "cmveuodsc000o7dwp4cm3lbq0", title: "Lahontan 1703", width: 2400, local: `${SCRATCH}/lahontan1703.jpg`,
+    // Latitudes 37 N at y=1493 to 51 N at y=109 on the left (98.9 px per degree, uniform); longitudes
+    // east of Ferro along the bottom, 252 at x=45 to 292 at x=3480 (85.9 px per degree at 37 N); the
+    // meridians converge, taken as the cosine ratio to 51 N (67.7 px per degree) about the sheet's
+    // central meridian (274.6 Ferro at x=1920). Ferro 22.34 W of Greenwich (20 W of Paris), which
+    // puts Michilimackinac where the sheet draws it.
+    georef: {
+      lat: { kind: "linear", y1: 1493, lat1: 37, y2: 109, lat2: 51 },
+      lon: { lonRef: 274.6 - 360 - 22.34, top: { y: 109, x: 1920, k: 67.7 }, bottom: { y: 1493, x: 1920, k: 85.9 } },
+      out: { west: 252.7 - 382.34, east: 296.5 - 382.34, north: 51, south: 37, width: 3840, height: 1384 },
+    },
+  },
+  {
+    id: "cmveuodxl000s7dwpaxkx5xe3", title: "Delisle 1703", width: 2400, local: `${SCRATCH}/delisle1703.jpg`,
+    // Latitudes 40 N at y=2759 to 75 N at y=396 on the left (67.5 px per degree, uniform; the right
+    // border agrees, so the parallels are straight). Longitudes east of Ferro along the bottom, 260
+    // at x=307 to 320 at x=3437 (52.2 px per degree at 39 N); the top border carries only a tick
+    // scale, about 34 px per degree at 78 N, so the meridians converge about a third less than the
+    // cosine law. Central meridian 290 Ferro (92.34 W) at x=1872, taken as vertical. Output is the
+    // rectangle inscribed in the neatline.
+    georef: {
+      lat: { kind: "linear", y1: 2759, lat1: 40, y2: 396, lat2: 75 },
+      lon: { lonRef: 290 - 382.34, top: { y: 190, x: 1872, k: 34 }, bottom: { y: 2810, x: 1872, k: 52.2 } },
+      out: { west: 256.1 - 382.34, east: 326.9 - 382.34, north: 78.06, south: 39.24, width: 3840, height: 2620 },
+    },
+  },
 ];
 
 const merc = (latDeg: number) => Math.log(Math.tan(Math.PI / 4 + (latDeg * Math.PI) / 180 / 2));
@@ -149,7 +198,11 @@ async function main() {
     const { data, info } = await sharp(source).rotate().raw().toBuffer({ resolveWithObject: true });
     const g = spec.georef;
     const pixels = reproject(data, info.width, info.height, info.channels, g);
-    const jpeg = await sharp(pixels, { raw: { width: g.out.width, height: g.out.height, channels: info.channels } }).jpeg({ quality: 86 }).toBuffer();
+    // Cap the copy at MAX_WIDTH so the phone never decodes a 3840-pixel sheet for an overlay
+    const MAX_WIDTH = 2400;
+    let copy = sharp(pixels, { raw: { width: g.out.width, height: g.out.height, channels: info.channels } });
+    if (g.out.width > MAX_WIDTH) copy = copy.resize({ width: MAX_WIDTH });
+    const jpeg = await copy.jpeg({ quality: 86 }).toBuffer();
     const url = await uploadImageBuffer(jpeg, `historical-maps/${spec.id}/overlay.jpg`);
     await db.historicalMap.update({ where: { id: spec.id }, data: { boundsSwLat: g.out.south, boundsSwLng: g.out.west, boundsNeLat: g.out.north, boundsNeLng: g.out.east } });
     results.push({ title: row.title, source: `${info.width}x${info.height}`, output: `${g.out.width}x${g.out.height}`, bytes: jpeg.length, url });

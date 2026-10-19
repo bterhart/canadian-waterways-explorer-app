@@ -1655,10 +1655,40 @@ on the result:
   replacing the seed's. Check: Île-à-la-Crosse, Cumberland House and York Factory within half a
   degree; Norway House half a degree south on Franklin's sheet.
 
-Still to georeference, in the same way, as the next pass: Arrowsmith 1795, Pond 1785, Mitchell
-1755, Delisle 1703, Lahontan 1703, Coronelli 1688 and 1696, Jaillot 1685, Sanson 1656, Champlain
-1632, Bressani 1657. The Harleian mappemonde is a world map on a Dieppe projection and will not
-be overlaid.
+Four more in the same pass, each checked the same way (copies capped at 2400 pixels wide):
+
+- **Pond 1785** (Kohl's copy). Longitude labels along the top, 130 W at x=408 to 65 W at x=3586
+  (48.9 pixels per degree, straight); latitudes on the right, 60 N at y=577 to 40 N at y=2443
+  (93.4 pixels per degree, uniform): a plain rectangular grid. Edges 66.2-34.7 N, 138.3-59.8 W.
+  Check: latitudes land; longitudes scatter three to five degrees either way (Superior and the
+  Sault east, Athabasca and Great Slave Lake west), which is Pond's geography, as the record on
+  the map says.
+- **Mitchell 1755.** Longitudes west of London read 66.6 pixels per degree along the top and
+  95.7 along the bottom, the ratio of the cosines of 52 N and 30 N: a trapezoid. Latitudes 52 N
+  at y=30 to 29 N at y=2584, near uniform. Output is the rectangle inscribed in the neatline,
+  52.0-28.1 N, 98.4-59.1 W. Check: Lake Ontario, Detroit, Boston, New Orleans, Charleston and
+  James Bay within half a degree; Quebec about one degree east. The Hudson Bay inset in the
+  sheet's top-left corner is carried along and covers a part of the plains Mitchell left blank.
+- **Lahontan 1703.** Latitudes 37-51 N on the left (98.9 pixels per degree, uniform);
+  longitudes east of Ferro along the bottom, 252 at x=45 to 292 at x=3480; the meridians
+  converge, taken as the cosine ratio to 51 N about the sheet's central meridian. Ferro taken
+  22.34 W of Greenwich (20 W of Paris), which puts Michilimackinac where the sheet draws it.
+  Output 51-37 N, 129.6-85.8 W. Check: Michilimackinac, Green Bay and Chicago land; the
+  Mississippi runs three to four degrees west of true on the sheet, the Rivière Longue with it.
+- **Delisle 1703.** Latitudes 40 N at y=2759 to 75 N at y=396 on the left (67.5 pixels per
+  degree, uniform, the right border agreeing); longitudes east of Ferro along the bottom, 260
+  at x=307 to 320 at x=3437 (52.2 pixels per degree); the top carries only a tick scale, about
+  34 pixels per degree, so the meridians converge about a third less than the cosine law.
+  Output inscribed in the neatline, 78.1-39.2 N, 126.2-55.4 W. Check: Quebec, Montreal,
+  Detroit, New York, Churchill and the west end of Superior within a degree; James Bay about a
+  degree and a half east on the sheet.
+
+Not yet overlaid, needing a different model: **Arrowsmith 1795** is a true conic (its border
+labels are unevenly spaced because straight borders cut curved parallels), and **Coronelli
+1688 and 1696, Jaillot 1685, Sanson 1656, Champlain 1632 and Bressani 1657** are on conic or
+sinusoidal projections with curved meridians or parallels. A conic model with a fitted apex
+and cone constant is the next step for them. The Harleian mappemonde is a world map on a Dieppe
+projection and will not be overlaid.
 
 ### 10.6 Order of work
 10.5's three features first (citations, then expedition routes, then the cartography gallery, because routes and maps both cite); then 1, 3, 5, 16, 18, 6, 7, 9, 10, 11, 13, 12, 17, 4; item 8 when recordings exist.
