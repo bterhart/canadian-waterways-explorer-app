@@ -1,7 +1,25 @@
 {
- "generatedAt": "2026-10-19T23:06:46.699Z",
+ "generatedAt": "2026-10-19T23:17:17.219Z",
  "apply": true,
  "maps": [
+  {
+   "id": "cmveuodsc000o7dwp4cm3lbq0",
+   "title": "Carte de la Rivière Longue (1703)",
+   "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Carte%20de%20la%20riviere%20Longue%20-%20et%20de%20quelques%20autres%2C%20qui%20se%20dechargent%20dans%20le%20grand%20fleuve%20de%20Missisipi%20(sic)%20...%20%3B%20Carte%20que%20les%20Gnacsitares%20-%20ont%20dessine%20sur%20des%20paux%20de%20cerfs%20...%20LOC%2096687322.jpg?width=1280",
+   "boundsSwLat": 37,
+   "boundsSwLng": -129.64,
+   "boundsNeLat": 51,
+   "boundsNeLng": -85.83999999999997
+  },
+  {
+   "id": "cmveuodxl000s7dwpaxkx5xe3",
+   "title": "Carte du Canada ou de la Nouvelle France (1703)",
+   "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Carte%20du%20Canada%20ou%20de%20la%20Nouvelle%20France%20et%20des%20Decouvertes%20qui%20y%20ont%20%C3%A9t%C3%A9%20faites...%20-%20Par%20Guillaume%20de%20l'Isle...%20%C3%A0%20Paris%2C%201703%20-%20btv1b84933987.jpg?width=1280",
+   "boundsSwLat": null,
+   "boundsSwLng": null,
+   "boundsNeLat": null,
+   "boundsNeLng": null
+  },
   {
    "id": "cmveuoe35000v7dwpkzi20b7w",
    "title": "Carte de la Baye de Hudson (1744)",
@@ -10,6 +28,24 @@
    "boundsSwLng": -89.963,
    "boundsNeLat": 64.64,
    "boundsNeLng": -57.763
+  },
+  {
+   "id": "cmveuoe8f000y7dwp1trjr3hn",
+   "title": "A Map of the British and French Dominions in North America (1755)",
+   "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Mitchell%20Map-06full2.jpg?width=1280",
+   "boundsSwLat": 28.1,
+   "boundsSwLng": -98.4,
+   "boundsNeLat": 52,
+   "boundsNeLng": -59.1
+  },
+  {
+   "id": "cmveuoedl00117dwphrqyp79s",
+   "title": "Hudson's Bay's Country (1785)",
+   "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Hudson's%20Bay's%20country%20LOC%202002622133.jpg?width=1280",
+   "boundsSwLat": 34.7,
+   "boundsSwLng": -138.3,
+   "boundsNeLat": 66.2,
+   "boundsNeLng": -59.8
   },
   {
    "id": "cmveuoeoo00197dwpvg0ilst4",
