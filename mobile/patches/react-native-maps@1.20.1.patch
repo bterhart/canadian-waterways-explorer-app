@@ -1,3 +1,6 @@
+diff --git a/node_modules/react-native-maps/.bun-tag-fba21fe2739af846 b/.bun-tag-fba21fe2739af846
+new file mode 100644
+index 0000000000000000000000000000000000000000..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391
 diff --git a/ios/AirMaps/AIRMap.m b/ios/AirMaps/AIRMap.m
 index 07a4638a5047ad7beb4859ae6341fb318d6ed522..45a376d93f9ad95e09015a6ace36e47dc662ecf8 100644
 --- a/ios/AirMaps/AIRMap.m
@@ -44,3 +47,69 @@ index 07a4638a5047ad7beb4859ae6341fb318d6ed522..45a376d93f9ad95e09015a6ace36e47d
      if ([subview isKindOfClass:[AIRMapMarker class]]) {
          [self removeAnnotation:(id<MKAnnotation>)subview];
      } else if ([subview isKindOfClass:[AIRMapPolyline class]]) {
+diff --git a/ios/AirMaps/AIRMapOverlay.h b/ios/AirMaps/AIRMapOverlay.h
+index e3be7cb78b8f860be15e7cc9b962a30ee950485a..10c7941fe0f99021e41899e7b95f364d2eea2b35 100644
+--- a/ios/AirMaps/AIRMapOverlay.h
++++ b/ios/AirMaps/AIRMapOverlay.h
+@@ -22,6 +22,9 @@
+ @property (nonatomic, copy) NSArray *boundsRect;
+ @property (nonatomic, assign) NSInteger rotation;
+ @property (nonatomic, assign) CGFloat transparency;
++/** Alpha of the drawn image, 0-1. Set from the `overlayOpacity` prop (the base `opacity` prop
++ *  also reaches it through setAlpha:); the stock library ignored both and drew opaque. */
++@property (nonatomic, assign) CGFloat overlayOpacity;
+ @property (nonatomic, assign) NSInteger zIndex;
+ 
+ @property (nonatomic, copy) RCTBubblingEventBlock onPress;
+diff --git a/ios/AirMaps/AIRMapOverlay.m b/ios/AirMaps/AIRMapOverlay.m
+index e99411d0dd683bf0a81a76be47769b453c709935..b80b59a5467b85b26ec64add3a3512eae2ebf889 100644
+--- a/ios/AirMaps/AIRMapOverlay.m
++++ b/ios/AirMaps/AIRMapOverlay.m
+@@ -66,6 +66,35 @@
+     if (MKMapRectIsEmpty(_mapRect) || !self.overlayImage) return;
+     __weak typeof(self) weakSelf = self;
+     self.renderer = [[AIRMapOverlayRenderer alloc] initWithOverlay:weakSelf];
++    self.renderer.alpha = [self effectiveOpacity];
++}
++
++// Opacity: the JS `opacity` prop reaches this UIView's alpha through RCTViewManager, and the
++// explicit `overlayOpacity` prop reaches the property below; neither was ever applied to the
++// MapKit renderer, so the image always drew opaque. Whichever is set last wins.
++- (CGFloat)effectiveOpacity
++{
++    CGFloat value = _overlayOpacity > 0 ? _overlayOpacity : self.alpha;
++    return MAX(0.0, MIN(1.0, value));
++}
++
++- (void)applyOpacity
++{
++    if (!_renderer) return;
++    _renderer.alpha = [self effectiveOpacity];
++    [_renderer setNeedsDisplay];
++}
++
++- (void)setOverlayOpacity:(CGFloat)overlayOpacity
++{
++    _overlayOpacity = overlayOpacity;
++    [self applyOpacity];
++}
++
++- (void)setAlpha:(CGFloat)alpha
++{
++    [super setAlpha:alpha];
++    [self applyOpacity];
+ }
+ 
+ - (void)update
+diff --git a/ios/AirMaps/AIRMapOverlayManager.m b/ios/AirMaps/AIRMapOverlayManager.m
+index a6ed765337b9675238e829426c6fae9cee5904fc..9f1c371db89f32b25a6170a9ab1c9fdcd6713a8d 100644
+--- a/ios/AirMaps/AIRMapOverlayManager.m
++++ b/ios/AirMaps/AIRMapOverlayManager.m
+@@ -22,6 +22,7 @@ RCT_EXPORT_MODULE()
+ 
+ RCT_REMAP_VIEW_PROPERTY(bounds, boundsRect, NSArray)
+ RCT_REMAP_VIEW_PROPERTY(image, imageSrc, NSString)
++RCT_EXPORT_VIEW_PROPERTY(overlayOpacity, CGFloat)
+ 
+ @end
+ 
