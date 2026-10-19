@@ -207,7 +207,7 @@ export default function LearnHubScreen() {
 
       {/* Discovery Section */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Discovery</Text>
+        <Text style={styles.sectionTitle}>{t('nearYou')}</Text>
         <View style={styles.cardsGrid}>
           <FeatureCard
             title="What Happened Here?"

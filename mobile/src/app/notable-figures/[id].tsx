@@ -27,6 +27,7 @@ import { useNotableFigure } from '@/lib/api/education-api';
 import { useExplorerDetail } from '@/lib/api/waterways-api';
 import ExplorerDetailModal from '@/components/ExplorerDetailModal';
 import { ReadingGuideList } from '@/components/ReadingGuideList';
+import { SourcesList } from '@/components/SourcesList';
 
 const colors = {
   forestGreen: '#2D5A3D',
@@ -309,6 +310,11 @@ export default function NotableFigureDetailScreen() {
             </View>
           </View>
         ) : null}
+
+        {/* Sources (Citation table, roadmap item 14) */}
+        <View style={styles.section}>
+          <SourcesList targetType="notable_figure" targetId={figure.id} titleColor={colors.forestGreen} />
+        </View>
 
         {/* Additional Study (ReadingGuide table, decision 12) */}
         {figure.readingGuide && figure.readingGuide.length > 0 ? (

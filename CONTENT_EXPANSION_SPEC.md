@@ -1387,6 +1387,51 @@ documented history of the people and places involved; it should not be cited as 
 Also on 2026-10-19 the stray `mobile/mobile` folder (an older draft of the archived R2 image migration
 script, the cause of the two mobile typecheck errors) was deleted; the mobile typecheck now passes clean.
 
+## 10. Roadmap approved 2026-10-19 (project scope)
+
+The owner asked for an assessment of what would make the app more useful, more engaging, more
+valuable to teachers and more valuable as a research tool, and then placed the whole list in scope
+("everything you've listed here put into the app"). Items marked *(needs partners or recordings)*
+cannot be completed in code alone. Work proceeds in the order of section 10.6; each item ships as
+schema (CREATE-only Turso migration), API, client and data, with a spec entry.
+
+### 10.1 More useful
+1. **Connections as the backbone of navigation**: "follow this river" (upstream and downstream chains from WaterwayConnection), "who was here in this decade" (ExplorerWaterway by year), "everything about this person" views walkable from any record.
+2. **Expedition route layer**: dated routes per expedition drawn along the waterway geometry, with a leg strip; see 10.5. *(top three)*
+3. **Search and filter across everything**: one search over names, Indigenous names, nations, companies, years and document text.
+4. **Offline packs**: a region's records and images bundled for download.
+
+### 10.2 More engaging
+5. **Let the sources speak**: the checked transcriptions as read-aloud cards tied to the exact spot on the map; the voyageur journeys quote them at the right node.
+6. **Finish the journeys**: a fur-trade era journey over the 80 posts and a Klondike 1898 journey, with the real choices scored against what happened.
+7. **Then-and-now imagery**: period illustrations in the galleries paired with a modern photograph of the same spot.
+8. **Audio for pronunciations and vocabulary** *(needs partners or recordings)*: recorded by the nations whose names are cited.
+
+### 10.3 More value for teachers
+9. **Curriculum alignment by province**: lesson plans mapped to Ontario, BC, Alberta and Quebec social-studies outcomes, searchable by code.
+10. **Primary-source literacy unit**: the seed passage beside the published sentences; what changed and why.
+11. **Class tools that close the loop**: class report (who read what, quiz answers by question, journal entries) as CSV or PDF.
+12. **Grade-band balance**: K-3 and 4-6 material authored for the band, not filtered down.
+13. **Generated printables**: blank maps from the geometry, timeline strips from the events, pronunciation cards.
+
+### 10.4 More value as a research tool
+14. **Structured citations on every record, exportable** (BibTeX, RIS, CSV), with stable links to DCB, Internet Archive editions, CGNDB, BC names and Commission de toponymie records; see 10.5. *(top three)*
+15. **Cartography gallery**: the maps that made the country, georeferenced over the modern base; see 10.5. *(top three)*
+16. **Indigenous contributions as records**: a "knowledge given" record type linking person, explorer, waterway and source.
+17. **Open data**: a documented read-only API or periodic export under a clear licence.
+18. **Versioning and corrections**: a visible "last checked" date and a per-record changelog.
+
+### 10.5 The top three, UI design (built first)
+
+**Expedition routes.** New tables `Expedition` (explorer, name, start and end year, summary, colour, source) and `ExpeditionLeg` (order, waterway, year, optional location, notes). Map tab: an "Expeditions" chip beside the existing filters opens a sheet listing expeditions grouped by explorer with years; choosing one draws every leg's waterway geometry in the expedition's colour over the base map, numbered leg markers at the leg's location or the waterway's centre, dashed straight segments where consecutive legs share no water, and the camera fits the route. A leg strip along the bottom (year, waterway, note) scrolls with the route; tapping a leg moves the camera and opens that waterway's detail. The explorer's detail shows an "Expeditions" card with "Show on map" per expedition, which opens the map with `expeditionId`. Legs are authored in order from the DCB biography or the published journal, with the source stored on the expedition.
+
+**Structured citations.** New table `Citation` (targetType, targetId, sortOrder, kind: dcb | encyclopedia | edition | archive | place_name_record | parks_canada | book | article | web, author, title, container, publisher, year, pages, url, accessed, note). API: `GET /api/citations/:targetType/:targetId` and `GET /api/citations/export?targetType&targetId&format=bibtex|ris|csv` returning text. Every detail view (waterway and location sheets, explorer modal, notable figure, document, discovery) gains a "Sources" card listing citations as tappable rows (kind badge, author, title, year, container) that open the link, with "Copy citation" per row and "Export sources" for the record (share sheet with BibTeX). A "Cite this record" row generates the citation for the app's own record. Citations are seeded from the sources already on the records: the DCB, Encyclopedia, Parks Canada and Internet Archive links in the 2,000 reading guides, the `sources` text on the 32 discoveries, the "checked against" lines on the 27 documents, the Indigenous-name records of passes 3 and 14, and the place-name authority records; new content adds them at authoring time.
+
+**Cartography gallery.** New table `HistoricalMap` (title, cartographer name and optional cartographer link, year, description, what it shows and what it got wrong, image URL and credit and licence, source URL, region, optional overlay bounds as SW and NE corners, related waterway and explorer ids, sort order). Discover hub: a "Historic Maps" card opens a gallery (thumbnail, cartographer, year, region; filters by century and region); a map's page shows the image full-screen and zoomable, the description, the cartographer's biography, related waterways and explorers as links, and the sources; "View on the map" overlays the image on the live map at its bounds with an opacity slider, so Pond's Athabasca can be seen beside the modern lake. Indigenous-made maps (Ac ko mok ki's map for Fidler 1801, the Chipewyan map for Hearne, Inuit charts for Parry and Ross) are first-class entries with the mapmaker named.
+
+### 10.6 Order of work
+10.5's three features first (citations, then expedition routes, then the cartography gallery, because routes and maps both cite); then 1, 3, 5, 16, 18, 6, 7, 9, 10, 11, 13, 12, 17, 4; item 8 when recordings exist.
+
 ### 9.4 Document grade bands (approved and applied 2026-10-17)
 Proposed from a Flesch-Kincaid estimate of each transcription (≤ 7 → 4-6, ≤ 11 → 7-9, above →
 10-12), checked against the fourteen documents that already had a band (their estimates run

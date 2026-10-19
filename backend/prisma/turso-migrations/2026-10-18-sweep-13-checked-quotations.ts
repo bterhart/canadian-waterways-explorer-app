@@ -59,7 +59,7 @@ async function main() {
     return { id: q.id, title: q.title, before: d, data: { transcription: q.transcription, originalText: q.originalText ?? null, historicalContext } };
   }).filter((u) => u.before.transcription !== u.data.transcription || u.before.originalText !== u.data.originalText || u.before.historicalContext !== u.data.historicalContext);
   const [ex, ww] = await Promise.all([db.explorer.findMany({ select: { id: true, name: true } }), db.waterway.findMany({ select: { id: true, name: true } })]);
-  const linkRows = [];
+  const linkRows: Array<{ explorerId: string; waterwayId: string; yearExplored: number; expeditionNotes: string; label: string }> = [];
   for (const l of LINKS) {
     const e = ex.find((x) => x.name === l.explorer); const w = ww.find((x) => x.name === l.waterway);
     if (!e || !w) throw new Error(`not found: ${l.explorer} / ${l.waterway}`);

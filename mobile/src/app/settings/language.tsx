@@ -95,7 +95,7 @@ export default function LanguageSettingsScreen() {
         <View style={styles.previewCard}>
           <View style={styles.previewRow}>
             <Text style={styles.previewLabel}>{t('map')}</Text>
-            <Text style={styles.previewLabel}>{t('learn')}</Text>
+            <Text style={styles.previewLabel}>{t('discover')}</Text>
             <Text style={styles.previewLabel}>{t('quizzes')}</Text>
           </View>
           <View style={styles.previewDivider} />
