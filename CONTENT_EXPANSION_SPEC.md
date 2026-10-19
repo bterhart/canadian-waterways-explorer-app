@@ -1325,6 +1325,57 @@ Atikokan, Sitka Sound, Skeena, Winisk, Nottaway, Harricana, La Grande, Teslin, K
 biographies checked (Thompson, Bell, Constantine, Schwatka) do not place an explorer in the database on
 them, and no link is added without a source.
 
+### 9.17 Pass 15 (applied 2026-10-19): checked quotations back into 24 more documents
+
+The owner asked for the 41 remaining stripped documents to be worked through. Each was looked for in a
+published edition on the Internet Archive, or in the Dictionary of Canadian Biography where it prints
+the archival sentence; 24 were found and restored by `2026-10-19-sweep-15-checked-quotations-2.ts`,
+each with a line in `historicalContext` naming the edition and saying what, if anything, of the seed
+wording was not in it. Only text read in the edition went into `transcription`; omitted stretches are
+marked, the editions' brackets kept, and OCR line-breaks joined.
+
+**Restored from the editions.** Mackenzie's departure from Fort Fork, 9 May 1793, and the wreck of
+the canoe on 13 June 1793 (*Voyages from Montreal*, 1801); Hearne's report of Matonabbee's words on
+women and travel, October 1770, and Norton's orders for the third journey of 7 December 1770, printed
+in full (*Journey*, Champlain Society 1911); Thompson's Narrative for 4-5 July 1811 on the Columbia and
+Saukamappee's account (Champlain Society 1916); Fraser above Spuzzum, June 1808 (Masson, *Les
+Bourgeois*, 1889); Champlain's arrival at Quebec and the building of the habitation, 1608, the Place
+Royale description of 1611 with its French, and the 1618 memorial to the King with its French
+(Biggar, *Works*, vol. II); Cartier at Hochelaga and the scurvy winter with the Louvain sentence in
+French (Biggar 1924); La Salle's act of possession, 9 April 1682 (French, *Historical Collections of
+Louisiana*, 1846); Joutel on the murder of La Salle, March 1687 (1714 translation, Stiles 1906); Rae's
+Repulse Bay letter of 29 July 1854; Back at the mouth of the Thlew-ee-choh and the Fort Reliance winter
+(*Narrative*, 1836); Tyrrell's journal extract for 30 July 1893 among the caribou at Carey Lake (GSC
+1897) and his Red Deer River bone-bed sentences (GSC 1887). **Restored from the DCB's printed
+archival sentences:** Knight on Thanadelthur, Stuart's note of October 1715, Fidler's "sole motive"
+sentence of 1790-91, Turnor on Mackenzie and on Fort Chipewyan, and the Company's 1778 engagement of
+Turnor.
+
+**Corrections made on the way.** Six seed titles or authors were wrong and are corrected, with the
+reason in `historicalContext`: Saukamappee's account was told to David Thompson in the winter of
+1787-88, not to Fidler in 1792-93 (author, date and explorer link changed); the 1778 instructions
+ran from the Company to Turnor, not the reverse; Stuart kept no journal, but his October 1715 note
+survives in Knight's journal; Thompson's Columbia descent is July 1811, not June field notes;
+Champlain called the Montreal site Place Royale, not Hochelaga; the Red Deer bone beds are described
+in Tyrrell's 1887 report, which does not mention the skull. Knight's sentence on Thanadelthur was
+written at her death in February 1717, not 1715. Seed sentences not in the editions were dropped:
+Mackenzie's speech asking for volunteers and his "mutiny"; Hearne's "seven wives" paragraph (though
+Hearne does record the seven wives in January 1772); Champlain's dove-cote and his "art of
+navigation" opening (which is from the 1632 *Traitté de la marine*, not the 1618 memorial); Cartier's
+sleeping platforms; Back's "sixty below" (he records seventy); Tyrrell's 12 July entry and his
+first-person skull story.
+
+**Still pointers (17).** No published text could be reached for: the York Factory trade record of
+1780 and the "letter from Matonabbee" (neither appears to exist as a document); Thompson on Charlotte
+Small (the Narrative does not mention her); the La Salle letter to Frontenac of 1681 (he reached the
+mouth in 1682); Tyrrell's 1898 Klondike letter; Back's 1836 letter to the Admiralty; Fidler's Peigan
+journal and Red River survey report (unpublished); Turnor's 1792 Churchill report; Norton's 1762
+journal and 1768 trade report; Stuart's peace-mission report and trade-customs account (he kept no
+journal); La Pérouse's three 1782 reports (his campaign report is in the French naval archives, not
+in print on the Archive); and Hearne's own account of the capture, which is not in the *Journey*. The
+first four of these describe documents that may not exist; the owner may wish to delete them. After
+pass 15: 27 documents with a checked transcription, 173 documents in all.
+
 ### 9.4 Document grade bands (approved and applied 2026-10-17)
 Proposed from a Flesch-Kincaid estimate of each transcription (≤ 7 → 4-6, ≤ 11 → 7-9, above →
 10-12), checked against the fourteen documents that already had a band (their estimates run
