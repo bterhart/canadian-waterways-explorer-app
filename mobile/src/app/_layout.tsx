@@ -104,6 +104,9 @@ function RootLayoutNav({ colorScheme }: { colorScheme: 'light' | 'dark' | null |
         {/* Historic Maps (cartography gallery, roadmap item 15) */}
         <Stack.Screen name="historical-maps/index" options={{ headerShown: true }} />
         <Stack.Screen name="historical-maps/[id]" options={{ headerShown: true }} />
+        {/* Who was here when (roadmap item 1) */}
+        <Stack.Screen name="decades/index" options={{ headerShown: true }} />
+        <Stack.Screen name="decades/[decade]" options={{ headerShown: true }} />
         {/* Voyageur Journey Screens */}
         <Stack.Screen name="voyageur-journey/index" options={{ headerShown: true }} />
         <Stack.Screen name="voyageur-journey/[id]" options={{ headerShown: true }} />

@@ -1497,6 +1497,46 @@ Congress, Archives of Ontario, NYPL, JCB, DCB). Not found on Commons at usable s
 copies are located: Hearne's 1795 map, Ac ko mok ki's 1801 map for Fidler (HBCA), Auchagah's map for
 La Vérendrye, Iligliuk's chart for Parry, Franquelin 1688 (only a 942-pixel copy), Dawson 1887.
 
+### 10.9 Connections as the backbone of navigation (item 1, delivered 2026-10-19; build required)
+
+No new tables: every view reads the links the records already carry. Three views, each reachable
+from the records it concerns.
+
+**Follow the Water.** `GET /api/waterways/:id/system` walks `WaterwayConnection` from the viewed
+water: the downstream chain (`flows_into` forward and `outlet_of` reversed; the data has no water
+with two outlets and no cycles, so the chain is a list, longest Dog River → Dog Lake →
+Kaministiquia → Superior → Huron → Detroit → Erie → Niagara → Ontario → St. Lawrence → Gulf), the
+tributaries as a depth-first tree, the body it is part of, its arms and reaches, and the waters a
+strait joins it to, each with the connection note, the number of explorers linked to it and their
+earliest year. In the app the waterway sheet's flat "Connected Waterways" list is replaced by a
+**Follow the Water** card: the viewed water, then "flows into" steps to the sea; "Fed by" with
+tributaries indented by depth; Part of, Arms and reaches, Joined to. Every row opens that water on
+the map, and **Show the whole system on the map** (`/?systemId=`) draws every water of the system
+over the base map in one colour, the viewed water heavier, with a strip of chips that fly to each.
+
+**Who Was Here When.** `GET /api/decades` lists every decade the database dates something to with
+counts; `GET /api/decades/:decade` returns the explorers on the water (grouped, with each water and
+year from `ExplorerWaterway.yearExplored`), the expeditions underway, the posts and places founded
+(`Location.yearEstablished`), the timeline events and the documents written (`originalYear`). In the
+app: a **Who Was Here When** card on the Discover hub opens the list of decades (47, 1000s to 1920s)
+under their centuries; a decade's page has arrows and a chip strip to its neighbours, "Show this
+decade on the map" (`/?decade=`, the visited waters drawn with the explorers' names on the chips),
+and sections On the water (explorer rows open the person view, water chips open the map), Journeys
+underway (Show on map), Posts and places founded, What happened and Written in this decade, each a
+link. The decade is reachable from any dated record: the year badges on the waterway and location
+sheets, the explored years in the explorer view, and a "Who else was here in the 1790s" link under a
+timeline event.
+
+**Everything about this person.** `GET /api/explorers/:id` now also returns the documents the
+explorer wrote (`PrimarySourceDocument.explorerId`), timeline and "what happened here" events
+(`explorerId`), archaeological discoveries (`relatedExplorerName`, matched after dropping honorifics),
+the notable figures whose `associatedExplorers` name them (with the stored relationship), the
+historic maps that cite them and the deep dives that list them (`relatedExplorerIds` or a key
+figure). The explorer view gains Events, Documents, People Connected, Maps, Archaeological
+Discoveries and Deep Dives sections, every row a link; its waterway rows now open the water on the
+map and its years open the decade. Franklin's view, for example, now walks to two documents, six
+events, three discoveries, Akaitcho, Lady Jane Franklin and the 1823 route map.
+
 ### 10.6 Order of work
 10.5's three features first (citations, then expedition routes, then the cartography gallery, because routes and maps both cite); then 1, 3, 5, 16, 18, 6, 7, 9, 10, 11, 13, 12, 17, 4; item 8 when recordings exist.
 

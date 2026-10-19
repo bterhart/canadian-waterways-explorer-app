@@ -6,6 +6,7 @@ import { requireAdmin, requireSuperAdmin } from "../lib/admin-middleware";
 import { buildGeometry, TIER_CONFIG } from "../lib/kml-geometry";
 import type { BBox, TierName, WaterwayGeometry } from "../lib/kml-geometry";
 import { getReadingGuide } from "../lib/reading-guides";
+import { getWaterwaySystem } from "../lib/connections";
 
 const waterwaysRouter = new Hono();
 
@@ -277,6 +278,17 @@ const notableFigures = notableFigureRows
       readingGuide,
     }
   });
+});
+
+// "Follow this river" (roadmap item 1, 2026-10-19): the downstream chain, upstream tributaries,
+// parts and joined bodies walked from WaterwayConnection, with each water's explorer count and
+// earliest year, and the ids for drawing the whole system on the map.
+waterwaysRouter.get("/:id/system", async (c) => {
+  const system = await getWaterwaySystem(c.req.param("id"));
+  if (!system) {
+    return c.json({ error: { message: "Waterway not found", code: "NOT_FOUND" } }, 404);
+  }
+  return c.json({ data: system });
 });
 
 // Simplified boundary/route geometry for the map, by zoom tier (public)

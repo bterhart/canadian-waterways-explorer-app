@@ -10,6 +10,8 @@ import ExplorerDetailModal from './ExplorerDetailModal';
 import type { MarkerType, WaterwayDetail, LocationDetail, UserContribution, ArchaeologicalDiscovery } from '@/lib/types/waterways';
 import { ReadingGuideList } from './ReadingGuideList';
 import { SourcesList } from './SourcesList';
+import { FollowTheWater } from './FollowTheWater';
+import { decadeOf } from '@/lib/types/connections';
 import { useExploration } from '@/lib/exploration';
 import { useRouter } from 'expo-router';
 
@@ -127,18 +129,6 @@ const parseVideoData = (videoUrlField: string | null): VideoItem[] => {
 const { width: screenWidth } = Dimensions.get('window');
 
 
-// Plain-language label for a waterway connection, read from the viewed waterway's side.
-function describeConnection(relation: string, direction: 'outgoing' | 'incoming', here: string, other: string): string {
-  const out = direction === 'outgoing';
-  switch (relation) {
-    case 'flows_into': return out ? `${here} flows into ${other}` : `${other} flows into ${here}`;
-    case 'outlet_of': return out ? `${here} is the outlet of ${other}` : `${other} is the outlet of ${here}`;
-    case 'part_of': return out ? `${here} is part of ${other}` : `${other} is part of ${here}`;
-    case 'joins': return out ? `${here} joins ${other}` : `${other} joins ${here}`;
-    default: return out ? `${here} connects to ${other}` : `${other} connects to ${here}`;
-  }
-}
-
 interface DetailBottomSheetProps {
   markerId: string | null;
   markerType: MarkerType | null;
@@ -185,6 +175,15 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
 
     const isLoading = waterwayLoading || locationLoading;
     const data: WaterwayDetail | LocationDetail | undefined = markerType === 'waterway' ? waterwayData : locationData;
+
+    // The decades this waterway saw explorers, with the number of visits in each (roadmap item 1)
+    const visitDecades = useMemo(() => {
+      const counts = new Map<number, number>();
+      (waterwayData?.explorers ?? []).forEach((e) => {
+        if (e.yearExplored) counts.set(decadeOf(e.yearExplored), (counts.get(decadeOf(e.yearExplored)) ?? 0) + 1);
+      });
+      return [...counts.entries()].sort((a, b) => a[0] - b[0]).map(([decade, count]) => ({ decade, count }));
+    }, [waterwayData?.explorers]);
 
     // Opening the sheet counts as exploring the record: points once per device (decision 9)
     useExploration('waterway_explored', markerType === 'waterway' ? markerId : null, !!waterwayData);
@@ -595,14 +594,18 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                             <View className="items-center mr-3">
                               {/* Year badge */}
                               {explorerWaterway.yearExplored ? (
-                                <View
+                                // The year opens "who was here in this decade" (roadmap item 1)
+                                <Pressable
                                   className="px-2 py-1 rounded-lg mb-2"
-                                  style={{ backgroundColor: colors.gold }}
+                                  style={({ pressed }) => ({ backgroundColor: colors.gold, opacity: pressed ? 0.7 : 1 })}
+                                  onPress={() => router.push(`/decades/${decadeOf(explorerWaterway.yearExplored!)}`)}
+                                  accessibilityRole="button"
+                                  accessibilityLabel={`Who else was here in the ${decadeOf(explorerWaterway.yearExplored)}s`}
                                 >
                                   <Text className="text-white text-xs font-bold">
                                     {explorerWaterway.yearExplored}
                                   </Text>
-                                </View>
+                                </Pressable>
                               ) : (
                                 <View
                                   className="px-2 py-1 rounded-lg mb-2"
@@ -668,41 +671,33 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                     </View>
                   ) : null}
 
-                  {/* Connected Waterways (WaterwayConnection table, 2026-10-18): tap one to open it on the map */}
-                  {waterwayData.connections && waterwayData.connections.length > 0 ? (
+                  {/* Follow the Water (roadmap item 1, 2026-10-19): the downstream chain, tributaries,
+                      arms and joined bodies from WaterwayConnection; each opens on the map, and the
+                      footer draws the whole system. Replaces the flat Connected Waterways list. */}
+                  <FollowTheWater waterwayId={waterwayData.id} />
+
+                  {/* Who was here when: the decades this water saw explorers, each opening the decade view */}
+                  {visitDecades.length > 0 ? (
                     <View className="mb-4">
-                      <Text
-                        className="text-lg font-bold mb-2"
-                        style={{ color: colors.waterBlue }}
-                      >
-                        Connected Waterways
+                      <Text className="text-lg font-bold mb-2" style={{ color: colors.earthBrown }}>
+                        Who Was Here When
                       </Text>
-                      <View className="p-4 rounded-xl" style={{ backgroundColor: '#E6F3F8' }}>
-                        {waterwayData.connections.map((connection, index) => (
+                      <View className="p-4 rounded-xl flex-row flex-wrap" style={{ backgroundColor: '#FDF6EC', gap: 8 }}>
+                        {visitDecades.map(({ decade, count }) => (
                           <Pressable
-                            key={connection.id}
-                            className={index < waterwayData.connections.length - 1 ? 'mb-3 pb-3 border-b border-gray-200' : ''}
-                            onPress={() =>
-                              router.push(
-                                `/?markerId=${connection.waterway.id}&markerType=waterway&lat=${connection.waterway.latitude}&lng=${connection.waterway.longitude}`
-                              )
-                            }
+                            key={decade}
+                            onPress={() => router.push(`/decades/${decade}`)}
                             accessibilityRole="button"
-                            accessibilityLabel={`Open ${connection.waterway.name}`}
+                            accessibilityLabel={`Who was here in the ${decade}s`}
+                            style={({ pressed }) => ({
+                              flexDirection: 'row', alignItems: 'center', gap: 6,
+                              backgroundColor: 'white', borderWidth: 1, borderColor: '#E7D9C4',
+                              borderRadius: 14, paddingHorizontal: 10, paddingVertical: 6, opacity: pressed ? 0.7 : 1,
+                            })}
                           >
-                            <View className="flex-row items-center justify-between">
-                              <View className="flex-1 pr-2">
-                                <Text className="font-semibold text-base" style={{ color: '#333' }}>
-                                  {connection.waterway.name}
-                                </Text>
-                                <Text className="text-sm mt-1 text-gray-600">
-                                  {describeConnection(connection.relation, connection.direction, waterwayData.name, connection.waterway.name)}
-                                </Text>
-                              </View>
-                              <Text className="text-xs" style={{ color: colors.waterBlue }}>
-                                {connection.waterway.type?.name || 'Waterway'}
-                              </Text>
-                            </View>
+                            <History size={13} color={colors.earthBrown} />
+                            <Text style={{ color: colors.earthBrown, fontWeight: '700', fontSize: 13 }}>{decade}s</Text>
+                            <Text style={{ color: '#9CA3AF', fontSize: 11 }}>{count}</Text>
                           </Pressable>
                         ))}
                       </View>
@@ -964,14 +959,18 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                             {/* Timeline indicator */}
                             <View className="items-center mr-3">
                               {explorerWaterway.yearExplored ? (
-                                <View
+                                // The year opens "who was here in this decade" (roadmap item 1)
+                                <Pressable
                                   className="px-2 py-1 rounded-lg mb-2"
-                                  style={{ backgroundColor: colors.gold }}
+                                  style={({ pressed }) => ({ backgroundColor: colors.gold, opacity: pressed ? 0.7 : 1 })}
+                                  onPress={() => router.push(`/decades/${decadeOf(explorerWaterway.yearExplored!)}`)}
+                                  accessibilityRole="button"
+                                  accessibilityLabel={`Who else was here in the ${decadeOf(explorerWaterway.yearExplored)}s`}
                                 >
                                   <Text className="text-white text-xs font-bold">
                                     {explorerWaterway.yearExplored}
                                   </Text>
-                                </View>
+                                </Pressable>
                               ) : (
                                 <View
                                   className="px-2 py-1 rounded-lg mb-2"

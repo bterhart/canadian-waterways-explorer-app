@@ -1,9 +1,10 @@
 // Explorer Detail Modal Component
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, Image, ScrollView, Pressable, StyleSheet, Linking } from 'react-native';
-import { X, BookOpen, Route } from 'lucide-react-native';
+import { X, BookOpen, Route, ChevronRight, History, FileText, MapPin } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 import type { ExplorerDetail, ExplorerWaterwayDetail } from '@/lib/types/waterways';
+import { decadeOf } from '@/lib/types/connections';
 import { ReadingGuideList } from '@/components/ReadingGuideList';
 import { SourcesList } from '@/components/SourcesList';
 
@@ -23,11 +24,18 @@ interface ExplorerDetailModalProps {
 
 export default function ExplorerDetailModal({ explorer, onClose }: ExplorerDetailModalProps) {
   const router = useRouter();
-  // Expedition route layer (roadmap item 2): open the map with this journey drawn
-  const showExpeditionOnMap = (expeditionId: string) => {
+  // Every link out of the modal closes it first, so the pushed screen is not hidden under it
+  const go = (href: Parameters<typeof router.push>[0]) => {
     onClose();
-    router.push({ pathname: '/', params: { expeditionId } });
+    router.push(href);
   };
+  // Expedition route layer (roadmap item 2): open the map with this journey drawn
+  const showExpeditionOnMap = (expeditionId: string) => go({ pathname: '/', params: { expeditionId } });
+  // Timeline and "what happened here" events in one list by year (roadmap item 1)
+  const events = useMemo(
+    () => [...(explorer.timelineEvents ?? []), ...(explorer.historicalEvents ?? [])].sort((a, b) => a.year - b.year),
+    [explorer.timelineEvents, explorer.historicalEvents]
+  );
   return (
     <View style={styles.overlay}>
       <View style={styles.modal}>
@@ -105,7 +113,7 @@ export default function ExplorerDetailModal({ explorer, onClose }: ExplorerDetai
             </View>
           ) : null}
 
-          {/* Waterways Explored */}
+          {/* Waterways Explored: the water opens on the map, the year opens its decade (roadmap item 1) */}
           {explorer.waterways && explorer.waterways.length > 0 ? (
             <View style={styles.section}>
               <Text style={[styles.sectionTitle, { color: colors.waterBlue }]}>
@@ -114,7 +122,12 @@ export default function ExplorerDetailModal({ explorer, onClose }: ExplorerDetai
               <View style={[styles.sectionContent, { backgroundColor: '#E6F3F8' }]}>
                 {explorer.waterways.map((explorerWaterway: ExplorerWaterwayDetail) => (
                   <View key={explorerWaterway.id} style={styles.waterwayItem}>
-                    <View style={styles.waterwayHeader}>
+                    <Pressable
+                      style={({ pressed }) => [styles.waterwayHeader, pressed && { opacity: 0.7 }]}
+                      onPress={() => explorerWaterway.waterway && go({ pathname: '/', params: { markerId: explorerWaterway.waterway.id, markerType: 'waterway' } })}
+                      accessibilityRole="button"
+                      accessibilityLabel={`Open ${explorerWaterway.waterway?.name ?? 'waterway'} on the map`}
+                    >
                       <Text style={styles.waterwayName}>{explorerWaterway.waterway?.name || 'Unknown'}</Text>
                       <View
                         style={[
@@ -133,11 +146,18 @@ export default function ExplorerDetailModal({ explorer, onClose }: ExplorerDetai
                           {explorerWaterway.waterway?.type?.name || 'Waterway'}
                         </Text>
                       </View>
-                    </View>
+                      <ChevronRight size={16} color="#9CA3AF" />
+                    </Pressable>
                     {explorerWaterway.yearExplored ? (
-                      <Text style={styles.waterwayYear}>
-                        Explored: {explorerWaterway.yearExplored}
-                      </Text>
+                      <Pressable
+                        onPress={() => go(`/decades/${decadeOf(explorerWaterway.yearExplored!)}`)}
+                        accessibilityRole="button"
+                        accessibilityLabel={`Who else was here in the ${decadeOf(explorerWaterway.yearExplored)}s`}
+                        style={({ pressed }) => [styles.yearLink, pressed && { opacity: 0.7 }]}
+                      >
+                        <History size={12} color={colors.waterBlue} />
+                        <Text style={styles.waterwayYear}>Explored {explorerWaterway.yearExplored} · who else was here in the {decadeOf(explorerWaterway.yearExplored)}s</Text>
+                      </Pressable>
                     ) : null}
                     {explorerWaterway.expeditionNotes ? (
                       <Text style={styles.waterwayDescription}>
@@ -145,6 +165,124 @@ export default function ExplorerDetailModal({ explorer, onClose }: ExplorerDetai
                       </Text>
                     ) : null}
                   </View>
+                ))}
+              </View>
+            </View>
+          ) : null}
+
+          {/* Everything about this person (roadmap item 1): the records that name the explorer */}
+          {events.length > 0 ? (
+            <View style={styles.section}>
+              <Text style={[styles.sectionTitle, { color: '#1D4ED8' }]}>Events</Text>
+              <View style={[styles.sectionContent, { backgroundColor: '#EFF6FF' }]}>
+                {events.map((ev) => {
+                  const target = ev.location ? { type: 'location' as const, id: ev.location.id } : ev.waterway ? { type: 'waterway' as const, id: ev.waterway.id } : null;
+                  return (
+                    <Pressable key={ev.id} disabled={!target} style={({ pressed }) => [styles.linkRow, pressed && { opacity: 0.7 }]} onPress={() => target && go({ pathname: '/', params: { markerId: target.id, markerType: target.type } })} accessibilityRole="button">
+                      <Text style={styles.linkYear}>{ev.year}</Text>
+                      <View style={{ flex: 1 }}>
+                        <Text style={styles.linkTitle}>{ev.title}</Text>
+                        {ev.location || ev.waterway ? <Text style={styles.linkMeta}>{ev.location ? ev.location.name : ev.waterway!.name}</Text> : null}
+                      </View>
+                      {target ? <MapPin size={14} color="#9CA3AF" /> : null}
+                    </Pressable>
+                  );
+                })}
+              </View>
+            </View>
+          ) : null}
+
+          {explorer.documents && explorer.documents.length > 0 ? (
+            <View style={styles.section}>
+              <Text style={[styles.sectionTitle, { color: '#6D28D9' }]}>Documents</Text>
+              <View style={[styles.sectionContent, { backgroundColor: '#F5F3FF' }]}>
+                {explorer.documents.map((d) => (
+                  <Pressable key={d.id} style={({ pressed }) => [styles.linkRow, pressed && { opacity: 0.7 }]} onPress={() => go(`/documents/${d.id}`)} accessibilityRole="button">
+                    <FileText size={16} color="#6D28D9" />
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.linkTitle}>{d.title}</Text>
+                      <Text style={styles.linkMeta}>{d.originalDate ?? d.originalYear ?? ''}{d.author ? ` · ${d.author}` : ''}</Text>
+                    </View>
+                    <ChevronRight size={16} color="#9CA3AF" />
+                  </Pressable>
+                ))}
+              </View>
+            </View>
+          ) : null}
+
+          {explorer.notableFigures && explorer.notableFigures.length > 0 ? (
+            <View style={styles.section}>
+              <Text style={[styles.sectionTitle, { color: '#7E22CE' }]}>People Connected</Text>
+              <View style={[styles.sectionContent, { backgroundColor: '#F7F0FF' }]}>
+                {explorer.notableFigures.map((f) => (
+                  <Pressable key={f.id} style={({ pressed }) => [styles.linkRow, pressed && { opacity: 0.7 }]} onPress={() => go(`/notable-figures/${f.id}`)} accessibilityRole="button">
+                    {f.imageUrl ? <Image source={{ uri: f.imageUrl }} style={styles.figurePortrait} /> : <View style={[styles.figurePortrait, { backgroundColor: '#A855F7', alignItems: 'center', justifyContent: 'center' }]}><Text style={{ color: 'white', fontWeight: '700' }}>{f.name.charAt(0)}</Text></View>}
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.linkTitle}>{f.name}</Text>
+                      <Text style={styles.linkMeta}>{f.relationship ?? f.role}{f.nation ? ` · ${f.nation}` : ''}</Text>
+                    </View>
+                    <ChevronRight size={16} color="#9CA3AF" />
+                  </Pressable>
+                ))}
+              </View>
+            </View>
+          ) : null}
+
+          {explorer.maps && explorer.maps.length > 0 ? (
+            <View style={styles.section}>
+              <Text style={[styles.sectionTitle, { color: colors.earthBrown }]}>Maps</Text>
+              <View style={[styles.sectionContent, { backgroundColor: '#F5ECD7' }]}>
+                {explorer.maps.map((m) => (
+                  <Pressable key={m.id} style={({ pressed }) => [styles.linkRow, pressed && { opacity: 0.7 }]} onPress={() => go(`/historical-maps/${m.id}`)} accessibilityRole="button">
+                    <Image source={{ uri: m.imageUrl }} style={styles.mapThumb} resizeMode="cover" />
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.linkTitle}>{m.title}</Text>
+                      <Text style={styles.linkMeta}>{m.mapmaker} · {m.yearLabel ?? m.year}</Text>
+                    </View>
+                    <ChevronRight size={16} color="#9CA3AF" />
+                  </Pressable>
+                ))}
+              </View>
+            </View>
+          ) : null}
+
+          {explorer.discoveries && explorer.discoveries.length > 0 ? (
+            <View style={styles.section}>
+              <Text style={[styles.sectionTitle, { color: '#B91C1C' }]}>Archaeological Discoveries</Text>
+              <View style={[styles.sectionContent, { backgroundColor: '#FEF2F2' }]}>
+                {explorer.discoveries.map((d) => (
+                  <Pressable
+                    key={d.id}
+                    disabled={!d.waterway && d.latitude === null}
+                    style={({ pressed }) => [styles.linkRow, pressed && { opacity: 0.7 }]}
+                    onPress={() => d.waterway ? go({ pathname: '/', params: { markerId: d.waterway.id, markerType: 'waterway' } }) : go({ pathname: '/', params: { lat: String(d.latitude), lng: String(d.longitude) } })}
+                    accessibilityRole="button"
+                  >
+                    <Text style={styles.linkYear}>{d.discoveryYear}</Text>
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.linkTitle}>{d.name}</Text>
+                      {d.waterway ? <Text style={styles.linkMeta}>{d.waterway.name}</Text> : null}
+                    </View>
+                    <MapPin size={14} color="#9CA3AF" />
+                  </Pressable>
+                ))}
+              </View>
+            </View>
+          ) : null}
+
+          {explorer.lessonPlans && explorer.lessonPlans.length > 0 ? (
+            <View style={styles.section}>
+              <Text style={[styles.sectionTitle, { color: colors.forestGreen }]}>Deep Dives</Text>
+              <View style={styles.sectionContent}>
+                {explorer.lessonPlans.map((l) => (
+                  <Pressable key={l.id} style={({ pressed }) => [styles.linkRow, pressed && { opacity: 0.7 }]} onPress={() => go(`/lessons/${l.id}`)} accessibilityRole="button">
+                    <BookOpen size={16} color={colors.forestGreen} />
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.linkTitle}>{l.title}</Text>
+                      <Text style={styles.linkMeta}>{[l.gradeLevel, l.topic].filter(Boolean).join(' · ')}</Text>
+                    </View>
+                    <ChevronRight size={16} color="#9CA3AF" />
+                  </Pressable>
                 ))}
               </View>
             </View>
@@ -301,8 +439,14 @@ const styles = StyleSheet.create({
   waterwayYear: {
     fontSize: 13,
     color: colors.waterBlue,
-    marginBottom: 4,
   },
+  yearLink: { flexDirection: 'row', alignItems: 'center', gap: 5, marginBottom: 4, alignSelf: 'flex-start' },
+  linkRow: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: 'rgba(0,0,0,0.06)' },
+  linkYear: { fontSize: 12, fontWeight: '700', color: colors.earthBrown, width: 40 },
+  linkTitle: { fontSize: 14, fontWeight: '600', color: '#1F2937' },
+  linkMeta: { fontSize: 12, color: '#6B7280', marginTop: 1 },
+  figurePortrait: { width: 36, height: 36, borderRadius: 18 },
+  mapThumb: { width: 48, height: 36, borderRadius: 6, backgroundColor: '#E7D9C4' },
   typeBadge: {
     paddingHorizontal: 8,
     paddingVertical: 3,

@@ -1,5 +1,13 @@
 // Types for Canadian Waterways Education App
 import type { ExplorerExpedition } from './expeditions';
+import type {
+  ExplorerDiscoveryRef,
+  ExplorerDocumentRef,
+  ExplorerEventRef,
+  ExplorerFigureRef,
+  ExplorerLessonRef,
+  ExplorerMapRef,
+} from './connections';
 
 // Waterway types
 export type WaterwayType = 'river' | 'lake' | 'bay' | 'strait';
@@ -300,6 +308,14 @@ export interface ExplorerDetail {
   readingGuide: ReadingGuideEntry[];
   /** Expedition route layer (roadmap item 2): the explorer's dated journeys, absent on older servers. */
   expeditions?: ExplorerExpedition[];
+  /** Everything about this person (roadmap item 1): the records that name the explorer, absent on older servers. */
+  documents?: ExplorerDocumentRef[];
+  timelineEvents?: ExplorerEventRef[];
+  historicalEvents?: ExplorerEventRef[];
+  discoveries?: ExplorerDiscoveryRef[];
+  notableFigures?: ExplorerFigureRef[];
+  maps?: ExplorerMapRef[];
+  lessonPlans?: ExplorerLessonRef[];
 }
 
 // Indigenous nation type

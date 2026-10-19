@@ -10,6 +10,8 @@ export const en = {
   historicMapsDesc: 'The maps that made the country, laid over the land they drew',
   mapOverlay: 'Map overlay',
   nearYou: 'Near You',
+  whoWasHere: 'Who Was Here When',
+  whoWasHereDesc: 'Pick a decade: who was on the water, which posts went up, what was written',
   quizzes: 'Quizzes',
   explorers: 'Explorers',
   admin: 'Admin',
