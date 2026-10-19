@@ -1,9 +1,12 @@
 // Interactive Map Screen for Canadian Waterways Education
 import React, { useState, useRef, useCallback, useMemo, useEffect } from 'react';
 import { View, Text, ActivityIndicator, StyleSheet, TouchableOpacity, ScrollView, Linking } from 'react-native';
-import MapView, { Marker, PROVIDER_DEFAULT, Region, Polyline, Polygon, type MapPressEvent } from 'react-native-maps';
+import MapView, { Marker, PROVIDER_DEFAULT, Region, Polyline, Polygon, Overlay, type MapPressEvent } from 'react-native-maps';
+import { useHistoricalMap } from '@/lib/api/historical-maps-api';
 import type { LayoutChangeEvent } from 'react-native';
-import { Menu, ChevronDown, ChevronRight, Globe2, X } from 'lucide-react-native';
+import { Menu, ChevronDown, ChevronRight, Globe2, X, Route, Layers } from 'lucide-react-native';
+import { useExpeditions, useExpedition } from '@/lib/api/expeditions-api';
+import type { ExpeditionLeg, ExpeditionSummary } from '@/lib/types/expeditions';
 import {
   useWaterways,
   useRiverOverview,
@@ -22,7 +25,7 @@ import type {
   WaterwayOverviewRecord,
 } from '@/lib/types/waterways';
 import { useTranslation } from '@/lib/i18n';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 
 // Filter types
 type FilterType = 'legend' | 'waterway' | 'explorer' | 'period' | null;
@@ -251,6 +254,7 @@ const findOverviewRecordAtTap = (
 
 export default function MapScreen() {
   const { t } = useTranslation();
+  const router = useRouter();
 
   // State declarations first
   const [selectedMarker, setSelectedMarker] = useState<{
@@ -291,6 +295,20 @@ export default function MapScreen() {
   const { data: locations, isLoading: locationsLoading, isError: locationsError } = useLocations();
   const { data: explorers, isLoading: explorersLoading } = useExplorers();
   const { data: explorerDetail } = useExplorerDetail(selectedExplorerId);
+
+  // Expedition route layer (roadmap item 2, 2026-10-19): one dated journey drawn over the map as
+  // its legs' waterway geometry, numbered leg markers and a leg strip. Chosen from the filter
+  // menu's Expeditions section or opened from an explorer's "Show on map" (`/?expeditionId=`).
+  const [expeditionId, setExpeditionId] = useState<string | null>(null);
+  const [expeditionsExpanded, setExpeditionsExpanded] = useState(false);
+  const { data: expeditions } = useExpeditions();
+  const { data: expedition } = useExpedition(expeditionId);
+
+  // Historic map overlay (roadmap item 15): a georeferenced map image laid over the live map at
+  // its bounds, opened from a map's page (`/?mapOverlayId=`), with an opacity control.
+  const [mapOverlayId, setMapOverlayId] = useState<string | null>(null);
+  const [overlayOpacity, setOverlayOpacity] = useState(0.7);
+  const { data: overlayMap } = useHistoricalMap(mapOverlayId);
 
   // Fetch the boundary for a waterway previewed from a pin or opened in the bottom sheet
   const detailWaterwayId =
@@ -647,12 +665,28 @@ export default function MapScreen() {
   // Opened from another screen (decision 11, 2026-10-16): `/?markerId=&markerType=` selects
   // that waterway or location and opens its detail sheet; `/?lat=&lng=` (What Happened Here)
   // centres the map on an event. Each distinct param set is handled once.
-  const params = useLocalSearchParams<{ markerId?: string; markerType?: string; lat?: string; lng?: string }>();
+  const params = useLocalSearchParams<{ markerId?: string; markerType?: string; lat?: string; lng?: string; expeditionId?: string; mapOverlayId?: string }>();
   const handledParamsRef = useRef<string | null>(null);
   useEffect(() => {
-    const { markerId, markerType, lat, lng } = params;
-    const key = `${markerId ?? ''}|${markerType ?? ''}|${lat ?? ''}|${lng ?? ''}`;
-    if (key === '|||' || handledParamsRef.current === key) return;
+    const { markerId, markerType, lat, lng, expeditionId: paramExpeditionId, mapOverlayId: paramOverlayId } = params;
+    const key = `${markerId ?? ''}|${markerType ?? ''}|${lat ?? ''}|${lng ?? ''}|${paramExpeditionId ?? ''}|${paramOverlayId ?? ''}`;
+    if (key === '|||||' || handledParamsRef.current === key) return;
+
+    if (paramOverlayId) {
+      handledParamsRef.current = key;
+      closePreview();
+      setSelectedMarker(null);
+      setMapOverlayId(paramOverlayId);
+      return;
+    }
+
+    if (paramExpeditionId) {
+      handledParamsRef.current = key;
+      closePreview();
+      setSelectedMarker(null);
+      setExpeditionId(paramExpeditionId);
+      return;
+    }
 
     if (markerId && (markerType === 'waterway' || markerType === 'location')) {
       const known =
@@ -670,7 +704,100 @@ export default function MapScreen() {
       handledParamsRef.current = key;
       mapRef.current?.animateToRegion({ latitude, longitude, latitudeDelta: 0.5, longitudeDelta: 0.5 }, 500);
     }
-  }, [params, waterways, locations]);
+  }, [params, waterways, locations, closePreview]);
+
+  // The expedition's drawable pieces: each leg's waterway paths from the overview dataset (the
+  // same simplified geometry the home map draws), the leg's anchor (its historic place, else
+  // the waterway's centre), and dashed connectors between consecutive anchors so the order
+  // reads even where two legs share no water.
+  const expeditionColor = expedition?.color ?? '#B45309';
+  const expeditionDrawing = useMemo(() => {
+    if (!expedition) return null;
+    const records = new Map((riverOverviewData?.waterways ?? []).map((r) => [r.id, r]));
+    const legPaths: { key: string; coordinates: { latitude: number; longitude: number }[]; isArea: boolean }[] = [];
+    const anchors: { leg: ExpeditionLeg; latitude: number; longitude: number }[] = [];
+    expedition.legs.forEach((leg) => {
+      const record = records.get(leg.waterway.id);
+      const tier = record?.tiers[riverOverviewTier];
+      tier?.paths?.forEach((path, index) => {
+        const coordinates = overviewPathToCoordinates(path);
+        const isArea = record!.geometryKind === 'area';
+        if (isArea ? isDrawablePolygon(coordinates) : isDrawableLine(coordinates)) {
+          legPaths.push({ key: `exp-${leg.id}-${index}`, coordinates, isArea });
+        }
+      });
+      const point = leg.location ?? leg.waterway;
+      anchors.push({ leg, latitude: point.latitude, longitude: point.longitude });
+    });
+    const connectors = anchors.slice(1).map((a, i) => [anchors[i], a] as const)
+      .map(([from, to]) => [{ latitude: from.latitude, longitude: from.longitude }, { latitude: to.latitude, longitude: to.longitude }]);
+    return { legPaths, anchors, connectors };
+  }, [expedition, riverOverviewData, riverOverviewTier]);
+
+  // Fit the camera to the whole route once per expedition
+  const fittedExpeditionRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (!expedition || !expeditionDrawing || !mapRef.current) return;
+    if (fittedExpeditionRef.current === expedition.id) return;
+    fittedExpeditionRef.current = expedition.id;
+    const points = [
+      ...expeditionDrawing.anchors.map((a) => ({ latitude: a.latitude, longitude: a.longitude })),
+      ...expeditionDrawing.legPaths.flatMap((p) => p.coordinates),
+    ];
+    const region = getRegionForCoordinates(points);
+    if (region) mapRef.current.animateToRegion(region, 700);
+  }, [expedition, expeditionDrawing]);
+
+  // Fit the camera to the overlay's bounds once per map
+  const fittedOverlayRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (!overlayMap?.bounds || !mapRef.current) return;
+    if (fittedOverlayRef.current === overlayMap.id) return;
+    fittedOverlayRef.current = overlayMap.id;
+    const { southWest, northEast } = overlayMap.bounds;
+    mapRef.current.animateToRegion({
+      latitude: (southWest.latitude + northEast.latitude) / 2,
+      longitude: (southWest.longitude + northEast.longitude) / 2,
+      latitudeDelta: Math.abs(northEast.latitude - southWest.latitude) * 1.15,
+      longitudeDelta: Math.abs(northEast.longitude - southWest.longitude) * 1.15,
+    }, 700);
+  }, [overlayMap]);
+
+  const closeOverlay = useCallback(() => {
+    setMapOverlayId(null);
+    fittedOverlayRef.current = null;
+  }, []);
+
+  const handleExpeditionSelect = useCallback((id: string) => {
+    closePreview();
+    setSelectedMarker(null);
+    setLegendVisible(false);
+    setExpeditionId((current) => (current === id ? null : id));
+  }, [closePreview]);
+
+  const closeExpedition = useCallback(() => {
+    setExpeditionId(null);
+    fittedExpeditionRef.current = null;
+  }, []);
+
+  // A leg chip or leg marker: move to that water and preview it like a pin tap
+  const handleLegPress = useCallback((leg: ExpeditionLeg) => {
+    const point = leg.location ?? leg.waterway;
+    mapRef.current?.animateToRegion({ latitude: point.latitude, longitude: point.longitude, latitudeDelta: 1.5, longitudeDelta: 1.5 }, 500);
+    setSelectedMarker(null);
+    setPreview({ id: leg.waterway.id, type: 'waterway', fromOverview: true });
+  }, []);
+
+  // Expeditions grouped by explorer for the filter menu, explorers in order of first journey
+  const expeditionGroups = useMemo(() => {
+    const groups = new Map<string, { explorerName: string; items: ExpeditionSummary[] }>();
+    (expeditions ?? []).forEach((e) => {
+      const group = groups.get(e.explorer.id) ?? { explorerName: e.explorer.name, items: [] };
+      group.items.push(e);
+      groups.set(e.explorer.id, group);
+    });
+    return [...groups.values()];
+  }, [expeditions]);
 
   // "Tap for details" on the preview card: open the bottom sheet
   const handlePreviewDetailsPress = useCallback(() => {
@@ -867,6 +994,50 @@ export default function MapScreen() {
         {/* Location markers */}
         {shouldRenderMarkers ? filteredLocations.map(renderLocationMarker) : null}
 
+        {/* Historic map overlay at its georeferenced bounds (roadmap item 15) */}
+        {overlayMap?.bounds ? (
+          <Overlay
+            key={`overlay-${overlayMap.id}`}
+            image={{ uri: overlayMap.imageUrl }}
+            bounds={[
+              [overlayMap.bounds.southWest.latitude, overlayMap.bounds.southWest.longitude],
+              [overlayMap.bounds.northEast.latitude, overlayMap.bounds.northEast.longitude],
+            ]}
+            opacity={overlayOpacity}
+          />
+        ) : null}
+
+        {/* Expedition route layer: the legs' waters in the expedition colour, dashed connectors
+            between consecutive legs, and numbered leg markers (roadmap item 2) */}
+        {expeditionDrawing
+          ? [
+              ...expeditionDrawing.legPaths.map((p) =>
+                p.isArea ? (
+                  <Polygon key={p.key} coordinates={p.coordinates} strokeColor={expeditionColor} fillColor={`${expeditionColor}33`} strokeWidth={3} zIndex={5} />
+                ) : (
+                  <Polyline key={p.key} coordinates={p.coordinates} strokeColor={expeditionColor} strokeWidth={5} zIndex={5} />
+                )
+              ),
+              ...expeditionDrawing.connectors.map((coordinates, i) => (
+                <Polyline key={`exp-connector-${i}`} coordinates={coordinates} strokeColor={expeditionColor} strokeWidth={2} lineDashPattern={[6, 6]} zIndex={4} />
+              )),
+              ...expeditionDrawing.anchors.map((a) => (
+                <Marker
+                  key={`exp-anchor-${a.leg.id}`}
+                  coordinate={{ latitude: a.latitude, longitude: a.longitude }}
+                  anchor={{ x: 0.5, y: 0.5 }}
+                  zIndex={20}
+                  tracksViewChanges={false}
+                  onPress={() => handleLegPress(a.leg)}
+                >
+                  <View style={[styles.legMarker, { backgroundColor: expeditionColor }]}>
+                    <Text style={styles.legMarkerText}>{a.leg.orderIndex + 1}</Text>
+                  </View>
+                </Marker>
+              )),
+            ]
+          : null}
+
         {/* KML overlay for selected waterway */}
         {selectedWaterwayPaths && selectedWaterwayGeometry && selectedWaterway ? (() => {
           const isArea = selectedWaterwayGeometry.geometryKind === 'area';
@@ -972,6 +1143,66 @@ export default function MapScreen() {
       >
         <Menu size={24} color="#2D5A3D" />
       </TouchableOpacity>
+
+      {/* Historic map overlay control: title, year, opacity steps and close (roadmap item 15) */}
+      {overlayMap?.bounds ? (
+        <View style={[styles.expeditionStrip, { borderLeftColor: '#8B5A2B', top: expedition ? 150 : 16 }]}>
+          <View style={styles.expeditionStripHeader}>
+            <Layers size={16} color="#8B5A2B" />
+            <View style={{ flex: 1 }}>
+              <Text style={styles.expeditionStripTitle} numberOfLines={1}>{overlayMap.title}</Text>
+              <Text style={styles.expeditionStripSubtitle} numberOfLines={1}>{overlayMap.mapmaker} · {overlayMap.yearLabel ?? overlayMap.year}</Text>
+            </View>
+            <TouchableOpacity onPress={closeOverlay} hitSlop={8} accessibilityLabel={t('close')} style={styles.previewCloseButton}>
+              <X size={16} color="#6B7280" strokeWidth={2.5} />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.opacityRow}>
+            <Text style={styles.opacityLabel}>Opacity</Text>
+            {[0.3, 0.5, 0.7, 1].map((value) => (
+              <TouchableOpacity key={value} onPress={() => setOverlayOpacity(value)} style={[styles.opacityChip, overlayOpacity === value && styles.opacityChipActive]}>
+                <Text style={[styles.opacityChipText, overlayOpacity === value && styles.opacityChipTextActive]}>{Math.round(value * 100)}%</Text>
+              </TouchableOpacity>
+            ))}
+            <TouchableOpacity onPress={() => router.push(`/historical-maps/${overlayMap.id}`)} style={styles.opacityAbout}>
+              <Text style={styles.opacityAboutText}>About</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      ) : null}
+
+      {/* Expedition strip: the journey's name and years, then its legs in order; a chip moves
+          the map to that leg and previews its water (roadmap item 2) */}
+      {expedition ? (
+        <View style={[styles.expeditionStrip, { borderLeftColor: expeditionColor }]}>
+          <View style={styles.expeditionStripHeader}>
+            <Route size={16} color={expeditionColor} />
+            <View style={{ flex: 1 }}>
+              <Text style={styles.expeditionStripTitle} numberOfLines={1}>{expedition.name}</Text>
+              <Text style={styles.expeditionStripSubtitle} numberOfLines={1}>
+                {expedition.explorer.name} · {expedition.endYear && expedition.endYear !== expedition.startYear ? `${expedition.startYear}-${expedition.endYear}` : expedition.startYear} · {expedition.legs.length} {expedition.legs.length === 1 ? 'leg' : 'legs'}
+              </Text>
+            </View>
+            <TouchableOpacity onPress={closeExpedition} hitSlop={8} accessibilityLabel={t('close')} style={styles.previewCloseButton}>
+              <X size={16} color="#6B7280" strokeWidth={2.5} />
+            </TouchableOpacity>
+          </View>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.legChips}>
+            {expedition.legs.map((leg) => (
+              <TouchableOpacity key={leg.id} style={[styles.legChip, { borderColor: expeditionColor }]} onPress={() => handleLegPress(leg)} activeOpacity={0.8}>
+                <View style={[styles.legChipNumber, { backgroundColor: expeditionColor }]}>
+                  <Text style={styles.legChipNumberText}>{leg.orderIndex + 1}</Text>
+                </View>
+                <View>
+                  <Text style={styles.legChipName} numberOfLines={1}>{leg.location ? `${leg.location.name}` : leg.waterway.name}</Text>
+                  <Text style={styles.legChipMeta} numberOfLines={1}>{leg.location ? `${leg.waterway.name}${leg.year ? ` · ${leg.year}` : ''}` : leg.year ?? ''}</Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+          {expedition.source ? <Text style={styles.expeditionStripSource} numberOfLines={1}>Route ordered from {expedition.source}</Text> : null}
+        </View>
+      ) : null}
 
       {/* Filter Menu Dropdown */}
       {legendVisible ? (
@@ -1168,6 +1399,47 @@ export default function MapScreen() {
               </View>
             ) : null}
 
+            {/* Expeditions Section (route layer, roadmap item 2) */}
+            {expeditionGroups.length > 0 ? (
+              <>
+                <TouchableOpacity
+                  style={styles.sectionHeader}
+                  onPress={() => setExpeditionsExpanded(prev => !prev)}
+                >
+                  {expeditionsExpanded ? (
+                    <ChevronDown size={16} color="#2D5A3D" />
+                  ) : (
+                    <ChevronRight size={16} color="#2D5A3D" />
+                  )}
+                  <Text style={styles.sectionHeaderText}>{t('expeditions')}</Text>
+                </TouchableOpacity>
+
+                {expeditionsExpanded ? (
+                  <View style={styles.sectionContent}>
+                    <ScrollView style={styles.filterList} nestedScrollEnabled>
+                      {expeditionGroups.map((group) => (
+                        <View key={group.explorerName}>
+                          <Text style={styles.legendSectionTitle}>{group.explorerName}</Text>
+                          {group.items.map((item) => (
+                            <TouchableOpacity
+                              key={item.id}
+                              style={[styles.filterItem, expeditionId === item.id && styles.filterItemActive]}
+                              onPress={() => handleExpeditionSelect(item.id)}
+                            >
+                              <View style={[styles.legendDot, { backgroundColor: item.color ?? '#B45309' }]} />
+                              <Text style={[styles.filterItemText, expeditionId === item.id && styles.filterItemTextActive]} numberOfLines={2}>
+                                {item.name} ({item.endYear && item.endYear !== item.startYear ? `${item.startYear}-${item.endYear}` : item.startYear})
+                              </Text>
+                            </TouchableOpacity>
+                          ))}
+                        </View>
+                      ))}
+                    </ScrollView>
+                  </View>
+                ) : null}
+              </>
+            ) : null}
+
             {/* Clear All Filters */}
             {hasActiveFilter ? (
               <TouchableOpacity style={styles.clearAllButton} onPress={clearAllFilters}>
@@ -1321,6 +1593,42 @@ const styles = StyleSheet.create({
     color: '#6B7280',
     marginTop: 4,
   },
+  expeditionStrip: {
+    position: 'absolute',
+    top: 16,
+    left: 72,
+    right: 12,
+    backgroundColor: 'rgba(255, 254, 247, 0.97)',
+    borderRadius: 12,
+    borderLeftWidth: 4,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
+    elevation: 4,
+  },
+  expeditionStripHeader: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 6 },
+  expeditionStripTitle: { fontSize: 14, fontWeight: '700', color: '#1F2937' },
+  expeditionStripSubtitle: { fontSize: 11, color: '#6B7280' },
+  expeditionStripSource: { fontSize: 10, color: '#9CA3AF', fontStyle: 'italic', marginTop: 6 },
+  legChips: { gap: 8, paddingRight: 4 },
+  legChip: { flexDirection: 'row', alignItems: 'center', gap: 6, borderWidth: 1, borderRadius: 10, paddingVertical: 4, paddingHorizontal: 8, backgroundColor: 'white', maxWidth: 190 },
+  legChipNumber: { width: 20, height: 20, borderRadius: 10, alignItems: 'center', justifyContent: 'center' },
+  legChipNumberText: { color: 'white', fontSize: 11, fontWeight: '700' },
+  legChipName: { fontSize: 12, fontWeight: '600', color: '#1F2937', maxWidth: 140 },
+  legChipMeta: { fontSize: 10, color: '#6B7280', maxWidth: 140 },
+  opacityRow: { flexDirection: 'row', alignItems: 'center', gap: 6, flexWrap: 'wrap' },
+  opacityLabel: { fontSize: 11, color: '#6B7280', marginRight: 2 },
+  opacityChip: { borderWidth: 1, borderColor: '#D1D5DB', borderRadius: 10, paddingHorizontal: 8, paddingVertical: 3, backgroundColor: 'white' },
+  opacityChipActive: { backgroundColor: '#8B5A2B', borderColor: '#8B5A2B' },
+  opacityChipText: { fontSize: 11, color: '#374151', fontWeight: '600' },
+  opacityChipTextActive: { color: 'white' },
+  opacityAbout: { marginLeft: 'auto', paddingHorizontal: 8, paddingVertical: 3 },
+  opacityAboutText: { fontSize: 11, color: '#3B82A3', textDecorationLine: 'underline', fontWeight: '600' },
+  legMarker: { width: 24, height: 24, borderRadius: 12, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: 'white' },
+  legMarkerText: { color: 'white', fontSize: 12, fontWeight: '700' },
   legendButton: {
     position: 'absolute',
     top: 16,

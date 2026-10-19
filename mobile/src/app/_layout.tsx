@@ -101,6 +101,9 @@ function RootLayoutNav({ colorScheme }: { colorScheme: 'light' | 'dark' | null |
         {/* Notable Figures Screens */}
         <Stack.Screen name="notable-figures/index" options={{ headerShown: true }} />
         <Stack.Screen name="notable-figures/[id]" options={{ headerShown: true }} />
+        {/* Historic Maps (cartography gallery, roadmap item 15) */}
+        <Stack.Screen name="historical-maps/index" options={{ headerShown: true }} />
+        <Stack.Screen name="historical-maps/[id]" options={{ headerShown: true }} />
         {/* Voyageur Journey Screens */}
         <Stack.Screen name="voyageur-journey/index" options={{ headerShown: true }} />
         <Stack.Screen name="voyageur-journey/[id]" options={{ headerShown: true }} />

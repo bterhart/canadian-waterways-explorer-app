@@ -2,7 +2,7 @@
 // and formatted as text, BibTeX, RIS or CSV. Also builds the citation for the app's own record.
 import { db } from "../db";
 
-export const CITATION_TARGET_TYPES = ["waterway", "location", "explorer", "notable_figure", "document", "discovery"] as const;
+export const CITATION_TARGET_TYPES = ["waterway", "location", "explorer", "notable_figure", "document", "discovery", "historical_map"] as const;
 export type CitationTargetType = (typeof CITATION_TARGET_TYPES)[number];
 export const CITATION_KINDS = ["dcb", "encyclopedia", "edition", "archive", "place_name_record", "parks_canada", "book", "article", "web"] as const;
 export type CitationKind = (typeof CITATION_KINDS)[number];
@@ -37,6 +37,7 @@ const APP_NAME = "Canadian Interactive Waterways Initiative";
 const RECORD_LABEL: Record<CitationTargetType, string> = {
   waterway: "waterway record", location: "historic place record", explorer: "explorer record",
   notable_figure: "notable figure record", document: "primary-source document record", discovery: "archaeological discovery record",
+  historical_map: "historic map record",
 };
 
 /** The citation for the app's own record, so a reader can cite what they read here. */

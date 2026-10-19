@@ -1,7 +1,8 @@
 // Explorer Detail Modal Component
 import React from 'react';
 import { View, Text, Image, ScrollView, Pressable, StyleSheet, Linking } from 'react-native';
-import { X, BookOpen } from 'lucide-react-native';
+import { X, BookOpen, Route } from 'lucide-react-native';
+import { useRouter } from 'expo-router';
 import type { ExplorerDetail, ExplorerWaterwayDetail } from '@/lib/types/waterways';
 import { ReadingGuideList } from '@/components/ReadingGuideList';
 import { SourcesList } from '@/components/SourcesList';
@@ -21,6 +22,12 @@ interface ExplorerDetailModalProps {
 }
 
 export default function ExplorerDetailModal({ explorer, onClose }: ExplorerDetailModalProps) {
+  const router = useRouter();
+  // Expedition route layer (roadmap item 2): open the map with this journey drawn
+  const showExpeditionOnMap = (expeditionId: string) => {
+    onClose();
+    router.push({ pathname: '/', params: { expeditionId } });
+  };
   return (
     <View style={styles.overlay}>
       <View style={styles.modal}>
@@ -65,6 +72,35 @@ export default function ExplorerDetailModal({ explorer, onClose }: ExplorerDetai
               <Text style={[styles.sectionTitle, { color: colors.gold }]}>Notable Achievements</Text>
               <View style={[styles.sectionContent, { backgroundColor: '#FFF8E7' }]}>
                 <Text style={styles.achievementText}>{explorer.notableAchievements}</Text>
+              </View>
+            </View>
+          ) : null}
+
+          {/* Expeditions (Expedition table, roadmap item 2): dated journeys drawn on the map */}
+          {explorer.expeditions && explorer.expeditions.length > 0 ? (
+            <View style={styles.section}>
+              <Text style={[styles.sectionTitle, { color: '#B45309' }]}>Expeditions</Text>
+              <View style={[styles.sectionContent, { backgroundColor: '#FFF4E5' }]}>
+                {explorer.expeditions.map((expedition) => (
+                  <View key={expedition.id} style={styles.expeditionItem}>
+                    <View style={styles.expeditionHeader}>
+                      <View style={[styles.expeditionSwatch, { backgroundColor: expedition.color ?? '#B45309' }]} />
+                      <Text style={styles.expeditionName}>{expedition.name}</Text>
+                      <Text style={styles.expeditionYears}>
+                        {expedition.endYear && expedition.endYear !== expedition.startYear ? `${expedition.startYear}-${expedition.endYear}` : expedition.startYear}
+                      </Text>
+                    </View>
+                    <Text style={styles.expeditionSummary}>{expedition.summary}</Text>
+                    <View style={styles.expeditionFooter}>
+                      <Text style={styles.expeditionLegs}>{expedition.legCount} {expedition.legCount === 1 ? 'leg' : 'legs'}</Text>
+                      <Pressable style={styles.showOnMapButton} onPress={() => showExpeditionOnMap(expedition.id)} accessibilityLabel={`Show ${expedition.name} on the map`}>
+                        <Route size={14} color="white" />
+                        <Text style={styles.showOnMapText}>Show on map</Text>
+                      </Pressable>
+                    </View>
+                    {expedition.source ? <Text style={styles.expeditionSource}>Route ordered from: {expedition.source}</Text> : null}
+                  </View>
+                ))}
               </View>
             </View>
           ) : null}
@@ -228,6 +264,22 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     color: '#333',
   },
+  expeditionItem: {
+    marginBottom: 14,
+    paddingBottom: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(180, 83, 9, 0.2)',
+  },
+  expeditionHeader: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 4 },
+  expeditionSwatch: { width: 10, height: 10, borderRadius: 5 },
+  expeditionName: { flex: 1, fontSize: 15, fontWeight: '600', color: '#333' },
+  expeditionYears: { fontSize: 13, color: '#B45309', fontWeight: '600' },
+  expeditionSummary: { fontSize: 13, color: '#4B5563', lineHeight: 19 },
+  expeditionFooter: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 8 },
+  expeditionLegs: { fontSize: 12, color: '#6B7280' },
+  showOnMapButton: { flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: '#B45309', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 14 },
+  showOnMapText: { color: 'white', fontSize: 12, fontWeight: '700' },
+  expeditionSource: { fontSize: 11, color: '#9CA3AF', marginTop: 6, fontStyle: 'italic' },
   waterwayItem: {
     marginBottom: 16,
     paddingBottom: 16,

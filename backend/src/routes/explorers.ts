@@ -49,8 +49,14 @@ explorersRouter.get("/:id", async (c) => {
   }
 
   const readingGuide = await getReadingGuide("explorer", explorer.id);
+  // Expedition route layer (roadmap item 2): the explorer's dated journeys, for "Show on map"
+  const expeditions = await db.expedition.findMany({
+    where: { explorerId: explorer.id },
+    orderBy: [{ startYear: "asc" }, { sortOrder: "asc" }],
+    select: { id: true, name: true, startYear: true, endYear: true, summary: true, color: true, source: true, _count: { select: { legs: true } } },
+  });
 
-  return c.json({ data: { ...explorer, readingGuide } });
+  return c.json({ data: { ...explorer, readingGuide, expeditions: expeditions.map(({ _count, ...e }) => ({ ...e, legCount: _count.legs })) } });
 });
 
 // Search explorers by name

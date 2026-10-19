@@ -29,6 +29,7 @@ import {
   Users,
   HelpCircle,
   Info,
+  Compass,
 } from 'lucide-react-native';
 import { Users as ClassIcon } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -215,6 +216,21 @@ export default function LearnHubScreen() {
             icon={<MapPin size={28} color="white" />}
             gradientColors={['#DC2626', '#991B1B'] as const}
             onPress={() => router.push('/nearby-history')}
+            isLarge
+          />
+        </View>
+      </View>
+
+      {/* Historic Maps (cartography gallery, roadmap item 15) */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>{t('cartography')}</Text>
+        <View style={styles.cardsGrid}>
+          <FeatureCard
+            title={t('historicMaps')}
+            description={t('historicMapsDesc')}
+            icon={<Compass size={28} color="white" />}
+            gradientColors={['#8B5A2B', '#5C3A1A'] as const}
+            onPress={() => router.push('/historical-maps')}
             isLarge
           />
         </View>
