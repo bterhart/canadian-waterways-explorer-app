@@ -36,6 +36,8 @@ export interface HistoricalMapDetail {
   sourceUrl: string | null;
   sourceNote: string | null;
   bounds: MapBounds | null;
+  /** Mercator-ready copy for the live-map overlay (cropped to the neatline, latitudes re-sampled); absent on older servers. */
+  overlayImageUrl?: string | null;
   cartographer: { id: string; name: string; birthYear: number | null; deathYear: number | null; nationality: string | null; biography: string | null; notableMaps: string | null } | null;
   relatedWaterways: { id: string; name: string; latitude: number; longitude: number }[];
   relatedExplorers: { id: string; name: string }[];

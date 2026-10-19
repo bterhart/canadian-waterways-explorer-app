@@ -1160,7 +1160,7 @@ export default function MapScreen() {
         {overlayMap?.bounds ? (
           <Overlay
             key={`overlay-${overlayMap.id}`}
-            image={{ uri: overlayMap.imageUrl }}
+            image={{ uri: overlayMap.overlayImageUrl ?? overlayMap.imageUrl }}
             bounds={[
               [overlayMap.bounds.southWest.latitude, overlayMap.bounds.southWest.longitude],
               [overlayMap.bounds.northEast.latitude, overlayMap.bounds.northEast.longitude],

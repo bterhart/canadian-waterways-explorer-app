@@ -1617,6 +1617,49 @@ architecture. The native overlay loads its image through the legacy bridge's ima
 code path reads correctly, so if build 63 shows the dashed frame without the image, the next
 step is to draw the image from JavaScript instead.
 
+### 10.13 Historic map overlays re-projected and extended (2026-10-20; API and data live, build required)
+
+The owner asked why Thompson 1814 and Mackenzie 1801 could not be laid over the map. The first
+answer is that only two maps had bounds; the second, found while adding them, is that corner
+bounds alone were never going to be right. MapKit stretches an overlay image linearly in
+*Mercator* space, and old sheets are not Mercator: most are plate carrée (equal degrees of
+latitude) and several are trapezoidal (straight meridians converging northward). Laid over by
+their corners, a 40-70 N sheet puts a feature drawn at 55 N near 59 N. So every overlay now has
+its own copy on R2 (`historical-maps/<id>/overlay.jpg`, served by the API as `overlayImageUrl`),
+re-projected pixel by pixel from a georeferencing model of the sheet into a Mercator rectangle
+whose corners are then exact (`2026-10-20-overlays-thompson-mackenzie.ts`, using the backend's
+existing `sharp`). The gallery keeps the unaltered image; only the overlay uses the copy.
+
+Each model was read from the sheet itself and then checked by plotting places of known position
+on the result:
+
+- **Thompson 1814.** Longitude labels along the top and bottom borders read 121 W at x=340 to
+  84 W at x=3760 on the 3840-pixel copy, 92.5 pixels per degree and straight, so the sheet is
+  cylindrical. Its latitude labels are lost, so latitude was fitted on places Thompson surveyed
+  himself (Lake Athabasca, Lesser Slave Lake, the south end of Lake Winnipeg, the west end of
+  Lake Superior); the spacing grows northward as Mercator's does, so the sheet is used as drawn.
+  Edges 59.44-44.70 N, 124.68-83.16 W. Check: the west end of Superior, Thunder Bay, Edmonton,
+  the Columbia mouth and Lake Athabasca all land within half a degree.
+- **Mackenzie 1801.** The title states 40-70 N and 45-180 W, carried by the inner neatline;
+  plate carrée. Cropped to the neatline and re-sampled. Check: Superior, Montreal, James Bay,
+  Churchill, Athabasca, Bella Coola within one to two degrees.
+- **Bellin 1744.** Longitudes of Paris read 26.8 pixels per degree along the top and 43.2 along
+  the bottom, so the meridians converge: a trapezoid. Latitudes uniform on the sides. Re-projected
+  into the rectangle inscribed in the neatline, 64.64-49.98 N, 89.96-57.76 W (Paris 2.337 E of
+  Greenwich). The seed's bounds, extrapolated by eye, were four to five degrees off and are
+  replaced. Check: latitudes of York Factory and Churchill land within a third of a degree, and
+  the whole chart sits about five degrees east of true longitude, which is Bellin's error, not
+  ours, and exactly what the overlay is for.
+- **Franklin 1823.** Greenwich longitudes along both borders, 116.6 pixels per degree, straight;
+  latitude fitted on York Factory and Cumberland House. Edges 57.10-52.81 N, 108.26-91.79 W,
+  replacing the seed's. Check: Île-à-la-Crosse, Cumberland House and York Factory within half a
+  degree; Norway House half a degree south on Franklin's sheet.
+
+Still to georeference, in the same way, as the next pass: Arrowsmith 1795, Pond 1785, Mitchell
+1755, Delisle 1703, Lahontan 1703, Coronelli 1688 and 1696, Jaillot 1685, Sanson 1656, Champlain
+1632, Bressani 1657. The Harleian mappemonde is a world map on a Dieppe projection and will not
+be overlaid.
+
 ### 10.6 Order of work
 10.5's three features first (citations, then expedition routes, then the cartography gallery, because routes and maps both cite); then 1, 3, 5, 16, 18, 6, 7, 9, 10, 11, 13, 12, 17, 4; item 8 when recordings exist.
 

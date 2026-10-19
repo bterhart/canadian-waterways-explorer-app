@@ -9,6 +9,7 @@
 import { Hono } from "hono";
 import { db } from "../db";
 import { formatText, getCitations } from "../lib/citations";
+import { historicalMapOverlayUrl } from "../lib/image-cdn";
 
 const historicalMapsRouter = new Hono();
 
@@ -40,7 +41,11 @@ historicalMapsRouter.get("/:id", async (c) => {
   const bounds = boundsSwLat !== null && boundsSwLng !== null && boundsNeLat !== null && boundsNeLng !== null
     ? { southWest: { latitude: boundsSwLat, longitude: boundsSwLng }, northEast: { latitude: boundsNeLat, longitude: boundsNeLng } }
     : null;
-  return c.json({ data: { ...rest, bounds, relatedWaterways, relatedExplorers, citations: citations.map((r) => ({ ...r, text: formatText(r) })) } });
+  // The overlay draws from a Mercator-ready copy on R2 (2026-10-20-overlays): cropped to the
+  // neatline and re-sampled so its latitudes are Mercator-spaced, which is how MapKit stretches
+  // an image between two corners. Every map with bounds has one.
+  const overlayImageUrl = bounds ? historicalMapOverlayUrl(map.id) : null;
+  return c.json({ data: { ...rest, bounds, overlayImageUrl, relatedWaterways, relatedExplorers, citations: citations.map((r) => ({ ...r, text: formatText(r) })) } });
 });
 
 export { historicalMapsRouter };
