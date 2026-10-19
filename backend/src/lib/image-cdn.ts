@@ -34,6 +34,24 @@ function getS3Client(): S3Client {
 }
 
 /**
+ * Uploads an in-memory image to R2 at `cdnPath` and returns its public URL. Used for images
+ * the app derives itself (the Mercator-warped historic map overlays, 2026-10-20).
+ */
+export async function uploadImageBuffer(buffer: Buffer, cdnPath: string, contentType = "image/jpeg"): Promise<string> {
+  if (!env.R2_BUCKET_NAME || !env.R2_PUBLIC_URL) {
+    throw new Error("R2_BUCKET_NAME and R2_PUBLIC_URL must be set via the ENV tab.");
+  }
+  const client = getS3Client();
+  await client.send(new PutObjectCommand({ Bucket: env.R2_BUCKET_NAME, Key: cdnPath, Body: buffer, ContentType: contentType }));
+  return `${env.R2_PUBLIC_URL}/${cdnPath}`;
+}
+
+/** The public URL an overlay copy of a historic map has once uploaded (see 2026-10-20-overlays). */
+export function historicalMapOverlayUrl(mapId: string): string | null {
+  return env.R2_PUBLIC_URL ? `${env.R2_PUBLIC_URL}/historical-maps/${mapId}/overlay.jpg` : null;
+}
+
+/**
  * Downloads an image from `sourceUrl` and uploads it to R2 at `cdnPath`.
  *
  * @param sourceUrl  - The external URL to fetch (Wikimedia, etc.)

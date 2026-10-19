@@ -1,0 +1,42 @@
+{
+ "generatedAt": "2026-10-19T23:06:46.699Z",
+ "apply": true,
+ "maps": [
+  {
+   "id": "cmveuoe35000v7dwpkzi20b7w",
+   "title": "Carte de la Baye de Hudson (1744)",
+   "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Carte%20de%20la%20baye%20de%20Hudson%20-%20par%20Nicolas%20Bellin...%20%3B%20Desbruslins%20sculpsit.%20Lieues%20marines%20de%20France%20et%20d'Angleterre%20de%2020%20au%20degr%C3%A9%20140%20-%20btv1b8491548d.jpg?width=1280",
+   "boundsSwLat": 49.98,
+   "boundsSwLng": -89.963,
+   "boundsNeLat": 64.64,
+   "boundsNeLng": -57.763
+  },
+  {
+   "id": "cmveuoeoo00197dwpvg0ilst4",
+   "title": "A Map of America Exhibiting Mackenzie's Track (1801)",
+   "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/McKenzie%2C%20A.%20-%20Map%20of%20America%20-%20Travel%201789.png?width=1280",
+   "boundsSwLat": 40,
+   "boundsSwLng": -180,
+   "boundsNeLat": 70,
+   "boundsNeLng": -45
+  },
+  {
+   "id": "cmveuoeu2001d7dwpv140el2r",
+   "title": "Map of the North-West Territory of the Province of Canada (1814)",
+   "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/1814ThompsonMap.jpg?width=1280",
+   "boundsSwLat": 44.7,
+   "boundsSwLng": -124.68,
+   "boundsNeLat": 59.44,
+   "boundsNeLng": -83.16
+  },
+  {
+   "id": "cmveuoez5001h7dwpyr3b2zk7",
+   "title": "Route of the Expedition from York Factory to Cumberland House and Isle à la Crosse, 1819 and 1820 (1823)",
+   "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Route%20of%20the%20Expedition%20from%20York%20Factory%20to%20Cumberland%20House%20and%20the%20Summer%20%26%20Winter%20Tracks%20from%20thence%20to%20Isle%20A%20La%20Crosse%20in%201819%20%26%201820%20(1823).jpg?width=1280",
+   "boundsSwLat": 52.81,
+   "boundsSwLng": -108.26,
+   "boundsNeLat": 57.1,
+   "boundsNeLng": -91.79
+  }
+ ]
+}
