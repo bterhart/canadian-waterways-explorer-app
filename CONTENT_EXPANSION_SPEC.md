@@ -1373,8 +1373,19 @@ journal and Red River survey report (unpublished); Turnor's 1792 Churchill repor
 journal and 1768 trade report; Stuart's peace-mission report and trade-customs account (he kept no
 journal); La Pérouse's three 1782 reports (his campaign report is in the French naval archives, not
 in print on the Archive); and Hearne's own account of the capture, which is not in the *Journey*. The
-first four of these describe documents that may not exist; the owner may wish to delete them. After
-pass 15: 27 documents with a checked transcription, 173 documents in all.
+first four of these describe documents that may not exist. After pass 15: 27 documents with a checked
+transcription, 173 documents in all.
+
+**Owner's decision (2026-10-19), applied as pass 16** (`2026-10-19-sweep-16-asterisk-undocumented.ts`):
+the four are retained, because what they say is consistent with the documented record and still
+elucidating, but marked. Each title now ends with an asterisk (York Factory Trade Record, 1780 *;
+Letter from Matonabbee to Samuel Hearne, 1772 *; Letter from La Salle to Governor Frontenac, 1681 *;
+David Thompson's References to Charlotte Small, 1799-1811 *) and each `historicalContext` ends with
+the line "* No documented source: no record of this document has been found in any archive or
+published edition. It is kept as an illustrative text because what it describes is consistent with the
+documented history of the people and places involved; it should not be cited as a primary source."
+Also on 2026-10-19 the stray `mobile/mobile` folder (an older draft of the archived R2 image migration
+script, the cause of the two mobile typecheck errors) was deleted; the mobile typecheck now passes clean.
 
 ### 9.4 Document grade bands (approved and applied 2026-10-17)
 Proposed from a Flesch-Kincaid estimate of each transcription (≤ 7 → 4-6, ≤ 11 → 7-9, above →
