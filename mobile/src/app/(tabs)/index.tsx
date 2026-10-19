@@ -329,6 +329,8 @@ export default function MapScreen() {
 
   const bottomSheetRef = useRef<DetailBottomSheetRef>(null);
   const mapRef = useRef<MapView>(null);
+  // Counts renders of this screen; see the testID on the MapView below for why.
+  const mapRenderVersionRef = useRef(0);
   // Marker refs so a dismissed pin can be deselected natively; otherwise MapKit does not fire
   // onSelect again the next time the same pin is tapped
   const markerRefs = useRef<Record<string, any>>({});
@@ -681,11 +683,14 @@ export default function MapScreen() {
     const key = `${markerId ?? ''}|${markerType ?? ''}|${lat ?? ''}|${lng ?? ''}|${paramExpeditionId ?? ''}|${paramOverlayId ?? ''}|${paramSystemId ?? ''}|${paramDecade ?? ''}`;
     if (key === '|||||||' || handledParamsRef.current === key) return;
 
+    // One drawn layer at a time (expedition, system or decade highlight, historic overlay):
+    // the newcomer replaces the others, so the map never stacks three sets of overlays.
     if (paramSystemId || paramDecade) {
       handledParamsRef.current = key;
       closePreview();
       setSelectedMarker(null);
       setExpeditionId(null);
+      setMapOverlayId(null);
       setSystemId(paramSystemId ?? null);
       setDecade(paramDecade && Number.isFinite(Number(paramDecade)) ? Number(paramDecade) : null);
       return;
@@ -695,6 +700,9 @@ export default function MapScreen() {
       handledParamsRef.current = key;
       closePreview();
       setSelectedMarker(null);
+      setExpeditionId(null);
+      setSystemId(null);
+      setDecade(null);
       setMapOverlayId(paramOverlayId);
       return;
     }
@@ -703,6 +711,9 @@ export default function MapScreen() {
       handledParamsRef.current = key;
       closePreview();
       setSelectedMarker(null);
+      setSystemId(null);
+      setDecade(null);
+      setMapOverlayId(null);
       setExpeditionId(paramExpeditionId);
       return;
     }
@@ -793,6 +804,7 @@ export default function MapScreen() {
     setLegendVisible(false);
     setSystemId(null);
     setDecade(null);
+    setMapOverlayId(null);
     setExpeditionId((current) => (current === id ? null : id));
   }, [closePreview]);
 
@@ -1053,10 +1065,23 @@ export default function MapScreen() {
     );
   }
 
+  // Build 54 and build 60 crashed with "-[__NSArrayM insertObject:atIndex:]: object cannot be
+  // nil" from the iOS map library. The new-architecture interop layer mounts a MapView child
+  // immediately only when it lands at the END of the children; a child inserted anywhere else
+  // is held back until the MapView itself next receives a prop update, and within a React
+  // commit that update is applied BEFORE any child removals. If the held-back child is removed
+  // and recycled before the MapView updates, the flush inserts nil and the app aborts. That
+  // happened when a lake or bay leg was previewed and the map zoomed: its trace's polylines grew
+  // from none to hundreds in front of its polygon (held back), then shrank on the next zoom.
+  // A prop that changes on every render makes the MapView flush held-back children at the start
+  // of the very next commit, before anything can be removed, so no insert can ever go stale.
+  mapRenderVersionRef.current += 1;
+
   return (
     <View style={styles.container}>
       <MapView
         ref={mapRef}
+        testID={`waterways-map-${mapRenderVersionRef.current}`}
         style={styles.map}
         provider={PROVIDER_DEFAULT}
         initialRegion={CANADA_CENTER}
@@ -1197,10 +1222,12 @@ export default function MapScreen() {
 
           // Per-path kind lets a river carry its mapped water surface (filled) alongside its
           // centreline (line); older servers send no pathKinds and fall back to the waterway kind.
-          // Lines are rendered first and areas after, each numbered within its own group, so a
-          // change of zoom level updates existing overlays in place and only ever adds or removes
-          // overlays at the end of a group. These are the last MapView children for the same
-          // reason: a resize here never shifts the index of any other overlay.
+          // Areas come first and lines after, each numbered within its own group: a lake or bay
+          // has one water-surface polygon and a shoreline that grows from no lines at the nation
+          // tier to hundreds at the fine tier, so the group that changes size sits at the very end
+          // of the MapView's children, where the iOS interop layer mounts and unmounts children
+          // immediately (see the testID on the MapView). Lines after areas also draws the
+          // centreline over the water surface.
           const lines: { latitude: number; longitude: number }[][] = [];
           const areas: { latitude: number; longitude: number }[][] = [];
           selectedWaterwayPaths.forEach((latLngs, index) => {
@@ -1212,16 +1239,6 @@ export default function MapScreen() {
             }
           });
           return [
-            ...lines.map((latLngs, i) => (
-              <Polyline
-                key={`trace-line-${i}`}
-                coordinates={latLngs}
-                strokeColor={color}
-                strokeWidth={3}
-                tappable
-                onPress={handleSelectedOutlinePress}
-              />
-            )),
             ...areas.map((latLngs, i) => (
               <Polygon
                 key={`trace-area-${i}`}
@@ -1229,6 +1246,16 @@ export default function MapScreen() {
                 strokeColor={color}
                 fillColor={`${color}30`}
                 strokeWidth={2}
+                tappable
+                onPress={handleSelectedOutlinePress}
+              />
+            )),
+            ...lines.map((latLngs, i) => (
+              <Polyline
+                key={`trace-line-${i}`}
+                coordinates={latLngs}
+                strokeColor={color}
+                strokeWidth={3}
                 tappable
                 onPress={handleSelectedOutlinePress}
               />
