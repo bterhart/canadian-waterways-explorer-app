@@ -1,7 +1,7 @@
 // Historic Maps gallery (roadmap item 15, 2026-10-19): the maps that made the country, oldest
 // first, filtered by century and region. Each card opens the map's page.
 import React, { useMemo, useState } from 'react';
-import { View, Text, FlatList, Pressable, Image, StyleSheet, ActivityIndicator, ScrollView, useWindowDimensions } from 'react-native';
+import { View, Text, FlatList, Pressable, Image, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
 import { Map as MapIcon, Layers } from 'lucide-react-native';
 import { useHistoricalMaps } from '@/lib/api/historical-maps-api';
@@ -16,17 +16,13 @@ export default function HistoricalMapsScreen() {
   const { data, isLoading, isError } = useHistoricalMaps();
   const [century, setCentury] = useState<string | null>(null);
   const [region, setRegion] = useState<string | null>(null);
-  // Two columns sized from the window: with `flex: 1` alone the cards came out at four-fifths of
-  // the screen each and the second column sat off the right edge.
-  const { width } = useWindowDimensions();
-  const cardWidth = Math.floor((width - 12 * 3) / 2);
 
   const centuries = useMemo(() => [...new Set((data ?? []).map((m) => centuryOf(m.year)))], [data]);
   const regions = useMemo(() => [...new Set((data ?? []).map((m) => m.region).filter((r): r is string => !!r))].sort(), [data]);
   const shown = useMemo(() => (data ?? []).filter((m) => (!century || centuryOf(m.year) === century) && (!region || m.region === region)), [data, century, region]);
 
   const renderCard = ({ item }: { item: HistoricalMapSummary }) => (
-    <Pressable style={({ pressed }) => [styles.card, { width: cardWidth }, pressed && styles.cardPressed]} onPress={() => router.push(`/historical-maps/${item.id}`)}>
+    <Pressable style={({ pressed }) => [styles.card, pressed && styles.cardPressed]} onPress={() => router.push(`/historical-maps/${item.id}`)}>
       <Image source={{ uri: item.imageUrl }} style={styles.thumb} resizeMode="cover" />
       <View style={styles.cardBody}>
         <Text style={styles.cardYear}>{item.yearLabel ?? item.year}</Text>
@@ -63,8 +59,12 @@ export default function HistoricalMapsScreen() {
       ) : null}
       {isLoading ? <ActivityIndicator style={{ marginTop: 40 }} color={colors.forestGreen} /> : null}
       {isError ? <Text style={styles.empty}>The maps could not be loaded. Check your connection and try again.</Text> : null}
+      {/* One full-width card per map. The two-column grid overflowed the right edge on the
+          device in two different forms (flex and explicit widths), so the cards now simply
+          stretch to the list, which cannot bleed; the sheets are landscape and read better
+          large in any case. */}
       {!isLoading && !isError ? (
-        <FlatList data={shown} keyExtractor={(m) => m.id} renderItem={renderCard} numColumns={2} columnWrapperStyle={styles.row} contentContainerStyle={styles.list} ListEmptyComponent={<Text style={styles.empty}>No maps match this filter.</Text>} />
+        <FlatList data={shown} keyExtractor={(m) => m.id} renderItem={renderCard} contentContainerStyle={styles.list} ListEmptyComponent={<Text style={styles.empty}>No maps match this filter.</Text>} />
       ) : null}
     </View>
   );
@@ -91,13 +91,12 @@ const styles = StyleSheet.create({
   chipText: { fontSize: 13, color: '#374151', fontWeight: '600' },
   chipTextActive: { color: 'white' },
   list: { padding: 12, paddingBottom: 32 },
-  row: { gap: 12, marginBottom: 12 },
-  card: { backgroundColor: 'white', borderRadius: 14, overflow: 'hidden', shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 6, elevation: 3 },
+  card: { alignSelf: 'stretch', marginBottom: 14, backgroundColor: 'white', borderRadius: 14, overflow: 'hidden', shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 6, elevation: 3 },
   cardPressed: { opacity: 0.9 },
-  thumb: { width: '100%', height: 130, backgroundColor: colors.parchment },
-  cardBody: { padding: 10 },
+  thumb: { alignSelf: 'stretch', height: 190, backgroundColor: colors.parchment },
+  cardBody: { padding: 12 },
   cardYear: { fontSize: 12, fontWeight: '700', color: colors.earthBrown, marginBottom: 2 },
-  cardTitle: { fontSize: 14, fontWeight: '700', color: '#1F2937', lineHeight: 19 },
+  cardTitle: { fontSize: 16, fontWeight: '700', color: '#1F2937', lineHeight: 21 },
   cardMaker: { fontSize: 12, color: '#6B7280', marginTop: 3 },
   cardFooter: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 6, gap: 6 },
   cardRegion: { fontSize: 11, color: '#9CA3AF', flex: 1 },
