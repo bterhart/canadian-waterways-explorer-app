@@ -94,9 +94,13 @@ locationsRouter.get("/:id", async (c) => {
     return c.json({ error: { message: "Location not found", code: "NOT_FOUND" } }, 404);
   }
 
+  // Figures named at this place itself (Matonabbee at Prince of Wales Fort) or on its water
   const notableFigureRows = await db.notableFigure.findMany({
   where: {
-    associatedLocations: { contains: location.waterway.name }
+    OR: [
+      { associatedLocations: { contains: location.name } },
+      { associatedLocations: { contains: location.waterway.name } },
+    ],
   },
   select: {
     id: true,
@@ -128,7 +132,7 @@ const notableFigures = notableFigureRows
     isFeatured: figure.isFeatured,
     associatedLocations: parseAssociatedLocations(figure.associatedLocations),
   }))
-  .filter((figure) => figure.associatedLocations.includes(location.waterway.name));
+  .filter((figure) => figure.associatedLocations.includes(location.name) || figure.associatedLocations.includes(location.waterway.name));
 
   const readingGuide = await getReadingGuide("location", location.id);
 
