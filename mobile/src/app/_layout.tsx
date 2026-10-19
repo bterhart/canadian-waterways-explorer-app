@@ -1,12 +1,34 @@
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
+import { Stack, useSegments } from 'expo-router';
+import { useRef } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useColorScheme } from '@/lib/useColorScheme';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
-import { LanguageProvider } from '@/lib/i18n';
+import { LanguageProvider, useTranslation } from '@/lib/i18n';
+import type { TranslationKey } from '@/lib/i18n/en';
+
+// The tab a screen was opened from, so the stack's back button reads "Map", "Explorers",
+// "Quizzes", "Discover" or "Admin" instead of the route group's name "(tabs)". The last tab
+// segment seen is remembered because, once a screen is pushed, the segments no longer
+// include the tab.
+const TAB_TITLE_KEYS: Record<string, TranslationKey> = {
+  index: 'map',
+  two: 'explorers',
+  quizzes: 'quizzes',
+  learn: 'discover',
+  admin: 'admin',
+};
+
+function useOriginTabTitle(): string {
+  const segments = useSegments() as string[];
+  const { t } = useTranslation();
+  const lastTab = useRef<string>('index');
+  if (segments[0] === '(tabs)') lastTab.current = segments[1] ?? 'index';
+  return t(TAB_TITLE_KEYS[lastTab.current] ?? 'map');
+}
 
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
@@ -28,10 +50,11 @@ const queryClient = new QueryClient({
 });
 
 function RootLayoutNav({ colorScheme }: { colorScheme: 'light' | 'dark' | null | undefined }) {
+  const originTabTitle = useOriginTabTitle();
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="(tabs)" options={{ headerShown: false, title: originTabTitle }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
         <Stack.Screen name="quiz/[id]" options={{ headerShown: false }} />
         <Stack.Screen name="admin/quizzes" options={{ headerShown: true }} />

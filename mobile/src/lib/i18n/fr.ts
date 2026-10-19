@@ -6,6 +6,8 @@ export const fr: Record<TranslationKey, string> = {
   // Navigation & Common
   map: 'Carte',
   learn: 'Apprendre',
+  discover: 'Découvrir',
+  nearYou: 'Près de vous',
   quizzes: 'Quiz',
   explorers: 'Explorateurs',
   admin: 'Admin',

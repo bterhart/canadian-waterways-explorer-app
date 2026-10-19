@@ -3,6 +3,8 @@ export const en = {
   // Navigation & Common
   map: 'Map',
   learn: 'Learn',
+  discover: 'Discover',
+  nearYou: 'Near You',
   quizzes: 'Quizzes',
   explorers: 'Explorers',
   admin: 'Admin',
