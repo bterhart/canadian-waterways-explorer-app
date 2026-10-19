@@ -1562,6 +1562,28 @@ then, because the leg's water was previewed, the zoom-to-extent animation flew i
 whole water, so a Mackenzie leg zoomed in and straight back out across the country. The leg tap
 (and a highlight chip) now marks the extent as already shown, so the camera stays on the leg.
 
+### 10.11 Build 60 crash on zoom with an expedition shown (fixed 2026-10-19; build required)
+
+The crash log (build 60, iOS 26.6.2) is the build 54 signature again: `-[__NSArrayM
+insertObject:atIndex:]: object cannot be nil` thrown from the iOS map library's child insertion on
+the main queue. Read against React Native's new-architecture interop layer
+(`RCTLegacyViewManagerInteropComponentView.mm`) and its mutation order (`Differentiator.cpp`: a
+view's own prop update is applied before its children's removals and insertions in every commit):
+a MapView child inserted at the end of the children is mounted at once, but a child inserted
+anywhere else is held back until the MapView itself next receives a prop update; if the held-back
+child is removed and recycled before that, the later flush inserts nil and the app aborts. The
+expedition legs put lakes and bays in front of the user, and a lake's trace has one water-surface
+polygon followed by a shoreline that grows from no polylines at the nation tier to hundreds at the
+fine tier (Great Slave Lake 3, 19, 129, 399; Lake Superior 2, 15, 76, 399): zooming in inserted
+those polylines in front of the polygon (held back), zooming out removed them, and the next pan
+flushed the stale inserts. Rivers, with no polygon, only ever appended, which is why builds 55-59
+did not crash. Two fixes: the MapView now carries a `testID` that changes on every render of the
+map screen, so held-back children are flushed at the start of the very next commit, before any
+removal; and the trace renders its polygons first and its polylines last, so the group that
+changes size with zoom sits at the end of the MapView's children and is mounted and unmounted
+immediately. The drawn layers (expedition, system or decade highlight, historic overlay) are
+also made mutually exclusive, so the map never stacks three sets of overlays.
+
 ### 10.6 Order of work
 10.5's three features first (citations, then expedition routes, then the cartography gallery, because routes and maps both cite); then 1, 3, 5, 16, 18, 6, 7, 9, 10, 11, 13, 12, 17, 4; item 8 when recordings exist.
 
