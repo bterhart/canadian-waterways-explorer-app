@@ -1,7 +1,7 @@
 // Historic Maps gallery (roadmap item 15, 2026-10-19): the maps that made the country, oldest
 // first, filtered by century and region. Each card opens the map's page.
 import React, { useMemo, useState } from 'react';
-import { View, Text, FlatList, Pressable, Image, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
+import { View, Text, FlatList, Pressable, Image, StyleSheet, ActivityIndicator, ScrollView, useWindowDimensions } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
 import { Map as MapIcon, Layers } from 'lucide-react-native';
 import { useHistoricalMaps } from '@/lib/api/historical-maps-api';
@@ -16,13 +16,17 @@ export default function HistoricalMapsScreen() {
   const { data, isLoading, isError } = useHistoricalMaps();
   const [century, setCentury] = useState<string | null>(null);
   const [region, setRegion] = useState<string | null>(null);
+  // Two columns sized from the window: with `flex: 1` alone the cards came out at four-fifths of
+  // the screen each and the second column sat off the right edge.
+  const { width } = useWindowDimensions();
+  const cardWidth = Math.floor((width - 12 * 3) / 2);
 
   const centuries = useMemo(() => [...new Set((data ?? []).map((m) => centuryOf(m.year)))], [data]);
   const regions = useMemo(() => [...new Set((data ?? []).map((m) => m.region).filter((r): r is string => !!r))].sort(), [data]);
   const shown = useMemo(() => (data ?? []).filter((m) => (!century || centuryOf(m.year) === century) && (!region || m.region === region)), [data, century, region]);
 
   const renderCard = ({ item }: { item: HistoricalMapSummary }) => (
-    <Pressable style={({ pressed }) => [styles.card, pressed && styles.cardPressed]} onPress={() => router.push(`/historical-maps/${item.id}`)}>
+    <Pressable style={({ pressed }) => [styles.card, { width: cardWidth }, pressed && styles.cardPressed]} onPress={() => router.push(`/historical-maps/${item.id}`)}>
       <Image source={{ uri: item.imageUrl }} style={styles.thumb} resizeMode="cover" />
       <View style={styles.cardBody}>
         <Text style={styles.cardYear}>{item.yearLabel ?? item.year}</Text>
@@ -88,7 +92,7 @@ const styles = StyleSheet.create({
   chipTextActive: { color: 'white' },
   list: { padding: 12, paddingBottom: 32 },
   row: { gap: 12, marginBottom: 12 },
-  card: { flex: 1, backgroundColor: 'white', borderRadius: 14, overflow: 'hidden', shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 6, elevation: 3 },
+  card: { backgroundColor: 'white', borderRadius: 14, overflow: 'hidden', shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 6, elevation: 3 },
   cardPressed: { opacity: 0.9 },
   thumb: { width: '100%', height: 130, backgroundColor: colors.parchment },
   cardBody: { padding: 10 },

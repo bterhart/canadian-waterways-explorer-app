@@ -922,13 +922,20 @@ export default function MapScreen() {
   // to the leg's point only: previewing the water would otherwise also fire the zoom-to-extent
   // animation, so a tap on one Mackenzie leg flew in to it and straight back out to the whole
   // river. Marking the extent as already animated keeps the camera where the leg is.
+  // A leg that stands at a historic place (Bloody Falls, Prince of Wales Fort) previews that
+  // place, not its river, so the card matches the chip the user tapped.
   const handleLegPress = useCallback((leg: ExpeditionLeg) => {
+    setSelectedMarker(null);
+    if (leg.location && locations?.some((l) => l.id === leg.location!.id)) {
+      // The location preview effect moves the camera to the place itself
+      setPreview({ id: leg.location.id, type: 'location', fromOverview: true });
+      return;
+    }
     const point = leg.location ?? leg.waterway;
     animatedExtentForRef.current = `${leg.waterway.id}:extent`;
     mapRef.current?.animateToRegion({ latitude: point.latitude, longitude: point.longitude, latitudeDelta: 1.5, longitudeDelta: 1.5 }, 500);
-    setSelectedMarker(null);
     setPreview({ id: leg.waterway.id, type: 'waterway', fromOverview: true });
-  }, []);
+  }, [locations]);
 
   // Expeditions grouped by explorer for the filter menu, explorers in order of first journey
   const expeditionGroups = useMemo(() => {
@@ -1352,19 +1359,28 @@ export default function MapScreen() {
         <SearchIcon size={22} color="#2D5A3D" />
       </TouchableOpacity>
 
-      {/* Historic map overlay control: title, year, opacity steps and close (roadmap item 15) */}
-      {overlayMap?.bounds ? (
+      {/* Historic map overlay control: title, year, opacity steps and close (roadmap item 15).
+          Shown as soon as an overlay is requested, so a map still loading, or one without
+          bounds, is reported here instead of leaving the screen silent. */}
+      {mapOverlayId ? (
         <View style={[styles.expeditionStrip, { borderLeftColor: '#8B5A2B', top: expedition || highlight ? 150 : 16 }]}>
           <View style={styles.expeditionStripHeader}>
             <Layers size={16} color="#8B5A2B" />
             <View style={{ flex: 1 }}>
-              <Text style={styles.expeditionStripTitle} numberOfLines={1}>{overlayMap.title}</Text>
-              <Text style={styles.expeditionStripSubtitle} numberOfLines={1}>{overlayMap.mapmaker} · {overlayMap.yearLabel ?? overlayMap.year}</Text>
+              <Text style={styles.expeditionStripTitle} numberOfLines={1}>{overlayMap?.title ?? 'Loading map…'}</Text>
+              <Text style={styles.expeditionStripSubtitle} numberOfLines={1}>
+                {overlayMap
+                  ? overlayMap.bounds
+                    ? `${overlayMap.mapmaker} · ${overlayMap.yearLabel ?? overlayMap.year}`
+                    : 'This map has no overlay bounds'
+                  : 'Fetching the map record'}
+              </Text>
             </View>
             <TouchableOpacity onPress={closeOverlay} hitSlop={8} accessibilityLabel={t('close')} style={styles.previewCloseButton}>
               <X size={16} color="#6B7280" strokeWidth={2.5} />
             </TouchableOpacity>
           </View>
+          {overlayMap?.bounds ? (
           <View style={styles.opacityRow}>
             <Text style={styles.opacityLabel}>Opacity</Text>
             {[0.3, 0.5, 0.7, 1].map((value) => (
@@ -1376,6 +1392,7 @@ export default function MapScreen() {
               <Text style={styles.opacityAboutText}>About</Text>
             </TouchableOpacity>
           </View>
+          ) : null}
         </View>
       ) : null}
 
