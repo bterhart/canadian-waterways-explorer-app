@@ -38,6 +38,7 @@ model Waterway {
   contributions          UserContribution[]
   connectionsFrom        WaterwayConnection[]      @relation("WaterwayConnectionFrom")
   connectionsTo          WaterwayConnection[]      @relation("WaterwayConnectionTo")
+  expeditionLegs         ExpeditionLeg[]
   type                   WaterwayType              @relation(fields: [typeId], references: [id])
 
   @@index([regionName])
@@ -83,6 +84,7 @@ model Location {
   cartographer       Cartographer?      @relation(fields: [cartographerId], references: [id])
   waterway           Waterway           @relation(fields: [waterwayId], references: [id], onDelete: Cascade)
   contributions      UserContribution[]
+  expeditionLegs     ExpeditionLeg[]
 
   @@index([waterwayId])
   @@index([locationType])
@@ -101,6 +103,7 @@ model Explorer {
   createdAt           DateTime           @default(now())
   updatedAt           DateTime           @updatedAt
   waterways           ExplorerWaterway[]
+  expeditions         Expedition[]
 
   @@index([name])
   @@index([nationality])
@@ -948,6 +951,43 @@ model ReadingGuide {
   updatedAt    DateTime @updatedAt
 
   @@index([targetType, targetId])
+}
+
+// A dated journey by one explorer, drawn on the map as its legs' waterway geometry in order
+// (roadmap item 2, 2026-10-19). `source` names the biography or journal the legs were ordered from.
+model Expedition {
+  id         String          @id @default(cuid())
+  explorerId String
+  name       String
+  startYear  Int
+  endYear    Int?
+  summary    String
+  color      String?
+  source     String?
+  sortOrder  Int             @default(0)
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+  explorer   Explorer        @relation(fields: [explorerId], references: [id], onDelete: Cascade)
+  legs       ExpeditionLeg[]
+
+  @@index([explorerId])
+}
+
+model ExpeditionLeg {
+  id           String     @id @default(cuid())
+  expeditionId String
+  orderIndex   Int
+  waterwayId   String
+  locationId   String?
+  year         Int?
+  notes        String?
+  createdAt    DateTime   @default(now())
+  expedition   Expedition @relation(fields: [expeditionId], references: [id], onDelete: Cascade)
+  waterway     Waterway   @relation(fields: [waterwayId], references: [id])
+  location     Location?  @relation(fields: [locationId], references: [id])
+
+  @@unique([expeditionId, orderIndex])
+  @@index([waterwayId])
 }
 
 // A structured source for a record: what it was written from and cites (roadmap item 14,

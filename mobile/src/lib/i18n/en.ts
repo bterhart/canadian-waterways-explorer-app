@@ -4,6 +4,7 @@ export const en = {
   map: 'Map',
   learn: 'Learn',
   discover: 'Discover',
+  expeditions: 'Expeditions',
   nearYou: 'Near You',
   quizzes: 'Quizzes',
   explorers: 'Explorers',

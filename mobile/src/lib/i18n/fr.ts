@@ -7,6 +7,7 @@ export const fr: Record<TranslationKey, string> = {
   map: 'Carte',
   learn: 'Apprendre',
   discover: 'Découvrir',
+  expeditions: 'Expéditions',
   nearYou: 'Près de vous',
   quizzes: 'Quiz',
   explorers: 'Explorateurs',

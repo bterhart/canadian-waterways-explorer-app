@@ -37,6 +37,7 @@ import { notableFiguresRouter } from "./routes/notable-figures";
 import { authRouter } from "./routes/auth";
 import { adminImageHealthRouter } from "./routes/admin-image-health";
 import { citationsRouter } from "./routes/citations";
+import { expeditionsRouter } from "./routes/expeditions";
 import { scheduleImageHealthCheck } from "./jobs/image-health-check";
 import { logger } from "hono/logger";
 import { readFileSync } from "fs";
@@ -121,6 +122,7 @@ app.route("/api/nearby-history", nearbyHistoryRouter);
 app.route("/api/notable-figures", notableFiguresRouter);
 app.route("/api/admin/image-health", adminImageHealthRouter);
 app.route("/api/citations", citationsRouter);
+app.route("/api/expeditions", expeditionsRouter);
 
 // Schedule daily image URL health check (runs at 02:00 server time)
 scheduleImageHealthCheck();
