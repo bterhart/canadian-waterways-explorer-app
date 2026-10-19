@@ -41,7 +41,7 @@ export default function DecadeScreen() {
         <Pressable disabled={prev === null} onPress={() => prev !== null && go(prev)} style={[styles.arrow, prev === null && { opacity: 0.3 }]} accessibilityLabel="Previous decade">
           <ChevronLeft size={20} color={colors.forestGreen} />
         </Pressable>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips} style={{ flex: 1 }}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips} style={styles.chipRow}>
           {(decades ?? []).map((d) => (
             <Pressable key={d.decade} onPress={() => go(d.decade)} style={[styles.chip, d.decade === decade && styles.chipActive]}>
               <Text style={[styles.chipText, d.decade === decade && styles.chipTextActive]}>{d.decade}s</Text>
@@ -195,7 +195,8 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.creamWhite },
   stripRow: { flexDirection: 'row', alignItems: 'center', backgroundColor: 'white', borderBottomWidth: 1, borderBottomColor: '#E5E7EB', paddingVertical: 6 },
   arrow: { paddingHorizontal: 10, paddingVertical: 6 },
-  chips: { gap: 8, paddingHorizontal: 4 },
+  chipRow: { flex: 1, height: 36 },
+  chips: { gap: 8, paddingHorizontal: 4, alignItems: 'center' },
   chip: { borderWidth: 1, borderColor: '#D1D5DB', borderRadius: 16, paddingHorizontal: 12, paddingVertical: 6, backgroundColor: 'white' },
   chipActive: { backgroundColor: colors.forestGreen, borderColor: colors.forestGreen },
   chipText: { fontSize: 13, color: '#374151', fontWeight: '600' },

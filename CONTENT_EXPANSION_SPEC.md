@@ -1584,6 +1584,39 @@ changes size with zoom sits at the end of the MapView's children and is mounted 
 immediately. The drawn layers (expedition, system or decade highlight, historic overlay) are
 also made mutually exclusive, so the map never stacks three sets of overlays.
 
+### 10.12 Build 62: the crash is in the libraries, patched at the source (2026-10-20; build required)
+
+Build 62 crashed again with the build 54 and 60 signature, so the 10.11 guards were not enough.
+The cause is now identified in two libraries and patched through bun's `patchedDependencies`
+(the project already patches `react-native@0.79.6` and `expo-asset` this way):
+
+- **React Native 0.79.6, legacy-component interop** (`RCTLegacyViewManagerInteropComponentView.mm`;
+  reported upstream as facebook/react-native#57872, open): the interop removed a MapView child by
+  *position* in the native map's own list instead of by identity, so once that list drifted from
+  Fabric's index model (a mount held back, a recycled parent) the wrong views were detached. A
+  held-back mount whose child was then removed and recycled was replayed with a nil content view:
+  the abort. Patch: children are unmounted by identity after unwrapping to the paper view; a
+  child removed while its mount is still pending is dropped from the pending list; replayed
+  mounts skip a recycled child and clamp the index. This is the fix the upstream reporter
+  proposed and another user confirmed on a device with patch-package.
+- **react-native-maps 1.20.1** (`AIRMap.m`): a nil guard and index clamp in `insertReactSubview`
+  and a nil guard in `removeReactSubview`, the change upstream merged as PR #5871 and shipped in
+  v1.29.3 (Expo SDK 53 and 54 pin 1.20.1, so it is applied as a patch).
+
+Also in this batch: expedition legs that start from the same place share one badge ("1 · 5" for
+Hearne's departure from and return to Prince of Wales Fort; two markers on one point hid each
+other, which is why the start or the finish went missing); the dashed straight lines between
+consecutive legs are removed (they implied an overland route the records do not give; the
+numbers and the leg strip carry the order); the historic map overlay draws a dashed frame at
+its bounds so its placement reads even if the image has not loaded; and the horizontal chip
+rows on Historic Maps, the decade page and Search have explicit heights (they were laid out at
+half height on first render).
+
+Still unverified on a device: whether the historic map image itself draws under the new
+architecture. The native overlay loads its image through the legacy bridge's image loader; the
+code path reads correctly, so if build 63 shows the dashed frame without the image, the next
+step is to draw the image from JavaScript instead.
+
 ### 10.6 Order of work
 10.5's three features first (citations, then expedition routes, then the cartography gallery, because routes and maps both cite); then 1, 3, 5, 16, 18, 6, 7, 9, 10, 11, 13, 12, 17, 4; item 8 when recordings exist.
 
