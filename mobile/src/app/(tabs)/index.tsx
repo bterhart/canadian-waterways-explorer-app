@@ -4,7 +4,7 @@ import { View, Text, ActivityIndicator, StyleSheet, TouchableOpacity, ScrollView
 import MapView, { Marker, PROVIDER_DEFAULT, Region, Polyline, Polygon, Overlay, type MapPressEvent } from 'react-native-maps';
 import { useHistoricalMap } from '@/lib/api/historical-maps-api';
 import type { LayoutChangeEvent } from 'react-native';
-import { Menu, ChevronDown, ChevronRight, Globe2, X, Route, Layers, Network, History } from 'lucide-react-native';
+import { Menu, ChevronDown, ChevronRight, Globe2, X, Route, Layers, Network, History, Search as SearchIcon } from 'lucide-react-native';
 import { useExpeditions, useExpedition } from '@/lib/api/expeditions-api';
 import { useWaterwaySystem, useDecade } from '@/lib/api/connections-api';
 import type { ExpeditionLeg, ExpeditionSummary } from '@/lib/types/expeditions';
@@ -885,8 +885,10 @@ export default function MapScreen() {
     fittedHighlightRef.current = null;
   }, []);
 
-  // A highlight chip or dot: move to that water and preview it like a pin tap
+  // A highlight chip or dot: move to that water and preview it like a pin tap (one camera move,
+  // see handleLegPress)
   const handleHighlightPress = useCallback((item: { id: string; latitude: number; longitude: number }) => {
+    animatedExtentForRef.current = `${item.id}:extent`;
     mapRef.current?.animateToRegion({ latitude: item.latitude, longitude: item.longitude, latitudeDelta: 1.5, longitudeDelta: 1.5 }, 500);
     setSelectedMarker(null);
     setPreview({ id: item.id, type: 'waterway', fromOverview: true });
@@ -897,9 +899,13 @@ export default function MapScreen() {
     fittedExpeditionRef.current = null;
   }, []);
 
-  // A leg chip or leg marker: move to that water and preview it like a pin tap
+  // A leg chip or leg marker: move to that water and preview it like a pin tap. The camera goes
+  // to the leg's point only: previewing the water would otherwise also fire the zoom-to-extent
+  // animation, so a tap on one Mackenzie leg flew in to it and straight back out to the whole
+  // river. Marking the extent as already animated keeps the camera where the leg is.
   const handleLegPress = useCallback((leg: ExpeditionLeg) => {
     const point = leg.location ?? leg.waterway;
+    animatedExtentForRef.current = `${leg.waterway.id}:extent`;
     mapRef.current?.animateToRegion({ latitude: point.latitude, longitude: point.longitude, latitudeDelta: 1.5, longitudeDelta: 1.5 }, 500);
     setSelectedMarker(null);
     setPreview({ id: leg.waterway.id, type: 'waterway', fromOverview: true });
@@ -1285,6 +1291,16 @@ export default function MapScreen() {
         activeOpacity={0.8}
       >
         <Menu size={24} color="#2D5A3D" />
+      </TouchableOpacity>
+
+      {/* Search across everything (roadmap item 3) */}
+      <TouchableOpacity
+        style={styles.searchButton}
+        onPress={() => router.push('/search')}
+        activeOpacity={0.8}
+        accessibilityLabel={t('search')}
+      >
+        <SearchIcon size={22} color="#2D5A3D" />
       </TouchableOpacity>
 
       {/* Historic map overlay control: title, year, opacity steps and close (roadmap item 15) */}
@@ -1771,7 +1787,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 16,
     left: 72,
-    right: 12,
+    right: 64, // clear of the search button at top-right
     backgroundColor: 'rgba(255, 254, 247, 0.97)',
     borderRadius: 12,
     borderLeftWidth: 4,
@@ -1804,6 +1820,19 @@ const styles = StyleSheet.create({
   legMarker: { width: 24, height: 24, borderRadius: 12, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: 'white' },
   highlightDot: { width: 14, height: 14, borderRadius: 7, borderWidth: 2, borderColor: 'white' },
   legMarkerText: { color: 'white', fontSize: 12, fontWeight: '700' },
+  searchButton: {
+    position: 'absolute',
+    top: 16,
+    right: 12,
+    backgroundColor: 'rgba(255, 254, 247, 0.95)',
+    padding: 11,
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
   legendButton: {
     position: 'absolute',
     top: 16,
