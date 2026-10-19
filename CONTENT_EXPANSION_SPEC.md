@@ -1429,6 +1429,48 @@ schema (CREATE-only Turso migration), API, client and data, with a spec entry.
 
 **Cartography gallery.** New table `HistoricalMap` (title, cartographer name and optional cartographer link, year, description, what it shows and what it got wrong, image URL and credit and licence, source URL, region, optional overlay bounds as SW and NE corners, related waterway and explorer ids, sort order). Discover hub: a "Historic Maps" card opens a gallery (thumbnail, cartographer, year, region; filters by century and region); a map's page shows the image full-screen and zoomable, the description, the cartographer's biography, related waterways and explorers as links, and the sources; "View on the map" overlays the image on the live map at its bounds with an opacity slider, so Pond's Athabasca can be seen beside the modern lake. Indigenous-made maps (Ac ko mok ki's map for Fidler 1801, the Chipewyan map for Hearne, Inuit charts for Parry and Ross) are first-class entries with the mapmaker named.
 
+### 10.7 Delivered 2026-10-19 (build required for the app side)
+
+**Navigation.** The back button names the tab a screen was opened from (Map, Explorers, Quizzes,
+Discover, Admin) instead of "(tabs)": the root stack's "(tabs)" screen takes its title from the last
+tab segment seen. The Learn tab is renamed Discover (Découvrir) and the hub's "Discovery" section
+becomes "Near You".
+
+**Citations (item 14).** `Citation` table (`2026-10-19-citations.sql`), `GET /api/citations/:targetType/:targetId`
+(sources formatted as text, with BibTeX, RIS and plain-text exports and the citation for the app's own
+record) and `/export?format=` as a downloadable file. Seed (`2026-10-19-citations-seed.ts`): 724 citations
+across 567 records, derived only from sources already on the records: the DCB, Encyclopedia, Parks
+Canada, Internet Archive and other authority links in the reading guides (Wikipedia guides excluded on
+purpose), the "checked against" editions on the 27 documents, the discovery sources, and the place-name
+records behind the Indigenous names. In the app a **Sources** card appears on waterway and location
+sheets, the explorer modal, notable figures, documents and historic maps: kind badge, author, title,
+container, year, note; tap opens the link, long press copies the reference, export shares BibTeX, RIS
+or text, and "Cite this record" gives the citation for the app's own entry.
+
+**Expedition routes (item 2).** `Expedition` and `ExpeditionLeg` tables (`2026-10-19-expeditions.sql`),
+`GET /api/expeditions` and `/:id`, and `expeditions` on the explorer detail. Seed
+(`2026-10-19-expeditions-seed.ts`): 18 journeys, 85 legs, 14 explorers (Mackenzie 1789 and 1793,
+Fraser 1808, Hearne 1770-72, Franklin 1819-22 and 1825-27, Back 1833-35, Rae 1846-47 and 1853-54,
+Cartier 1534 and 1535-36, La Vérendrye 1731-38, Kelsey 1690-92, Henday 1754-55, Pond 1778-79, Hudson
+1610-11, Thompson 1807-11, Champlain 1615-16), each leg ordered from the DCB article or published
+journal named on the expedition and carrying its own note; waters the party crossed that the database
+lacks are left out rather than approximated. In the app: an **Expeditions** section in the map's filter
+menu grouped by explorer; choosing one draws every leg's waterway geometry from the overview dataset in
+the expedition's colour, dashed connectors between consecutive legs, numbered leg markers at the leg's
+historic place or the water's centre, and a strip of leg chips (number, place or water, year) that move
+the camera and preview the water; the camera fits the whole route once. The explorer modal gains an
+**Expeditions** card with the summary, leg count, source and "Show on map" (`/?expeditionId=`).
+
+**Cartography gallery (item 15).** `HistoricalMap` table (`2026-10-19-historical-maps.sql`),
+`GET /api/historical-maps` and `/:id` (bounds, related waterways and explorers, cartographer,
+citations). In the app: a **Historic Maps** card on the Discover hub; a gallery filtered by century and
+region with an "On the map" badge for georeferenced maps; a map's page with the image pinch-zoomable,
+what it shows, what it got wrong, the mapmaker, related waterways (tap to open on the map) and
+explorers, where the copy comes from, and the Sources card; and **View on the map**, which lays the
+image over the live map at its south-west and north-east corners (`/?mapOverlayId=`) with an opacity
+control (30, 50, 70, 100 percent) and an About link back to the page. The seed of maps is recorded in
+10.8 as it lands.
+
 ### 10.6 Order of work
 10.5's three features first (citations, then expedition routes, then the cartography gallery, because routes and maps both cite); then 1, 3, 5, 16, 18, 6, 7, 9, 10, 11, 13, 12, 17, 4; item 8 when recordings exist.
 
