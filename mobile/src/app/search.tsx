@@ -139,7 +139,7 @@ export default function SearchScreen() {
       </View>
 
       {showResults && typeChips.length > 0 ? (
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips} style={{ flexGrow: 0 }}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips} style={styles.chipRow}>
           <Chip label={`All · ${allData?.total ?? data?.total ?? 0}`} active={type === null} color={colors.forestGreen} onPress={() => setType(null)} />
           {typeChips.map(([t, n]) => (
             <Chip key={t} label={`${SEARCH_TYPE_LABEL[t]} · ${n}`} active={type === t} color={SEARCH_TYPE_COLOR[t]} onPress={() => setType(type === t ? null : t)} />
@@ -210,7 +210,8 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.creamWhite },
   searchBox: { flexDirection: 'row', alignItems: 'center', gap: 8, margin: 12, paddingHorizontal: 12, paddingVertical: 10, backgroundColor: 'white', borderRadius: 12, borderWidth: 1, borderColor: '#E5E7EB' },
   input: { flex: 1, fontSize: 16, color: '#1F2937', paddingVertical: 0 },
-  chips: { paddingHorizontal: 12, paddingBottom: 8, gap: 8 },
+  chipRow: { flexGrow: 0, height: 40, marginBottom: 8 },
+  chips: { paddingHorizontal: 12, gap: 8, alignItems: 'center' },
   chip: { borderWidth: 1, borderColor: '#D1D5DB', borderRadius: 16, paddingHorizontal: 12, paddingVertical: 6, backgroundColor: 'white' },
   chipText: { fontSize: 12, color: '#374151', fontWeight: '600' },
   results: { padding: 12, paddingBottom: 40 },

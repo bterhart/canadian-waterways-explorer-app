@@ -48,12 +48,12 @@ export default function HistoricalMapsScreen() {
         <MapIcon size={18} color={colors.earthBrown} />
         <Text style={styles.introText}>The maps that made the country, from the first charts of the Gulf to the surveys of the fur trade, with what each got right and wrong. Maps drawn by Indigenous people for explorers are here too, with the mapmaker named.</Text>
       </View>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips} style={{ flexGrow: 0 }}>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips} style={styles.chipRow}>
         <Chip label="All" active={!century} onPress={() => setCentury(null)} />
         {centuries.map((c) => <Chip key={c} label={c} active={century === c} onPress={() => setCentury(century === c ? null : c)} />)}
       </ScrollView>
       {regions.length > 1 ? (
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips} style={{ flexGrow: 0 }}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips} style={styles.chipRow}>
           {regions.map((r) => <Chip key={r} label={r} active={region === r} onPress={() => setRegion(region === r ? null : r)} />)}
         </ScrollView>
       ) : null}
@@ -78,7 +78,10 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.creamWhite },
   intro: { flexDirection: 'row', gap: 10, padding: 16, paddingBottom: 8, alignItems: 'flex-start' },
   introText: { flex: 1, fontSize: 13, color: '#4B5563', lineHeight: 19 },
-  chips: { paddingHorizontal: 16, paddingVertical: 6, gap: 8 },
+  // Explicit height: a horizontal row above a FlatList was laid out at half height on its first
+  // render and only settled after a tap.
+  chipRow: { flexGrow: 0, height: 44 },
+  chips: { paddingHorizontal: 16, gap: 8, alignItems: 'center' },
   chip: { borderWidth: 1, borderColor: '#D1D5DB', borderRadius: 16, paddingHorizontal: 12, paddingVertical: 6, backgroundColor: 'white' },
   chipActive: { backgroundColor: colors.forestGreen, borderColor: colors.forestGreen },
   chipText: { fontSize: 13, color: '#374151', fontWeight: '600' },

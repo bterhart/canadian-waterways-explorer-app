@@ -759,9 +759,16 @@ export default function MapScreen() {
       const point = leg.location ?? leg.waterway;
       anchors.push({ leg, latitude: point.latitude, longitude: point.longitude });
     });
-    const connectors = anchors.slice(1).map((a, i) => [anchors[i], a] as const)
-      .map(([from, to]) => [{ latitude: from.latitude, longitude: from.longitude }, { latitude: to.latitude, longitude: to.longitude }]);
-    return { legPaths, anchors, connectors };
+    // Legs that start from the same place (Hearne leaves Prince of Wales Fort as leg 1 and
+    // returns to it as leg 5) share one badge reading "1 · 5": two markers on one point hid
+    // each other, so the start or the finish went missing depending on which drew last.
+    const badges: { key: string; legs: ExpeditionLeg[]; latitude: number; longitude: number }[] = [];
+    anchors.forEach((a) => {
+      const existing = badges.find((b) => Math.abs(b.latitude - a.latitude) < 0.0005 && Math.abs(b.longitude - a.longitude) < 0.0005);
+      if (existing) existing.legs.push(a.leg);
+      else badges.push({ key: `exp-badge-${a.leg.id}`, legs: [a.leg], latitude: a.latitude, longitude: a.longitude });
+    });
+    return { legPaths, anchors, badges };
   }, [expedition, riverOverviewData, riverOverviewTier]);
 
   // Fit the camera to the whole route once per expedition
@@ -1154,6 +1161,22 @@ export default function MapScreen() {
             opacity={overlayOpacity}
           />
         ) : null}
+        {/* The overlay's frame, so its placement reads even while the image is still loading */}
+        {overlayMap?.bounds ? (
+          <Polyline
+            key={`overlay-frame-${overlayMap.id}`}
+            coordinates={[
+              { latitude: overlayMap.bounds.southWest.latitude, longitude: overlayMap.bounds.southWest.longitude },
+              { latitude: overlayMap.bounds.northEast.latitude, longitude: overlayMap.bounds.southWest.longitude },
+              { latitude: overlayMap.bounds.northEast.latitude, longitude: overlayMap.bounds.northEast.longitude },
+              { latitude: overlayMap.bounds.southWest.latitude, longitude: overlayMap.bounds.northEast.longitude },
+              { latitude: overlayMap.bounds.southWest.latitude, longitude: overlayMap.bounds.southWest.longitude },
+            ]}
+            strokeColor="#8B5A2B"
+            strokeWidth={2}
+            lineDashPattern={[8, 6]}
+          />
+        ) : null}
 
         {/* Expedition route layer: the legs' waters in the expedition colour, dashed connectors
             between consecutive legs, and numbered leg markers (roadmap item 2) */}
@@ -1166,20 +1189,19 @@ export default function MapScreen() {
                   <Polyline key={p.key} coordinates={p.coordinates} strokeColor={expeditionColor} strokeWidth={5} zIndex={5} />
                 )
               ),
-              ...expeditionDrawing.connectors.map((coordinates, i) => (
-                <Polyline key={`exp-connector-${i}`} coordinates={coordinates} strokeColor={expeditionColor} strokeWidth={2} lineDashPattern={[6, 6]} zIndex={4} />
-              )),
-              ...expeditionDrawing.anchors.map((a) => (
+              // Numbered badges only; the order reads from the numbers and the leg strip. The
+              // dashed straight lines that joined consecutive legs across land were removed: they
+              // suggested a route where none is recorded.
+              ...expeditionDrawing.badges.map((b) => (
                 <Marker
-                  key={`exp-anchor-${a.leg.id}`}
-                  coordinate={{ latitude: a.latitude, longitude: a.longitude }}
+                  key={b.key}
+                  coordinate={{ latitude: b.latitude, longitude: b.longitude }}
                   anchor={{ x: 0.5, y: 0.5 }}
                   zIndex={20}
-                  tracksViewChanges={false}
-                  onPress={() => handleLegPress(a.leg)}
+                  onPress={() => handleLegPress(b.legs[0]!)}
                 >
-                  <View style={[styles.legMarker, { backgroundColor: expeditionColor }]}>
-                    <Text style={styles.legMarkerText}>{a.leg.orderIndex + 1}</Text>
+                  <View style={[styles.legMarker, b.legs.length > 1 && styles.legMarkerWide, { backgroundColor: expeditionColor }]}>
+                    <Text style={styles.legMarkerText}>{b.legs.map((leg) => leg.orderIndex + 1).join(' · ')}</Text>
                   </View>
                 </Marker>
               )),
@@ -1844,7 +1866,8 @@ const styles = StyleSheet.create({
   opacityChipTextActive: { color: 'white' },
   opacityAbout: { marginLeft: 'auto', paddingHorizontal: 8, paddingVertical: 3 },
   opacityAboutText: { fontSize: 11, color: '#3B82A3', textDecorationLine: 'underline', fontWeight: '600' },
-  legMarker: { width: 24, height: 24, borderRadius: 12, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: 'white' },
+  legMarker: { minWidth: 26, height: 26, borderRadius: 13, paddingHorizontal: 6, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: 'white' },
+  legMarkerWide: { paddingHorizontal: 8 },
   highlightDot: { width: 14, height: 14, borderRadius: 7, borderWidth: 2, borderColor: 'white' },
   legMarkerText: { color: 'white', fontSize: 12, fontWeight: '700' },
   searchButton: {
