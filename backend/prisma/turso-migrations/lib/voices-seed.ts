@@ -8,8 +8,9 @@
 // corrected; nothing added; omitted stretches marked [...]; one scene, about two minutes spoken.
 // The `checked` note is appended to historicalContext, as the earlier passes did.
 //
-//   bun run <file> [--apply] [--only <id substring>] [--dump]
-//   --dump prints the entries as JSON for the edition checker (scratchpad narr/check.py).
+//   bun run <file> [--apply] [--only <id substring>] [--dump [path]]
+//   --dump writes the entries as JSON (to the path, or stdout) for the edition checker (scratchpad narr/check.py).
+import { writeFileSync } from "node:fs";
 import { db } from "../../../src/db";
 import { APPLY, writeBackup, report } from "./migration";
 
@@ -45,7 +46,14 @@ export async function seedVoices(name: string, entries: VoiceEntry[]): Promise<v
   const onlyIndex = process.argv.indexOf("--only");
   const only = onlyIndex >= 0 ? process.argv[onlyIndex + 1]?.toLowerCase() ?? null : null;
   const chosen = entries.filter((e) => !only || e.id.includes(only) || e.title.toLowerCase().includes(only));
-  if (process.argv.includes("--dump")) { console.log(JSON.stringify(chosen, null, 1)); return; }
+  const dumpIndex = process.argv.indexOf("--dump");
+  if (dumpIndex >= 0) {
+    // A large console.log can be cut off when the process exits; a file path after --dump is written whole.
+    const target = process.argv[dumpIndex + 1];
+    if (target && !target.startsWith("--")) { writeFileSync(target, JSON.stringify(chosen, null, 1)); console.log(`dumped ${chosen.length} entries to ${target}`); }
+    else console.log(JSON.stringify(chosen, null, 1));
+    return;
+  }
 
   const problems: string[] = [];
   const ids = new Set<string>();

@@ -2331,6 +2331,40 @@ deserted Beothuk camps on Red Indian Lake, November 1828 (Howley 1915), in place
 crossing, which never reached the Exploits. Each is spotted and linked; Brébeuf has no explorer
 row and is linked by author only. Build not required: narrations are data.
 
+**Region 2, Hudson Bay, the interior and the North (`2026-10-21-voices-bay-interior-north.ts`,
+applied, 13 of 13 pass the checker; 51 narrations after it).** Mackenzie on the rendezvous at
+Grand Portage and, from the 1789 journal, among the whales at the delta (14 July) and at the
+Slave River rapids (5 June), all Gutenberg vol. I; Ross Cox at Fort William, August 1817 (The
+Columbia River, 1832); Prickett on Hudson set adrift, June 1611 (Purchas, Glasgow reprint 1906);
+Henday in the Blackfoot camp, 14-15 October 1754 (Burpee, RSC 1907); Franklin at the mouth of
+the Coppermine, 18 July 1821 (Narrative, 1823); the Victory Point record of 1847 and 1848 as
+McClintock printed it (Fate of Sir John Franklin, 1869); Best on the people of Frobisher Bay and
+their boats (Hakluyt Society, 1867; from the 1578 account, not 1577 as the list had it); Alexander
+Henry the Elder reaching Lake Winnipeg, 1775 (Bain's edition, 1901); La Vérendrye's letter from
+Fort St. Charles, 21 May 1733 (Burpee, Champlain Society 1927); the opening of Fort Franklin,
+23 September 1825 (Gutenberg #33467); Kane at Rensselaer Harbor, 10 September 1854 (Arctic
+Explorations, 1856).
+
+**Region 3, the Pacific and the Yukon (`2026-10-21-voices-pacific-yukon.ts`, applied, 6 of 6
+pass the checker; 57 narrations after it).** Fraser naming the Thompson at Camchin (Lytton),
+19-20 June 1808 (Masson, 1889; a poor scan, every correction declared); Jewitt on the whale
+hunt at Yuquot, 1803-05 (Narrative, Ithaca 1816); Schwatka's raft at the Grand Cañon of the
+Yukon, 1 July 1883 (1885); Adney at the forks of Bonanza and Eldorado, winter 1897 (1900);
+Marquette entering the Mississippi, 17 June 1673 (Jesuit Relations vol. LIX); Steele at Lake
+Bennett, spring 1898 (Forty Years in Canada, 1915). **Not done: passage 28, Vancouver in
+Burrard Inlet, 13 June 1792** (A Voyage of Discovery, vol. I, 1798; Internet Archive
+`voyageofdiscover01vanc_1`). Every attempt to write that entry into the file was blocked by the
+output filter of the session, apparently on the 1798 typography in its declared corrections, and
+the owner directed the work to stop there (2026-10-21). The passage is the Burrard's Canal
+paragraph and the "sublime, though gloomy spectacle" paragraph at the start of the entry for
+13 June 1792; the row shape is that of the other entries.
+
+**Rule on the notes (owner, 2026-10-21).** The records are reproduced as written and the notes
+around them do not contextualize or excuse their wording. Sentences of that kind in region 1's
+context notes and questions (Brébeuf, the Chaudière, Cormack) and in region 2's (Henry the Elder)
+were removed and the rows re-applied; the spec's own remark at 10.21 about the narrator reading
+the words as printed stands as a description, not an apology.
+
 ### 10.6 Order of work
 10.5's three features first (citations, then expedition routes, then the cartography gallery, because routes and maps both cite); then 1, 3, 5, 16, 18, 6, 7, 9, 10, 11, 13, 12, 17, 4; item 8 when recordings exist.
 
