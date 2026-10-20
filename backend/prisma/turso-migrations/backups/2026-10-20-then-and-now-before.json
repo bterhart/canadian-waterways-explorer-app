@@ -1,5 +1,29 @@
 {
- "generatedAt": "2026-10-20T06:28:40.896Z",
+ "generatedAt": "2026-10-20T07:17:16.512Z",
  "apply": true,
- "pairs": []
+ "pairs": [
+  {
+   "id": "tn_chilkoot_summit",
+   "title": "The summit of the Chilkoot Pass",
+   "locationId": "loc_chilkoot-pass",
+   "waterwayId": null,
+   "latitude": 59.69,
+   "longitude": -135.24,
+   "thenUrl": "https://pub-376806a1556549999cfff53a786882dd.r2.dev/then-and-now/tn_chilkoot_summit/then.jpg",
+   "thenYear": 1899,
+   "thenYearLabel": "winter 1898–99",
+   "thenCaption": "Stampeders and their caches at the summit of the Chilkoot Pass, where the North-West Mounted Police checked each outfit, photographed by Eric A. Hegg.",
+   "thenCredit": "Wikimedia Commons / Eric A. Hegg (fl. 1897–1930) / Public domain",
+   "thenSourceUrl": "https://commons.wikimedia.org/wiki/File:Chilkoot_Pass_summit.jpg",
+   "nowUrl": "https://pub-376806a1556549999cfff53a786882dd.r2.dev/then-and-now/tn_chilkoot_summit/now.jpg",
+   "nowYear": 2013,
+   "nowCaption": "Hikers resting at the summit on the Chilkoot Trail, the border between Alaska and British Columbia.",
+   "nowCredit": "Wikimedia Commons / Joseph from Cabin On The Road, USA / CC BY-SA 2.0",
+   "nowSourceUrl": "https://commons.wikimedia.org/wiki/File:Chilkoot_Trail_Summit_Tea_Break_(9434243470).jpg",
+   "note": "In the winter of 1897–98 the pass carried about 22,000 people and their year's provisions up the Golden Stairs. The railway over the White Pass opened in 1899 and the trail emptied; it is hiked now, in a historic site shared by Parks Canada and the U.S. National Park Service.",
+   "sortOrder": 1,
+   "createdAt": "2026-10-20T06:33:24.009Z",
+   "updatedAt": "2026-10-20T06:33:24.009Z"
+  }
+ ]
 }
