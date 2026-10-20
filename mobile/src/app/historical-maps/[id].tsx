@@ -47,6 +47,18 @@ export default function HistoricalMapScreen() {
         {map.whatItShows ? <Section title="What it shows"><Text style={styles.bodyText}>{map.whatItShows}</Text></Section> : null}
         {map.whatItGotWrong ? <Section title="What it got wrong" tint="#FFF4E5"><Text style={styles.bodyText}>{map.whatItGotWrong}</Text></Section> : null}
 
+        {/* The sheet's projection (2026-10-20): read from its graticule, with how it was re-projected
+            for the overlay, and why that matters against Mercator's. */}
+        {map.projection ? (
+          <Section title="Projection" tint="#EEF6F3">
+            <Text style={styles.projectionLabel}>{map.projection}</Text>
+            {map.projectionNote ? <Text style={styles.bodyText}>{map.projectionNote}</Text> : null}
+            <Text style={styles.small}>
+              The live map underneath is drawn on Mercator's projection of 1569, the first on which a straight line is a constant compass bearing and the one every digital map still uses. A sheet on any other projection has to be re-projected before it can lie over it, which is what "View on the map" shows.
+            </Text>
+          </Section>
+        ) : null}
+
         {map.cartographer ? (
           <Section title="The mapmaker">
             <View style={styles.row}><User size={16} color={colors.earthBrown} /><Text style={styles.makerName}>{map.cartographer.name}{map.cartographer.birthYear ? ` (${map.cartographer.birthYear}${map.cartographer.deathYear ? `-${map.cartographer.deathYear}` : ''})` : ''}</Text></View>
@@ -110,6 +122,7 @@ const styles = StyleSheet.create({
   sectionTitle: { fontSize: 16, fontWeight: '700', color: colors.forestGreen, marginBottom: 8 },
   sectionBox: { backgroundColor: 'white', borderRadius: 12, padding: 14, gap: 6 },
   bodyText: { fontSize: 15, lineHeight: 23, color: '#333' },
+  projectionLabel: { fontSize: 15, fontWeight: '700', color: colors.forestGreen },
   small: { fontSize: 13, color: '#6B7280', lineHeight: 19 },
   row: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 6 },
   makerName: { fontSize: 15, fontWeight: '700', color: '#333' },

@@ -1,0 +1,102 @@
+{
+ "generatedAt": "2026-10-20T00:05:08.257Z",
+ "apply": true,
+ "maps": [
+  {
+   "id": "cmveuocpq00017dwp6k54nque",
+   "title": "The Harleian mappemonde",
+   "projection": null,
+   "projectionNote": null
+  },
+  {
+   "id": "cmveuocvy00057dwp5zibvasd",
+   "title": "Carte de la Nouvelle France (1632)",
+   "projection": null,
+   "projectionNote": null
+  },
+  {
+   "id": "cmveuod1400097dwp62u7irbp",
+   "title": "Le Canada, ou Nouvelle France (1656)",
+   "projection": null,
+   "projectionNote": null
+  },
+  {
+   "id": "cmveuod69000c7dwp76n0dkde",
+   "title": "Novae Franciae accurata delineatio (1657)",
+   "projection": null,
+   "projectionNote": null
+  },
+  {
+   "id": "cmveuodc7000f7dwpugkbxmn4",
+   "title": "Partie de la Nouvelle France (1685)",
+   "projection": null,
+   "projectionNote": null
+  },
+  {
+   "id": "cmveuodhz000i7dwpm1whdmgy",
+   "title": "Partie occidentale du Canada ou de la Nouvelle France (1688)",
+   "projection": null,
+   "projectionNote": null
+  },
+  {
+   "id": "cmveuodn6000l7dwpi3s9jyh8",
+   "title": "La Louisiana, parte settentrionale (1696)",
+   "projection": null,
+   "projectionNote": null
+  },
+  {
+   "id": "cmveuodsc000o7dwp4cm3lbq0",
+   "title": "Carte de la Rivière Longue (1703)",
+   "projection": null,
+   "projectionNote": null
+  },
+  {
+   "id": "cmveuodxl000s7dwpaxkx5xe3",
+   "title": "Carte du Canada ou de la Nouvelle France (1703)",
+   "projection": null,
+   "projectionNote": null
+  },
+  {
+   "id": "cmveuoe35000v7dwpkzi20b7w",
+   "title": "Carte de la Baye de Hudson (1744)",
+   "projection": null,
+   "projectionNote": null
+  },
+  {
+   "id": "cmveuoe8f000y7dwp1trjr3hn",
+   "title": "A Map of the British and French Dominions in North America (1755)",
+   "projection": null,
+   "projectionNote": null
+  },
+  {
+   "id": "cmveuoedl00117dwphrqyp79s",
+   "title": "Hudson's Bay's Country (1785)",
+   "projection": null,
+   "projectionNote": null
+  },
+  {
+   "id": "cmveuoej000157dwplbnzhn0d",
+   "title": "A Map Exhibiting all the New Discoveries in the Interior Parts of North America (1795)",
+   "projection": null,
+   "projectionNote": null
+  },
+  {
+   "id": "cmveuoeoo00197dwpvg0ilst4",
+   "title": "A Map of America Exhibiting Mackenzie's Track (1801)",
+   "projection": null,
+   "projectionNote": null
+  },
+  {
+   "id": "cmveuoeu2001d7dwpv140el2r",
+   "title": "Map of the North-West Territory of the Province of Canada (1814)",
+   "projection": null,
+   "projectionNote": null
+  },
+  {
+   "id": "cmveuoez5001h7dwpyr3b2zk7",
+   "title": "Route of the Expedition from York Factory to Cumberland House and Isle à la Crosse, 1819 and 1820 (1823)",
+   "projection": null,
+   "projectionNote": null
+  }
+ ]
+}

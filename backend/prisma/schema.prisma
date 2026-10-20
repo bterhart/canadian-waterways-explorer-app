@@ -967,6 +967,8 @@ model HistoricalMap {
   description        String
   whatItShows        String?
   whatItGotWrong     String?
+  projection         String? // short label read from the sheet's graticule (2026-10-20)
+  projectionNote     String? // how the sheet is constructed and how it was re-projected for the overlay
   region             String?
   imageUrl           String
   imageCredit        String
