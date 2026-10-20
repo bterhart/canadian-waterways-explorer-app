@@ -5,7 +5,7 @@
  *     → { data: { citations: [...rows with `text`], recordCitation: {...}, recordText } }
  * GET /api/citations/:targetType/:targetId/export?format=bibtex|ris|csv|text
  *     → the citations as a text body in that format (Content-Disposition attachment)
- * targetType: waterway | location | explorer | notable_figure | document | discovery
+ * targetType: waterway | location | explorer | notable_figure | document | discovery | historical_map | knowledge_given
  */
 import { Hono } from "hono";
 import { db } from "../db";
@@ -22,6 +22,7 @@ async function recordTitle(targetType: CitationTargetType, id: string): Promise<
     case "document": return (await db.primarySourceDocument.findUnique({ where: { id }, select: { title: true } }))?.title ?? null;
     case "discovery": return (await db.archaeologicalDiscovery.findUnique({ where: { id }, select: { name: true } }))?.name ?? null;
     case "historical_map": return (await db.historicalMap.findUnique({ where: { id }, select: { title: true } }))?.title ?? null;
+    case "knowledge_given": return (await db.knowledgeGiven.findUnique({ where: { id }, select: { title: true } }))?.title ?? null;
   }
 }
 

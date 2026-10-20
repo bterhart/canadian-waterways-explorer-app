@@ -104,6 +104,8 @@ function RootLayoutNav({ colorScheme }: { colorScheme: 'light' | 'dark' | null |
         {/* Historic Maps (cartography gallery, roadmap item 15) */}
         <Stack.Screen name="historical-maps/index" options={{ headerShown: true }} />
         <Stack.Screen name="historical-maps/[id]" options={{ headerShown: true }} />
+        <Stack.Screen name="knowledge/index" options={{ headerShown: true }} />
+        <Stack.Screen name="knowledge/[id]" options={{ headerShown: true }} />
         {/* Search across everything (roadmap item 3) */}
         <Stack.Screen name="search" options={{ headerShown: true }} />
         {/* Who was here when (roadmap item 1) */}

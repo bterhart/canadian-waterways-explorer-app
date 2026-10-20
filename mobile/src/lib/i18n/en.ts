@@ -55,6 +55,8 @@ export const en = {
   narratorVoiceDesc: 'Who reads the sources aloud',
   voiceMale: 'Male',
   voiceFemale: 'Female',
+  knowledgeGiven: 'Knowledge Given',
+  knowledgeGivenDesc: 'The routes, maps, words and cures the expeditions owed to named Indigenous people',
   clearFilter: 'Clear Filter',
 
   // Waterway Types

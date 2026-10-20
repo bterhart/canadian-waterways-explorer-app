@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import { db } from "../db";
 import { getReadingGuide } from "../lib/reading-guides";
+import { listKnowledge } from "../lib/knowledge";
 import { getExplorerConnections } from "../lib/connections";
 import { attachRelated, loadRelated } from "../lib/related";
 
@@ -79,6 +80,8 @@ explorersRouter.get("/:id", async (c) => {
       notableFigures: connections.notableFigures,
       maps: connections.maps,
       lessonPlans: connections.lessonPlans,
+      // Knowledge given to this explorer by named Indigenous people (roadmap item 16)
+      knowledgeGiven: await listKnowledge({ explorerId: explorer.id }),
     },
   });
 });

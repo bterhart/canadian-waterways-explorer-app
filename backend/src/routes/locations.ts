@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import { db } from "../db";
 import { getReadingGuide } from "../lib/reading-guides";
+import { listKnowledge } from "../lib/knowledge";
 
 // Location router with imageUrl support
 const locationsRouter = new Hono();
@@ -135,6 +136,8 @@ const notableFigures = notableFigureRows
   .filter((figure) => figure.associatedLocations.includes(location.name) || figure.associatedLocations.includes(location.waterway.name));
 
   const readingGuide = await getReadingGuide("location", location.id);
+  // Knowledge given at this place by named Indigenous people (roadmap item 16)
+  const knowledgeGiven = await listKnowledge({ locationId: location.id });
 
   return c.json({
     data: {
@@ -144,6 +147,7 @@ const notableFigures = notableFigureRows
         notableFigures,
       },
       readingGuide,
+      knowledgeGiven,
     }
   });
 });

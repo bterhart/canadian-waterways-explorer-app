@@ -1894,6 +1894,75 @@ key is set on the server; only making a new copy needs it. So the voices work in
 with nothing further on Railway. `XAI_API_KEY` is needed there only when a new or changed
 transcription has to be spoken; the key is to be rotated with the others at the end.
 
+### 10.17 Indigenous contributions as records (item 16, delivered 2026-10-20; API and data live, build required)
+
+Roadmap item 16: "a 'knowledge given' record type linking person, explorer, waterway and
+source." Until now that knowledge was prose in 54 Indigenous figures' biographies and in the
+explorers' narratives, and could not be listed, filtered or cited as a record.
+
+**The record.** `KnowledgeGiven` in Turso (`2026-10-20-knowledge-given.sql`, CREATE-only,
+"Created: 6"; mirrored in `schema.prisma`): one thing a named person gave an expedition. `kind`
+is one of route_shown, map_drawn, interpreting, testimony, medicine_survival, discovery,
+diplomacy; `personName` and `nation` are always set and `figureId` links the notable figure
+when there is one; `explorerId` links the explorer who received it, or `explorerName` names a
+body with no row (the North-West Mounted Police, William Cormack); `waterwayId` and
+`locationId` place it; `given` says what was given in one or two sentences and `outcome` what
+the expedition did with it. Sources are Citation rows with the new targetType
+`knowledge_given`, so the citations route, the exports and "Cite this record" work for them.
+
+**The first 28** (`2026-10-20-knowledge-given-seed.ts`: dry run, backup, apply, verify; 47
+citations). The rule held: no record without a source, and every record restates what the app's
+own sourced biographies and the cited Dictionary of Canadian Biography entries say. Every
+explorer, water, place and figure link is looked up by exact name at run time, and every DCB
+URL was fetched and checked for the biography rather than "Biography not found". By kind:
+
+- *Routes shown* (5): Matonabbee to the Coppermine and the Arctic Ocean for Hearne; Akaitcho's
+  guides, hunters and warning for Franklin's first expedition, and the rescue at Fort
+  Enterprise; Ebierbing to King William Island for Hall and for Schwatka; Jerry Potts to Fort
+  Whoop-Up and the Oldman for the Mounted Police; Mikak and Tuglavina to the site of Nain.
+- *Maps drawn* (4): Matonabbee and Idotliazee's deerskin map of the country north of Churchill
+  for Norton, 1767-68 (HBCA G.2/27); Ac ko mok ki's map of the Missouri country for Fidler at
+  Chesterfield House, 1801, which the DCB records as instrumental in Arrowsmith's map of 1802;
+  Eenoolooapik's map of Cumberland Sound for Penny, 1839; Iligliuk's charts of the Melville
+  Peninsula coast for Parry, 1822 (John Carter Brown Library). The last three mapmakers have no
+  figure row; the record carries their name and nation itself.
+- *Interpreting* (6): Tattannoeuck for both Franklin expeditions; Charlotte Small for Thompson;
+  Domagaya and Taignoagny for Cartier; Ouligbuck for Richardson, Dease and Simpson, and Rae;
+  William Ouligbuck translating the first word of Franklin's fate, 1854; Tookoolito for Hall.
+- *Testimony recorded* (4): Saukamappee to Thompson; In-nook-poo-zhe-jook to Rae and Hall;
+  Shawnadithit to Cormack; Tessouat exposing Vignau's northern sea to Champlain.
+- *Medicine and survival* (3): the annedda cure at Stadacona; Amelia Douglas at Fort St. James;
+  Hans Hendrik at Rensselaer Harbour.
+- *Discovery* (1): Keish and Káa Goox finding the Klondike gold, recorded under Carmack's name.
+- *Diplomacy* (5): Thanadelthur's peace; Kwah and Fort St. James; Mikak in London; Membertou
+  keeping Port-Royal; Comcomly's warning of the Racoon.
+
+Left out on purpose: Keskarrah, whose biography in the app ties him to Hearne while the
+published record ties him to Franklin (a correction for a later pass, not a record to build on);
+Maquinna and Kondiaronk, whose stories are of trade and of the Great Peace rather than of
+knowledge given to an expedition; the Chipewyan maps Hearne himself used and Ross's Inuit
+charts, which were not read in a source this pass.
+
+**API.** `GET /api/knowledge` (filters kind, figureId, explorerId, waterwayId, locationId),
+`GET /api/knowledge/kinds` (counts), `GET /api/knowledge/:id` (with formatted citations). The
+figure, explorer, waterway and location detail routes each return `knowledgeGiven`. The search
+index gains the type `knowledge` ("annedda" finds the Stadacona cure beside Cartier's report;
+"Iligliuk" finds her charts).
+
+**App.** Discover → People in History gains a "Knowledge Given" card opening the list
+(`/knowledge`): kind chips with counts, a card per record with portrait, kind, year, title,
+person, the opening of what was given and who received it. A record's page (`/knowledge/:id`)
+shows Given by (opens the biography), To (opens the explorer), Where (opens the map), What was
+given, What came of it, and Sources. `KnowledgeGivenList` rows appear on a figure's page, in an
+explorer's modal and on a water's or place's sheet (the Coppermine's sheet lists Matonabbee,
+Akaitcho and Tattannoeuck; Fort St. James lists Kwah and Amelia Douglas). Search hits of the new
+type open the record.
+
+Also in this change, on the owner's instruction: the narrator Male / Female switch is in
+Settings only; the cards and the document page keep just Read aloud.
+
+Build required for the app side; the records, sources and API are live now.
+
 ### 10.6 Order of work
 10.5's three features first (citations, then expedition routes, then the cartography gallery, because routes and maps both cite); then 1, 3, 5, 16, 18, 6, 7, 9, 10, 11, 13, 12, 17, 4; item 8 when recordings exist.
 

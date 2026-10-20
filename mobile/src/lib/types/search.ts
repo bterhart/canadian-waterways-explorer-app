@@ -16,6 +16,7 @@ export type SearchType =
   | 'discovery'
   | 'quiz'
   | 'story'
+  | 'knowledge'
   | 'decade';
 
 export interface SearchHit {
@@ -54,6 +55,7 @@ export const SEARCH_TYPE_LABEL: Record<SearchType, string> = {
   discovery: 'Discoveries',
   quiz: 'Quizzes',
   story: 'Stories',
+  knowledge: 'Knowledge given',
   decade: 'Decades',
 };
 
@@ -74,5 +76,6 @@ export const SEARCH_TYPE_COLOR: Record<SearchType, string> = {
   discovery: '#B91C1C',
   quiz: '#0E7490',
   story: '#7C2D12',
+  knowledge: '#047857',
   decade: '#8B5A2B',
 };
