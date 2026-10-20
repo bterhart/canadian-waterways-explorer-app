@@ -11,6 +11,8 @@ export interface HistoricalMapSummary {
   region: string | null;
   imageUrl: string;
   imageCredit: string;
+  /** Short projection label read from the sheet (2026-10-20); absent on older servers. */
+  projection?: string | null;
   hasBounds: boolean;
 }
 
@@ -36,6 +38,9 @@ export interface HistoricalMapDetail {
   sourceUrl: string | null;
   sourceNote: string | null;
   bounds: MapBounds | null;
+  /** The sheet's projection and how it was re-projected for the overlay (2026-10-20). */
+  projection?: string | null;
+  projectionNote?: string | null;
   /** Mercator-ready copy for the live-map overlay (cropped to the neatline, latitudes re-sampled); absent on older servers. */
   overlayImageUrl?: string | null;
   cartographer: { id: string; name: string; birthYear: number | null; deathYear: number | null; nationality: string | null; biography: string | null; notableMaps: string | null } | null;

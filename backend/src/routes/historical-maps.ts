@@ -21,7 +21,7 @@ const parseIds = (value: string | null): string[] => {
 historicalMapsRouter.get("/", async (c) => {
   const rows = await db.historicalMap.findMany({
     orderBy: [{ year: "asc" }, { sortOrder: "asc" }],
-    select: { id: true, title: true, mapmaker: true, mapmakerNation: true, year: true, yearLabel: true, region: true, imageUrl: true, imageCredit: true, boundsSwLat: true },
+    select: { id: true, title: true, mapmaker: true, mapmakerNation: true, year: true, yearLabel: true, region: true, imageUrl: true, imageCredit: true, projection: true, boundsSwLat: true },
   });
   return c.json({ data: rows.map(({ boundsSwLat, ...r }) => ({ ...r, hasBounds: boundsSwLat !== null })) });
 });

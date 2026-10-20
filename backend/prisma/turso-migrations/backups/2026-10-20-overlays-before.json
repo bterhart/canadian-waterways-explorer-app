@@ -1,7 +1,52 @@
 {
- "generatedAt": "2026-10-19T23:17:17.219Z",
+ "generatedAt": "2026-10-19T23:50:10.950Z",
  "apply": true,
  "maps": [
+  {
+   "id": "cmveuocvy00057dwp5zibvasd",
+   "title": "Carte de la Nouvelle France (1632)",
+   "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Champlain's%20map%20of%20New%20France%201632%20(NYPL%20b20643233-5476419).jpg?width=1280",
+   "boundsSwLat": 36.23,
+   "boundsSwLng": -101.54,
+   "boundsNeLat": 63.08,
+   "boundsNeLng": -46.09999999999997
+  },
+  {
+   "id": "cmveuod1400097dwp62u7irbp",
+   "title": "Le Canada, ou Nouvelle France (1656)",
+   "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Le%20Canada%20ou%20Nouvelle%20France%20%26%20c.%20-%20par%20N.%20Sanson%20d'Abbeville%20%3B%20I.%20Somer%20sculpsit%20-%20btv1b8595870r.jpg?width=1280",
+   "boundsSwLat": 32.78,
+   "boundsSwLng": -98.42000000000002,
+   "boundsNeLat": 65.17,
+   "boundsNeLng": -43.96000000000004
+  },
+  {
+   "id": "cmveuodc7000f7dwpugkbxmn4",
+   "title": "Partie de la Nouvelle France (1685)",
+   "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Partie%20de%20la%20Nouvelle%20France%20(Hubert%20Jaillot%201685).jpg?width=1280",
+   "boundsSwLat": 42.97,
+   "boundsSwLng": -103.24,
+   "boundsNeLat": 67.43,
+   "boundsNeLng": -53.88
+  },
+  {
+   "id": "cmveuodhz000i7dwpm1whdmgy",
+   "title": "Partie occidentale du Canada ou de la Nouvelle France (1688)",
+   "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Partie%20occidentale%20du%20Canada%20ou%20de%20la%20Nouvelle%20France%20ou%20sont%20les%20Nations%20des%20Ilinois%2C%20Coronelli%2C%201688.jpg?width=1280",
+   "boundsSwLat": 33.77,
+   "boundsSwLng": -105.6,
+   "boundsNeLat": 52.15,
+   "boundsNeLng": -71.88
+  },
+  {
+   "id": "cmveuodn6000l7dwpi3s9jyh8",
+   "title": "La Louisiana, parte settentrionale (1696)",
+   "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/1696%20Coronelli%20Map%20of%20the%20Great%20Lakes%20(Most%20Accurate%20Map%20of%20the%20Great%20Lakes%20in%20the%2017th%20Century)%20-%20Geographicus%20-%20LaLouisiana-coronelli-1695.jpg?width=1280",
+   "boundsSwLat": 39.52,
+   "boundsSwLng": -102.16,
+   "boundsNeLat": 51.11,
+   "boundsNeLng": -72.38
+  },
   {
    "id": "cmveuodsc000o7dwp4cm3lbq0",
    "title": "Carte de la Rivière Longue (1703)",
@@ -15,10 +60,10 @@
    "id": "cmveuodxl000s7dwpaxkx5xe3",
    "title": "Carte du Canada ou de la Nouvelle France (1703)",
    "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Carte%20du%20Canada%20ou%20de%20la%20Nouvelle%20France%20et%20des%20Decouvertes%20qui%20y%20ont%20%C3%A9t%C3%A9%20faites...%20-%20Par%20Guillaume%20de%20l'Isle...%20%C3%A0%20Paris%2C%201703%20-%20btv1b84933987.jpg?width=1280",
-   "boundsSwLat": null,
-   "boundsSwLng": null,
-   "boundsNeLat": null,
-   "boundsNeLng": null
+   "boundsSwLat": 39.24,
+   "boundsSwLng": -126.24,
+   "boundsNeLat": 78.06,
+   "boundsNeLng": -55.44
   },
   {
    "id": "cmveuoe35000v7dwpkzi20b7w",
@@ -46,6 +91,15 @@
    "boundsSwLng": -138.3,
    "boundsNeLat": 66.2,
    "boundsNeLng": -59.8
+  },
+  {
+   "id": "cmveuoej000157dwplbnzhn0d",
+   "title": "A Map Exhibiting all the New Discoveries in the Interior Parts of North America (1795)",
+   "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/A%20map%20exhibiting%20all%20the%20new%20discoveries%20in%20the%20interior%20parts%20of%20North%20America%20LOC%202001620920.jpg?width=1280",
+   "boundsSwLat": 27,
+   "boundsSwLng": -145,
+   "boundsNeLat": 66,
+   "boundsNeLng": -58
   },
   {
    "id": "cmveuoeoo00197dwpvg0ilst4",

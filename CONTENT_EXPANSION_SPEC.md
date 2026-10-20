@@ -1688,7 +1688,98 @@ labels are unevenly spaced because straight borders cut curved parallels), and *
 1688 and 1696, Jaillot 1685, Sanson 1656, Champlain 1632 and Bressani 1657** are on conic or
 sinusoidal projections with curved meridians or parallels. A conic model with a fitted apex
 and cone constant is the next step for them. The Harleian mappemonde is a world map on a Dieppe
-projection and will not be overlaid.
+projection and will not be overlaid. (Done the same day: 10.14.)
+
+### 10.14 The cone-apex model, the 17th-century sheets, and each map's projection (2026-10-20; API and data live, build required)
+
+Owner's instruction: "Build the cone-apex model and make note of the different map projection.
+That's an important differentiator as Mercator's projection was a seminal step forward in
+cartography." Fourteen of the sixteen sheets now overlay; the two that cannot (Harleian,
+Bressani) say why on their page.
+
+**Arrowsmith 1795, conic.** The thirteen meridians labelled along both the top (y=40) and
+bottom (y=3160) borders are straight lines. Their 78 pairwise intersections lie within 30
+pixels of one point, the apex, at (1843, -1488): 1,488 pixels above the top edge of the
+3840-pixel copy. The angle from the apex is 0.690 degrees per degree of longitude about a
+central meridian of 101.9 W (fitted by least squares, residuals under 5 pixels). The parallels
+cross the left and right borders as arcs of circles about a *different* centre, (1636, -1148),
+radius 2,341 pixels at 60 N growing 64.9 pixels per degree southward; Arrowsmith's cone is not
+a textbook one, which is why the first fit, with a shared centre, failed. The model
+(`ConicModel`, `conicSource`) places each pixel of the Mercator copy by intersecting its
+meridian's ray with its parallel's arc. Output 66-27 N, 145-58 W. Check: Superior, Churchill,
+York Factory, Athabasca, Great Slave Lake, the Mackenzie mouth, Bella Coola, Montreal, New
+Orleans, St John's, Nootka, Santa Fe and the south end of Winnipeg all land within a degree.
+
+**The 17th-century sheets** turned out, on reading, not to be conic at all: every one is a
+trapezoid (uniform latitudes, straight meridians converging northward) with longitude counted
+east of "Ferro". Tick positions were taken from darkness profiles of the borders
+(`scratchpad/georef/prof.py`), the labels from magnified crops (`c4/`), and a `--preview <dir>`
+flag was added to the migration so a model can be checked on a local copy before anything
+reaches R2 or Turso. What the reading showed is that the prime meridian differs by a dozen
+degrees from sheet to sheet: Sanson draws Quebec at 305.4, Jaillot at 317.9, and Coronelli sets
+Michilimackinac ten degrees too far west of Ferro at the modern reckoning. So, as was already
+done for Lahontan, each sheet is fixed by placing one well-surveyed anchor where it draws it,
+and the constant is recorded in the migration (`PM_JAILLOT` 389.1, `PM_SANSON` 376.6,
+`PM_CORONELLI_1696` 372.1, `PM_CORONELLI_1688` 372.7, `PM_CHAMPLAIN` 383.7: the number to
+subtract from a sheet longitude to get a Greenwich one; 382.34 would be Ferro at 20 W of Paris).
+
+- **Jaillot 1685.** Latitudes 65 N at y=315 to 45 N at y=2396 on both sides (104 px per
+  degree); longitudes 40.6 px per degree along the top, 75.4 along the bottom, 310 vertical at
+  x=1879. Fixed on Quebec. Check: Quebec, Tadoussac, Montreal, Anticosti, Cape Breton, Port
+  Royal, Belle Isle, James Bay and the Sault land; Hudson Bay is drawn eight degrees too far
+  east, Port Nelson with it.
+- **Sanson 1656.** Latitudes 65 N at y=124 to 35 N at y=2541 (80.6 px per degree); longitudes
+  33.0 px per degree along the top, 68.1 along the bottom, 305 at x≈1930. Fixed on Quebec, which
+  puts Sanson's meridian about 16 W of Greenwich. Check: Quebec, Tadoussac, Montreal, Port Royal,
+  Cape Breton, Belle Isle, Port Nelson, Resolution Island, New York within a degree or so.
+- **Coronelli 1688.** Latitudes 45 N at y=1152 to 40 N at y=1821 (133.8 px per degree);
+  longitudes 68.4 px per degree along the top, 99.8 along the bottom. Fixed on Michilimackinac.
+  Check: Superior, the Sault, Green Bay, Michilimackinac land; Chicago and Detroit two to three
+  degrees off; the Mississippi runs some eight degrees west of its course.
+- **Coronelli 1696** (the Venetian sheet of the same survey). Latitudes 50 N at y=323 to 45 N
+  at y=1238 (183 px per degree); longitudes 101.5 px per degree along the top, 123.2 along the
+  bottom. Fixed on Michilimackinac. Check: Superior, the Sault, Niagara, Green Bay land; the
+  south end of Michigan about three degrees west.
+- **Champlain 1632.** Degrees are numbered in cells: latitude 62 at y=250 to 38 at y=2136
+  (78.6 px per degree) down both sides; longitude 261 to 361 along the top (35.9 px per degree)
+  and 283 to 337 along the bottom (65.7 px per degree), meridian 311 running from x=1875 at the
+  top to x=1960 at the bottom. Fixed on Quebec, which puts Champlain's meridian 23.7 W of
+  Greenwich. Check: Quebec, Tadoussac, Port Royal, Sable Island, Anticosti land; Belle Isle a
+  degree or two; Lake Huron and Cape Cod far west, as Champlain had them.
+- **Bressani 1657** has no numbered graticule (a tick scale of latitude down the left edge and
+  pictorial borders), so it stays image-only, as the Harleian mappemonde does.
+
+Bounds now in Turso for all fourteen (verified after the apply): Champlain 36.23-63.08 N,
+101.54-46.10 W; Sanson 32.78-65.17 N, 98.42-43.96 W; Jaillot 42.97-67.43 N, 103.24-53.88 W;
+Coronelli 1688 33.77-52.15 N, 105.60-71.88 W; Coronelli 1696 39.52-51.11 N, 102.16-72.38 W; the
+nine of 10.13 unchanged.
+
+**Projection recorded for every sheet.** Two columns added to `HistoricalMap` in Turso
+(`2026-10-20-historical-map-projection.sql`, ALTER TABLE ADD COLUMN, "Created: 2"; mirrored in
+`schema.prisma`, client regenerated): `projection`, a short label, and `projectionNote`, a
+paragraph read from the sheet's own graticule saying how it is constructed and how it was placed.
+`2026-10-20-historical-map-projections.ts` fills both for all 16 (dry run, backup, apply,
+verify; it aborts if its list and Turso disagree on ids or titles). The labels: Harleian "Plane
+chart (Dieppe school)"; Champlain "Trapezoidal (Champlain's own meridian)"; Sanson, Jaillot,
+both Coronellis, Lahontan and Delisle "Trapezoidal (Ferro meridian)"; Bressani "Plane chart (no
+numbered graticule)"; Bellin "Trapezoidal (Paris meridian)"; Mitchell "Trapezoidal (London
+meridian)"; Pond, Mackenzie and Franklin "Plate carrée"; Arrowsmith "Conic, apex above the
+sheet"; Thompson "Mercator". The list route now returns `projection`; the detail route returns
+both. On the map's page a new **Projection** section shows the label, the note, and a fixed
+paragraph on why it matters: the live map underneath is drawn on Mercator's projection of 1569,
+the first on which a straight line is a constant compass bearing and the one every digital map
+still uses, so a sheet on any other projection has to be re-projected before it can lie over it,
+which is what "View on the map" shows. The overlay strip on the map tab adds the projection
+after the year (title · mapmaker · year · projection).
+
+**Back link.** Owner: "I don't like the 'Back to the map's page'. It's too distracting. The
+text is fine, simply make it a plain text link and center it in the call-out." The chevron
+button is gone; the same words are a plain underlined text link centred in the overlay strip.
+
+Build required for the page section, the strip subtitle and the back link. The overlay copies,
+bounds and projection notes are live in R2 and Turso now; a build that already reads
+`overlayImageUrl` (10.13) will show the five new overlays without a rebuild, one that does not
+will stretch the gallery image by its corners until rebuilt.
 
 ### 10.6 Order of work
 10.5's three features first (citations, then expedition routes, then the cartography gallery, because routes and maps both cite); then 1, 3, 5, 16, 18, 6, 7, 9, 10, 11, 13, 12, 17, 4; item 8 when recordings exist.

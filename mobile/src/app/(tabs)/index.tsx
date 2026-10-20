@@ -4,7 +4,7 @@ import { View, Text, ActivityIndicator, StyleSheet, TouchableOpacity, ScrollView
 import MapView, { Marker, PROVIDER_DEFAULT, Region, Polyline, Polygon, Overlay, type MapPressEvent } from 'react-native-maps';
 import { useHistoricalMap } from '@/lib/api/historical-maps-api';
 import type { LayoutChangeEvent } from 'react-native';
-import { Menu, ChevronDown, ChevronRight, ChevronLeft, Globe2, X, Route, Layers, Network, History, Search as SearchIcon } from 'lucide-react-native';
+import { Menu, ChevronDown, ChevronRight, Globe2, X, Route, Layers, Network, History, Search as SearchIcon } from 'lucide-react-native';
 import { useExpeditions, useExpedition } from '@/lib/api/expeditions-api';
 import { useWaterwaySystem, useDecade } from '@/lib/api/connections-api';
 import type { ExpeditionLeg, ExpeditionSummary } from '@/lib/types/expeditions';
@@ -1374,7 +1374,7 @@ export default function MapScreen() {
               <Text style={styles.expeditionStripSubtitle} numberOfLines={1}>
                 {overlayMap
                   ? overlayMap.bounds
-                    ? `${overlayMap.mapmaker} · ${overlayMap.yearLabel ?? overlayMap.year}`
+                    ? `${overlayMap.mapmaker} · ${overlayMap.yearLabel ?? overlayMap.year}${overlayMap.projection ? ` · ${overlayMap.projection}` : ''}`
                     : 'This map has no overlay bounds'
                   : 'Fetching the map record'}
               </Text>
@@ -1383,15 +1383,14 @@ export default function MapScreen() {
               <X size={16} color="#6B7280" strokeWidth={2.5} />
             </TouchableOpacity>
           </View>
-          {/* Way back to the page the overlay came from */}
+          {/* Way back to the page the overlay came from: a plain centred text link */}
           {overlayMap ? (
             <TouchableOpacity
               onPress={() => router.push(`/historical-maps/${overlayMap.id}`)}
-              style={styles.overlayBackButton}
-              accessibilityRole="button"
+              style={styles.overlayBackLink}
+              accessibilityRole="link"
               accessibilityLabel="Back to this map's page"
             >
-              <ChevronLeft size={14} color="white" />
               <Text style={styles.overlayBackText}>Back to the map's page</Text>
             </TouchableOpacity>
           ) : null}
@@ -1895,8 +1894,8 @@ const styles = StyleSheet.create({
   opacityChipTextActive: { color: 'white' },
   opacityAbout: { marginLeft: 'auto', paddingHorizontal: 8, paddingVertical: 3 },
   opacityAboutText: { fontSize: 11, color: '#3B82A3', textDecorationLine: 'underline', fontWeight: '600' },
-  overlayBackButton: { flexDirection: 'row', alignItems: 'center', gap: 4, alignSelf: 'flex-start', backgroundColor: '#8B5A2B', borderRadius: 10, paddingVertical: 5, paddingHorizontal: 10, marginBottom: 6 },
-  overlayBackText: { color: 'white', fontSize: 12, fontWeight: '700' },
+  overlayBackLink: { alignSelf: 'center', paddingVertical: 4, marginBottom: 2 },
+  overlayBackText: { color: '#3B82A3', fontSize: 12, fontWeight: '600', textDecorationLine: 'underline' },
   legMarker: { minWidth: 26, height: 26, borderRadius: 13, paddingHorizontal: 6, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: 'white' },
   legMarkerWide: { paddingHorizontal: 8 },
   highlightDot: { width: 14, height: 14, borderRadius: 7, borderWidth: 2, borderColor: 'white' },
