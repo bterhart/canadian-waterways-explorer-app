@@ -59,6 +59,9 @@ export const fr: Record<TranslationKey, string> = {
   voiceMale: 'Homme',
   voiceFemale: 'Femme',
   knowledgeGiven: 'Savoirs transmis',
+  journeys: 'Voyages',
+  voyageurJourneys: 'Voyages de voyageurs',
+  voyageurJourneysDesc: 'Pagayez avec la brigade, franchissez le Chilkoot, suivez Mackenzie vers le Pacifique : chaque choix noté selon ce qui est vraiment arrivé',
   knowledgeGivenDesc: 'Les routes, cartes, paroles et remèdes que les expéditions doivent à des Autochtones nommés',
   clearFilter: 'Effacer le filtre',
 

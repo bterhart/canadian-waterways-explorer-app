@@ -56,6 +56,9 @@ export const en = {
   voiceMale: 'Male',
   voiceFemale: 'Female',
   knowledgeGiven: 'Knowledge Given',
+  journeys: 'Journeys',
+  voyageurJourneys: 'Voyageur Journeys',
+  voyageurJourneysDesc: 'Paddle the brigade, cross the Chilkoot, race Mackenzie to the Pacific: every choice scored against what really happened',
   knowledgeGivenDesc: 'The routes, maps, words and cures the expeditions owed to named Indigenous people',
   clearFilter: 'Clear Filter',
 
