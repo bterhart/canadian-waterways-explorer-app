@@ -24,7 +24,7 @@ export async function listThenAndNow(filter: { locationId?: string; waterwayId?:
       ...(filter.locationId ? { locationId: filter.locationId } : {}),
       ...(filter.waterwayId ? { waterwayId: filter.waterwayId } : {}),
     },
-    orderBy: [{ thenYear: "asc" }, { sortOrder: "asc" }],
+    orderBy: [{ thenYear: { sort: "asc", nulls: "last" } }, { sortOrder: "asc" }],
   });
   const locationIds = [...new Set(rows.map((r) => r.locationId).filter((x): x is string => !!x))];
   const waterwayIds = [...new Set(rows.map((r) => r.waterwayId).filter((x): x is string => !!x))];

@@ -65,7 +65,7 @@ const PAIRS: Pair[] = [
   {
     id: "tn_fort_edmonton", title: "Fort Edmonton", location: "Fort Edmonton",
     then: { file: "Kane Fort Edmonton.jpg", year: 1849, yearLabel: "1849–56", caption: "Fort Edmonton above the North Saskatchewan, painted by Paul Kane from his visit of 1846." },
-    now: { file: "Fort Edmonton Cabin.jpg", year: 2003, caption: "A cabin inside the reconstructed fort of 1846 at Fort Edmonton Park." },
+    now: { file: "Fort Edmonton Cabin.jpg", year: 2003, caption: "The three-storey Big House of the reconstructed fort of 1846 at Fort Edmonton Park." },
     note: "The fort Kane painted stood on the river flat below the legislature until 1915. Fort Edmonton Park rebuilt it in the 1970s on a different stretch of the river, to Kane's and the company's records.",
   },
   {
@@ -107,7 +107,7 @@ const PAIRS: Pair[] = [
   {
     id: "tn_fort_frontenac", title: "Fort Frontenac", location: "Fort Frontenac",
     then: { file: "Fort frontenac.jpg", year: 1685, caption: "Fort Frontenac at Cataraqui in 1685, in a plan of the French fort." },
-    now: { file: "2018-10-05 Fort Frontenac 005.jpg", year: 2018, caption: "The Fort Frontenac of today, a Canadian Forces college on the site in Kingston." },
+    now: { file: "2018-10-05 Fort Frontenac 005.jpg", year: 2018, caption: "The uncovered remains of Fort Frontenac's walls in Kingston, beside the Canadian Forces college that holds the site." },
     note: "Frontenac built the fort in 1673 and La Salle held it as his seigneury; the French demolished it in 1758 before Bradstreet's attack. The British fort and the city of Kingston grew on the ground, and the army still holds it.",
   },
 ];

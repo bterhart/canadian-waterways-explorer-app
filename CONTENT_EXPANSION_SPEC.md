@@ -2093,7 +2093,7 @@ licence confirmed on Commons before upload; every file passed.
 
 Fifteen pairs, oldest first, each on an existing Location: the Habitation at Port-Royal
 (Champlain's 1613 drawing / the reconstruction's courtyard, 2009); Fort Frontenac (a 1685 plan
-/ the Canadian Forces college on the site, 2018); Fort Edmonton (Paul Kane's painting of
+/ the uncovered remains of its walls, 2018); Fort Edmonton (Paul Kane's painting of
 1849–56 / Fort Edmonton Park, 2003); Fort Langley (a September 1858 view / the national
 historic site, 2018); the graves on Beechey Island (Kane's 1854 engraving / the graves, 2010);
 Upper Fort Garry (the gallery's view of about 1872 / the Governor's Gate, 2019); Montreal
