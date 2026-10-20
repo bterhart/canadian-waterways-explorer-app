@@ -87,6 +87,9 @@ export default function SearchScreen() {
       case 'story':
         router.push(`/stories/${t.storyId}`);
         return;
+      case 'knowledge':
+        router.push(`/knowledge/${t.knowledgeId}`);
+        return;
       case 'decade':
         router.push(`/decades/${t.decade}`);
         return;

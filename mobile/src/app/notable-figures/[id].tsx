@@ -28,6 +28,7 @@ import { useExplorerDetail } from '@/lib/api/waterways-api';
 import ExplorerDetailModal from '@/components/ExplorerDetailModal';
 import { ReadingGuideList } from '@/components/ReadingGuideList';
 import { SourcesList } from '@/components/SourcesList';
+import { KnowledgeGivenList } from '@/components/KnowledgeGivenList';
 
 const colors = {
   forestGreen: '#2D5A3D',
@@ -262,6 +263,13 @@ export default function NotableFigureDetailScreen() {
                 </View>
               ))}
             </View>
+          </View>
+        ) : null}
+
+        {/* Knowledge given (roadmap item 16): what this person gave the expeditions */}
+        {figure.knowledgeGiven && figure.knowledgeGiven.length > 0 ? (
+          <View style={styles.section}>
+            <KnowledgeGivenList records={figure.knowledgeGiven} titleColor={colors.forestGreen} hidePerson />
           </View>
         ) : null}
 

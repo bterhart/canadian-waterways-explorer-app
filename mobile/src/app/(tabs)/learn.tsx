@@ -27,6 +27,7 @@ import {
   Trophy,
   Flame,
   Users,
+  HandHeart,
   HelpCircle,
   Info,
   Compass,
@@ -258,6 +259,14 @@ export default function LearnHubScreen() {
             icon={<Users size={28} color="white" />}
             gradientColors={['#8B5CF6', '#6D28D9'] as const}
             onPress={() => router.push('/notable-figures')}
+          />
+          {/* Knowledge given (roadmap item 16): Indigenous contributions as records */}
+          <FeatureCard
+            title={t('knowledgeGiven')}
+            description={t('knowledgeGivenDesc')}
+            icon={<HandHeart size={28} color="white" />}
+            gradientColors={['#047857', '#065F46'] as const}
+            onPress={() => router.push('/knowledge')}
           />
           {/* Who was here when (roadmap item 1): the decade view */}
           <FeatureCard

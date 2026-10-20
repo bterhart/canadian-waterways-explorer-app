@@ -1,3 +1,4 @@
+import type { KnowledgeRecord } from './knowledge';
 import type { VoiceNear } from './voices';
 // Types for Educational Features
 
@@ -1162,6 +1163,8 @@ export interface NotableFigureDetail extends NotableFigureSummary {
   achievements: string[] | null;
   associatedLocations: string[] | null;
   readingGuide: ReadingGuideItem[];
+  /** What this person gave the expeditions (roadmap item 16); absent on older servers. */
+  knowledgeGiven?: KnowledgeRecord[];
   createdAt: string;
   updatedAt: string;
 }

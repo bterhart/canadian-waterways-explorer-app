@@ -1032,6 +1032,37 @@ model ExpeditionLeg {
 // A structured source for a record: what it was written from and cites (roadmap item 14,
 // 2026-10-19). targetType: waterway | location | explorer | notable_figure | document | discovery.
 // kind: dcb | encyclopedia | edition | archive | place_name_record | parks_canada | book | article | web.
+// Indigenous contributions as records (roadmap item 16, 2026-10-20): one thing a named person gave
+// an expedition. kind: route_shown | map_drawn | interpreting | testimony | medicine_survival |
+// discovery | diplomacy. Sources are Citation rows with targetType "knowledge_given".
+model KnowledgeGiven {
+  id           String   @id @default(cuid())
+  title        String
+  kind         String
+  year         Int?
+  yearLabel    String?
+  personName   String
+  nation       String?
+  figureId     String?
+  explorerId   String?
+  explorerName String?
+  waterwayId   String?
+  locationId   String?
+  latitude     Float?
+  longitude    Float?
+  given        String
+  outcome      String?
+  sortOrder    Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([kind])
+  @@index([figureId])
+  @@index([explorerId])
+  @@index([waterwayId])
+  @@index([locationId])
+}
+
 model Citation {
   id         String   @id @default(cuid())
   targetType String

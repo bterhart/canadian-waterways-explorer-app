@@ -7,6 +7,7 @@ import type { ExplorerDetail, ExplorerWaterwayDetail } from '@/lib/types/waterwa
 import { decadeOf } from '@/lib/types/connections';
 import { ReadingGuideList } from '@/components/ReadingGuideList';
 import { SourcesList } from '@/components/SourcesList';
+import { KnowledgeGivenList } from '@/components/KnowledgeGivenList';
 
 // Theme colors
 const colors = {
@@ -243,6 +244,13 @@ export default function ExplorerDetailModal({ explorer, onClose }: ExplorerDetai
                   </Pressable>
                 ))}
               </View>
+            </View>
+          ) : null}
+
+          {/* Knowledge given to this explorer by named Indigenous people (roadmap item 16) */}
+          {explorer.knowledgeGiven && explorer.knowledgeGiven.length > 0 ? (
+            <View style={styles.section}>
+              <KnowledgeGivenList records={explorer.knowledgeGiven} titleColor={colors.forestGreen} onBeforeNavigate={onClose} />
             </View>
           ) : null}
 

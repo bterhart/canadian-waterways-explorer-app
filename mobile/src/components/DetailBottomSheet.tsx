@@ -12,6 +12,7 @@ import { ReadingGuideList } from './ReadingGuideList';
 import { SourcesList } from './SourcesList';
 import { FollowTheWater } from './FollowTheWater';
 import { VoiceCard } from './VoiceCard';
+import { KnowledgeGivenList } from './KnowledgeGivenList';
 import { useVoices } from '@/lib/api/voices-api';
 import { decadeOf } from '@/lib/types/connections';
 import { useExploration } from '@/lib/exploration';
@@ -900,6 +901,9 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                     </View>
                   ) : null}
 
+                  {/* Knowledge given on this water (roadmap item 16) */}
+                  <KnowledgeGivenList records={waterwayData.knowledgeGiven} titleColor={colors.earthBrown} onBeforeNavigate={onClose} />
+
                   {/* In their own words: checked transcriptions written on this water (roadmap item 5) */}
                   {voicesHere.length > 0 ? (
                     <View className="mb-4" style={{ gap: 10 }}>
@@ -1174,6 +1178,9 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                       </View>
                     </View>
                   ) : null}
+
+                  {/* Knowledge given at this place (roadmap item 16) */}
+                  <KnowledgeGivenList records={locationData.knowledgeGiven} titleColor={colors.earthBrown} onBeforeNavigate={onClose} />
 
                   {/* In their own words: checked transcriptions written at this place (roadmap item 5) */}
                   {voicesHere.length > 0 ? (

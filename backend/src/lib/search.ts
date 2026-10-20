@@ -28,12 +28,13 @@ export type SearchType =
   | "discovery"
   | "quiz"
   | "story"
+  | "knowledge"
   | "decade";
 
 export const SEARCH_TYPES: SearchType[] = [
   "waterway", "location", "explorer", "notable_figure", "document", "timeline_event", "historical_event",
   "lesson_plan", "field_trip", "historical_map", "indigenous_word", "pronunciation", "expedition",
-  "discovery", "quiz", "story", "decade",
+  "discovery", "quiz", "story", "knowledge", "decade",
 ];
 
 export interface SearchEntry {
@@ -85,7 +86,7 @@ async function buildIndex(): Promise<SearchEntry[]> {
   const [
     waterways, locations, explorers, figures, documents, timeline, historical, lessons, trips, maps,
     words, pronunciations, expeditions, discoveries, quizzes, stories, visits,
-  ] = await Promise.all([
+   knowledge] = await Promise.all([
     db.waterway.findMany({ select: { id: true, name: true, indigenousName: true, indigenousLanguage: true, regionName: true, description: true, historicalSignificance: true, latitude: true, longitude: true, type: { select: { name: true } }, furTradeInfo: { select: { tradingCompany: true, peakTradePeriod: true, primaryFurs: true, tradeRouteNotes: true } } } }),
     db.location.findMany({ select: { id: true, name: true, indigenousName: true, indigenousLanguage: true, locationType: true, yearEstablished: true, description: true, historicalNotes: true, latitude: true, longitude: true, waterway: { select: { name: true } } } }),
     db.explorer.findMany({ select: { id: true, name: true, nationality: true, birthYear: true, deathYear: true, biography: true, notableAchievements: true } }),
@@ -103,6 +104,7 @@ async function buildIndex(): Promise<SearchEntry[]> {
     db.quiz.findMany({ where: { isPublished: true }, select: { id: true, title: true, description: true, category: true, gradeLevel: true, difficulty: true } }),
     db.indigenousStory.findMany({ where: { isPublished: true }, select: { id: true, title: true, nation: true, language: true, summary: true, theme: true, gradeLevel: true } }),
     db.explorerWaterway.findMany({ where: { yearExplored: { not: null } }, select: { waterwayId: true, yearExplored: true, explorer: { select: { name: true } } } }),
+    db.knowledgeGiven.findMany({ select: { id: true, title: true, kind: true, year: true, yearLabel: true, personName: true, nation: true, explorerName: true, given: true, outcome: true, explorerId: true, figureId: true } }),
   ]);
 
   const visitsByWater = new Map<string, { year: number; explorer: string }[]>();
@@ -165,6 +167,18 @@ async function buildIndex(): Promise<SearchEntry[]> {
       body: [str(f.nation), f.role, f.figureType, f.biography, str(f.significance)],
       years: [f.birthYear, f.deathYear].filter((y): y is number => typeof y === "number"),
       target: { notableFigureId: f.id },
+    });
+  }
+  for (const k of knowledge) {
+    entries.push({
+      type: "knowledge",
+      id: k.id,
+      title: k.title,
+      subtitle: [k.personName, k.nation, k.yearLabel ?? (k.year ? String(k.year) : null)].filter(Boolean).join(" · ") || null,
+      names: [k.personName, str(k.explorerName)],
+      body: [str(k.nation), k.kind.replace("_", " "), k.given, str(k.outcome)],
+      years: k.year ? [k.year] : [],
+      target: { knowledgeId: k.id, explorerId: k.explorerId, notableFigureId: k.figureId },
     });
   }
   for (const d of documents) {

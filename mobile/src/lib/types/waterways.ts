@@ -1,3 +1,4 @@
+import type { KnowledgeRecord } from './knowledge';
 // Types for Canadian Waterways Education App
 import type { ExplorerExpedition } from './expeditions';
 import type {
@@ -165,6 +166,8 @@ export interface WaterwayDetail {
   discoveries: ArchaeologicalDiscovery[];
   connections: WaterwayConnection[];
   readingGuide: ReadingGuideEntry[];
+  /** Knowledge given here or to this person by named Indigenous people (roadmap item 16); absent on older servers. */
+  knowledgeGiven?: KnowledgeRecord[];
 }
 
 // Waterway overview geometry types
@@ -270,6 +273,8 @@ export interface LocationDetail {
   };
   cartographer: Cartographer | null;
   readingGuide: ReadingGuideEntry[];
+  /** Knowledge given here or to this person by named Indigenous people (roadmap item 16); absent on older servers. */
+  knowledgeGiven?: KnowledgeRecord[];
 }
 
 // Explorer types
@@ -306,6 +311,8 @@ export interface ExplorerDetail {
   imageUrl: string | null;
   waterways: ExplorerWaterwayDetail[];
   readingGuide: ReadingGuideEntry[];
+  /** Knowledge given here or to this person by named Indigenous people (roadmap item 16); absent on older servers. */
+  knowledgeGiven?: KnowledgeRecord[];
   /** Expedition route layer (roadmap item 2): the explorer's dated journeys, absent on older servers. */
   expeditions?: ExplorerExpedition[];
   /** Everything about this person (roadmap item 1): the records that name the explorer, absent on older servers. */

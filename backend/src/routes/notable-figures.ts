@@ -4,6 +4,7 @@ import { z } from "zod";
 import { db } from "../db";
 import { requireAdmin } from "../lib/admin-middleware";
 import { getReadingGuide } from "../lib/reading-guides";
+import { listKnowledge } from "../lib/knowledge";
 
 const notableFiguresRouter = new Hono();
 
@@ -216,9 +217,10 @@ notableFiguresRouter.get("/:id", async (c) => {
   }
 
   // Parse JSON fields; associated explorers gain an explorerId the app can open
-  const [associatedExplorers, readingGuide] = await Promise.all([
+  const [associatedExplorers, readingGuide, knowledgeGiven] = await Promise.all([
     resolveAssociatedExplorers(figure.associatedExplorers),
     getReadingGuide("notable_figure", figure.id),
+    listKnowledge({ figureId: figure.id }), // what this person gave the expeditions (roadmap item 16)
   ]);
   const parsedFigure = {
     ...figure,
@@ -228,6 +230,7 @@ notableFiguresRouter.get("/:id", async (c) => {
       ? JSON.parse(figure.associatedLocations)
       : null,
     readingGuide,
+    knowledgeGiven,
   };
 
   return c.json({ data: parsedFigure });

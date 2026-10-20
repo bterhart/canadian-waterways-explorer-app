@@ -58,6 +58,8 @@ export const fr: Record<TranslationKey, string> = {
   narratorVoiceDesc: 'Qui lit les sources à voix haute',
   voiceMale: 'Homme',
   voiceFemale: 'Femme',
+  knowledgeGiven: 'Savoirs transmis',
+  knowledgeGivenDesc: 'Les routes, cartes, paroles et remèdes que les expéditions doivent à des Autochtones nommés',
   clearFilter: 'Effacer le filtre',
 
   // Waterway Types
