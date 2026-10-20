@@ -50,6 +50,11 @@ export const en = {
   whereWritten: 'Where these words were written',
   readFull: 'Read the whole passage',
   readLess: 'Show less',
+  hearTheSource: 'Hear the source',
+  narratorVoice: 'Narrator voice',
+  narratorVoiceDesc: 'Who reads the sources aloud',
+  voiceMale: 'Male',
+  voiceFemale: 'Female',
   clearFilter: 'Clear Filter',
 
   // Waterway Types

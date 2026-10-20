@@ -1850,6 +1850,47 @@ voice cards, each with Read aloud and the way to the document.
 Build required for all of the app side (the expo-speech module needs the native build); the
 spots, links and the voices API are live now.
 
+### 10.16 The sources speak with xAI voices, and are one tap from the pin (2026-10-20; build required, XAI_API_KEY needed)
+
+Owner, on the first build of 10.15: the phone's voice "needs fixing. Grok has fantastic voice
+defaults. We should be able to pull those voices via my API for Grok... We simply need 1 male
+and 1 female. No need to pretend about accents at this time." And: a river's own call-out did
+not show its sources; "the Coppermine is listed as voices on the map. Voices are clearly not on
+the card but perhaps a layer or two deeper."
+
+**The voices.** `backend/src/lib/tts.ts` calls xAI's text-to-speech (`POST
+https://api.x.ai/v1/tts` with `text`, `voice_id`, `language`, `output_format` mp3 24 kHz 128
+kbps, `speed` 0.95; raw audio back; read from docs.x.ai on 2026-10-20). Each passage is
+synthesised once per narrator and kept on R2 at `voices/<documentId>/<male|female>.mp3`, so a
+passage costs one xAI call per voice ever. The narrators are built-in xAI voices, `rex` (male)
+and `eve` (female), the two the voice documentation names by gender; `XAI_VOICE_MALE` and
+`XAI_VOICE_FEMALE` override them. The language sent is French when the passage reads as French
+(Cartier's Louvain sentence, Champlain's French), else English. The text the voice is given has
+the editions' brackets opened ("[Friday]" is read as Friday), an omitted stretch "[...]" turned
+into a pause, and nothing that could read as one of the engine's own tags. `GET
+/api/voices/:id/audio?voice=male|female` returns the copy's URL, making it on first request;
+`503 TTS_NOT_CONFIGURED` when `XAI_API_KEY` is unset, `502 TTS_FAILED` when xAI refuses.
+Checked locally: without a key the route answers 503; with a wrong key xAI answers 400
+"Incorrect API key provided" and the route answers 502. `scripts/warm-voice-audio.ts` makes all
+54 copies ahead of time (idempotent) once the key is in the environment.
+
+**On the phone.** `useReadAloud(text, documentId)` first asks the server for the spoken copy in
+the reader's narrator and plays it with expo-av (through the speaker even on silent); if the
+server has no copies or the request fails, the phone's own synthesiser reads it as before, so
+Read aloud always works. The narrator is a per-device choice (Male / Female) in Settings and on
+every voice card, kept in AsyncStorage and applied everywhere at once.
+
+**One tap from the pin.** A river's or a place's preview card now carries "Hear the source:
+Samuel Hearne, 1771" for each checked transcription written on that water or at that place
+(the links set in 10.15), and tapping it docks the source's card with Read aloud. The detail
+sheet shows the same sources as cards above Sources. A quote button beside the search button
+turns the Voices layer on and off in one tap, so the filter menu is no longer the only way in;
+the strips move left to clear it.
+
+**Owner's part.** Set `XAI_API_KEY` in Railway's variables for the backend (production and
+preview). Until then the app reads with the phone's voice. Once set, the first play of each
+passage takes a few seconds while the copy is made; running the warm script removes even that.
+
 ### 10.6 Order of work
 10.5's three features first (citations, then expedition routes, then the cartography gallery, because routes and maps both cite); then 1, 3, 5, 16, 18, 6, 7, 9, 10, 11, 13, 12, 17, 4; item 8 when recordings exist.
 

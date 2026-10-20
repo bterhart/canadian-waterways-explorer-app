@@ -6,7 +6,7 @@
  * store images on our CDN rather than referencing external URLs.
  */
 
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand, HeadObjectCommand } from "@aws-sdk/client-s3";
 import { env } from "../env";
 
 /** Returns true when a URL already lives on our R2 CDN. */
@@ -31,6 +31,17 @@ function getS3Client(): S3Client {
       secretAccessKey: env.R2_SECRET_ACCESS_KEY,
     },
   });
+}
+
+/** True when an object already exists at `cdnPath` on R2 (a HEAD request; false when R2 is not configured). */
+export async function cdnObjectExists(cdnPath: string): Promise<boolean> {
+  if (!env.R2_BUCKET_NAME || !env.R2_ACCOUNT_ID) return false;
+  try {
+    await getS3Client().send(new HeadObjectCommand({ Bucket: env.R2_BUCKET_NAME, Key: cdnPath }));
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 /**

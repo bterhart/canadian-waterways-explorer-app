@@ -53,6 +53,11 @@ export const fr: Record<TranslationKey, string> = {
   whereWritten: 'Où ces mots ont été écrits',
   readFull: 'Lire tout le passage',
   readLess: 'Réduire',
+  hearTheSource: 'Écouter la source',
+  narratorVoice: 'Voix du narrateur',
+  narratorVoiceDesc: 'Qui lit les sources à voix haute',
+  voiceMale: 'Homme',
+  voiceFemale: 'Femme',
   clearFilter: 'Effacer le filtre',
 
   // Waterway Types

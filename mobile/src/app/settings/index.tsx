@@ -4,6 +4,7 @@ import { View, Text, Pressable, StyleSheet, ScrollView } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
 import { Globe, Info, ChevronRight, Settings as SettingsIcon, BookOpen, HelpCircle, Play } from 'lucide-react-native';
 import { useTranslation } from '@/lib/i18n';
+import { NarratorToggle } from '@/components/NarratorToggle';
 
 const colors = {
   forestGreen: '#2D5A3D',
@@ -104,6 +105,15 @@ export default function SettingsScreen() {
               onPress={() => router.push('/settings/language')}
               iconBgColor="#3B82F6"
             />
+          </View>
+        </View>
+
+        {/* Narrator voice for the read-aloud sources (roadmap item 5) */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>{t('narratorVoice')}</Text>
+          <View style={[styles.sectionContent, { padding: 16, gap: 10 }]}>
+            <Text style={{ fontSize: 14, color: '#6B7280' }}>{t('narratorVoiceDesc')}</Text>
+            <NarratorToggle color="#2D5A3D" />
           </View>
         </View>
 

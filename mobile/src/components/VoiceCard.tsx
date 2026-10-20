@@ -6,6 +6,7 @@ import { View, Text, Pressable, StyleSheet, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { MessageSquareQuote, MapPin, X, FileText } from 'lucide-react-native';
 import { ReadAloudButton } from '@/components/ReadAloudButton';
+import { NarratorToggle } from '@/components/NarratorToggle';
 import { useTranslation } from '@/lib/i18n';
 import type { Voice } from '@/lib/types/voices';
 
@@ -56,7 +57,8 @@ export function VoiceCard({ voice, onClose, hideOpen, full, compact }: Props) {
         <Text style={styles.quote} numberOfLines={expanded ? undefined : 4}>{body}</Text>
       )}
       <View style={styles.actions}>
-        <ReadAloudButton text={voice.text} color={VOICE_COLOR} compact />
+        <ReadAloudButton text={voice.text} documentId={voice.id} color={VOICE_COLOR} compact />
+        <NarratorToggle color={VOICE_COLOR} compact />
         {canExpand ? (
           <Pressable onPress={() => setExpanded((v) => !v)} hitSlop={6}>
             <Text style={styles.link}>{expanded ? t('readLess') : t('readFull')}</Text>

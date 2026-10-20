@@ -20,6 +20,7 @@ import {
 } from 'lucide-react-native';
 import { Pressable } from 'react-native';
 import { ReadAloudButton } from '@/components/ReadAloudButton';
+import { NarratorToggle } from '@/components/NarratorToggle';
 import { useDocument } from '@/lib/api/education-api';
 import { SourcesList } from '@/components/SourcesList';
 import { getGradeLevelColor, getGradeLevelLabel } from '@/lib/types/education';
@@ -184,7 +185,7 @@ export default function DocumentDetailScreen() {
         <Section
           title={document.originalText ? 'Modern Transcription' : 'Transcription'}
           icon={<FileText size={20} color={colors.forestGreen} />}
-          action={<ReadAloudButton text={document.transcription} color={colors.forestGreen} compact />}
+          action={<View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}><NarratorToggle color={colors.forestGreen} compact /><ReadAloudButton text={document.transcription} documentId={document.id} color={colors.forestGreen} compact /></View>}
         >
           <View style={styles.transcriptionCard}>
             <Text style={styles.transcriptionText}>

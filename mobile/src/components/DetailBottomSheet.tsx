@@ -11,6 +11,8 @@ import type { MarkerType, WaterwayDetail, LocationDetail, UserContribution, Arch
 import { ReadingGuideList } from './ReadingGuideList';
 import { SourcesList } from './SourcesList';
 import { FollowTheWater } from './FollowTheWater';
+import { VoiceCard } from './VoiceCard';
+import { useVoices } from '@/lib/api/voices-api';
 import { decadeOf } from '@/lib/types/connections';
 import { useExploration } from '@/lib/exploration';
 import { useRouter } from 'expo-router';
@@ -158,6 +160,12 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
     );
     const { data: locationData, isLoading: locationLoading } = useLocationDetail(
       markerType === 'location' ? markerId : null
+    );
+    // The sources written on this water or at this place, in their own words (roadmap item 5)
+    const { data: allVoices } = useVoices(!!markerId);
+    const voicesHere = useMemo(
+      () => (allVoices ?? []).filter((v) => (markerType === 'waterway' ? v.waterway?.id === markerId : v.location?.id === markerId)),
+      [allVoices, markerType, markerId]
     );
 
     // Fetch contributions
@@ -892,6 +900,15 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                     </View>
                   ) : null}
 
+                  {/* In their own words: checked transcriptions written on this water (roadmap item 5) */}
+                  {voicesHere.length > 0 ? (
+                    <View className="mb-4" style={{ gap: 10 }}>
+                      {voicesHere.map((voice) => (
+                        <VoiceCard key={voice.id} voice={voice} compact />
+                      ))}
+                    </View>
+                  ) : null}
+
                   {/* Sources (Citation table, roadmap item 14) */}
                   <SourcesList targetType="waterway" targetId={waterwayData.id} titleColor={colors.earthBrown} linkColor={colors.waterBlue} />
 
@@ -1155,6 +1172,15 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                           {locationData.waterway.type?.name || 'Waterway'}
                         </Text>
                       </View>
+                    </View>
+                  ) : null}
+
+                  {/* In their own words: checked transcriptions written at this place (roadmap item 5) */}
+                  {voicesHere.length > 0 ? (
+                    <View className="mb-4" style={{ gap: 10 }}>
+                      {voicesHere.map((voice) => (
+                        <VoiceCard key={voice.id} voice={voice} compact />
+                      ))}
                     </View>
                   ) : null}
 
