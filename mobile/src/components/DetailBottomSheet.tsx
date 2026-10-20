@@ -13,6 +13,7 @@ import { SourcesList } from './SourcesList';
 import { FollowTheWater } from './FollowTheWater';
 import { VoiceCard } from './VoiceCard';
 import { KnowledgeGivenList } from './KnowledgeGivenList';
+import { ThenAndNowCompare } from './ThenAndNowCompare';
 import { useVoices } from '@/lib/api/voices-api';
 import { decadeOf } from '@/lib/types/connections';
 import { useExploration } from '@/lib/exploration';
@@ -901,6 +902,19 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                     </View>
                   ) : null}
 
+                  {/* Then and now (roadmap item 7): a period view and a modern photograph of this water */}
+                  {waterwayData.thenAndNow && waterwayData.thenAndNow.length > 0 ? (
+                    <View className="mb-4">
+                      <Text className="text-lg font-bold mb-2" style={{ color: colors.earthBrown }}>Then and Now</Text>
+                      {waterwayData.thenAndNow.map((pair) => (
+                        <Pressable key={pair.id} onPress={() => { onClose(); router.push(`/then-and-now/${pair.id}`); }} style={{ marginBottom: 12 }} accessibilityRole="button">
+                          <Text className="text-sm font-semibold mb-1" style={{ color: '#1F2937' }}>{pair.title}</Text>
+                          <ThenAndNowCompare pair={pair} height={200} bare />
+                        </Pressable>
+                      ))}
+                    </View>
+                  ) : null}
+
                   {/* Knowledge given on this water (roadmap item 16) */}
                   <KnowledgeGivenList records={waterwayData.knowledgeGiven} titleColor={colors.earthBrown} onBeforeNavigate={onClose} />
 
@@ -1176,6 +1190,19 @@ const DetailBottomSheet = forwardRef<DetailBottomSheetRef, DetailBottomSheetProp
                           {locationData.waterway.type?.name || 'Waterway'}
                         </Text>
                       </View>
+                    </View>
+                  ) : null}
+
+                  {/* Then and now (roadmap item 7): a period view and a modern photograph of this place */}
+                  {locationData.thenAndNow && locationData.thenAndNow.length > 0 ? (
+                    <View className="mb-4">
+                      <Text className="text-lg font-bold mb-2" style={{ color: colors.earthBrown }}>Then and Now</Text>
+                      {locationData.thenAndNow.map((pair) => (
+                        <Pressable key={pair.id} onPress={() => { onClose(); router.push(`/then-and-now/${pair.id}`); }} style={{ marginBottom: 12 }} accessibilityRole="button">
+                          <Text className="text-sm font-semibold mb-1" style={{ color: '#1F2937' }}>{pair.title}</Text>
+                          <ThenAndNowCompare pair={pair} height={200} bare />
+                        </Pressable>
+                      ))}
                     </View>
                   ) : null}
 

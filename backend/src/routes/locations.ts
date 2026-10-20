@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { db } from "../db";
 import { getReadingGuide } from "../lib/reading-guides";
 import { listKnowledge } from "../lib/knowledge";
+import { listThenAndNow } from "../lib/then-and-now";
 
 // Location router with imageUrl support
 const locationsRouter = new Hono();
@@ -138,6 +139,8 @@ const notableFigures = notableFigureRows
   const readingGuide = await getReadingGuide("location", location.id);
   // Knowledge given at this place by named Indigenous people (roadmap item 16)
   const knowledgeGiven = await listKnowledge({ locationId: location.id });
+  // Then-and-now pairs at this place (roadmap item 7)
+  const thenAndNow = await listThenAndNow({ locationId: location.id });
 
   return c.json({
     data: {
@@ -148,6 +151,7 @@ const notableFigures = notableFigureRows
       },
       readingGuide,
       knowledgeGiven,
+      thenAndNow,
     }
   });
 });

@@ -1073,6 +1073,35 @@ model KnowledgeGiven {
   @@index([locationId])
 }
 
+// Then-and-now imagery (roadmap item 7, 2026-10-20): a period image of a spot paired with a
+// modern photograph of the same spot, each with year, caption, credit and source page.
+model ThenAndNow {
+  id            String   @id @default(cuid())
+  title         String
+  locationId    String?
+  waterwayId    String?
+  latitude      Float
+  longitude     Float
+  thenUrl       String
+  thenYear      Int?
+  thenYearLabel String?
+  thenCaption   String
+  thenCredit    String
+  thenSourceUrl String?
+  nowUrl        String
+  nowYear       Int?
+  nowCaption    String
+  nowCredit     String
+  nowSourceUrl  String?
+  note          String?
+  sortOrder     Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([locationId])
+  @@index([waterwayId])
+}
+
 model Citation {
   id         String   @id @default(cuid())
   targetType String

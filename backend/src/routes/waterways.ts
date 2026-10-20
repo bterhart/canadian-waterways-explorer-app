@@ -7,6 +7,7 @@ import { buildGeometry, TIER_CONFIG } from "../lib/kml-geometry";
 import type { BBox, TierName, WaterwayGeometry } from "../lib/kml-geometry";
 import { getReadingGuide } from "../lib/reading-guides";
 import { listKnowledge } from "../lib/knowledge";
+import { listThenAndNow } from "../lib/then-and-now";
 import { getWaterwaySystem } from "../lib/connections";
 
 const waterwaysRouter = new Hono();
@@ -267,6 +268,8 @@ const notableFigures = notableFigureRows
   const readingGuide = await getReadingGuide("waterway", waterway.id);
   // Knowledge given on this water by named Indigenous people (roadmap item 16)
   const knowledgeGiven = await listKnowledge({ waterwayId: waterway.id });
+  // Then-and-now pairs on this water (roadmap item 7)
+  const thenAndNow = await listThenAndNow({ waterwayId: waterway.id });
 
   // Raw KML is never sent to clients (up to 12.7 MB per row); the map draws the
   // boundary from GET /:id/geometry instead.
@@ -280,6 +283,7 @@ const notableFigures = notableFigureRows
       connections,
       readingGuide,
       knowledgeGiven,
+      thenAndNow,
     }
   });
 });

@@ -2063,6 +2063,38 @@ The journey screens had existed since the seed with nothing in the app linking t
 Discover card, no tab, no search type. A "Voyageur Journeys" card now opens them from Discover,
 in its own Journeys section above Cartography. Build required (72).
 
+### 10.20 Then-and-now imagery (item 7, delivered 2026-10-20; API and data live, build required)
+
+Roadmap item 7: "period illustrations in the galleries paired with a modern photograph of the
+same spot." The galleries hold 1,144 images, 46 of them identifiably period views, none paired
+with anything; a pair needs its own record, with both images' years, captions, credits and
+source pages, a place, and a note on what changed.
+
+**The record.** `ThenAndNow` in Turso (`2026-10-20-then-and-now.sql`, CREATE-only, "Created:
+3"; mirrored in `schema.prisma`): title, `locationId` or `waterwayId`, coordinates, and for
+each side the image URL, year (and a year label for a range), caption, credit and the Commons
+file page; `note` says what changed. `GET /api/then-and-now` lists the pairs oldest first,
+`/:id` returns one, and the waterway and location detail routes return `thenAndNow` for their
+record.
+
+**The pairs** (`2026-10-20-then-and-now-seed.ts`). Each pair names two Wikimedia Commons files.
+At run time the script reads each file's author and licence from the Commons API, so the credit
+is what Commons records rather than what was typed; it refuses any file that is not public
+domain or Creative Commons; it copies both images to R2 (`then-and-now/<id>/then.jpg`,
+`now.jpg`) so the app never depends on Commons' thumbnail service; and it places the pair on
+the app's own Location by exact name. __PAIRS_SUMMARY__
+
+**On the phone.** `ThenAndNowCompare` shows both images in one frame with a handle to drag
+between them (the period view on the left, the photograph on the right, the years tagged on
+each side; a PanResponder over two images, no new dependency), with each image's caption and
+credit under it, the credit opening the Commons file page. Discover's Cartography section gains a
+"Then and Now" card opening the gallery (`/then-and-now`): a card per pair with the slide and
+the note. A pair's page (`/then-and-now/:id`) shows the slide at full width, what changed, and
+"Show on the map". A water's or place's sheet shows its pairs under "Then and Now", above
+Knowledge given, each opening its page.
+
+Build required for the app side; the pairs and API are live now.
+
 ### 10.6 Order of work
 10.5's three features first (citations, then expedition routes, then the cartography gallery, because routes and maps both cite); then 1, 3, 5, 16, 18, 6, 7, 9, 10, 11, 13, 12, 17, 4; item 8 when recordings exist.
 

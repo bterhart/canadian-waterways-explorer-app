@@ -1,3 +1,4 @@
+import type { ThenAndNowPair } from './then-and-now';
 import type { KnowledgeRecord } from './knowledge';
 // Types for Canadian Waterways Education App
 import type { ExplorerExpedition } from './expeditions';
@@ -168,6 +169,8 @@ export interface WaterwayDetail {
   readingGuide: ReadingGuideEntry[];
   /** Knowledge given here or to this person by named Indigenous people (roadmap item 16); absent on older servers. */
   knowledgeGiven?: KnowledgeRecord[];
+  /** Then-and-now pairs here (roadmap item 7); absent on older servers. */
+  thenAndNow?: ThenAndNowPair[];
 }
 
 // Waterway overview geometry types
@@ -275,6 +278,8 @@ export interface LocationDetail {
   readingGuide: ReadingGuideEntry[];
   /** Knowledge given here or to this person by named Indigenous people (roadmap item 16); absent on older servers. */
   knowledgeGiven?: KnowledgeRecord[];
+  /** Then-and-now pairs here (roadmap item 7); absent on older servers. */
+  thenAndNow?: ThenAndNowPair[];
 }
 
 // Explorer types
@@ -313,6 +318,8 @@ export interface ExplorerDetail {
   readingGuide: ReadingGuideEntry[];
   /** Knowledge given here or to this person by named Indigenous people (roadmap item 16); absent on older servers. */
   knowledgeGiven?: KnowledgeRecord[];
+  /** Then-and-now pairs here (roadmap item 7); absent on older servers. */
+  thenAndNow?: ThenAndNowPair[];
   /** Expedition route layer (roadmap item 2): the explorer's dated journeys, absent on older servers. */
   expeditions?: ExplorerExpedition[];
   /** Everything about this person (roadmap item 1): the records that name the explorer, absent on older servers. */
