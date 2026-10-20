@@ -2150,6 +2150,60 @@ Turnor 1790), so a narration there means a new checked transcription, which is c
 for the owner to call; the same holds for the 108 waterways with no document and the 67 with
 pointer documents only (the list is in the sweep script's output, 2026-10-20).
 
+**The Athabasca River's narration (owner: "Proceed with this content work", 2026-10-20).** One
+checked transcription added under the rules of passes 13 and 15 (`2026-10-20-voice-athabasca.ts`,
+applied; 28 voices now): Alexander Mackenzie's description of the Elk (Athabasca) River below the
+Clearwater fork and its "bituminous fountains, into which a pole of twenty feet long may be
+inserted without the least resistance", from the General History of the Fur Trade that opens
+his Voyages from Montreal (London, 1801), read in the Project Gutenberg transcription of vol. I
+and compared character for character (1,448 characters, identical). Spotted at the oil sands
+below the fork (approximate), linked to Mackenzie and the Athabasca River, with context (the
+first printed description of the oil sands; the Cree and Dene use of the bitumen before any
+trader saw it; Pond in 1778), six vocabulary entries, four questions, and an edition citation.
+Both narrator copies were synthesised and stored. The wider question of how far narration should
+reach (108 waterways with no document, 67 with pointer documents only) waits on the owner's
+discussion of 10.22.
+
+### 10.22 Keeping read-aloud from becoming a gimmick (for discussion, 2026-10-20; nothing implemented)
+
+The owner's concern, raised when approving more narrations: "I want to avoid the read aloud
+functionality becoming too much of a gimmick." Observations and options, none built:
+
+1. **Narration is only as good as what it reads.** Every voice today is a checked transcription
+   of a primary source, read in a published edition. That is what separates it from a
+   text-to-speech button: a listener hears Mackenzie, Hearne, Cartier, not the app's prose.
+   Option: keep that rule absolute. No narration of descriptions, notes, context or anything the
+   app wrote; only sources, only checked.
+2. **Coverage is not the goal.** A narration on every one of 192 waterways would mean finding
+   a checked source passage for each, and many waterways have no first-hand account worth
+   hearing; forcing one invites padding. Option: narrate where a source is strong and
+   place-bound, and let the voices gallery, the map layer and the journeys carry the rest.
+   A rough measure of "strong": a passage a teacher would read aloud in class anyway.
+3. **Length and selection.** The present passages run 125 to 2,031 characters; most are one
+   to two minutes spoken. Option: hold narrations to about two minutes, one scene each, chosen
+   for what a student can picture (the bitumen pole, the wrecked canoe, the caribou herd).
+4. **The voice should not perform.** Two neutral narrators, chosen once in Settings, no accents,
+   no character voices, no music. Option: keep it so; the sources supply the drama.
+5. **Where it appears.** Read aloud sits on the voice card, the document page and the voices
+   gallery, and nowhere else. Option: keep it off descriptions, quizzes, timelines and journeys'
+   own prose, so that pressing it always means "hear the source".
+6. **Say what it is.** Option: a one-line note on the voices gallery and the document page,
+   "A narrator reads the source; the words are the author's, checked against the edition
+   named below", so no one mistakes the voice for a recording or the words for the app's.
+7. **Make it teachable.** Option: pair narration with the vocabulary and questions the document
+   already carries, so a class hears the passage, then works with it; and record a
+   `voice_played` activity only if it feeds something (a "heard the sources" badge, or a
+   teacher's view of what a class listened to), not for its own sake.
+8. **Accessibility is the one place to widen it.** Students who cannot read the passage
+   comfortably are the strongest case for read-aloud. Option: if narration is ever extended
+   beyond sources, extend it for that reason (the document's context and notes for a student
+   who needs them), as an accessibility setting rather than a feature on every card.
+
+Recommendation, for the discussion: options 1, 2, 4 and 5 as standing rules; 6 as a small
+addition in the next build; 3 as a guideline for the content work; 7 and 8 as later decisions.
+
+
+
 **Discover order.** Below the learning resources: Journeys, Cartography, Then and Now (its own
 title, full width, "Travel back in time: slide between a period view and a photograph of the
 same spot today"), then Near You, then People in History, then the tools.
