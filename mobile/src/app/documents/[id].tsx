@@ -25,6 +25,7 @@ import { SourcesList } from '@/components/SourcesList';
 import { getGradeLevelColor, getGradeLevelLabel } from '@/lib/types/education';
 import { RelatedLinks } from '@/components/RelatedLinks';
 import { useExploration } from '@/lib/exploration';
+import { useTranslation } from '@/lib/i18n';
 
 const colors = {
   forestGreen: '#2D5A3D',
@@ -55,6 +56,7 @@ function Section({ title, icon, children, action }: SectionProps) {
 
 export default function DocumentDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const { t } = useTranslation();
   const router = useRouter();
   const { data: document, isLoading, isError } = useDocument(id ?? null);
 
@@ -191,6 +193,8 @@ export default function DocumentDetailScreen() {
               {document.transcription}
             </Text>
           </View>
+          {/* What read-aloud is (rule 6, 2026-10-20): a narrator reading the author's checked words */}
+          <Text style={styles.narrationNote}>{t('narrationNote')}</Text>
         </Section>
       ) : null}
 
@@ -412,6 +416,7 @@ const styles = StyleSheet.create({
   },
   spotRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 8, marginTop: 14, padding: 12, backgroundColor: '#FFFBF5', borderRadius: 12, borderLeftWidth: 3, borderLeftColor: '#7C2D12' },
   spotLabel: { fontSize: 11, fontWeight: '800', color: '#7C2D12', letterSpacing: 0.5, textTransform: 'uppercase' },
+  narrationNote: { fontSize: 12, color: '#6B7280', fontStyle: 'italic', lineHeight: 17, marginTop: 8, paddingHorizontal: 4 },
   spotName: { fontSize: 14, color: '#374151', marginTop: 2 },
   spotLink: { fontSize: 13, fontWeight: '600', color: '#3B82A3', textDecorationLine: 'underline', marginTop: 6 },
 });
