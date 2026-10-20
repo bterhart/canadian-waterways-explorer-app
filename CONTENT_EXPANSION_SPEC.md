@@ -2082,7 +2082,32 @@ At run time the script reads each file's author and licence from the Commons API
 is what Commons records rather than what was typed; it refuses any file that is not public
 domain or Creative Commons; it copies both images to R2 (`then-and-now/<id>/then.jpg`,
 `now.jpg`) so the app never depends on Commons' thumbnail service; and it places the pair on
-the app's own Location by exact name. __PAIRS_SUMMARY__
+the app's own Location by exact name. Commons throttled this session's address (429 from
+`api.php` after the first burst of searches), so the script falls back to the file page itself,
+reading the licence from its `licensetpl_short` span and the author from the `fileinfotpl_aut`
+row (Commons escapes the underscores as `&#95;` in the served HTML; the first attempt at the
+parse missed for that reason), pausing between requests and backing off on 429; a `--check`
+flag runs the lookups alone. Candidates came from the Openverse API (`source=wikimedia`,
+licence by, by-sa, cc0, pdm), which names the exact Commons file and its licence, with the
+licence confirmed on Commons before upload; every file passed.
+
+Fifteen pairs, oldest first, each on an existing Location: the Habitation at Port-Royal
+(Champlain's 1613 drawing / the reconstruction's courtyard, 2009); Fort Frontenac (a 1685 plan
+/ the Canadian Forces college on the site, 2018); Fort Edmonton (Paul Kane's painting of
+1849–56 / Fort Edmonton Park, 2003); Fort Langley (a September 1858 view / the national
+historic site, 2018); the graves on Beechey Island (Kane's 1854 engraving / the graves, 2010);
+Upper Fort Garry (the gallery's view of about 1872 / the Governor's Gate, 2019); Montreal
+harbour (the gallery's 1878 view / the Old Port, 2012); Fort St. James (Bullock Webster's 1879
+sketch / the national historic site, 2008); Dawson City (Hegg's Front Street, June 1898 / the
+Palace Grand Theatre, 2011); Miles Canyon (Hegg's boat in the canyon, 1898 / the suspension
+bridge, 2018); the summit of the Chilkoot Pass (Hegg, winter 1898–99 / hikers at the summit,
+2013); the Lachine Rapids (the steamer Rapids King shooting them, 1901 / the rapids, 2006);
+Tadoussac (the gallery's 1910 view / the Hotel Tadoussac, 2023); Place Royale, Quebec (1933 /
+2017); Fort William (the gallery's North West Company-era view / Fort William Historical Park,
+2020). Four "then" sides reuse period images already on R2 in the galleries, with their existing
+credits; the other 26 images were read and copied from Commons at apply time (public domain,
+CC BY 2.0, CC BY-SA 2.0/3.0/4.0), credited "Wikimedia Commons / author / licence" with the
+file page as the source link. Verified in Turso after apply: 15 rows, all placed.
 
 **On the phone.** `ThenAndNowCompare` shows both images in one frame with a handle to drag
 between them (the period view on the left, the photograph on the right, the years tagged on
