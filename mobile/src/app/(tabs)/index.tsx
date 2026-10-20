@@ -4,7 +4,9 @@ import { View, Text, ActivityIndicator, StyleSheet, TouchableOpacity, ScrollView
 import MapView, { Marker, PROVIDER_DEFAULT, Region, Polyline, Polygon, Overlay, type MapPressEvent } from 'react-native-maps';
 import { useHistoricalMap } from '@/lib/api/historical-maps-api';
 import type { LayoutChangeEvent } from 'react-native';
-import { Menu, ChevronDown, ChevronRight, Globe2, X, Route, Layers, Network, History, Search as SearchIcon } from 'lucide-react-native';
+import { Menu, ChevronDown, ChevronRight, Globe2, X, Route, Layers, Network, History, Search as SearchIcon, MessageSquareQuote } from 'lucide-react-native';
+import { useVoices } from '@/lib/api/voices-api';
+import { VoiceCard, VOICE_COLOR } from '@/components/VoiceCard';
 import { useExpeditions, useExpedition } from '@/lib/api/expeditions-api';
 import { useWaterwaySystem, useDecade } from '@/lib/api/connections-api';
 import type { ExpeditionLeg, ExpeditionSummary } from '@/lib/types/expeditions';
@@ -318,6 +320,15 @@ export default function MapScreen() {
   const [mapOverlayId, setMapOverlayId] = useState<string | null>(null);
   const [overlayOpacity, setOverlayOpacity] = useState(0.7);
   const { data: overlayMap } = useHistoricalMap(mapOverlayId);
+
+  // Voices on the map (roadmap item 5, 2026-10-20): the checked transcriptions as quote markers at
+  // the spot where their words were written. Turned on in the filter menu or by a document's
+  // "Show on the map" (`/?voiceId=`); tapping a marker docks the source's card over the map.
+  const [voicesOn, setVoicesOn] = useState(false);
+  const [voicesExpanded, setVoicesExpanded] = useState(false);
+  const [selectedVoiceId, setSelectedVoiceId] = useState<string | null>(null);
+  const { data: voices } = useVoices(voicesOn);
+  const selectedVoice = useMemo(() => (selectedVoiceId ? voices?.find((v) => v.id === selectedVoiceId) ?? null : null), [selectedVoiceId, voices]);
 
   // Fetch the boundary for a waterway previewed from a pin or opened in the bottom sheet
   const detailWaterwayId =
@@ -670,18 +681,30 @@ export default function MapScreen() {
 
   // Pin tapped: show the preview card (and, through detailWaterwayId, the waterway boundary)
   const handleMarkerSelect = useCallback((id: string, type: MarkerType) => {
+    setSelectedVoiceId(null);
     setPreview({ id, type, fromOverview: false });
   }, []);
 
   // Opened from another screen (decision 11, 2026-10-16): `/?markerId=&markerType=` selects
   // that waterway or location and opens its detail sheet; `/?lat=&lng=` (What Happened Here)
   // centres the map on an event. Each distinct param set is handled once.
-  const params = useLocalSearchParams<{ markerId?: string; markerType?: string; lat?: string; lng?: string; expeditionId?: string; mapOverlayId?: string; systemId?: string; decade?: string }>();
+  const params = useLocalSearchParams<{ markerId?: string; markerType?: string; lat?: string; lng?: string; expeditionId?: string; mapOverlayId?: string; systemId?: string; decade?: string; voiceId?: string }>();
   const handledParamsRef = useRef<string | null>(null);
   useEffect(() => {
-    const { markerId, markerType, lat, lng, expeditionId: paramExpeditionId, mapOverlayId: paramOverlayId, systemId: paramSystemId, decade: paramDecade } = params;
-    const key = `${markerId ?? ''}|${markerType ?? ''}|${lat ?? ''}|${lng ?? ''}|${paramExpeditionId ?? ''}|${paramOverlayId ?? ''}|${paramSystemId ?? ''}|${paramDecade ?? ''}`;
-    if (key === '|||||||' || handledParamsRef.current === key) return;
+    const { markerId, markerType, lat, lng, expeditionId: paramExpeditionId, mapOverlayId: paramOverlayId, systemId: paramSystemId, decade: paramDecade, voiceId: paramVoiceId } = params;
+    const key = `${markerId ?? ''}|${markerType ?? ''}|${lat ?? ''}|${lng ?? ''}|${paramExpeditionId ?? ''}|${paramOverlayId ?? ''}|${paramSystemId ?? ''}|${paramDecade ?? ''}|${paramVoiceId ?? ''}`;
+    if (key === '||||||||' || handledParamsRef.current === key) return;
+
+    // A document's "Show on the map": turn the voices layer on and dock that source's card
+    if (paramVoiceId) {
+      handledParamsRef.current = key;
+      closePreview();
+      setSelectedMarker(null);
+      setVoicesOn(true);
+      flyToVoiceRef.current = paramVoiceId;
+      setSelectedVoiceId(paramVoiceId);
+      return;
+    }
 
     // One drawn layer at a time (expedition, system or decade highlight, historic overlay):
     // the newcomer replaces the others, so the map never stacks three sets of overlays.
@@ -958,6 +981,7 @@ export default function MapScreen() {
   const handleRiverOverviewPress = useCallback((waterwayId: string) => {
     lastOverlayPressAtRef.current = Date.now();
     setSelectedMarker(null);
+    setSelectedVoiceId(null);
     setPreview({ id: waterwayId, type: 'waterway', fromOverview: true });
   }, []);
 
@@ -976,8 +1000,25 @@ export default function MapScreen() {
   const handleDismissAll = useCallback(() => {
     closePreview();
     setSelectedMarker(null);
+    setSelectedVoiceId(null);
     bottomSheetRef.current?.close();
   }, [closePreview]);
+
+  // A voice marker or a voice in the filter menu: dock its card; from the menu or a document's
+  // link the camera also goes to the spot.
+  const flyToVoiceRef = useRef<string | null>(null);
+  const handleVoiceSelect = useCallback((id: string, fly: boolean) => {
+    closePreview();
+    setSelectedMarker(null);
+    setLegendVisible(false);
+    if (fly) flyToVoiceRef.current = id;
+    setSelectedVoiceId(id);
+  }, [closePreview]);
+  useEffect(() => {
+    if (!selectedVoice || flyToVoiceRef.current !== selectedVoice.id || !mapRef.current) return;
+    flyToVoiceRef.current = null;
+    mapRef.current.animateToRegion({ latitude: selectedVoice.latitude, longitude: selectedVoice.longitude, latitudeDelta: 1.5, longitudeDelta: 1.5 }, 500);
+  }, [selectedVoice]);
 
   const handleMapLayout = useCallback((event: LayoutChangeEvent) => {
     const { width, height } = event.nativeEvent.layout;
@@ -1294,7 +1335,32 @@ export default function MapScreen() {
             )),
           ];
         })() : null}
+
+        {/* Voices on the map: a quote marker at each checked transcription's spot (roadmap item 5) */}
+        {voicesOn && voices
+          ? voices.map((voice) => (
+              <Marker
+                key={`voice-${voice.id}`}
+                coordinate={{ latitude: voice.latitude, longitude: voice.longitude }}
+                anchor={{ x: 0.5, y: 0.5 }}
+                zIndex={selectedVoiceId === voice.id ? 21 : 18}
+                tracksViewChanges={false}
+                onPress={() => handleVoiceSelect(voice.id, false)}
+              >
+                <View style={[styles.voiceMarker, selectedVoiceId === voice.id && styles.voiceMarkerSelected]}>
+                  <MessageSquareQuote size={14} color="white" />
+                </View>
+              </Marker>
+            ))
+          : null}
       </MapView>
+
+      {/* The selected source's card, docked where the preview card sits (roadmap item 5) */}
+      {selectedVoice && !selectedMarker ? (
+        <View style={styles.voiceCardDock}>
+          <VoiceCard voice={selectedVoice} onClose={() => setSelectedVoiceId(null)} />
+        </View>
+      ) : null}
 
       {/* Preview card docked at the bottom of the map, so it never has to track the pin.
           Hidden while the bottom sheet is open; it returns when the sheet closes. */}
@@ -1666,6 +1732,46 @@ export default function MapScreen() {
               </View>
             ) : null}
 
+            {/* Voices on the map (roadmap item 5): a toggle, then the sources to jump to */}
+            <TouchableOpacity
+              style={styles.sectionHeader}
+              onPress={() => setVoicesExpanded(prev => !prev)}
+            >
+              {voicesExpanded ? (
+                <ChevronDown size={16} color="#2D5A3D" />
+              ) : (
+                <ChevronRight size={16} color="#2D5A3D" />
+              )}
+              <Text style={styles.sectionHeaderText}>{t('voicesOnMap')}</Text>
+            </TouchableOpacity>
+
+            {voicesExpanded ? (
+              <View style={styles.sectionContent}>
+                <TouchableOpacity
+                  style={[styles.legendRow, voicesOn && styles.legendRowActive]}
+                  onPress={() => { setVoicesOn((on) => !on); if (voicesOn) setSelectedVoiceId(null); }}
+                >
+                  <View style={[styles.legendDot, { backgroundColor: VOICE_COLOR }]} />
+                  <Text style={[styles.legendText, voicesOn && styles.legendTextActive]}>{voicesOn ? t('inTheirOwnWords') : t('voicesOnMapDesc')}</Text>
+                </TouchableOpacity>
+                {voicesOn && voices && voices.length > 0 ? (
+                  <ScrollView style={styles.filterList} nestedScrollEnabled>
+                    {voices.map((voice) => (
+                      <TouchableOpacity
+                        key={voice.id}
+                        style={[styles.filterItem, selectedVoiceId === voice.id && styles.filterItemActive]}
+                        onPress={() => handleVoiceSelect(voice.id, true)}
+                      >
+                        <Text style={[styles.filterItemText, selectedVoiceId === voice.id && styles.filterItemTextActive]} numberOfLines={2}>
+                          {voice.year ? `${voice.year} · ` : ''}{voice.author ?? voice.title}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </ScrollView>
+                ) : null}
+              </View>
+            ) : null}
+
             {/* Expeditions Section (route layer, roadmap item 2) */}
             {expeditionGroups.length > 0 ? (
               <>
@@ -1899,6 +2005,9 @@ const styles = StyleSheet.create({
   legMarker: { minWidth: 26, height: 26, borderRadius: 13, paddingHorizontal: 6, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: 'white' },
   legMarkerWide: { paddingHorizontal: 8 },
   highlightDot: { width: 14, height: 14, borderRadius: 7, borderWidth: 2, borderColor: 'white' },
+  voiceMarker: { width: 26, height: 26, borderRadius: 13, backgroundColor: '#7C2D12', borderWidth: 2, borderColor: 'white', alignItems: 'center', justifyContent: 'center' },
+  voiceMarkerSelected: { backgroundColor: '#1A3A24', transform: [{ scale: 1.2 }] },
+  voiceCardDock: { position: 'absolute', left: 12, right: 12, bottom: 12, shadowColor: '#000', shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.2, shadowRadius: 8, elevation: 6 },
   legMarkerText: { color: 'white', fontSize: 12, fontWeight: '700' },
   searchButton: {
     position: 'absolute',

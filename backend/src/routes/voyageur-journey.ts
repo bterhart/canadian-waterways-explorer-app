@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { db } from "../db";
+import { withVoices } from "../lib/voices";
 
 const voyageurJourneyRouter = new Hono();
 
@@ -94,12 +95,13 @@ voyageurJourneyRouter.get("/:id", async (c) => {
   }
 
   // Parse choices JSON for each node
+  // Each node carries the checked transcriptions written near it (roadmap item 5)
   const journeyWithParsedNodes = {
     ...journey,
-    nodes: journey.nodes.map((node) => ({
+    nodes: await Promise.all(journey.nodes.map((node) => withVoices({
       ...node,
       choices: node.choices ? (JSON.parse(node.choices) as JourneyChoice[]) : null,
-    })),
+    }))),
   };
 
   return c.json({ data: journeyWithParsedNodes });
@@ -170,10 +172,10 @@ voyageurJourneyRouter.get("/:id/start", async (c) => {
   });
 
   // Return the first node with parsed choices
-  const nodeWithChoices = {
+  const nodeWithChoices = await withVoices({
     ...firstNode,
     choices: firstNode.choices ? (JSON.parse(firstNode.choices) as JourneyChoice[]) : null,
-  };
+  });
 
   return c.json({
     data: {
@@ -308,10 +310,10 @@ voyageurJourneyRouter.post(
     });
 
     // Return the next node with parsed choices
-    const nextNodeWithChoices = {
+    const nextNodeWithChoices = await withVoices({
       ...nextNode,
       choices: nextNode.choices ? (JSON.parse(nextNode.choices) as JourneyChoice[]) : null,
-    };
+    });
 
     return c.json({
       data: {
@@ -381,16 +383,16 @@ voyageurJourneyRouter.get("/:id/progress", async (c) => {
   }
 
   // Get current node
-  let currentNode = null;
+  let currentNode: Record<string, unknown> | null = null;
   if (progress.currentNodeId) {
     const node = await db.journeyNode.findUnique({
       where: { id: progress.currentNodeId },
     });
     if (node) {
-      currentNode = {
+      currentNode = await withVoices({
         ...node,
         choices: node.choices ? (JSON.parse(node.choices) as JourneyChoice[]) : null,
-      };
+      });
     }
   }
 

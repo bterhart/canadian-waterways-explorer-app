@@ -417,6 +417,9 @@ model PrimarySourceDocument {
   isCore              Boolean  @default(false)
   visibility          String   @default("private")
   createdById         String?
+  spotLatitude        Float?
+  spotLongitude       Float?
+  spotName            String?
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 
