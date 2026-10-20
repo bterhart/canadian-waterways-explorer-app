@@ -2,18 +2,11 @@ import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { db } from "../db";
-import { withVoices } from "../lib/voices";
+import { decorateNode, decorateNodes, parseChoices, type JourneyChoice } from "../lib/journeys";
+import { EXPLORATION_ACTIVITIES, recordActivity } from "../lib/progress";
 
 const voyageurJourneyRouter = new Hono();
 
-// Choice type for parsed choices JSON
-interface JourneyChoice {
-  id: string;
-  text: string;
-  nextNodeId: string;
-  consequence?: string;
-  pointsChange?: number;
-}
 
 // GET / - List all published journeys
 voyageurJourneyRouter.get("/", async (c) => {
@@ -95,13 +88,11 @@ voyageurJourneyRouter.get("/:id", async (c) => {
   }
 
   // Parse choices JSON for each node
-  // Each node carries the checked transcriptions written near it (roadmap item 5)
+  // Each stop carries its links, its source and the checked transcriptions written near it
+  // (roadmap items 5 and 6)
   const journeyWithParsedNodes = {
     ...journey,
-    nodes: await Promise.all(journey.nodes.map((node) => withVoices({
-      ...node,
-      choices: node.choices ? (JSON.parse(node.choices) as JourneyChoice[]) : null,
-    }))),
+    nodes: await decorateNodes(journey.nodes),
   };
 
   return c.json({ data: journeyWithParsedNodes });
@@ -172,10 +163,7 @@ voyageurJourneyRouter.get("/:id/start", async (c) => {
   });
 
   // Return the first node with parsed choices
-  const nodeWithChoices = await withVoices({
-    ...firstNode,
-    choices: firstNode.choices ? (JSON.parse(firstNode.choices) as JourneyChoice[]) : null,
-  });
+  const nodeWithChoices = await decorateNode(firstNode);
 
   return c.json({
     data: {
@@ -259,9 +247,7 @@ voyageurJourneyRouter.post(
     }
 
     // Parse choices and find the selected one
-    const choices = currentNode.choices
-      ? (JSON.parse(currentNode.choices) as JourneyChoice[])
-      : [];
+    const choices: JourneyChoice[] = parseChoices(currentNode.choices) ?? [];
 
     const selectedChoice = choices.find((choice) => choice.id === choiceId);
 
@@ -310,10 +296,24 @@ voyageurJourneyRouter.post(
     });
 
     // Return the next node with parsed choices
-    const nextNodeWithChoices = await withVoices({
-      ...nextNode,
-      choices: nextNode.choices ? (JSON.parse(nextNode.choices) as JourneyChoice[]) : null,
-    });
+    const nextNodeWithChoices = await decorateNode(nextNode);
+
+    // Finishing a journey counts as exploration (roadmap item 6): 20 points once per device per
+    // journey, through the same idempotent UserExploration row as the other activities.
+    let completionPoints = 0;
+    if (isCompleted) {
+      const key = { userId, activityType: "journey_completed", resourceId: journeyId };
+      const already = await db.userExploration.findUnique({ where: { userId_activityType_resourceId: key } });
+      if (!already) {
+        try {
+          await db.userExploration.create({ data: key });
+          await recordActivity(userId, "journey_completed", EXPLORATION_ACTIVITIES.journey_completed);
+          completionPoints = EXPLORATION_ACTIVITIES.journey_completed;
+        } catch {
+          // a second finish raced the first; the first one won
+        }
+      }
+    }
 
     return c.json({
       data: {
@@ -322,7 +322,11 @@ voyageurJourneyRouter.post(
           text: selectedChoice.text,
           consequence: selectedChoice.consequence,
           pointsChange,
+          // What people actually did here, and the source (roadmap item 6)
+          whatHappened: selectedChoice.whatHappened ?? null,
+          source: selectedChoice.source ?? null,
         },
+        completionPoints,
         progress: {
           id: updatedProgress.id,
           currentNodeId: updatedProgress.currentNodeId,
@@ -389,10 +393,7 @@ voyageurJourneyRouter.get("/:id/progress", async (c) => {
       where: { id: progress.currentNodeId },
     });
     if (node) {
-      currentNode = await withVoices({
-        ...node,
-        choices: node.choices ? (JSON.parse(node.choices) as JourneyChoice[]) : null,
-      });
+      currentNode = await decorateNode(node);
     }
   }
 

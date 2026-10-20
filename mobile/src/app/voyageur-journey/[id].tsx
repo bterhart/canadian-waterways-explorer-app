@@ -37,6 +37,8 @@ import {
 import { getDeviceId } from '@/lib/identity';
 import type { JourneyNode, JourneyChoice, JourneyProgress } from '@/lib/types/education';
 import { VoiceCard } from '@/components/VoiceCard';
+import { Linking } from 'react-native';
+import { Droplets, FileText, HandHeart, ExternalLink } from 'lucide-react-native';
 
 const { width, height } = Dimensions.get('window');
 
@@ -126,13 +128,16 @@ interface CompletionScreenProps {
   onPlayAgain: () => void;
   onBackToList: () => void;
   endingType: string | null;
+  completionPoints?: number;
+  endingNarrative?: string;
+  lastChoice?: { text: string; whatHappened?: string | null; source?: string | null } | null;
 }
 
-function CompletionScreen({ score, choicesMade, onPlayAgain, onBackToList, endingType }: CompletionScreenProps) {
+function CompletionScreen({ score, choicesMade, onPlayAgain, onBackToList, endingType, completionPoints = 0, endingNarrative, lastChoice }: CompletionScreenProps) {
   const isGoodEnding = endingType === 'success' || endingType === 'good';
 
   return (
-    <View style={styles.completionContainer}>
+    <ScrollView style={styles.completionContainer} contentContainerStyle={{ paddingBottom: 32 }}>
       <LinearGradient
         colors={isGoodEnding ? ['#10B981', '#047857'] : ['#F59E0B', '#D97706']}
         style={styles.completionGradient}
@@ -163,6 +168,22 @@ function CompletionScreen({ score, choicesMade, onPlayAgain, onBackToList, endin
         </View>
       </View>
 
+      {endingNarrative ? (
+        <View style={styles.narrativeCard}>
+          <Text style={styles.narrativeText}>{endingNarrative}</Text>
+        </View>
+      ) : null}
+      {lastChoice?.whatHappened ? (
+        <View style={styles.happenedCard}>
+          <Text style={styles.happenedTitle}>What happened</Text>
+          <Text style={styles.happenedText}>{lastChoice.whatHappened}</Text>
+          {lastChoice.source ? <Text style={styles.happenedSource}>{lastChoice.source}</Text> : null}
+        </View>
+      ) : null}
+      {completionPoints > 0 ? (
+        <Text style={styles.completionPoints}>+{completionPoints} exploration points for finishing this journey</Text>
+      ) : null}
+
       <View style={styles.completionActions}>
         <Pressable style={styles.playAgainButton} onPress={onPlayAgain}>
           <RefreshCw size={20} color="white" />
@@ -173,7 +194,7 @@ function CompletionScreen({ score, choicesMade, onPlayAgain, onBackToList, endin
           <Text style={styles.backToListText}>Back to Adventures</Text>
         </Pressable>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
@@ -187,6 +208,9 @@ export default function VoyageurJourneyPlayScreen() {
   const [showFactModal, setShowFactModal] = useState(false);
   const [showSongModal, setShowSongModal] = useState(false);
   const [isStarting, setIsStarting] = useState(false);
+  // What people actually did at the last choice, shown until the next one (roadmap item 6)
+  const [lastChoice, setLastChoice] = useState<{ text: string; consequence?: string; pointsChange: number; whatHappened?: string | null; source?: string | null } | null>(null);
+  const [completionPoints, setCompletionPoints] = useState(0);
 
   const { data: journey, isLoading: journeyLoading } = useVoyageurJourney(id ?? null);
   const startJourneyMutation = useStartJourney();
@@ -240,6 +264,8 @@ export default function VoyageurJourneyPlayScreen() {
         onSuccess: (data) => {
           setProgress(data.progress);
           setCurrentNode(data.currentNode);
+          setLastChoice(data.choiceMade);
+          if (data.completionPoints) setCompletionPoints(data.completionPoints);
         },
       }
     );
@@ -250,6 +276,8 @@ export default function VoyageurJourneyPlayScreen() {
     setIsStarting(true);
     setProgress(null);
     setCurrentNode(null);
+    setLastChoice(null);
+    setCompletionPoints(0);
 
     startJourneyMutation.mutate(
       { journeyId: id, userId },
@@ -307,6 +335,9 @@ export default function VoyageurJourneyPlayScreen() {
           endingType={currentNode.endingType}
           onPlayAgain={handlePlayAgain}
           onBackToList={handleBackToList}
+          completionPoints={completionPoints}
+          endingNarrative={currentNode.narrative}
+          lastChoice={lastChoice}
         />
       </>
     );
@@ -383,12 +414,62 @@ export default function VoyageurJourneyPlayScreen() {
           />
         ) : null}
 
+        {/* What people actually did at the last choice, and what it cost or saved them (roadmap item 6) */}
+        {lastChoice ? (
+          <View style={styles.happenedCard}>
+            <Text style={styles.happenedChoice}>You chose: {lastChoice.text}</Text>
+            {lastChoice.consequence ? <Text style={styles.happenedConsequence}>{lastChoice.consequence}{lastChoice.pointsChange ? ` (${lastChoice.pointsChange > 0 ? '+' : ''}${lastChoice.pointsChange})` : ''}</Text> : null}
+            {lastChoice.whatHappened ? (
+              <>
+                <Text style={styles.happenedTitle}>What happened</Text>
+                <Text style={styles.happenedText}>{lastChoice.whatHappened}</Text>
+              </>
+            ) : null}
+            {lastChoice.source ? <Text style={styles.happenedSource}>{lastChoice.source}</Text> : null}
+          </View>
+        ) : null}
+
         {/* Narrative Card */}
         <View style={styles.narrativeCard}>
           {currentNode.title ? (
             <Text style={styles.nodeTitle}>{currentNode.title}</Text>
           ) : null}
           <Text style={styles.narrativeText}>{currentNode.narrative}</Text>
+          {/* The records this stop rests on (roadmap item 6) */}
+          {currentNode.links && (currentNode.links.location || currentNode.links.waterway || currentNode.links.document || currentNode.links.knowledge) ? (
+            <View style={styles.linkRow}>
+              {currentNode.links.location ? (
+                <Pressable style={styles.linkChip} onPress={() => router.push({ pathname: '/', params: { markerId: currentNode.links!.location!.id, markerType: 'location' } })}>
+                  <MapPin size={13} color={colors.forestGreen} />
+                  <Text style={styles.linkChipText} numberOfLines={1}>{currentNode.links.location.name}</Text>
+                </Pressable>
+              ) : null}
+              {currentNode.links.waterway ? (
+                <Pressable style={styles.linkChip} onPress={() => router.push({ pathname: '/', params: { markerId: currentNode.links!.waterway!.id, markerType: 'waterway' } })}>
+                  <Droplets size={13} color={colors.riverBlue} />
+                  <Text style={styles.linkChipText} numberOfLines={1}>{currentNode.links.waterway.name}</Text>
+                </Pressable>
+              ) : null}
+              {currentNode.links.document ? (
+                <Pressable style={styles.linkChip} onPress={() => router.push(`/documents/${currentNode.links!.document!.id}`)}>
+                  <FileText size={13} color="#8B5CF6" />
+                  <Text style={styles.linkChipText} numberOfLines={1}>{currentNode.links.document.title}</Text>
+                </Pressable>
+              ) : null}
+              {currentNode.links.knowledge ? (
+                <Pressable style={styles.linkChip} onPress={() => router.push(`/knowledge/${currentNode.links!.knowledge!.id}`)}>
+                  <HandHeart size={13} color="#047857" />
+                  <Text style={styles.linkChipText} numberOfLines={1}>{currentNode.links.knowledge.title}</Text>
+                </Pressable>
+              ) : null}
+            </View>
+          ) : null}
+          {currentNode.source ? (
+            <Pressable disabled={!currentNode.sourceUrl} onPress={() => currentNode.sourceUrl && Linking.openURL(currentNode.sourceUrl)} style={styles.sourceRow}>
+              <Text style={styles.sourceText}>{currentNode.source}</Text>
+              {currentNode.sourceUrl ? <ExternalLink size={12} color="#6B7280" /> : null}
+            </Pressable>
+          ) : null}
         </View>
 
         {/* The sources written near this stop, in their own words (roadmap item 5) */}
@@ -582,6 +663,18 @@ const styles = StyleSheet.create({
     color: '#374151',
   },
   voicesBlock: { marginHorizontal: 16, marginBottom: 12, gap: 10 },
+  happenedCard: { marginHorizontal: 16, marginTop: 12, padding: 16, backgroundColor: '#FFF7ED', borderRadius: 14, borderLeftWidth: 4, borderLeftColor: colors.sunsetOrange, gap: 4 },
+  happenedChoice: { fontSize: 13, fontWeight: '700', color: colors.darkPine },
+  happenedConsequence: { fontSize: 14, color: '#374151', lineHeight: 20 },
+  happenedTitle: { fontSize: 11, fontWeight: '800', color: colors.sunsetOrange, letterSpacing: 0.6, textTransform: 'uppercase', marginTop: 6 },
+  happenedText: { fontSize: 14, color: '#374151', lineHeight: 21 },
+  happenedSource: { fontSize: 12, color: '#6B7280', fontStyle: 'italic', marginTop: 4 },
+  completionPoints: { textAlign: 'center', marginTop: 16, fontSize: 15, fontWeight: '700', color: colors.forestGreen },
+  linkRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: 14 },
+  linkChip: { flexDirection: 'row', alignItems: 'center', gap: 5, borderWidth: 1, borderColor: '#E5E7EB', borderRadius: 14, paddingVertical: 5, paddingHorizontal: 10, backgroundColor: colors.birchBark, maxWidth: 240 },
+  linkChipText: { fontSize: 12, fontWeight: '600', color: '#1F2937', flexShrink: 1 },
+  sourceRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 12 },
+  sourceText: { flex: 1, fontSize: 12, color: '#6B7280', fontStyle: 'italic' },
   factButton: {
     flexDirection: 'row',
     alignItems: 'center',

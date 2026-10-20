@@ -14,7 +14,8 @@ export type ActivityType =
   | "field_trip_completed"
   | "journal_entry"
   | "pronunciation_learned"
-  | "document_read";
+  | "document_read"
+  | "journey_completed";
 
 // Point values. The shipped user guide states: quiz 10–20, waterway 5,
 // lesson plan 15, field trip 20, daily challenge 10.
@@ -29,14 +30,16 @@ export const POINTS = {
   locationVisited: 3,
   documentRead: 5,
   pronunciationLearned: 2,
+  journeyCompleted: 20, // a voyageur journey finished (roadmap item 6, 2026-10-20)
 } as const;
 
-/** The four activities a device earns by opening or marking a record, once each. */
+/** The activities a device earns by opening, marking or finishing a record, once each. */
 export const EXPLORATION_ACTIVITIES = {
   waterway_explored: POINTS.waterwayExplored,
   location_visited: POINTS.locationVisited,
   document_read: POINTS.documentRead,
   pronunciation_learned: POINTS.pronunciationLearned,
+  journey_completed: POINTS.journeyCompleted,
 } as const;
 export type ExplorationActivity = keyof typeof EXPLORATION_ACTIVITIES;
 

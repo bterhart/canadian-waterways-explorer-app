@@ -828,6 +828,18 @@ export interface JourneyChoice {
   nextNodeId: string;
   consequence?: string;
   pointsChange?: number;
+  /** What people actually did at this point, and what came of it (roadmap item 6). */
+  whatHappened?: string;
+  source?: string;
+}
+
+/** The records a journey stop rests on (roadmap item 6); absent on older servers. */
+export interface JourneyNodeLinks {
+  location: { id: string; name: string; locationType: string; imageUrl: string | null } | null;
+  waterway: { id: string; name: string } | null;
+  explorer: { id: string; name: string } | null;
+  document: { id: string; title: string } | null;
+  knowledge: { id: string; title: string } | null;
 }
 
 export interface JourneyNode {
@@ -848,6 +860,9 @@ export interface JourneyNode {
   endingType: string | null;
   /** Checked transcriptions written near this node, nearest first (roadmap item 5). */
   voices?: VoiceNear[];
+  links?: JourneyNodeLinks;
+  source?: string | null;
+  sourceUrl?: string | null;
 }
 
 export interface VoyageurJourneyDetail {
@@ -866,6 +881,9 @@ export interface VoyageurJourneyDetail {
   isPublished: boolean;
   createdAt: string;
   nodes: JourneyNode[];
+  /** Where the journey was written from (roadmap item 6); absent on older servers. */
+  source?: string | null;
+  sourceUrl?: string | null;
 }
 
 export interface JourneyProgress {
@@ -897,7 +915,11 @@ export interface JourneyChoiceResponse {
     text: string;
     consequence?: string;
     pointsChange: number;
+    whatHappened?: string | null;
+    source?: string | null;
   };
+  /** Exploration points awarded for finishing (0 when not finished or already awarded). */
+  completionPoints?: number;
   progress: JourneyProgress;
   currentNode: JourneyNode;
   isEnding: boolean;
@@ -1248,7 +1270,8 @@ export type ExplorationActivity =
   | 'waterway_explored'
   | 'location_visited'
   | 'document_read'
-  | 'pronunciation_learned';
+  | 'pronunciation_learned'
+  | 'journey_completed';
 
 export interface CompletionResult {
   activity: {
