@@ -28,6 +28,7 @@ import {
   Flame,
   Users,
   HandHeart,
+  Ship,
   HelpCircle,
   Info,
   Compass,
@@ -229,6 +230,22 @@ export default function LearnHubScreen() {
             icon={<MapPin size={28} color="white" />}
             gradientColors={['#DC2626', '#991B1B'] as const}
             onPress={() => router.push('/nearby-history')}
+            isLarge
+          />
+        </View>
+      </View>
+
+      {/* Voyageur journeys (roadmap item 6): the four journeys, scored against what happened.
+          Nothing linked to the journey screens before 2026-10-20; this card is the way in. */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>{t('journeys')}</Text>
+        <View style={styles.cardsGrid}>
+          <FeatureCard
+            title={t('voyageurJourneys')}
+            description={t('voyageurJourneysDesc')}
+            icon={<Ship size={28} color="white" />}
+            gradientColors={['#1E3A5F', '#0F2440'] as const}
+            onPress={() => router.push('/voyageur-journey')}
             isLarge
           />
         </View>

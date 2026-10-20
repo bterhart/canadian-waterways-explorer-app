@@ -2058,6 +2058,11 @@ have no record); 84 choices, every one with what happened; finishing any journey
 exploration points once. Item 6 is delivered. Build
 required for the app side (10.18); the journeys themselves are live now.
 
+**Found on build 71 (2026-10-20), owner: "Where are the journey cards displayed??"** Nowhere.
+The journey screens had existed since the seed with nothing in the app linking to them: no
+Discover card, no tab, no search type. A "Voyageur Journeys" card now opens them from Discover,
+in its own Journeys section above Cartography. Build required (72).
+
 ### 10.6 Order of work
 10.5's three features first (citations, then expedition routes, then the cartography gallery, because routes and maps both cite); then 1, 3, 5, 16, 18, 6, 7, 9, 10, 11, 13, 12, 17, 4; item 8 when recordings exist.
 
