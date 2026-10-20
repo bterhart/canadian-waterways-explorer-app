@@ -2015,6 +2015,49 @@ device's rows were then deleted from Turso.
 Next in this item: the fur-trade journey over the posts, and the two seed journeys revised to the
 same standard (links, what happened, sources, points that mean something).
 
+### 10.19 Finish the journeys, part 2: the brigade, and the seed journeys revised (item 6, delivered 2026-10-20; data live, build required)
+
+**The Brigade: Lachine to Athabasca, 1808** (`2026-10-20-journey-fur-trade.ts`; grade 7-9,
+medium, 35 minutes; 17 stops, 23 choices, three endings; 11 stops on a post in the app, 16 on a
+water, 3 on a document). Lachine in May, the canot du maître and its sixty-five pièces; the
+Ottawa portages, where two pièces a trip scores and four (hernias, often fatal) does not; wind
+on Nipissing, where waiting scores and crossing ends in "The lake"; Baawitigong and the
+whitefish; the north shore of Superior, round the bays; the rendezvous at Fort William, where
+the real fork is signing for three years as a north man or going home a pork-eater ("A
+pork-eater goes home", which two in three did) and the canteen is the third way; the
+Kaministiquia and the Great Dog in canots du nord; Fort Lac La Pluie, where the Athabasca
+brigade met its outfit; Bas-de-la-Rivière, where loading pemmican scores and leaving it for
+trade goods does not; the traverse of Lake Winnipeg; Cumberland House, Hearne's post of 1774
+with the company's beside it; Île-à-la-Crosse; the Methye Portage, where exchanging loads with
+the Athabasca brigade at Rendezvous Lake, as the brigades did, scores best; down the Clearwater
+to Fort Chipewyan and "A north man". Facts from Nute, Podruchny and Morse through Wikipedia's
+"Voyageurs" (canoes, loads, pace, food, hazards), Wikipedia's "Methye Portage" (Morse; Keith)
+and "North West Company" (Rich; Innis), and the app's own post and water records.
+
+**The two seed journeys revised** (`2026-10-20-journeys-revise-seed.ts`; node ids kept). What
+was wrong: The Grand Portage Route was set in 1790 and ended at Fort William, not built until
+1803; its "Mattawa shortcut" was an invention, the Mattawa being the only road; its Fort La
+Cloche scene had a paddler bargaining gunpowder and muskets, which clerks at posts did; and
+"shoot the rapids" scored highest for being exciting. It is now **The Montreal Brigade, 1805**,
+Lachine to Fort William by the only road, every stop on a water or post in the app, with the
+pork-eater's real choices (the load on the Mattawa portages, waiting out Nipissing, buying fish
+at La Cloche, passing the abandoned Grand Portage, the traverse of Thunder Bay, where going
+straight across now loses cargo and reaches the partial ending that nothing reached before).
+Race to the Pacific began at Fort Chipewyan on 9 May 1793; Mackenzie left Fort Fork on the
+Peace that day, and the stop is now there, on the app's Fort Fork document. Its "Great Divide"
+was placed at McLeod Lake; the carry was from the Parsnip over to James Creek, the Bad River,
+where the canoe was wrecked on 13 June, and the stop now says so, on the app's document of the
+crossing. Its Bella Coola Valley stop could not be reached (the Grease Trail led straight to
+Dean Channel); the order is now Grease Trail, Bella Coola Valley, Dean Channel. Every choice on
+both journeys carries what happened and its source (Mackenzie's Voyages through the four
+Mackenzie documents and the DCB; Nute, Podruchny and Morse for the brigade).
+
+All four journeys now, verified in Turso: 57 stops, every one sourced and 52 on a place or water
+in the app (the five others are Seattle, Skagway, the White Pass, Sheep Camp and Edmonton, which
+have no record); 84 choices, every one with what happened; finishing any journey earns 20
+exploration points once. Item 6 is delivered. Build
+required for the app side (10.18); the journeys themselves are live now.
+
 ### 10.6 Order of work
 10.5's three features first (citations, then expedition routes, then the cartography gallery, because routes and maps both cite); then 1, 3, 5, 16, 18, 6, 7, 9, 10, 11, 13, 12, 17, 4; item 8 when recordings exist.
 
