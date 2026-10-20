@@ -1887,9 +1887,12 @@ sheet shows the same sources as cards above Sources. A quote button beside the s
 turns the Voices layer on and off in one tap, so the filter menu is no longer the only way in;
 the strips move left to clear it.
 
-**Owner's part.** Set `XAI_API_KEY` in Railway's variables for the backend (production and
-preview). Until then the app reads with the phone's voice. Once set, the first play of each
-passage takes a few seconds while the copy is made; running the warm script removes even that.
+**Copies made.** The owner supplied the key in the session and the warm script made all 54
+copies (27 passages, two narrators), each checked on R2 as `audio/mpeg` (Mackenzie's
+inscription: 18 seconds, mp3 at 24 kHz). The route serves an existing copy whether or not the
+key is set on the server; only making a new copy needs it. So the voices work in the next build
+with nothing further on Railway. `XAI_API_KEY` is needed there only when a new or changed
+transcription has to be spoken; the key is to be rotated with the others at the end.
 
 ### 10.6 Order of work
 10.5's three features first (citations, then expedition routes, then the cartography gallery, because routes and maps both cite); then 1, 3, 5, 16, 18, 6, 7, 9, 10, 11, 13, 12, 17, 4; item 8 when recordings exist.

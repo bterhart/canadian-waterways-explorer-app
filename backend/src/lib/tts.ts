@@ -16,7 +16,17 @@ import { listVoices } from "./voices";
 export type NarratorVoice = "male" | "female";
 export const NARRATOR_VOICES: NarratorVoice[] = ["male", "female"];
 
-export const ttsConfigured = (): boolean => !!env.XAI_API_KEY && !!env.R2_BUCKET_NAME && !!env.R2_PUBLIC_URL;
+/** R2 is where the copies live; serving an existing copy needs only this. */
+export const audioStoreConfigured = (): boolean => !!env.R2_BUCKET_NAME && !!env.R2_PUBLIC_URL;
+/** Making a new copy needs the xAI key as well. */
+export const ttsConfigured = (): boolean => !!env.XAI_API_KEY && audioStoreConfigured();
+
+export class TtsNotConfiguredError extends Error {
+  constructor() {
+    super("XAI_API_KEY is not set");
+    this.name = "TtsNotConfiguredError";
+  }
+}
 
 const voiceIdFor = (voice: NarratorVoice): string => (voice === "male" ? env.XAI_VOICE_MALE : env.XAI_VOICE_FEMALE);
 
@@ -43,7 +53,7 @@ export function spokenText(text: string): string {
 }
 
 export async function synthesize(text: string, voice: NarratorVoice): Promise<Buffer> {
-  if (!env.XAI_API_KEY) throw new Error("XAI_API_KEY is not set");
+  if (!env.XAI_API_KEY) throw new TtsNotConfiguredError();
   const response = await fetch("https://api.x.ai/v1/tts", {
     method: "POST",
     headers: { Authorization: `Bearer ${env.XAI_API_KEY}`, "Content-Type": "application/json" },
