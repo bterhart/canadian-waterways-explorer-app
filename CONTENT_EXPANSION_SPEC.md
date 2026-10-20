@@ -2063,6 +2063,71 @@ The journey screens had existed since the seed with nothing in the app linking t
 Discover card, no tab, no search type. A "Voyageur Journeys" card now opens them from Discover,
 in its own Journeys section above Cartography. Build required (72).
 
+### 10.20 Then-and-now imagery (item 7, delivered 2026-10-20; API and data live, build required)
+
+Roadmap item 7: "period illustrations in the galleries paired with a modern photograph of the
+same spot." The galleries hold 1,144 images, 46 of them identifiably period views, none paired
+with anything; a pair needs its own record, with both images' years, captions, credits and
+source pages, a place, and a note on what changed.
+
+**The record.** `ThenAndNow` in Turso (`2026-10-20-then-and-now.sql`, CREATE-only, "Created:
+3"; mirrored in `schema.prisma`): title, `locationId` or `waterwayId`, coordinates, and for
+each side the image URL, year (and a year label for a range), caption, credit and the Commons
+file page; `note` says what changed. `GET /api/then-and-now` lists the pairs oldest first,
+`/:id` returns one, and the waterway and location detail routes return `thenAndNow` for their
+record.
+
+**The pairs** (`2026-10-20-then-and-now-seed.ts`). Each pair names two Wikimedia Commons files.
+At run time the script reads each file's author and licence from the Commons API, so the credit
+is what Commons records rather than what was typed; it refuses any file that is not public
+domain or Creative Commons; it copies both images to R2 (`then-and-now/<id>/then.jpg`,
+`now.jpg`) so the app never depends on Commons' thumbnail service; and it places the pair on
+the app's own Location by exact name. Commons throttled this session's address (429 from
+`api.php` after the first burst of searches), so the script falls back to the file page itself,
+reading the licence from its `licensetpl_short` span and the author from the `fileinfotpl_aut`
+row (Commons escapes the underscores as `&#95;` in the served HTML; the first attempt at the
+parse missed for that reason), pausing between requests and backing off on 429; a `--check`
+flag runs the lookups alone. Candidates came from the Openverse API (`source=wikimedia`,
+licence by, by-sa, cc0, pdm), which names the exact Commons file and its licence, with the
+licence confirmed on Commons before upload; every file passed.
+
+Fifteen pairs, oldest first, each on an existing Location: the Habitation at Port-Royal
+(Champlain's 1613 drawing / the reconstruction's courtyard, 2009); Fort Frontenac (a 1685 plan
+/ the uncovered remains of its walls, 2018); Fort Edmonton (Paul Kane's painting of
+1849–56 / Fort Edmonton Park, 2003); Fort Langley (a September 1858 view / the national
+historic site, 2018); the graves on Beechey Island (Kane's 1854 engraving / the graves, 2010);
+Upper Fort Garry (the gallery's view of about 1872 / the Governor's Gate, 2019); Montreal
+harbour (the gallery's 1878 view / the Old Port, 2012); Fort St. James (Bullock Webster's 1879
+sketch / the national historic site, 2008); Dawson City (Hegg's Front Street, June 1898 / the
+Palace Grand Theatre, 2011); Miles Canyon (Hegg's boat in the canyon, 1898 / the suspension
+bridge, 2018); the Golden Stairs of the Chilkoot Pass (Hegg's line of stampeders on the last
+climb, 1898 / the same slope in summer, 2012); the Lachine Rapids (the steamer Rapids King shooting them, 1901 / the rapids, 2006);
+Tadoussac (the gallery's 1910 view / the Hotel Tadoussac, 2023); Place Royale, Quebec (1933 /
+2017); Fort William (the gallery's North West Company-era view / Fort William Historical Park,
+2020). Four "then" sides reuse period images already on R2 in the galleries, with their existing
+credits; the other 26 images were read and copied from Commons at apply time (public domain,
+CC BY 2.0, CC BY-SA 2.0/3.0/4.0), credited "Wikimedia Commons / author / licence" with the
+file page as the source link. Verified in Turso after apply: 15 rows, all placed.
+
+The first apply stopped after one pair: `upload.wikimedia.org` (where `Special:FilePath`
+redirects) answered 429 "robot policy" for this address for over an hour, through every
+user agent, while the wiki itself kept answering. The script now downloads through the wiki's
+own `thumb.php` at a standard width (1280, then 1024, 800), which serves the bytes directly, at
+most one request at a time with pauses, as the policy's media rules ask; copies already on R2
+are kept across runs (`--refresh <id>` replaces them). The Chilkoot pair was re-chosen on
+sight: the first "now" was a portrait of a hiker at the summit hut, not the view.
+
+**On the phone.** `ThenAndNowCompare` shows both images in one frame with a handle to drag
+between them (the period view on the left, the photograph on the right, the years tagged on
+each side; a PanResponder over two images, no new dependency), with each image's caption and
+credit under it, the credit opening the Commons file page. Discover's Cartography section gains a
+"Then and Now" card opening the gallery (`/then-and-now`): a card per pair with the slide and
+the note. A pair's page (`/then-and-now/:id`) shows the slide at full width, what changed, and
+"Show on the map". A water's or place's sheet shows its pairs under "Then and Now", above
+Knowledge given, each opening its page.
+
+Build required for the app side; the pairs and API are live now.
+
 ### 10.6 Order of work
 10.5's three features first (citations, then expedition routes, then the cartography gallery, because routes and maps both cite); then 1, 3, 5, 16, 18, 6, 7, 9, 10, 11, 13, 12, 17, 4; item 8 when recordings exist.
 

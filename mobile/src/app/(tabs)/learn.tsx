@@ -29,6 +29,7 @@ import {
   Users,
   HandHeart,
   Ship,
+  Images,
   HelpCircle,
   Info,
   Compass,
@@ -262,6 +263,14 @@ export default function LearnHubScreen() {
             gradientColors={['#8B5A2B', '#5C3A1A'] as const}
             onPress={() => router.push('/historical-maps')}
             isLarge
+          />
+          {/* Then and now (roadmap item 7): period views paired with modern photographs */}
+          <FeatureCard
+            title={t('thenAndNow')}
+            description={t('thenAndNowDesc')}
+            icon={<Images size={28} color="white" />}
+            gradientColors={['#0E7490', '#155E75'] as const}
+            onPress={() => router.push('/then-and-now')}
           />
         </View>
       </View>

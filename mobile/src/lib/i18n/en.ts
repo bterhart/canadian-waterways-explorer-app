@@ -57,6 +57,8 @@ export const en = {
   voiceFemale: 'Female',
   knowledgeGiven: 'Knowledge Given',
   journeys: 'Journeys',
+  thenAndNow: 'Then and Now',
+  thenAndNowDesc: 'Period views paired with photographs of the same spots today; slide between them',
   voyageurJourneys: 'Voyageur Journeys',
   voyageurJourneysDesc: 'Paddle the brigade, cross the Chilkoot, race Mackenzie to the Pacific: every choice scored against what really happened',
   knowledgeGivenDesc: 'The routes, maps, words and cures the expeditions owed to named Indigenous people',
