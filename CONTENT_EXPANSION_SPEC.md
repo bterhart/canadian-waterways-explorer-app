@@ -2214,6 +2214,97 @@ first, each with Read aloud, the whole passage, the document and its spot on the
 search for the Dubawnt's and the Athabasca's showed was missing. The explorer directory is
 already a tab, which is why the card is the voices rather than the explorers.
 
+**Agreed 2026-10-20 (owner: "Agreed on all the above. Proceed").** Rules 1, 2, 4 and 5 stand.
+Rule 6 is in the next build: the voices gallery's intro and a line under every transcription,
+"A narrator reads the source. The words are the author's, checked against the edition named
+under Sources." Rule 3 governs the list below. 7 and 8 are later decisions.
+
+### 10.23 Narration list for approval (2026-10-20; nothing transcribed yet)
+
+Under rule 2 the content pass is not every waterway but the passages a teacher would read aloud
+anyway: one scene each, about two minutes spoken, place-bound, from a published edition that can
+be read in full. Editions marked "confirmed" were found as full texts on the Internet Archive or
+Project Gutenberg on 2026-10-20; "to confirm" means the edition exists but a readable copy has
+not yet been located. Each waterway named exists in Turso and has no narration today.
+
+**Tier A (22 passages, editions confirmed)**
+
+1. Saguenay River / Tadoussac. Champlain, Des Sauvages, 1603: the tabagie with Anadabijou at
+   Pointe Saint-Mathieu, 27 May 1603. Biggar, Works, vol. I. Spot: Tadoussac.
+2. Ottawa River. Champlain, 1613: the tobacco offering at the Chaudière Falls. Biggar, vol. II.
+   Spot: the Chaudière, Ottawa.
+3. Lake Champlain. Champlain, 1609: the fight at Ticonderoga, 30 July 1609. Biggar, vol. II.
+   Spot: Fort Carillon.
+4. Saint John River. Champlain, 1604: the river named on St John's day, 24 June 1604. Biggar,
+   vol. I. Spot: Saint John harbour.
+5. Annapolis Basin / Port-Royal. Champlain, 1606-07: the Order of Good Cheer at the Habitation.
+   Biggar, vol. I (Lescarbot's account, Grant's translation, to confirm as an alternative).
+   Spot: the Habitation.
+6. Georgian Bay / Sainte-Marie. Brébeuf, 1637: the instructions for the fathers going among the
+   Huron. Jesuit Relations, ed. Thwaites, vol. 12. Spot: Sainte-Marie among the Hurons.
+7. Niagara River. Hennepin, December 1678: the falls described, "a vast and prodigious cadence
+   of water". A New Discovery, 1698, ed. Thwaites (1903). Spot: Niagara Falls.
+8. Lake Superior / Grand Portage. Mackenzie, General History of the Fur Trade: the rendezvous at
+   Grand Portage. Voyages (1801), Gutenberg vol. I. Spot: Grand Portage.
+9. Kaministiquia River / Fort William. Ross Cox, 1817: Fort William described. Adventures on the
+   Columbia River (1831). Spot: Fort William.
+10. James Bay. Abacuk Prickett, 22 June 1611: Hudson set adrift in the shallop. Purchas, as
+    printed in Asher, Henry Hudson the Navigator (Hakluyt Society, 1860; to confirm the copy;
+    Purchas His Pilgrimes, 1625, confirmed). Spot: James Bay, off the east shore (approximate).
+11. North Saskatchewan River. Anthony Henday, October 1754: the meeting with the Archithinue
+    (Blackfoot) leader. Burpee, York Factory to the Blackfeet Country (RSC, 1907). Spot: the
+    Blackfoot camp near the Red Deer (approximate).
+12. Coronation Gulf. Franklin, 18 July 1821: the Polar Sea reached at the Coppermine's mouth.
+    Narrative of a Journey to the Shores of the Polar Sea (1823). Spot: the Coppermine mouth.
+13. Mackenzie River. Mackenzie, 12-14 July 1789: whales and the tide at the delta, the sea
+    recognised. Voyages, Gutenberg vol. I. Spot: Whale (Garry) Island, Mackenzie delta.
+14. Victoria Strait / Victory Point. The record of 25 April 1848: "Sir John Franklin died on the
+    11th June 1847". As printed in McClintock, The Voyage of the Fox (1859). Spot: Victory Point.
+15. Frobisher Bay. George Best, 1577: the people of the bay and their boats (not the taking of
+    captives). The Three Voyages of Martin Frobisher (Hakluyt Society, 1867). Spot: Kodlunarn
+    Island.
+16. Thompson River. Simon Fraser, 19 June 1808: the great forks, the river named for Thompson.
+    Masson, Les Bourgeois, vol. I (1889). Spot: Lytton.
+17. Nootka Sound / Yuquot. John Jewitt, 1803-05: Maquinna's village and the whale hunt (not the
+    taking of the Boston). Narrative (1815). Spot: Friendly Cove (Yuquot).
+18. Yukon River / Miles Canyon. Schwatka, 1883: the raft through the Grand Cañon. Along Alaska's
+    Great River (1885). Spot: Miles Canyon.
+19. Klondike River / Bonanza Creek. Tappan Adney, 1897-98: Bonanza Creek and the claims.
+    The Klondike Stampede (1900). Spot: the Discovery claim.
+20. Trinity Bay. John Guy, November 1612: the meeting with the Beothuk at Bull Arm. Guy's
+    journal as printed in Howley, The Beothucks (1915). Spot: Bull Arm.
+21. Naskaupi River / Hamilton Inlet. Mina Hubbard, 1905: the Naskaupi ascended, Michikamau
+    reached. A Woman's Way through Unknown Labrador (1908). Spot: Lake Michikamau or
+    North West River.
+22. Mississippi River. Marquette, 17 June 1673: entering the Mississippi "with a joy that I
+    cannot express". Jesuit Relations, vol. 59. Spot: Prairie du Chien. (The Mississippi has
+    La Salle already; this one is for the Marquette pointer document.)
+
+**Tier B (8 passages, optional or edition to confirm)**
+
+23. Lake Winnipeg. Alexander Henry the Elder, 1775: the crossing of the lake. Travels and
+    Adventures (1809; to confirm). Spot: the lake's narrows.
+24. Winnipeg River / Lake of the Woods. La Vérendrye, 1730s. Burpee's Journals and Letters
+    (Champlain Society, 1927; to confirm). Spot: Fort St. Charles.
+25. Slave River. Mackenzie, June 1789: the rapids and portages below the Peace. Gutenberg
+    vol. I. Spot: Fort Smith rapids.
+26. Great Bear Lake. Franklin, winter 1825-26, at Fort Franklin. Narrative of a Second
+    Expedition (1828; to confirm). Spot: Fort Franklin.
+27. Smith Sound. Kane, 1854: the winter in the Advance. Arctic Explorations (1856). Spot:
+    Rensselaer Harbour.
+28. Burrard Inlet. Vancouver, June 1792: Burrard's Channel entered, the people in canoes.
+    Voyage of Discovery (1798; to confirm the copy). Spot: Burrard Inlet.
+29. Bennett Lake. Steele, May 1898: the boats leaving Bennett. Forty Years in Canada (1915;
+    to confirm). Spot: Bennett.
+30. Exploits River. Cormack, 1822: the crossing of Newfoundland. As printed in Howley (1915).
+    Spot: Red Indian Lake.
+
+Each passage, once approved, is transcribed under the rules of passes 13 and 15 (only text read
+in the edition, nothing added, omissions marked [...]), spotted, linked to its explorer and
+waterway (and location where one exists), given context, vocabulary, questions and an edition
+citation, and both narrator copies stored. Where a Tier A edition proves unreadable the passage
+drops to Tier B rather than being taken from a secondary quotation.
+
 ### 10.6 Order of work
 10.5's three features first (citations, then expedition routes, then the cartography gallery, because routes and maps both cite); then 1, 3, 5, 16, 18, 6, 7, 9, 10, 11, 13, 12, 17, 4; item 8 when recordings exist.
 
