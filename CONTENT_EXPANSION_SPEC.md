@@ -2305,6 +2305,32 @@ waterway (and location where one exists), given context, vocabulary, questions a
 citation, and both narrator copies stored. Where a Tier A edition proves unreadable the passage
 drops to Tier B rather than being taken from a secondary quotation.
 
+### 10.24 Narrations delivered, region by region (2026-10-21)
+
+**The method.** A shared seeder (`turso-migrations/lib/voices-seed.ts`) takes data-only region
+files: for each passage the checked transcription, the "Quotation checked against" note (appended
+to historicalContext as the earlier passes did), the spot, the explorer, waterway and location
+links, context, vocabulary, questions and an edition citation. Before apply, `--dump` hands the
+entries to an edition checker (scratchpad `narr/check.py`) that holds the full OCR text of each
+edition (Internet Archive `_djvu.txt`, or the Gutenberg text) and requires every segment of the
+transcription to appear in it verbatim and in order, allowing a chunk to resume after a page
+break (running heads, footnotes, and in the Champlain Society volumes the facing French page),
+with each OCR correction declared explicitly (`ocrFixes`) so it is reviewable. Only passages that
+pass are applied; both narrator copies are then synthesised and stored.
+
+**Region 1, New France and the Atlantic (`2026-10-21-voices-new-france-atlantic.ts`, applied,
+10 of 10 pass the checker; 38 narrations in all).** Champlain at the tabagie of Anadabijou,
+Tadoussac, 27 May 1603 (Biggar vol. I); Champlain naming the Saint John, 24 June 1604 (vol. I);
+the Order of Good Cheer, winter 1606-07 (vol. I); the fight at Ticonderoga, 30 July 1609
+(vol. II); the Chaudière falls and the tobacco offering, June 1613 (vol. II); Brébeuf's
+instructions for the Fathers going among the Huron, 1637 (Jesuit Relations vol. XII); Hennepin
+on the Falls of Niagara, December 1678 (Thwaites' 1903 reprint of the 1698 English, long s
+folded by the checker); John Guy's meeting with the Beothuk at Bull Arm, 6 November 1612
+(Purchas, in Howley 1915); Mina Hubbard reaching Michikamau, 1-3 August 1905; Cormack at the
+deserted Beothuk camps on Red Indian Lake, November 1828 (Howley 1915), in place of the 1822
+crossing, which never reached the Exploits. Each is spotted and linked; Brébeuf has no explorer
+row and is linked by author only. Build not required: narrations are data.
+
 ### 10.6 Order of work
 10.5's three features first (citations, then expedition routes, then the cartography gallery, because routes and maps both cite); then 1, 3, 5, 16, 18, 6, 7, 9, 10, 11, 13, 12, 17, 4; item 8 when recordings exist.
 

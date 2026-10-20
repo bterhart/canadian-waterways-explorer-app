@@ -1,0 +1,294 @@
+// Narrations, New France and the Atlantic (approved list 10.23, passages 1-7, 20, 21, 30;
+// 2026-10-21). Ten checked transcriptions, each read in the full text of a published edition
+// (Internet Archive scans) and compared against it chunk by chunk by the edition checker before
+// apply. Rules of passes 13 and 15: only text read in the edition, nothing added, omissions
+// marked [...], OCR line-break hyphens joined and obvious scanner errors corrected (each one
+// declared in ocrFixes so the checker can match the printed text).
+//   bun run prisma/turso-migrations/2026-10-21-voices-new-france-atlantic.ts [--apply] [--only <id>] [--dump]
+import { seedVoices, type VoiceEntry } from "./lib/voices-seed";
+
+const CHAMPLAIN = "cmlhaslpl0004m2zhpjklxgyn";
+
+const ENTRIES: VoiceEntry[] = [
+  {
+    id: "psd_voice_tadoussac_1603",
+    title: "Champlain at the Tabagie of Anadabijou, Tadoussac, May 1603",
+    documentType: "journal", author: "Samuel de Champlain", originalDate: "27 May 1603; published 1603", originalYear: 1603, gradeLevel: "7-9",
+    explorerId: CHAMPLAIN, waterwayId: "cmlhbjrqg000hm2mbrxd1csg3", locationId: "cmlhbjrrk0019m2mbo76o9uph",
+    spot: { latitude: 48.117, longitude: -69.705, name: "Pointe Saint-Mathieu (Pointe aux Alouettes), across the Saguenay mouth from Tadoussac, 27 May 1603" },
+    transcription:
+      "He received us very well, after the fashion of the country, and made us sit down beside him, while all the savages ranged themselves one next the other on both sides of the lodge. One of the savages whom we had brought began to make his oration, of the good reception that the king had given them, and of the good entertainment they had received in France, and that they might feel assured His Majesty wished them well, and desired to people their country, and to make peace with their enemies (who are the Iroquois) or send forces to vanquish them. He also told of the fine castles, palaces, houses, and peoples they had seen, and of our manner of living. He was heard with the greatest possible silence. Now when he had ended his oration, the said grand Sagamore Anadabijou, who had listened to him attentively, began to smoke tobacco, and to pass on his pipe to Monsieur du Pont-Gravé of St. Malo, and to me, and to certain other Sagamores who were near him. After smoking some time, he began to address the whole gathering, speaking with gravity, pausing sometimes a little, and then resuming his speech, saying to them, that in truth they ought to be very glad to have His Majesty for their great friend. They answered all with one voice, Ho, ho, ho, which is to say, yes, yes. Continuing his speech, he said that he was well content that His said Majesty should people their country, and make war on their enemies, and that there was no nation in the world to which they wished more good than to the French. Finally, he gave them all to understand the advantage and profit they might receive from His said Majesty. When he had ended his speech, we went out of his lodge, and they began to hold their Tabagie or feast, which they make with the flesh of moose, which is like beef, with that of bear, seal, and beaver, which are their most ordinary meats, and with great quantities of wild fowl. They had eight or ten kettles full of meats in the midst of the said lodge, and these were set some six paces apart, and each on its own fire.",
+    checked: "Quotation checked against The Works of Samuel de Champlain, ed. H. P. Biggar, vol. I (Toronto: Champlain Society, 1922), Des Sauvages (1603), chapter II, the feast of the grand Sagamore Anadabijou at the Saguenay on 27 May 1603, in the Society's English with the 1603 French facing. The footnote marks of the edition are omitted; the OCR's \"Ho, ho, bo\" is the printed \"Ho, ho, ho\".",
+    historicalContext:
+      "Champlain's first page about Canada. He had come out in 1603 with Pont-Gravé, carrying home two Montagnais (Innu) men who had wintered in France, and the day after anchoring at Tadoussac they crossed to the lodge of Anadabijou, the Innu leader, where a great feast was under way with Algonquin and Etchemin allies after a victory over the Iroquois. One of the returned travellers spoke for the French king; Anadabijou smoked, considered, and answered that the French were welcome to settle and to join the war. Historians read this exchange as the founding alliance of New France, made by the Innu on their own ground and on their own terms, five years before Quebec was built. Champlain, who was there as an observer without a command, wrote it down the way he saw it: the kettles, the dog, the scalps, the dance, and the silence in which the speeches were heard.",
+    vocabulary: [
+      { word: "tabagie", definition: "A feast, in the word Champlain took from his hosts; he thought it their own word" },
+      { word: "Sagamore", definition: "A leader; the Mi'kmaq word sakumow, used by the French for chiefs on the whole coast" },
+      { word: "Anadabijou", definition: "The Innu leader at Tadoussac whose welcome in 1603 opened the French alliance" },
+      { word: "Montagnais", definition: "The French name for the Innu of the Saguenay and north shore" },
+      { word: "Pont-Gravé", definition: "François Gravé Du Pont of St. Malo, the merchant captain who led the 1603 voyage; Champlain sailed with him" },
+    ],
+    discussionQuestions: [
+      "Who is doing the welcoming in this scene, and who is asking for permission?",
+      "What did the two travellers tell Anadabijou about France, and why would that matter to him?",
+      "Champlain lists what was in the kettles. What else does he notice, and what does he not understand?",
+      "Why do historians call this feast the beginning of an alliance rather than a discovery?",
+    ],
+    citation: { author: "Samuel de Champlain", title: "The Works of Samuel de Champlain, vol. I, ed. H. P. Biggar", publisher: "Toronto: Champlain Society, 1922", year: "1922", url: "https://archive.org/details/worksofsamueldec0001hpbi" },
+    edition: "worksofsamueldec0001hpbi.txt",
+    ocrFixes: [["Ho, ho, bo, which is to say", "Ho, ho, ho, which is to say"], ["began to smoke tobacco,! and", "began to smoke tobacco, and"]],
+  },
+  {
+    id: "psd_voice_saint_john_1604",
+    title: "Champlain Names the River Saint John, June 1604",
+    documentType: "journal", author: "Samuel de Champlain", originalDate: "24 June 1604; published 1613", originalYear: 1604, gradeLevel: "4-6",
+    explorerId: CHAMPLAIN, waterwayId: "cmlhbjrqk000jm2mbu4c80xzn", locationId: null,
+    spot: { latitude: 45.265, longitude: -66.06, name: "The mouth of the Saint John, at the Reversing Falls, 24 June 1604" },
+    transcription:
+      "Four leagues farther on there is a fine bay, running into the land, and at its head lie three islands and a rock. Two of these islands are a league distant from the cape toward the west, and the other is at the mouth of one of the largest and deepest rivers we had yet seen, which we named the river St. John, because it was on that day we arrived there. By the Indians it is called Ouygoudy. This river is dangerous if one does not take careful note of certain points and rocks lying on both sides. At its mouth it is narrow, but immediately expands. After rounding a point it narrows again and forms a waterfall between two lofty cliffs, where the water runs with such great swiftness that if a piece of wood be thrown in, it sinks and is never seen again. But by waiting for high tide one can pass this place very easily, and then the river broadens to as much as a league in certain places, and has three islands. We did not explore it farther. However, Ralleau, the Sieur de Monts' secretary, went there some time afterwards to find an Indian named Secoudon, chief of that river, and he reported that it was beautiful, large and wide, with quantities of meadows and fine trees, such as oaks, beeches, butternuts, and wild grape vines. The inhabitants of the country pass up this river as far as Tadoussac, which is on the great river St. Lawrence, and go overland only a short distance to reach that place.",
+    checked: "Quotation checked against The Works of Samuel de Champlain, ed. H. P. Biggar, vol. I (Toronto: Champlain Society, 1922), the Voyages of 1613, book I, chapter IV, the coasting of the Bay of Fundy in June 1604, in the Society's English with the 1613 French facing. The footnote marks of the edition are omitted.",
+    historicalContext:
+      "In June 1604 the Sieur de Monts' expedition, with Champlain as its geographer, was coasting the Bay of Fundy looking for a place to settle. On 24 June, the feast of St. John the Baptist, they came to the mouth of a great river and named it for the day, as they had named other places for the saints of the calendar; the Wolastoqiyik, whose river it was, called it Ouygoudy in Champlain's hearing, a name now read as Wolastoq, the beautiful river. What Champlain describes at the mouth is the Reversing Falls at Saint John, where the Bay of Fundy's tide and the river's current meet in the gorge and the water runs in and out with the tide. De Monts chose Sainte-Croix Island instead, and lost half his men to scurvy there that winter.",
+    vocabulary: [
+      { word: "Ouygoudy", definition: "Champlain's spelling of the name he heard for the river, the Wolastoqiyik's Wolastoq" },
+      { word: "Reversing Falls", definition: "The gorge at the river's mouth where the Fundy tide runs in over the river's current; Champlain saw it at low water" },
+      { word: "Sieur de Monts", definition: "Pierre Du Gua de Monts, who held the fur-trade monopoly and led the 1604 settlement" },
+      { word: "Secoudon", definition: "The chief of the Saint John whom de Monts' secretary went to find, called Chkoudun by Lescarbot" },
+      { word: "league", definition: "About four kilometres in Champlain's reckoning" },
+    ],
+    discussionQuestions: [
+      "The river already had a name. Why did Champlain give it another, and which one do we use today?",
+      "What did Champlain see that made the river mouth dangerous, and how did he learn to pass it?",
+      "What did Secoudon tell the French about his river, and why would that interest settlers?",
+      "How could the people of the Saint John reach Tadoussac on the St. Lawrence by water?",
+    ],
+    citation: { author: "Samuel de Champlain", title: "The Works of Samuel de Champlain, vol. I, ed. H. P. Biggar", publisher: "Toronto: Champlain Society, 1922", year: "1922", url: "https://archive.org/details/worksofsamueldec0001hpbi" },
+    edition: "worksofsamueldec0001hpbi.txt",
+    ocrFixes: [["three islands and a rock.” ‘Two of these", "three islands and a rock. Two of these"], ["that day we arrived there.? By the Indians", "that day we arrived there. By the Indians"], ["named Secoudon,’ chief of that river", "named Secoudon, chief of that river"]],
+  },
+  {
+    id: "psd_voice_port_royal_1607",
+    title: "Champlain's Order of Good Cheer at Port-Royal, Winter 1606-1607",
+    documentType: "journal", author: "Samuel de Champlain", originalDate: "Winter 1606-1607; published 1613", originalYear: 1606, gradeLevel: "4-6",
+    explorerId: CHAMPLAIN, waterwayId: "ww_annapolis-basin", locationId: "cmlhci08v001bm2rx1qzcbb7o",
+    spot: { latitude: 44.7, longitude: -65.6, name: "The Habitation at Port-Royal, winter 1606-07" },
+    transcription:
+      "The winter was not so long as in the preceding years, nor did the snow remain so late upon the ground. It rained pretty often, on which account the Indians suffered a severe famine, because of the scarcity of snow. The Sieur de Poutrincourt fed part of those who were with us, that is to say Membertou, his wife and his children, and some others. We spent this winter very pleasantly, and had good fare by means of the Order of Good Cheer which I established, and which everybody found beneficial to his health, and more profitable than all sorts of medicine we might have used. This Order consisted of a chain which we used to place with certain little ceremonies about the neck of one of our people, commissioning him for that day to go hunting. The next day it was conferred upon another, and so on in order. All vied with each other to see who could do the best, and bring back the finest game. We did not come off badly, nor did the Indians who were with us.",
+    checked: "Quotation checked against The Works of Samuel de Champlain, ed. H. P. Biggar, vol. I (Toronto: Champlain Society, 1922), the Voyages of 1613, book I, chapter XVI, the winter of 1606-07 at Port-Royal, in the Society's English with the 1613 French facing. The footnote marks of the edition are omitted; the OCR dropped the full stop after \"used\".",
+    historicalContext:
+      "The third winter of the de Monts colony, and the first good one. After scurvy had killed half the men at Sainte-Croix in 1604-05 and a dozen more at Port-Royal in 1605-06, Champlain set up the Ordre de Bon Temps for the fifteen gentlemen of Poutrincourt's table: each in turn was chief steward for a day, bound to hunt or fish and bring something to the table, and marched the dinner in with the collar of the Order round his neck. Lescarbot, who was there, adds that Membertou, the Mi'kmaq sagamore, and his people sat at the table with them, and that the French went about in their doublets in January. Four men still died that winter, but the Order is remembered as the first social club in North America, and the reconstructed Habitation stands on the site at Port-Royal.",
+    vocabulary: [
+      { word: "Order of Good Cheer", definition: "The Ordre de Bon Temps, Champlain's rota of stewards who hunted and fished for the table, each wearing the collar of the Order for a day" },
+      { word: "Membertou", definition: "The Mi'kmaq sagamore of the Port-Royal country, who was fed by the French that winter and sat at their table" },
+      { word: "Poutrincourt", definition: "Jean de Biencourt de Poutrincourt, who held Port-Royal from de Monts and commanded there in 1606-07" },
+      { word: "scurvy", definition: "The disease of the earlier winters, from the want of fresh food; good cheer and fresh game kept it off" },
+    ],
+    discussionQuestions: [
+      "Why would a rota of hunters be better than \"all sorts of medicine\" that winter?",
+      "The Mi'kmaq were hungry that winter and the French were feeding Membertou's family. What does that tell you about who depended on whom?",
+      "Lescarbot says the dinners came in with the collar of the Order. Why might ceremony matter in a small wintering post?",
+      "Compare this winter with the one at Sainte-Croix two years before. What had the French learned?",
+    ],
+    citation: { author: "Samuel de Champlain", title: "The Works of Samuel de Champlain, vol. I, ed. H. P. Biggar", publisher: "Toronto: Champlain Society, 1922", year: "1922", url: "https://archive.org/details/worksofsamueldec0001hpbi" },
+    edition: "worksofsamueldec0001hpbi.txt",
+    ocrFixes: [["upon the ground.’ It rained", "upon the ground. It rained"], ["scarcity of snow.” The Sieur", "scarcity of snow. The Sieur"], ["medicine we might have used This Order", "medicine we might have used. This Order"]],
+  },
+  {
+    id: "psd_voice_lake_champlain_1609",
+    title: "Champlain's Fight with the Iroquois at Ticonderoga, July 1609",
+    documentType: "journal", author: "Samuel de Champlain", originalDate: "30 July 1609; published 1613", originalYear: 1609, gradeLevel: "7-9",
+    explorerId: CHAMPLAIN, waterwayId: "ww_lake-champlain", locationId: "loc_fort-carillon",
+    spot: { latitude: 43.843, longitude: -73.388, name: "The point at Ticonderoga, on the west shore of Lake Champlain, 30 July 1609" },
+    transcription:
+      "After we were armed with light weapons, we took, each of us, an arquebus and went ashore. I saw the enemy come out of their barricade to the number of two hundred, in appearance strong, robust men. They came slowly to meet us with a gravity and calm which I admired; and at their head were three chiefs. Our Indians likewise advanced in similar order, and told me that those who had the three big plumes were the chiefs, and that there were only these three, whom you could recognize by these plumes, which were larger than those of their companions; and I was to do what I could to kill them. I promised them to do all in my power, and told them that I was very sorry they could not understand me, so that I might direct their method of attacking the enemy, all of whom undoubtedly we should thus defeat; but that there was no help for it, and that I was very glad to show them, as soon as the engagement began, the courage and readiness which were in me. As soon as we landed, our Indians began to run some two hundred yards towards their enemies, who stood firm and had not yet noticed my white companions who went off into the woods with some Indians. Our Indians began to call to me with loud cries; and to make way for me they divided into two groups, and put me ahead some twenty yards, and I marched on until I was within some thirty yards of the enemy, who as soon as they caught sight of me halted and gazed at me and I at them. When I saw them make a move to draw their bows upon us, I took aim with my arquebus and shot straight at one of the three chiefs, and with this shot two fell to the ground and one of their companions was wounded who died thereof a little later. I had put four bullets into my arquebus. As soon as our people saw this shot so favourable for them, they began to shout so loudly that one could not have heard it thunder, and meanwhile the arrows flew thick on both sides. The Iroquois were much astonished that two men should have been killed so quickly, although they were provided with shields made of cotton thread woven together and wood, which were proof against their arrows. This frightened them greatly. As I was reloading my arquebus, one of my companions fired a shot from within the woods, which astonished them again so much that, seeing their chiefs dead, they lost courage and took to flight, abandoning the field and their fort, and fleeing into the depth of the forest.",
+    checked: "Quotation checked against The Works of Samuel de Champlain, ed. H. P. Biggar, vol. II (Toronto: Champlain Society, 1925), the Voyages of 1613, book II, chapter IX, the fight of 30 July 1609, in the Society's English with the 1613 French facing.",
+    historicalContext:
+      "Champlain had promised Anadabijou's people in 1603 that the French would join their war, and in July 1609 he kept the promise, going up the Richelieu with sixty Innu, Algonquin and Wendat warriors and two other Frenchmen into the lake that now carries his name. The Haudenosaunee (Mohawk) party they met at the point where Fort Ticonderoga later stood had never faced guns. Champlain's own account is matter-of-fact about the killing of two chiefs with one shot; what he does not say is that this and a second fight the next year set the pattern of French-Iroquois hostility for the rest of the century. The drawing he published of the fight, with himself in the middle in armour, is the only picture of Champlain made in his lifetime, and it is of his own making.",
+    vocabulary: [
+      { word: "arquebus", definition: "The heavy matchlock gun of the early 1600s; Champlain loaded his with four balls" },
+      { word: "Iroquois", definition: "The Haudenosaunee; the party at Ticonderoga were Mohawk, the eastern nation of the Five Nations" },
+      { word: "our Indians", definition: "Champlain's Innu, Algonquin and Wendat allies, who had brought him there to fight their war" },
+      { word: "barricade", definition: "The night fort of felled trees the Mohawk built on the shore when the two parties met" },
+      { word: "Ticonderoga", definition: "The point on the west shore of Lake Champlain where the fight took place; Fort Carillon was built there in 1755" },
+    ],
+    discussionQuestions: [
+      "Whose war was this, and why was Champlain in it?",
+      "What did the Mohawk do when they first saw Champlain, and why?",
+      "Champlain says his allies could not understand him. What does the passage show about who was in command?",
+      "What were the long consequences of a fight that lasted a few minutes?",
+    ],
+    citation: { author: "Samuel de Champlain", title: "The Works of Samuel de Champlain, vol. II, ed. H. P. Biggar", publisher: "Toronto: Champlain Society, 1925", year: "1925", url: "https://archive.org/details/worksofsamueldec02chamuoft" },
+    edition: "worksofsamueldec02chamuoft.txt",
+  },
+  {
+    id: "psd_voice_chaudiere_1613",
+    title: "Champlain at the Chaudière Falls: the Tobacco Offering, June 1613",
+    documentType: "journal", author: "Samuel de Champlain", originalDate: "4 and 17 June 1613; published 1613", originalYear: 1613, gradeLevel: "4-6",
+    explorerId: CHAMPLAIN, waterwayId: "cmlhaslqu000qm2zh7ssejohe", locationId: "cmlk1ohsy0005m2atetkkpn26",
+    spot: { latitude: 45.421, longitude: -75.713, name: "The Chaudière Falls on the Ottawa, between Ottawa and Gatineau, June 1613" },
+    transcription:
+      "A league thence we passed a rapid which is half a league wide and has a descent of six or seven fathoms. Here are many small islands which are nothing more than rough, steep rocks, covered with poor, scrubby wood. At one place the water falls with such force upon a rock that with the lapse of time it has hollowed out a wide, deep basin. Herein the water whirls around to such an extent, and in the middle sends up such big swirls, that the Indians call it Asticou which means 'boiler.' This waterfall makes such a noise in this basin that it can be heard for more than two leagues away. [...] Continuing our journey, we arrived at the Chaudière falls, where the natives celebrated their usual ceremony, which is as follows. Having carried their canoes to the foot of the fall, they assemble in one place, where one of them takes up a collection with a wooden plate into which each puts a piece of tobacco. After the collection, the plate is set down in the middle of the group and all dance about it, singing after their fashion. Then one of the chiefs makes a speech, pointing out that for years they have been accustomed to make such an offering, and that thereby they receive protection from their enemies; that otherwise misfortune would happen to them, as the devil persuades them. They live in this superstition, and in many others, as we have stated elsewhere. When he has finished, the orator takes the plate and throws the tobacco into the middle of the boiling water, and all together utter a loud whoop. These poor people are so superstitious, that they would not think they could have a safe journey, unless they had performed this ceremony here, more particularly since their enemies, not daring to go farther on account of the bad trails, wait for them at this spot and surprise them, as they have sometimes done.",
+    checked: "Quotation checked against The Works of Samuel de Champlain, ed. H. P. Biggar, vol. II (Toronto: Champlain Society, 1925), the Fourth Voyage (1613), the ascent of the Ottawa on 4 June and the return past the Chaudière on 17 June 1613, in the Society's English with the 1613 French facing. The first paragraph is the description of the falls on the way up; the second is the ceremony on the way down. The footnote marks of the edition are omitted.",
+    historicalContext:
+      "In 1613 Champlain went up the Ottawa on the word of Nicolas de Vignau, who claimed to have reached the northern sea by that river; the claim was false and the journey ended at Allumette Island, but Champlain's account is the first description of the Ottawa. The Chaudière, the great cauldron of falls where Ottawa and Gatineau now face each other, was a place where the Algonquin (Anishinabeg) of the river made an offering of tobacco before the carry, as Champlain watched them do on the way down. He calls it superstition, as a Catholic of his time would; the Anishinabeg call the Chaudière Akikodjiwan, a sacred place, and still do. Most of the falls went under a dam in 1908.",
+    vocabulary: [
+      { word: "Asticou", definition: "The Algonquin name Champlain recorded for the falls, which he translates as 'boiler'; the French name Chaudière means the same" },
+      { word: "Chaudière", definition: "Cauldron: the basin of whirling water below the falls, and the name the river's falls still carry" },
+      { word: "petun", definition: "Tobacco, in Champlain's French; the offering thrown into the cauldron" },
+      { word: "fathom", definition: "Six feet; Champlain reckons the fall at six or seven fathoms, about twelve metres" },
+      { word: "Nicolas de Vignau", definition: "The young Frenchman whose story of a northern sea sent Champlain up the Ottawa in 1613" },
+    ],
+    discussionQuestions: [
+      "What did the Algonquin do at the Chaudière before carrying their canoes past it, and what reason did their speaker give?",
+      "Champlain calls the ceremony superstition. What does that word tell you about Champlain rather than about the Algonquin?",
+      "The falls were a dangerous place for travellers in two different ways. What were they?",
+      "What has happened to the Chaudière since Champlain saw it, and who still regards it as sacred?",
+    ],
+    citation: { author: "Samuel de Champlain", title: "The Works of Samuel de Champlain, vol. II, ed. H. P. Biggar", publisher: "Toronto: Champlain Society, 1925", year: "1925", url: "https://archive.org/details/worksofsamueldec02chamuoft" },
+    edition: "worksofsamueldec02chamuoft.txt",
+    ocrFixes: [["six or seven fathoms. ^ Here are", "six or seven fathoms. Here are"], ["call it Asticou^ which means ' boiler.' ^ This waterfall", "call it Asticou which means 'boiler.' This waterfall"], ["the Chaudiere falls,^ where the natives", "the Chaudière falls, where the natives"], ["the orator takes the plate and throvv^s the tobacco", "the orator takes the plate and throws the tobacco"]],
+  },
+  {
+    id: "psd_voice_brebeuf_1637",
+    title: "Brébeuf's Instructions for the Fathers Going Among the Huron, 1637",
+    documentType: "letter", author: "Jean de Brébeuf", originalDate: "1637, from the Huron mission; printed in the Relation of 1637", originalYear: 1637, gradeLevel: "7-9",
+    explorerId: null, waterwayId: "ww_georgian-bay", locationId: "loc_sainte-marie-among-the-hurons",
+    spot: { latitude: 44.78, longitude: -79.95, name: "Ihonatiria, the Jesuit mission village near the Georgian Bay shore, 1637 (site approximate)" },
+    transcription:
+      "You must have sincere affection for the Savages, — looking upon them as ransomed by the blood of the son of God, and as our brethren, with whom we are to pass the rest of our lives. To conciliate the Savages, you must be careful never to make them wait for you in embarking. You must provide yourself with a tinder box or with a burning mirror, or with both, to furnish them fire in the daytime to light their pipes, and in the evening when they have to encamp; these little services win their hearts. You should try to eat their sagamite or salmagundi in the way they prepare it, although it may be dirty, half-cooked, and very tasteless. As to the other numerous things which may be unpleasant, they must be endured for the love of God, without saying anything or appearing to notice them. It is well at first to take everything they offer, although you may not be able to eat it all; for, when one becomes somewhat accustomed to it, there is not too much. You must try and eat at daybreak unless you can take your meal with you in the canoe; for the day is very long, if you have to pass it without eating. The Barbarians eat only at Sunrise and Sunset, when they are on their journeys. You must be prompt in embarking and disembarking; and tuck up your gowns so that they will not get wet, and so that you will not carry either water or sand into the canoe. To be properly dressed, you must have your feet and legs bare; while crossing the rapids, you can wear your shoes, and, in the long portages, even your leggings. You must so conduct yourself as not to be at all troublesome to even one of these Barbarians. It is not well to ask many questions, nor should you yield to your desire to learn the language and to make observations on the way; this may be carried too far. You must relieve those in your canoe of this annoyance, especially as you cannot profit much by it during the work. Silence is a good equipment at such a time. You must bear with their imperfections without saying a word, yes, even without seeming to notice them. Even if it be necessary to criticise anything, it must be done modestly, and with words and signs which evince love and not aversion. In short, you must try to be, and to appear, always cheerful.",
+    checked: "Quotation checked against The Jesuit Relations and Allied Documents, ed. Reuben Gold Thwaites, vol. XII (Cleveland: Burrows, 1898), Le Jeune's Relation of 1637, \"Instructions for the Fathers of our Society who shall be sent to the Hurons\", in Thwaites' English with the 1637 French facing. The edition's bracketed page numbers and footnote mark are omitted.",
+    historicalContext:
+      "Jean de Brébeuf had lived with the Wendat (Huron) since 1634 and had made the canoe journey from Quebec, a month of paddling and portages in Wendat canoes, more than once. These are his rules for the priests who would follow him, printed by Le Jeune in the Relation of 1637 so that Jesuits in France could read them before they volunteered. They are practical to the point of humility: do not keep the paddlers waiting, carry fire for their pipes, eat what is given, go barefoot in the canoe, do not pester anyone with questions, keep silent, stay cheerful. Underneath is a hard fact of the mission: the Jesuits travelled as passengers in a Wendat world and depended wholly on their hosts' goodwill. Brébeuf's own words for the Wendat, \"Savages\" and \"Barbarians\", are the words of his century; his rules are about how to behave as a guest.",
+    vocabulary: [
+      { word: "sagamite", definition: "The Wendat and Algonquian corn porridge, the ordinary food of the canoe journey" },
+      { word: "tinder box", definition: "Flint, steel and tinder for striking fire; a burning mirror focused the sun to do the same" },
+      { word: "portage", definition: "The carry round a rapid; the Fathers were told to take their leggings off for the long ones" },
+      { word: "Huron", definition: "The French name for the Wendat confederacy of the Georgian Bay country, where the Jesuit mission worked from 1634 to 1649" },
+      { word: "Relation", definition: "The yearly report of the Jesuit mission in New France, printed in Paris and widely read" },
+    ],
+    discussionQuestions: [
+      "Which of Brébeuf's rules are about being a good passenger, and which about being a good guest?",
+      "Why does he tell the Fathers not to ask questions, when learning the language was their main task?",
+      "What does this list show about who held the power on the journey to the Huron country?",
+      "Brébeuf calls his hosts Savages and Barbarians and also his brethren. How do you make sense of both in one page?",
+    ],
+    citation: { author: "Jean de Brébeuf", title: "The Jesuit Relations and Allied Documents, vol. XII, ed. Reuben Gold Thwaites", publisher: "Cleveland: Burrows Brothers, 1898", year: "1898", url: "https://archive.org/details/jesuitrelationsa12jesuuoft" },
+    edition: "jesuitrelationsa12jesuuoft.txt",
+    ocrFixes: [["a tinder box® or with a [233 i.e., 229] burning mirror", "a tinder box or with a burning mirror"], ["you can [234 i.e., 230] wear your shoes", "you can wear your shoes"]],
+  },
+  {
+    id: "psd_voice_niagara_1678",
+    title: "Hennepin's Description of the Falls of Niagara, December 1678",
+    documentType: "journal", author: "Louis Hennepin", originalDate: "December 1678; published in English 1698", originalYear: 1678, gradeLevel: "7-9",
+    explorerId: "ex_louis-hennepin", waterwayId: "ww_niagara-river", locationId: null,
+    spot: { latitude: 43.079, longitude: -79.075, name: "The Falls of Niagara, seen from the Canadian bank, December 1678" },
+    transcription:
+      "Betwixt the Lake Ontario and Erié, there is a vast and prodigious Cadence of Water which falls down after a surprizing and astonishing manner, insomuch that the Universe does not afford its Parallel. 'Tis true, Italy and Suedeland boast of some such Things; but we may well say they are but sorry Patterns, when compar'd to this of which we now speak. At the foot of this horrible Precipice, we meet with the River Niagara, which is not above half a quarter of a League broad, but is wonderfully deep in some places. It is so rapid above this Descent, that it violently hurries down the wild Beasts while endeavouring to pass it to feed on the other side, they not being able to withstand the force of its Current, which inevitably casts them down headlong above Six hundred foot. This wonderful Downfall is compounded of two great Cross-streams of Water, and two Falls, with an Isle sloping along the middle of it. The Waters which fall from this vast height, do foam and boil after the most hideous manner imaginable, making an outrageous Noise, more terrible than that of Thunder; for when the Wind blows from off the South, their dismal roaring may be heard above fifteen Leagues off.",
+    checked: "Quotation checked against Louis Hennepin, A New Discovery of a Vast Country in America, reprinted from the second London issue of 1698, ed. Reuben Gold Thwaites, vol. I (Chicago: McClurg, 1903), chapter VII, \"A Description of the Fall of the River Niagara\". The 1698 typography (long s, capitals) is kept as the edition prints it, with the long s given as s; the drop capital and the footnote mark are omitted.",
+    historicalContext:
+      "Louis Hennepin, a Recollet friar with La Salle's expedition, came to the Niagara in December 1678 while La Salle's men built the Griffon above the falls, and his is the first printed description of them and the source of the first picture, which he published with it. He made the falls six hundred feet high; they are about fifty-seven metres, under two hundred feet. The exaggeration was noticed early and has kept his name attached to the falls ever since, along with the real wonder in his words: the two cross-streams, the island between them, the roar carried on the wind. The Seneca, in whose country the falls lay, had their own name, which the French wrote Onguiaahra and which became Niagara.",
+    vocabulary: [
+      { word: "cadence of water", definition: "A fall of water, in the English of 1698; a cataract" },
+      { word: "Suedeland", definition: "Sweden; Hennepin had heard of its waterfalls, and Italy's" },
+      { word: "Recollet", definition: "The branch of the Franciscans that sent missionaries to New France; Hennepin was one" },
+      { word: "the Griffon", definition: "La Salle's ship, built above the falls in 1679 and lost on Lake Michigan the same year" },
+      { word: "Onguiaahra", definition: "The Seneca name the French recorded for the river and falls, which became Niagara" },
+    ],
+    discussionQuestions: [
+      "Which parts of Hennepin's description are still true, and which did he get wrong?",
+      "Why might a writer exaggerate the height of a waterfall he had seen with his own eyes?",
+      "What can you tell about the falls' shape from his words alone, before you look at a picture?",
+      "Hennepin says the Universe has no parallel. Whose waterfalls was he comparing with, and whose was he not?",
+    ],
+    citation: { author: "Louis Hennepin", title: "A New Discovery of a Vast Country in America, vol. I, ed. Reuben Gold Thwaites", publisher: "Chicago: A. C. McClurg, 1903 (from the London issue of 1698)", year: "1903", url: "https://archive.org/details/newdiscoveryofva0001henn" },
+    edition: "newdiscoveryofva0001henn.txt",
+    longS: true,
+    ocrFixes: [["ETWIXT the Lake Ontario and Erié, there is a vaft and B prodigious", "Betwixt the Lake Ontario and Erié, there is a vaft and prodigious"], ["along the middle of it.1. The Waters", "along the middle of it. The Waters"]],
+  },
+  {
+    id: "psd_voice_trinity_bay_1612",
+    title: "John Guy's Meeting with the Beothuk at Bull Arm, November 1612",
+    documentType: "journal", author: "John Guy", originalDate: "6 November 1612; printed by Purchas, 1625", originalYear: 1612, gradeLevel: "7-9",
+    explorerId: "ex_john-guy", waterwayId: "ww_trinity-bay", locationId: null,
+    spot: { latitude: 47.80, longitude: -53.85, name: "Bull Arm, at the head of Trinity Bay, 6 November 1612 (site approximate)" },
+    transcription:
+      "November the sixth, two canoes appeared, and one man alone, coming towards us with a flag in his hand, of a wolfe skin, shaking it, and making a loud noise, which we took to be for a parley; where-upon a white flag was put out, and the barke and shallop rowed towards them, which the sauages did not like of, and so took them to their canoes againe, and were going away: where upon the barke wheazed unto them, and then they staied: presently after the shallop landed Master Whittington with the flag of truce who went towards them. Then they rowed into the shoare with one canoe, the other standing aloofe off, and landed two men, one of them hauing the white skin in his hand, and coming towards Master Whittington, the sauage made a loud speech, and shaked the skin which was answered by Master Whittington in like manner, and as the sauage drew neare, he threw downe the white skin on the ground the like was done by Master Whittington; whereupon both the sauages passed ouer a little water streame towards Master Whittington, dancing, leaping, and singing, and coming together, the foremost of them presented unto him a chaine of leather full of small periwinkles shels, a splitting knife, and a feather that stake in his eare; the other gaue him an arrow without a head; and the former was requited with a linnen cap, and a hand towell, who put presently the linnen cap upon his head: and to the other he gave a knife: and after hand in hand, they all three did sing and dance: upon this, one of our company, called Francis Tipton, went ashore, unto whom one of the sauages came running and gaue him a chaine, such as is before spoken of, who was gratified by Francis Tipton with a knife and a small peece of brasse. Then all four together, danced laughing and making signs of joy and gladnesse, sometimes striking the breasts of our company, and sometimes their owne. [...] upon this the shallop rowed aboard and brought John Guy and Master Teage ashoare, who presented them with a shirt, two table napkins, and a hand towell, giuing them bread, butter, and reasons of the sunne to eate, and beere, and aqua-vitae to drinke: and one of them, blowing in the aqua-vitae bottle, that made a sound, which they fell all into laughing at.",
+    checked: "Quotation checked against John Guy's narrative of 1612 as printed in James P. Howley, The Beothucks or Red Indians (Cambridge: University Press, 1915), from Purchas His Pilgrimes (1625), the entry for 6 November 1612. The spelling is Purchas's; the OCR's \"toweli\" and \"w'ere\" are the printed \"towell\" and \"were\".",
+    historicalContext:
+      "John Guy, a Bristol merchant, planted the first English colony in Newfoundland at Cuper's Cove (Cupids) in 1610, and in the autumn of 1612 sailed round into Trinity Bay to find the Beothuk, who had kept away from the fishing ships for a century. The meeting at Bull Arm is the only recorded friendly encounter between the Beothuk and the English: a parley by flags, gifts exchanged, a shared meal of bread, butter, raisins and beer, laughter over the bottle. It did not last. The following year a fishing crew fired on Beothuk who had come to the same place expecting Guy, and the two peoples never met in peace again. Two centuries later the last known Beothuk, Shanawdithit, died at St. John's in 1829. Guy's account was printed by Purchas in 1625 and reprinted by Howley in 1915.",
+    vocabulary: [
+      { word: "Beothuk", definition: "The people of Newfoundland when the Europeans came, whom the English called Red Indians for the ochre on their skin and clothing" },
+      { word: "shallop", definition: "A ship's boat with oars and a sail, in which Guy's party landed" },
+      { word: "parley", definition: "A meeting to talk under a flag of truce" },
+      { word: "aqua-vitae", definition: "Strong spirits; the Beothuk man blew across the bottle's mouth and everyone laughed at the sound" },
+      { word: "Cuper's Cove", definition: "Guy's colony of 1610 in Conception Bay, now Cupids" },
+    ],
+    discussionQuestions: [
+      "How did two groups with no common language manage to show each other they meant no harm?",
+      "What did each side give the other, and what might each gift have meant?",
+      "Why do you think the Beothuk had avoided the fishing ships for so long before this?",
+      "This is the only friendly meeting on record between the English and the Beothuk. What happened after, and why does that make this page matter?",
+    ],
+    citation: { author: "John Guy", title: "John Guy's narrative, 1612, in James P. Howley, The Beothucks or Red Indians: the Aboriginal Inhabitants of Newfoundland", publisher: "Cambridge: University Press, 1915 (from Purchas His Pilgrimes, 1625)", year: "1915", url: "https://archive.org/details/bp_662216" },
+    edition: "bp_662216.txt",
+    ocrFixes: [["hand toweli", "hand towell"], ["When signs w'ere made", "When signs were made"]],
+  },
+  {
+    id: "psd_voice_michikamau_1905",
+    title: "Mina Hubbard Reaches Lake Michikamau, August 1905",
+    documentType: "journal", author: "Mina Benson Hubbard", originalDate: "1-3 August 1905; published 1908", originalYear: 1905, gradeLevel: "4-6",
+    explorerId: "ex_mina-benson-hubbard", waterwayId: "ww_naskaupi-river", locationId: null,
+    spot: { latitude: 54.25, longitude: -63.95, name: "The eastern shore of Lake Michikamau, at the head of the Naskaupi, 2 August 1905 (the lake is now under the Smallwood Reservoir; site approximate)" },
+    transcription:
+      "At the rapid we were but a few minutes poling up to the big water south. Then after two miles of paddling, still southward, we rounded a point and looked westward straight into Michikamau and the sun. It was 5.52 P.M. When the exclamations of delight had subsided Gilbert asked: \"Do we have rice pudding for supper to-night, Mrs Hubbard?\" That evening we camped in an island flower-garden. [...] Next morning I rose early. It was cloudy but calm, and Michikamau was like a pond. How I wondered what fortune would be ours in the voyage on this big water. The canoes seemed so tiny here. I called the men at 6.30 A.M., and at nine we were ready to start. Before leaving, Job blazed two trees at the landing, and in one he placed a big flat stone on which I wrote with a piece of flint Joe brought me, HUBBARD EXPEDITION, ARRIVED HERE, AUGUST 2ND 1905. Underneath it I wrote the names of all the party. Then we embarked and it was \"All aboard for George River!\" our next objective point.",
+    checked: "Quotation checked against Mina Benson Hubbard, A Woman's Way through Unknown Labrador (London: John Murray, 1908), the end of chapter IX and chapter X, \"Michikamau\", the first sight of the lake on 1 August and the record left at the landing on the morning after the arrival. The OCR's \"'<\" before Gilbert's question and \"SND\" in the record are the printed quotation mark and \"2ND\".",
+    historicalContext:
+      "In 1903 Leonidas Hubbard had died of starvation trying to cross Labrador to the George River; he had missed the Naskaupi and gone up the wrong river. In 1905 his widow Mina, with George Elson, who had been with her husband, and three other Cree and Métis guides, Job and Gilbert Blake and Joseph Iserhoff, went in from North West River to finish his journey. They found the Naskaupi, climbed it to Michikamau, the great lake of the Labrador plateau, crossed the height of land and came down the George River to Ungava Bay in sixty-one days, and her map of the route was the first accurate one. This is the moment the lake opened in front of them. The stone she wrote on and the lake itself are under the Smallwood Reservoir, flooded for the Churchill Falls power project in the 1970s.",
+    vocabulary: [
+      { word: "Michikamau", definition: "The great lake of central Labrador at the head of the Naskaupi, now part of the Smallwood Reservoir" },
+      { word: "poling", definition: "Pushing a canoe up a rapid with long poles against the bottom" },
+      { word: "blazed", definition: "Cut a mark in the bark of a tree, to leave a sign" },
+      { word: "George River", definition: "The river running north to Ungava Bay that the party followed down after crossing the height of land" },
+      { word: "Job, Joe and Gilbert", definition: "Job Blake, Joseph Iserhoff and Gilbert Blake, who with George Elson guided and paddled the whole way" },
+    ],
+    discussionQuestions: [
+      "Why did it matter so much to Mina Hubbard to reach this lake?",
+      "Who did the paddling, the poling and the tree-blazing on this expedition, and how does she write about them?",
+      "What did she leave at the landing, and why would an explorer leave a record like that?",
+      "The lake she describes is now under a reservoir. What is lost when a place like this is flooded, and what is gained?",
+    ],
+    citation: { author: "Mina Benson Hubbard", title: "A Woman's Way through Unknown Labrador: an Account of the Exploration of the Nascaupee and George Rivers", publisher: "London: John Murray, 1908", year: "1908", url: "https://archive.org/details/womanswaythrough00hubbuoft" },
+    edition: "womanswaythrough00hubbuoft.txt",
+    ocrFixes: [["Gilbert asked : '< Do we have", "Gilbert asked: \"Do we have"], ["AUGUST SND 1905. J Underneath", "AUGUST 2ND 1905. Underneath"]],
+  },
+  {
+    id: "psd_voice_red_indian_lake_1828",
+    title: "Cormack at the Deserted Beothuk Camps on Red Indian Lake, November 1828",
+    documentType: "report", author: "William Eppes Cormack", originalDate: "November 1828; read to the Beothuck Institution, 1829", originalYear: 1828, gradeLevel: "10-12",
+    explorerId: "ex_william-eppes-cormack", waterwayId: "ww_exploits-river", locationId: null,
+    spot: { latitude: 48.93, longitude: -56.95, name: "The north end of Red Indian Lake, at the head of the Exploits, November 1828 (site approximate)" },
+    transcription:
+      "In about ten days we got a glimpse of this beautifully majestic and splendid sheet of water. The ravages of fire, which we saw in the woods for the last two days, indicated that man had been near. We looked down on the lake, from the hills at the northern extremity, with feelings of anxiety and admiration. No canoe could be discovered moving on its placid surface, in the distance. We were the first Europeans who had seen it in an unfrozen state, for the three former parties who had visited it before, were here in the winter, when its waters were frozen and covered over with snow. They had reached it from below, by way of the River Exploits, on the ice. We approached the lake with hope and caution; but found to our mortification that the Red Indians had deserted it for some years past. My party had been so excited, so sanguine, and so determined to obtain an interview of some kind with these people, that on discovering from appearances every where around us, that the Red Indians, the terror of the Europeans as well as the other Indian inhabitants of Newfoundland,—no longer existed, the spirits of one and all of us were very deeply effected. The old Mountaineer was particularly overcome. There were everywhere indications, that this had long been the central and undisturbed rendezvous of the tribe when they had enjoyed peace and security. But these primitive people had abandoned it, after being tormented with parties of Europeans during the last 18 years. Fatal rencounters had on these occasions unfortunately taken place. We spent several melancholy days wandering on the borders of the east end of the lake, surveying the various remains of what we now contemplated to have been an unoffending and cruelly extirpated race. At several places, by the margin of the lake, small clusters of winter and summer wigwams in ruins.",
+    checked: "Quotation checked against W. E. Cormack's report of his journey in search of the Red Indians, read before the Beothuck Institution at St. John's, as printed in James P. Howley, The Beothucks or Red Indians (Cambridge: University Press, 1915), the arrival at the Red Indians' Lake. The OCR's missing full stop after \"admiration\", stray marks after \"state\" and \"been\", doubled stop after \"ice\" and \"i8\" are corrected to the printed text; \"effected\" is as printed.",
+    historicalContext:
+      "William Cormack had crossed Newfoundland on foot in 1822 without meeting a Beothuk, and in 1827 founded the Beothuck Institution to find and protect the survivors. In the autumn of 1828 he went inland again from Notre Dame Bay with three Indigenous guides, a Mi'kmaq, an Innu (the \"old Mountaineer\") and an Abenaki, to Red Indian Lake, the Beothuk's winter country at the head of the Exploits. This is what they found: ruined wigwams, a drying house, a wrecked canoe, birches stripped for bark, and the burial houses of the dead. Of the \"three former parties\" he mentions, Buchan's in 1811 had ended with two marines killed, and the one of 1819 had taken Demasduit and shot her husband Nonosabasut. Shanawdithit, the woman Cormack names in his footnote, was by then the last Beothuk known to be alive; she died in St. John's in June 1829. Cormack's words \"cruelly extirpated race\" are his own judgment, made at the time.",
+    vocabulary: [
+      { word: "Red Indians", definition: "The settlers' name for the Beothuk, from the red ochre they wore; Cormack uses it throughout" },
+      { word: "Mountaineer", definition: "The settlers' name for the Innu of Labrador; one of Cormack's three guides" },
+      { word: "rendezvous", definition: "A meeting place; the lake was where the Beothuk gathered in winter" },
+      { word: "extirpated", definition: "Rooted out, destroyed utterly; Cormack's word for what had been done to the Beothuk" },
+      { word: "Beothuck Institution", definition: "The society Cormack founded in 1827 to open relations with the surviving Beothuk" },
+    ],
+    discussionQuestions: [
+      "What did Cormack's party expect to find at the lake, and what did they find?",
+      "Which signs told them the camps had been lived in, and which that they had been abandoned?",
+      "Cormack blames the \"parties of Europeans\" and names the \"fatal rencounters\". What does he leave unsaid, and why might he?",
+      "What does it mean to arrive somewhere as the first European to see it in summer, and find no one left to meet?",
+    ],
+    citation: { author: "William Eppes Cormack", title: "Report of Mr W. E. Cormack's journey in search of the Red Indians of Newfoundland, in James P. Howley, The Beothucks or Red Indians", publisher: "Cambridge: University Press, 1915", year: "1915", url: "https://archive.org/details/bp_662216" },
+    edition: "bp_662216.txt",
+    ocrFixes: [["of anxiety and admiration No canoe", "of anxiety and admiration. No canoe"], ["in an unfrozen state', for the three", "in an unfrozen state, for the three"], ["on the ice.. We approached", "on the ice. We approached"], ["had long been ^ the central", "had long been the central"], ["during the last i8 years", "during the last 18 years"]],
+  },
+];
+
+seedVoices("2026-10-21-voices-new-france-atlantic", ENTRIES);
