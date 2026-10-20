@@ -3,11 +3,11 @@
 // file's author and licence from the Commons API (so the credit is what Commons records, not
 // what was typed), copies both images to R2 (then-and-now/<id>/then.jpg, now.jpg) and writes
 // the ThenAndNow row placed on the app's own Location or Waterway, looked up by exact name.
-//   bun run prisma/turso-migrations/2026-10-20-then-and-now-seed.ts [--apply] [--only <id substring>] [--check]
+//   bun run prisma/turso-migrations/2026-10-20-then-and-now-seed.ts [--apply] [--only <id substring>] [--refresh <id substring>] [--check]
 // Only public-domain and Creative Commons files are accepted; any other licence aborts the run.
 import { db } from "../../src/db";
 import { env } from "../../src/env";
-import { cdnObjectExists, uploadImageFromUrl } from "../../src/lib/image-cdn";
+import { cdnObjectExists, uploadImageBuffer } from "../../src/lib/image-cdn";
 import { APPLY, writeBackup, report } from "./lib/migration";
 
 interface Side { file?: string; url?: string; credit?: string; year?: number; yearLabel?: string; caption: string }
@@ -21,9 +21,9 @@ interface Pair {
 
 const PAIRS: Pair[] = [
   {
-    id: "tn_chilkoot_summit", title: "The summit of the Chilkoot Pass", location: "Chilkoot Pass",
-    then: { file: "Chilkoot Pass summit.jpg", year: 1899, yearLabel: "winter 1898–99", caption: "Stampeders and their caches at the summit of the Chilkoot Pass, where the North-West Mounted Police checked each outfit, photographed by Eric A. Hegg." },
-    now: { file: "Chilkoot Trail Summit Tea Break (9434243470).jpg", year: 2013, caption: "Hikers resting at the summit on the Chilkoot Trail, the border between Alaska and British Columbia." },
+    id: "tn_chilkoot_summit", title: "The Golden Stairs of the Chilkoot Pass", location: "Chilkoot Pass",
+    then: { file: "Line of Klondikers climbing Chilkoot Pass (J6180).jpg", year: 1898, caption: "The line of stampeders on the last climb to the summit of the Chilkoot Pass, each under a pack, in the winter of 1898." },
+    now: { file: "Golden Stairs (7968051762).jpg", year: 2012, caption: "The same slope in summer: a hiker on the Golden Stairs of the Chilkoot Trail, the snow gone and the boulders bare." },
     note: "In the winter of 1897–98 the pass carried about 22,000 people and their year's provisions up the Golden Stairs. The railway over the White Pass opened in 1899 and the trail emptied; it is hiked now, in a historic site shared by Parks Canada and the U.S. National Park Service.",
   },
   {
@@ -125,7 +125,21 @@ async function politeFetch(url: string): Promise<Response> {
   return fetch(url, { headers: { "User-Agent": UA } });
 }
 const commonsPage = (file: string) => `https://commons.wikimedia.org/wiki/File:${encodeURIComponent(file.replace(/ /g, "_"))}`;
-const filePath = (file: string) => `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(file)}?width=1600`;
+/**
+ * The image bytes. Special:FilePath redirects to upload.wikimedia.org, which answered 429
+ * ("robot policy") for this address for over an hour on 2026-10-20 while the wiki itself
+ * answered; thumb.php on the wiki serves the thumbnail bytes directly, at one of the standard
+ * widths the policy asks for (1280, then 1024, then 800 when the file is smaller than that).
+ */
+async function downloadCommons(file: string): Promise<Buffer> {
+  for (const w of [1280, 1024, 800]) {
+    const res = await politeFetch(`https://commons.wikimedia.org/w/thumb.php?f=${encodeURIComponent(file.replace(/ /g, "_"))}&w=${w}`);
+    const type = res.headers.get("content-type") ?? "";
+    if (res.ok && type.startsWith("image/")) return Buffer.from(await res.arrayBuffer());
+    await sleep(3000);
+  }
+  throw new Error(`could not download ${file} from Commons at any standard width`);
+}
 const ENTITIES: Record<string, string> = { amp: "&", lt: "<", gt: ">", quot: '"', apos: "'", nbsp: " " };
 const decode = (s: string) => s.replace(/&(#x?[0-9a-f]+|[a-z]+);/gi, (m, e: string) => (e[0] === "#" ? String.fromCodePoint(parseInt(e[1] === "x" || e[1] === "X" ? e.slice(2) : e.slice(1), e[1] === "x" || e[1] === "X" ? 16 : 10)) : ENTITIES[e.toLowerCase()] ?? m));
 const strip = (s: string) => decode(s.replace(/<style[^>]*>[\s\S]*?<\/style>/g, "").replace(/<[^>]+>/g, "")).replace(/\s+/g, " ").trim();
@@ -169,6 +183,8 @@ async function commonsInfo(file: string): Promise<{ artist: string; license: str
 async function main() {
   const onlyIndex = process.argv.indexOf("--only");
   const only = onlyIndex >= 0 ? process.argv[onlyIndex + 1]?.toLowerCase() ?? null : null;
+  const refreshIndex = process.argv.indexOf("--refresh");
+  const refresh = refreshIndex >= 0 ? process.argv[refreshIndex + 1]?.toLowerCase() ?? null : null; // re-copy these pairs' images even if R2 has them
   const [locations, waterways] = await Promise.all([db.location.findMany({ select: { id: true, name: true, latitude: true, longitude: true } }), db.waterway.findMany({ select: { id: true, name: true, latitude: true, longitude: true } })]);
   const L = new Map(locations.map((x) => [x.name, x])), W = new Map(waterways.map((x) => [x.name, x]));
   const problems: string[] = [];
@@ -215,12 +231,11 @@ async function main() {
       // Resumable: a copy already on R2 (from an earlier run that Commons' throttling cut short) is kept.
       const cdnPath = `then-and-now/${p.id}/${name}.jpg`;
       let url: string;
-      if (await cdnObjectExists(cdnPath)) {
+      if (!(refresh && p.id.includes(refresh)) && (await cdnObjectExists(cdnPath))) {
         url = `${env.R2_PUBLIC_URL}/${cdnPath}`;
       } else {
-        await sleep(6000);
-        url = await uploadImageFromUrl(filePath(side.file!), cdnPath);
-        await sleep(6000);
+        await sleep(5000);
+        url = await uploadImageBuffer(await downloadCommons(side.file!), cdnPath);
       }
       return { url, credit: `Wikimedia Commons / ${info.artist} / ${info.license}`, sourceUrl: commonsPage(side.file!), label: `${info.artist} / ${info.license}` };
     };

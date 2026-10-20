@@ -2100,14 +2100,22 @@ Upper Fort Garry (the gallery's view of about 1872 / the Governor's Gate, 2019);
 harbour (the gallery's 1878 view / the Old Port, 2012); Fort St. James (Bullock Webster's 1879
 sketch / the national historic site, 2008); Dawson City (Hegg's Front Street, June 1898 / the
 Palace Grand Theatre, 2011); Miles Canyon (Hegg's boat in the canyon, 1898 / the suspension
-bridge, 2018); the summit of the Chilkoot Pass (Hegg, winter 1898–99 / hikers at the summit,
-2013); the Lachine Rapids (the steamer Rapids King shooting them, 1901 / the rapids, 2006);
+bridge, 2018); the Golden Stairs of the Chilkoot Pass (Hegg's line of stampeders on the last
+climb, 1898 / the same slope in summer, 2012); the Lachine Rapids (the steamer Rapids King shooting them, 1901 / the rapids, 2006);
 Tadoussac (the gallery's 1910 view / the Hotel Tadoussac, 2023); Place Royale, Quebec (1933 /
 2017); Fort William (the gallery's North West Company-era view / Fort William Historical Park,
 2020). Four "then" sides reuse period images already on R2 in the galleries, with their existing
 credits; the other 26 images were read and copied from Commons at apply time (public domain,
 CC BY 2.0, CC BY-SA 2.0/3.0/4.0), credited "Wikimedia Commons / author / licence" with the
 file page as the source link. Verified in Turso after apply: 15 rows, all placed.
+
+The first apply stopped after one pair: `upload.wikimedia.org` (where `Special:FilePath`
+redirects) answered 429 "robot policy" for this address for over an hour, through every
+user agent, while the wiki itself kept answering. The script now downloads through the wiki's
+own `thumb.php` at a standard width (1280, then 1024, 800), which serves the bytes directly, at
+most one request at a time with pauses, as the policy's media rules ask; copies already on R2
+are kept across runs (`--refresh <id>` replaces them). The Chilkoot pair was re-chosen on
+sight: the first "now" was a portrait of a hiker at the summit hut, not the view.
 
 **On the phone.** `ThenAndNowCompare` shows both images in one frame with a handle to drag
 between them (the period view on the left, the photograph on the right, the years tagged on
