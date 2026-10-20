@@ -763,6 +763,8 @@ model VoyageurJourney {
   endingLocation   String
   historicalYear   Int?
   isPublished      Boolean               @default(true)
+  source           String?
+  sourceUrl        String?
   createdAt        DateTime              @default(now())
   updatedAt        DateTime              @updatedAt
   nodes            JourneyNode[]
@@ -788,6 +790,14 @@ model JourneyNode {
   songLyrics        String?
   isEnding          Boolean         @default(false)
   endingType        String?
+  // Roadmap item 6 (2026-10-20): the records a stop rests on, and its source
+  locationId        String?
+  waterwayId        String?
+  explorerId        String?
+  documentId        String?
+  knowledgeId       String?
+  source            String?
+  sourceUrl         String?
   createdAt         DateTime        @default(now())
   journey           VoyageurJourney @relation(fields: [journeyId], references: [id], onDelete: Cascade)
 }

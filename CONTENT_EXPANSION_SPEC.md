@@ -1963,6 +1963,58 @@ Settings only; the cards and the document page keep just Read aloud.
 
 Build required for the app side; the records, sources and API are live now.
 
+### 10.18 Finish the journeys, part 1: the model and the Klondike (item 6, 2026-10-20; API and data live, build required)
+
+Owner: "proceed with all journeys starting as per your recommendation" (10.17's assessment:
+Klondike first, then the fur-trade journey, then the two seed journeys revised). Also fixed in
+this change: the Knowledge Given chips were unreadable, the same collapsed horizontal ScrollView
+as the historic maps chips in 10.12, and get the same fixed-height row.
+
+**What a stop carries now.** Seven columns on `JourneyNode` and two on `VoyageurJourney`
+(`2026-10-20-journey-links.sql`, ALTER TABLE ADD COLUMN, "Created: 9"; mirrored in
+`schema.prisma`): `locationId`, `waterwayId`, `explorerId`, `documentId`, `knowledgeId`, the
+records the stop rests on; `source` and `sourceUrl` on the stop and on the journey. Each choice
+in the node's JSON gains `whatHappened`, what people actually did at that point and what it cost
+or saved them, and `source`; the points are set from that. `backend/src/lib/journeys.ts`
+resolves a stop's links to names the app can open, gives it its place's image when it has none
+of its own, and attaches the voices of 10.15; the detail, start, choice and progress routes all
+go through it. A choice's response now carries `whatHappened` and `source`, and finishing a
+journey awards 20 exploration points once per device per journey (`journey_completed`, through
+the same UserExploration row as the other activities), so a finished journey counts in a class
+report.
+
+**On the phone.** After each choice a "What happened" card sits above the next stop: the choice
+made, its consequence and points, what actually happened, and the source. A stop's narrative
+card ends with chips to its place, water, document and knowledge-given record, and the source
+line, which opens when it has a URL. The ending screen shows the ending's narrative, the last
+"What happened", and the exploration points earned.
+
+**Klondike, 1898** (`2026-10-20-journey-klondike.ts`; grade 7-9, hard, 35 minutes; 17 stops, 28
+choices, four endings). Seattle on 17 July 1897; which way in (Chilkoot, White Pass, or the
+Edmonton route, which ends the journey at "The long way round": 1,660 set out, 685 arrived);
+Dyea and the Tlingit packers; Sheep Camp on 3 April 1898, where listening to the packers who
+refused to climb is the choice, and climbing anyway ends in "The slide" (more than sixty dead);
+the Scales and the police at the summit, where a full year's food passes and travelling light is
+sent back down; Bennett and the boats (7,124 left in May); the ice going out on 29 May under
+Steele's rules; Miles Canyon, where a licensed pilot at $25 scores best and running it yourself
+ends in "The canyon" (several hundred drowned before the rules); Lake Laberge and the Five
+Fingers, right-hand channel; Fort Selkirk; Dawson in June 1898, where working for wages scores
+best because the creeks were all staked before the stampeders came, and the dance halls score
+worst; Tr'ochëk and Moosehide, where the Hän under Chief Isaac had gone the summer before; and
+"A Klondiker". Every stop is tied to the app's record (Chilkoot Pass, Bennett, Miles Canyon, Five
+Finger Rapids, Fort Selkirk, Dawson City, Moosehide; Bennett Lake, the Yukon, the Klondike; Sam
+Steele; Ogilvie's pamphlet, Steele's Forty Years, Haskell's Two Years, Adney's Stampede; the
+knowledge-given record of the discovery) and carries its source. The numbers come from
+Wikipedia's featured article on the rush, which rests on Berton's Klondike (2001) and Winslow's
+Big Pan-Out (1952), read for this pass, and the Sheep Camp stop from the U.S. National Park
+Service's account of the Palm Sunday avalanche; the places and people from the app's own Yukon
+records of 2026-10-17 (Canadian Encyclopedia and DCB). Checked by playing the best path on the
+local server: 110 points, the success ending, 20 exploration points awarded once; the test
+device's rows were then deleted from Turso.
+
+Next in this item: the fur-trade journey over the posts, and the two seed journeys revised to the
+same standard (links, what happened, sources, points that mean something).
+
 ### 10.6 Order of work
 10.5's three features first (citations, then expedition routes, then the cartography gallery, because routes and maps both cite); then 1, 3, 5, 16, 18, 6, 7, 9, 10, 11, 13, 12, 17, 4; item 8 when recordings exist.
 

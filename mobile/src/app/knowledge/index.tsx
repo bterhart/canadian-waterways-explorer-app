@@ -72,8 +72,10 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.creamWhite },
   intro: { flexDirection: 'row', gap: 10, alignItems: 'flex-start', padding: 16, paddingBottom: 8 },
   introText: { flex: 1, fontSize: 14, color: '#4B5563', lineHeight: 20 },
-  chipBar: { flexGrow: 0 },
-  chips: { paddingHorizontal: 16, paddingVertical: 8, gap: 8 },
+  // A horizontal ScrollView in a column collapses to nothing without a height (the historic maps
+  // chips did the same on first render, 10.12); fixed height and centred chips, as there.
+  chipBar: { flexGrow: 0, height: 44 },
+  chips: { paddingHorizontal: 16, gap: 8, alignItems: 'center' },
   chip: { borderWidth: 1, borderColor: '#D1D5DB', borderRadius: 16, paddingHorizontal: 12, paddingVertical: 6, backgroundColor: 'white' },
   chipOn: { backgroundColor: colors.forestGreen, borderColor: colors.forestGreen },
   chipText: { fontSize: 13, color: '#374151', fontWeight: '600' },
