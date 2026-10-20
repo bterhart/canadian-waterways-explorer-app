@@ -3,10 +3,11 @@
 // file's author and licence from the Commons API (so the credit is what Commons records, not
 // what was typed), copies both images to R2 (then-and-now/<id>/then.jpg, now.jpg) and writes
 // the ThenAndNow row placed on the app's own Location or Waterway, looked up by exact name.
-//   bun run prisma/turso-migrations/2026-10-20-then-and-now-seed.ts [--apply] [--only <id substring>]
+//   bun run prisma/turso-migrations/2026-10-20-then-and-now-seed.ts [--apply] [--only <id substring>] [--check]
 // Only public-domain and Creative Commons files are accepted; any other licence aborts the run.
 import { db } from "../../src/db";
-import { uploadImageFromUrl } from "../../src/lib/image-cdn";
+import { env } from "../../src/env";
+import { cdnObjectExists, uploadImageFromUrl } from "../../src/lib/image-cdn";
 import { APPLY, writeBackup, report } from "./lib/migration";
 
 interface Side { file?: string; url?: string; credit?: string; year?: number; yearLabel?: string; caption: string }
@@ -211,9 +212,16 @@ async function main() {
       if (side.url) return { url: side.url, credit: side.credit!, sourceUrl: null, label: side.credit! };
       const info = await commonsInfo(side.file!);
       if (!ALLOWED.test(info.license)) throw new Error(`${p.id} ${name}: licence "${info.license}" is not public domain or Creative Commons; aborting`);
-      await sleep(4000);
-      const url = await uploadImageFromUrl(filePath(side.file!), `then-and-now/${p.id}/${name}.jpg`);
-      await sleep(4000);
+      // Resumable: a copy already on R2 (from an earlier run that Commons' throttling cut short) is kept.
+      const cdnPath = `then-and-now/${p.id}/${name}.jpg`;
+      let url: string;
+      if (await cdnObjectExists(cdnPath)) {
+        url = `${env.R2_PUBLIC_URL}/${cdnPath}`;
+      } else {
+        await sleep(6000);
+        url = await uploadImageFromUrl(filePath(side.file!), cdnPath);
+        await sleep(6000);
+      }
       return { url, credit: `Wikimedia Commons / ${info.artist} / ${info.license}`, sourceUrl: commonsPage(side.file!), label: `${info.artist} / ${info.license}` };
     };
     const thenSide = await resolveSide(p.then, "then");
