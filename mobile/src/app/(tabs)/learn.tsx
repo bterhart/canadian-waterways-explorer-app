@@ -34,6 +34,7 @@ import {
   Info,
   Compass,
   History,
+  MessageSquareQuote,
   Search as SearchIcon,
 } from 'lucide-react-native';
 import { Users as ClassIcon } from 'lucide-react-native';
@@ -221,20 +222,8 @@ export default function LearnHubScreen() {
         </View>
       </View>
 
-      {/* Discovery Section */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>{t('nearYou')}</Text>
-        <View style={styles.cardsGrid}>
-          <FeatureCard
-            title="What Happened Here?"
-            description="Discover historical events near your location"
-            icon={<MapPin size={28} color="white" />}
-            gradientColors={['#DC2626', '#991B1B'] as const}
-            onPress={() => router.push('/nearby-history')}
-            isLarge
-          />
-        </View>
-      </View>
+      {/* Order below the learning resources (owner, 2026-10-20): Journeys, Cartography,
+          Then and Now, Near You, each a full-width card under its own title. */}
 
       {/* Voyageur journeys (roadmap item 6): the four journeys, scored against what happened.
           Nothing linked to the journey screens before 2026-10-20; this card is the way in. */}
@@ -264,13 +253,35 @@ export default function LearnHubScreen() {
             onPress={() => router.push('/historical-maps')}
             isLarge
           />
-          {/* Then and now (roadmap item 7): period views paired with modern photographs */}
+        </View>
+      </View>
+
+      {/* Then and now (roadmap item 7): period views paired with modern photographs */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>{t('thenAndNow')}</Text>
+        <View style={styles.cardsGrid}>
           <FeatureCard
             title={t('thenAndNow')}
             description={t('thenAndNowDesc')}
             icon={<Images size={28} color="white" />}
             gradientColors={['#0E7490', '#155E75'] as const}
             onPress={() => router.push('/then-and-now')}
+            isLarge
+          />
+        </View>
+      </View>
+
+      {/* Discovery Section */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>{t('nearYou')}</Text>
+        <View style={styles.cardsGrid}>
+          <FeatureCard
+            title="What Happened Here?"
+            description="Discover historical events near your location"
+            icon={<MapPin size={28} color="white" />}
+            gradientColors={['#DC2626', '#991B1B'] as const}
+            onPress={() => router.push('/nearby-history')}
+            isLarge
           />
         </View>
       </View>
@@ -301,6 +312,14 @@ export default function LearnHubScreen() {
             icon={<History size={28} color="white" />}
             gradientColors={['#B45309', '#78350F'] as const}
             onPress={() => router.push('/decades')}
+          />
+          {/* In their own words (roadmap item 5): every checked transcription, read aloud */}
+          <FeatureCard
+            title={t('inTheirOwnWordsTitle')}
+            description={t('inTheirOwnWordsDesc')}
+            icon={<MessageSquareQuote size={28} color="white" />}
+            gradientColors={['#7C2D12', '#4A1A0A'] as const}
+            onPress={() => router.push('/voices')}
           />
         </View>
       </View>

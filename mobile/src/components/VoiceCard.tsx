@@ -55,20 +55,26 @@ export function VoiceCard({ voice, onClose, hideOpen, full, compact }: Props) {
       ) : (
         <Text style={styles.quote} numberOfLines={expanded ? undefined : 4}>{body}</Text>
       )}
-      <View style={styles.actions}>
-        <ReadAloudButton text={voice.text} documentId={voice.id} color={VOICE_COLOR} compact />
-        {canExpand ? (
-          <Pressable onPress={() => setExpanded((v) => !v)} hitSlop={6}>
-            <Text style={styles.link}>{expanded ? t('readLess') : t('readFull')}</Text>
-          </Pressable>
-        ) : null}
-        {!hideOpen ? (
-          <Pressable onPress={() => router.push(`/documents/${voice.id}`)} hitSlop={6} style={styles.openRow}>
-            <FileText size={13} color="#3B82A3" />
-            <Text style={styles.link}>{t('openDocument')}</Text>
-          </Pressable>
-        ) : null}
+      {/* Read aloud on its own centred row, the text links under it (owner, 2026-10-20: the button
+          was lost in the line of links). The narration reads the whole passage either way. */}
+      <View style={styles.readRow}>
+        <ReadAloudButton text={voice.text} documentId={voice.id} color={VOICE_COLOR} />
       </View>
+      {canExpand || !hideOpen ? (
+        <View style={styles.actions}>
+          {canExpand ? (
+            <Pressable onPress={() => setExpanded((v) => !v)} hitSlop={6}>
+              <Text style={styles.link}>{expanded ? t('readLess') : t('readFull')}</Text>
+            </Pressable>
+          ) : null}
+          {!hideOpen ? (
+            <Pressable onPress={() => router.push(`/documents/${voice.id}`)} hitSlop={6} style={styles.openRow}>
+              <FileText size={13} color="#3B82A3" />
+              <Text style={styles.link}>{t('openDocument')}</Text>
+            </Pressable>
+          ) : null}
+        </View>
+      ) : null}
     </View>
   );
 }
@@ -85,7 +91,8 @@ const styles = StyleSheet.create({
   spot: { flex: 1, fontSize: 12, color: '#6B7280', fontStyle: 'italic' },
   quote: { fontSize: 14, lineHeight: 21, color: '#374151', fontStyle: 'italic', marginTop: 4 },
   fullBox: { maxHeight: 260, marginTop: 4 },
-  actions: { flexDirection: 'row', alignItems: 'center', gap: 14, marginTop: 8, flexWrap: 'wrap' },
+  readRow: { alignItems: 'center', marginTop: 10 },
+  actions: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 18, marginTop: 8, flexWrap: 'wrap' },
   openRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   link: { fontSize: 12, fontWeight: '600', color: '#3B82A3', textDecorationLine: 'underline' },
 });

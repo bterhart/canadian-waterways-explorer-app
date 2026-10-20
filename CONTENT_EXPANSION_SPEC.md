@@ -2128,6 +2128,38 @@ Knowledge given, each opening its page.
 
 Build required for the app side; the pairs and API are live now.
 
+### 10.21 Housekeeping from build 71 (owner, 2026-10-20; one data fix live, the rest build required)
+
+**Read aloud on the voice cards.** The button sat in a line with "Read the whole passage" and
+"Open the document" and was hard to tell from them. It now stands alone, centred, above the
+links, at full size; the links sit centred under it. "Read the whole passage" was also a wrong
+name, since the narration reads the whole passage regardless of what is shown: it is now "Show
+the entire passage" ("Afficher tout le passage").
+
+**The sweep of narrations.** Narration exists for exactly the documents that carry a checked
+transcription: 27 of the 173 documents in Turso (the other 146 are pointer documents to
+published editions, with context, vocabulary and questions but no transcribed text, so there
+is nothing to read). All 27 are published, all have a spot, and the sweep traced each to its
+waterway or location: 17 waterways and 10 locations carry at least one. Two were linked to no
+waterway. Tyrrell's July 1893 journal, spotted at Carey Lake on the Dubawnt, is the Dubawnt's
+narration and was never attached to the Dubawnt River, which is why that sheet showed none;
+`2026-10-20-voices-links.ts` links it (applied, verified). Joutel's account of La Salle's death
+near Navasota, Texas, has no waterway in the app to link to and stays on the map at its spot.
+The Athabasca River has no document of any kind (Lake Athabasca has two voices, Fidler 1791 and
+Turnor 1790), so a narration there means a new checked transcription, which is content work
+for the owner to call; the same holds for the 108 waterways with no document and the 67 with
+pointer documents only (the list is in the sweep script's output, 2026-10-20).
+
+**Discover order.** Below the learning resources: Journeys, Cartography, Then and Now (its own
+title, full width, "Travel back in time: slide between a period view and a photograph of the
+same spot today"), then Near You, then People in History, then the tools.
+
+**A fourth People in History card.** "In Their Own Words": every checked transcription, oldest
+first, each with Read aloud, the whole passage, the document and its spot on the map
+(`/voices`). It is also the one place where every narration can be found, which the owner's
+search for the Dubawnt's and the Athabasca's showed was missing. The explorer directory is
+already a tab, which is why the card is the voices rather than the explorers.
+
 ### 10.6 Order of work
 10.5's three features first (citations, then expedition routes, then the cartography gallery, because routes and maps both cite); then 1, 3, 5, 16, 18, 6, 7, 9, 10, 11, 13, 12, 17, 4; item 8 when recordings exist.
 
