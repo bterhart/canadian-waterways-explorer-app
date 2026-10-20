@@ -26,6 +26,13 @@ const envSchema = z.object({
   R2_SECRET_ACCESS_KEY: z.string().optional(),
   R2_BUCKET_NAME: z.string().optional(),
   R2_PUBLIC_URL: z.string().optional(), // e.g. https://pub-xxxx.r2.dev or custom domain
+
+  // xAI text-to-speech for the read-aloud sources (roadmap item 5, 2026-10-20). Without the key the
+  // app falls back to the phone's own synthesiser. The two voice ids are xAI built-in voices
+  // (GET https://api.x.ai/v1/tts/voices lists them); Rex and Eve are documented as male and female.
+  XAI_API_KEY: z.string().optional(),
+  XAI_VOICE_MALE: z.string().optional().default("rex"),
+  XAI_VOICE_FEMALE: z.string().optional().default("eve"),
 });
 
 /**

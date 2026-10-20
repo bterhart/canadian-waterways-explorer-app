@@ -327,8 +327,13 @@ export default function MapScreen() {
   const [voicesOn, setVoicesOn] = useState(false);
   const [voicesExpanded, setVoicesExpanded] = useState(false);
   const [selectedVoiceId, setSelectedVoiceId] = useState<string | null>(null);
-  const { data: voices } = useVoices(voicesOn);
+  // The list is small (27) and feeds the preview card's "Hear the source" row, so it is always loaded
+  const { data: voices } = useVoices(true);
   const selectedVoice = useMemo(() => (selectedVoiceId ? voices?.find((v) => v.id === selectedVoiceId) ?? null : null), [selectedVoiceId, voices]);
+  const previewVoices = useMemo(
+    () => (preview && voices ? voices.filter((v) => (preview.type === 'waterway' ? v.waterway?.id === preview.id : v.location?.id === preview.id)) : []),
+    [preview, voices]
+  );
 
   // Fetch the boundary for a waterway previewed from a pin or opened in the bottom sheet
   const detailWaterwayId =
@@ -1387,6 +1392,19 @@ export default function MapScreen() {
               "{previewInfo.indigenousName}"
             </Text>
           ) : null}
+          {/* The sources written here, one tap from the pin (roadmap item 5) */}
+          {previewVoices.length > 0 ? (
+            <View style={styles.previewVoices}>
+              {previewVoices.map((voice) => (
+                <TouchableOpacity key={voice.id} style={styles.previewVoiceRow} onPress={() => handleVoiceSelect(voice.id, false)} activeOpacity={0.8} accessibilityRole="button">
+                  <MessageSquareQuote size={14} color={VOICE_COLOR} />
+                  <Text style={styles.previewVoiceText} numberOfLines={1}>
+                    {t('hearTheSource')}: {voice.author ?? voice.title}{voice.year ? `, ${voice.year}` : ''}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          ) : null}
           <View style={styles.previewActions}>
             <TouchableOpacity
               style={styles.previewDetailButton}
@@ -1416,6 +1434,17 @@ export default function MapScreen() {
         activeOpacity={0.8}
       >
         <Menu size={24} color="#2D5A3D" />
+      </TouchableOpacity>
+
+      {/* Voices on the map, one tap (roadmap item 5): toggles the quote markers */}
+      <TouchableOpacity
+        style={[styles.voicesButton, voicesOn && styles.voicesButtonOn]}
+        onPress={() => { setVoicesOn((on) => !on); if (voicesOn) setSelectedVoiceId(null); }}
+        activeOpacity={0.8}
+        accessibilityLabel={t('voicesOnMap')}
+        accessibilityState={{ selected: voicesOn }}
+      >
+        <MessageSquareQuote size={22} color={voicesOn ? 'white' : VOICE_COLOR} />
       </TouchableOpacity>
 
       {/* Search across everything (roadmap item 3) */}
@@ -1970,7 +1999,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 16,
     left: 72,
-    right: 64, // clear of the search button at top-right
+    right: 112, // clear of the voices and search buttons at top-right
     backgroundColor: 'rgba(255, 254, 247, 0.97)',
     borderRadius: 12,
     borderLeftWidth: 4,
@@ -2007,6 +2036,11 @@ const styles = StyleSheet.create({
   highlightDot: { width: 14, height: 14, borderRadius: 7, borderWidth: 2, borderColor: 'white' },
   voiceMarker: { width: 26, height: 26, borderRadius: 13, backgroundColor: '#7C2D12', borderWidth: 2, borderColor: 'white', alignItems: 'center', justifyContent: 'center' },
   voiceMarkerSelected: { backgroundColor: '#1A3A24', transform: [{ scale: 1.2 }] },
+  voicesButton: { position: 'absolute', top: 16, right: 60, backgroundColor: 'rgba(255, 254, 247, 0.95)', padding: 11, borderRadius: 8, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 4, elevation: 3 },
+  voicesButtonOn: { backgroundColor: '#7C2D12' },
+  previewVoices: { marginTop: 8, gap: 4 },
+  previewVoiceRow: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 4 },
+  previewVoiceText: { flex: 1, fontSize: 13, fontWeight: '600', color: '#7C2D12', textDecorationLine: 'underline' },
   voiceCardDock: { position: 'absolute', left: 12, right: 12, bottom: 12, shadowColor: '#000', shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.2, shadowRadius: 8, elevation: 6 },
   legMarkerText: { color: 'white', fontSize: 12, fontWeight: '700' },
   searchButton: {
