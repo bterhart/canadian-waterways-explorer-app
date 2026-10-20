@@ -36,6 +36,7 @@ import {
 } from '@/lib/api/education-api';
 import { getDeviceId } from '@/lib/identity';
 import type { JourneyNode, JourneyChoice, JourneyProgress } from '@/lib/types/education';
+import { VoiceCard } from '@/components/VoiceCard';
 
 const { width, height } = Dimensions.get('window');
 
@@ -390,6 +391,15 @@ export default function VoyageurJourneyPlayScreen() {
           <Text style={styles.narrativeText}>{currentNode.narrative}</Text>
         </View>
 
+        {/* The sources written near this stop, in their own words (roadmap item 5) */}
+        {currentNode.voices && currentNode.voices.length > 0 ? (
+          <View style={styles.voicesBlock}>
+            {currentNode.voices.map((voice) => (
+              <VoiceCard key={voice.id} voice={voice} compact />
+            ))}
+          </View>
+        ) : null}
+
         {/* Historical Fact Button */}
         {currentNode.historicalFact ? (
           <Pressable
@@ -571,6 +581,7 @@ const styles = StyleSheet.create({
     lineHeight: 26,
     color: '#374151',
   },
+  voicesBlock: { marginHorizontal: 16, marginBottom: 12, gap: 10 },
   factButton: {
     flexDirection: 'row',
     alignItems: 'center',

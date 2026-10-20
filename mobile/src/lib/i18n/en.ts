@@ -39,6 +39,17 @@ export const en = {
   waterways: 'Waterways',
   locations: 'Locations',
   tapForDetails: 'Tap for details',
+  // Let the sources speak (roadmap item 5)
+  inTheirOwnWords: 'In their own words',
+  voicesOnMap: 'Voices on the map',
+  voicesOnMapDesc: 'Where the sources were written, read in their own words',
+  readAloud: 'Read aloud',
+  stopReading: 'Stop',
+  openDocument: 'Open the document',
+  showOnMap: 'Show on the map',
+  whereWritten: 'Where these words were written',
+  readFull: 'Read the whole passage',
+  readLess: 'Show less',
   clearFilter: 'Clear Filter',
 
   // Waterway Types

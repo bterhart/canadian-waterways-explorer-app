@@ -1,3 +1,4 @@
+import type { VoiceNear } from './voices';
 // Types for Educational Features
 
 // Lesson Plan types
@@ -240,6 +241,10 @@ export interface DocumentDetail extends DocumentSummary, RelatedRefs {
   waterwayId: string | null;
   locationId: string | null;
   isPublished: boolean;
+  /** Where the words were written or spoken (roadmap item 5); null on the pointer-only documents. */
+  spotLatitude: number | null;
+  spotLongitude: number | null;
+  spotName: string | null;
 }
 
 // Comparison types
@@ -840,6 +845,8 @@ export interface JourneyNode {
   songLyrics: string | null;
   isEnding: boolean;
   endingType: string | null;
+  /** Checked transcriptions written near this node, nearest first (roadmap item 5). */
+  voices?: VoiceNear[];
 }
 
 export interface VoyageurJourneyDetail {

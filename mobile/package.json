@@ -83,6 +83,7 @@
     "expo-secure-store": "^14.0.1",
     "expo-sharing": "~13.1.5",
     "expo-sms": "~13.1.4",
+    "expo-speech": "~13.1.7",
     "expo-splash-screen": "~0.30.10",
     "expo-sqlite": "~15.2.9",
     "expo-status-bar": "~2.2.3",

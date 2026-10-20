@@ -42,6 +42,17 @@ export const fr: Record<TranslationKey, string> = {
   waterways: 'Voies navigables',
   locations: 'Emplacements',
   tapForDetails: 'Appuyez pour plus de details',
+  // Les sources parlent (feuille de route, point 5)
+  inTheirOwnWords: 'Dans leurs propres mots',
+  voicesOnMap: 'Les voix sur la carte',
+  voicesOnMapDesc: 'Là où les sources ont été écrites, lues dans leurs propres mots',
+  readAloud: 'Lire à voix haute',
+  stopReading: 'Arrêter',
+  openDocument: 'Ouvrir le document',
+  showOnMap: 'Voir sur la carte',
+  whereWritten: 'Où ces mots ont été écrits',
+  readFull: 'Lire tout le passage',
+  readLess: 'Réduire',
   clearFilter: 'Effacer le filtre',
 
   // Waterway Types

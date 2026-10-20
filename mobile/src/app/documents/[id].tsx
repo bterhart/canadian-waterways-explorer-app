@@ -8,7 +8,7 @@ import {
   ActivityIndicator,
   Image,
 } from 'react-native';
-import { useLocalSearchParams, Stack } from 'expo-router';
+import { useLocalSearchParams, Stack, useRouter } from 'expo-router';
 import {
   FileText,
   Calendar,
@@ -16,7 +16,10 @@ import {
   MessageCircle,
   BookOpen,
   GraduationCap,
+  MapPin,
 } from 'lucide-react-native';
+import { Pressable } from 'react-native';
+import { ReadAloudButton } from '@/components/ReadAloudButton';
 import { useDocument } from '@/lib/api/education-api';
 import { SourcesList } from '@/components/SourcesList';
 import { getGradeLevelColor, getGradeLevelLabel } from '@/lib/types/education';
@@ -33,14 +36,17 @@ interface SectionProps {
   title: string;
   icon: React.ReactNode;
   children: React.ReactNode;
+  /** Sits at the right of the heading (Read aloud, roadmap item 5). */
+  action?: React.ReactNode;
 }
 
-function Section({ title, icon, children }: SectionProps) {
+function Section({ title, icon, children, action }: SectionProps) {
   return (
     <View style={styles.section}>
       <View style={styles.sectionHeader}>
         {icon}
-        <Text style={styles.sectionTitle}>{title}</Text>
+        <Text style={[styles.sectionTitle, { flex: 1 }]}>{title}</Text>
+        {action}
       </View>
       {children}
     </View>
@@ -49,6 +55,7 @@ function Section({ title, icon, children }: SectionProps) {
 
 export default function DocumentDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const router = useRouter();
   const { data: document, isLoading, isError } = useDocument(id ?? null);
 
   // Opening a document counts as reading it: 5 points once per device (decision 9)
@@ -130,6 +137,19 @@ export default function DocumentDetailScreen() {
           ) : null}
         </View>
         <RelatedLinks explorer={document.explorer} waterway={document.waterway} location={document.location} />
+        {/* Where the words were written or spoken, and the way to that spot (roadmap item 5) */}
+        {document.spotName && document.spotLatitude !== null ? (
+          <View style={styles.spotRow}>
+            <MapPin size={14} color="#7C2D12" />
+            <View style={{ flex: 1 }}>
+              <Text style={styles.spotLabel}>Where these words were written</Text>
+              <Text style={styles.spotName}>{document.spotName}</Text>
+              <Pressable onPress={() => router.push({ pathname: '/', params: { voiceId: document.id } })} hitSlop={6} accessibilityRole="link">
+                <Text style={styles.spotLink}>Show on the map</Text>
+              </Pressable>
+            </View>
+          </View>
+        ) : null}
       </View>
 
       {/* Sources (Citation table, roadmap item 14) */}
@@ -164,6 +184,7 @@ export default function DocumentDetailScreen() {
         <Section
           title={document.originalText ? 'Modern Transcription' : 'Transcription'}
           icon={<FileText size={20} color={colors.forestGreen} />}
+          action={<ReadAloudButton text={document.transcription} color={colors.forestGreen} compact />}
         >
           <View style={styles.transcriptionCard}>
             <Text style={styles.transcriptionText}>
@@ -389,4 +410,8 @@ const styles = StyleSheet.create({
   bottomSpacer: {
     height: 32,
   },
+  spotRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 8, marginTop: 14, padding: 12, backgroundColor: '#FFFBF5', borderRadius: 12, borderLeftWidth: 3, borderLeftColor: '#7C2D12' },
+  spotLabel: { fontSize: 11, fontWeight: '800', color: '#7C2D12', letterSpacing: 0.5, textTransform: 'uppercase' },
+  spotName: { fontSize: 14, color: '#374151', marginTop: 2 },
+  spotLink: { fontSize: 13, fontWeight: '600', color: '#3B82A3', textDecorationLine: 'underline', marginTop: 6 },
 });

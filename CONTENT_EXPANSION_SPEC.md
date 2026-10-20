@@ -1781,6 +1781,75 @@ bounds and projection notes are live in R2 and Turso now; a build that already r
 `overlayImageUrl` (10.13) will show the five new overlays without a rebuild, one that does not
 will stretch the gallery image by its corners until rebuilt.
 
+### 10.15 Let the sources speak (item 5, delivered 2026-10-20; API and data live, build required)
+
+Roadmap item 5: "the checked transcriptions as read-aloud cards tied to the exact spot on the map;
+the voyageur journeys quote them at the right node." The 27 documents that carry a transcription
+checked against a published edition (9.16, 9.17) are the material; the 146 pointer-only documents
+are untouched.
+
+**The spot.** Three columns on `PrimarySourceDocument` in Turso (`2026-10-20-document-spot.sql`,
+ALTER TABLE ADD COLUMN, "Created: 3"; mirrored in `schema.prisma`, client regenerated):
+`spotLatitude`, `spotLongitude`, `spotName`. `2026-10-20-voices-spots.ts` fills them for the 27
+(dry run, backup, apply, verify: 27 of 27) and, on the way, sets the `waterwayId`/`locationId`
+links the seed never gave these documents (all 27 had both null), so their pages now carry the
+chips to the river and the place. Where the app already has the place, the coordinates are the
+app's own and looked up by name, never typed: Cartier's Cross at Gaspé, Hochelaga, Stadacona,
+Quebec City, Montreal, York Factory (Stuart's note, Knight on Thanadelthur, Turnor's
+engagement), Prince of Wales Fort (Hearne on Matonabbee, Norton's orders), Bloody Falls, Fort
+Chipewyan (Turnor and Fidler), Fort Reliance, Repulse Bay, Bow River (Saukamappee's account).
+Ten spots are given directly because the app has no point there, and the `spotName` says
+"(approximate)" wherever the site itself is uncertain: the mouth of the Mississippi (La Salle's
+claim), near Navasota, Texas (Joutel, La Salle's murder), Fort Fork on the Peace, Mackenzie's
+Rock on Dean Channel (52.3756 N, 127.4708 W), the Bad River below the divide (the canoe wreck of
+13 June 1793), above Spuzzum (Fraser), below Kettle Falls (Thompson's 4-5 July 1811), Chantrey
+Inlet (Back at the mouth of the Thlew-ee-choh), the Red Deer badlands near Drumheller (Tyrrell
+1884) and Carey Lake (Tyrrell 1893). These ten coordinates are from general knowledge and were
+not checked against a gazetteer in this pass: **unverified** to better than a few kilometres,
+which is below what the map shows at the zoom the card opens at. Two documents are tied to the
+place they are about rather than where they were written, and say so in `spotName`: Champlain's
+1618 memorial (presented in Paris, tied to Quebec) and the Company's engagement of Turnor
+(written in London, tied to York Factory).
+
+**API.** `backend/src/lib/voices.ts`: a "voice" is a published document with a transcription and
+a spot; the 27 are loaded once and kept ten minutes, like the search index. Each carries id,
+title, author, year and date label, type, grade, spot name and coordinates, an `excerpt` (the
+opening sentences, cut at a sentence end near 220 characters), the whole `text` for reading
+aloud, and the linked waterway and location. `GET /api/voices` lists them; `GET
+/api/voices/near?lat&lng&radiusKm&limit` returns the nearest first (default 120 km, 2). The
+voyageur-journey routes (detail, start, choice, progress) attach `voices` to every node that has
+coordinates, so a journey quotes the sources at the right stop: on Race to the Pacific the Fort
+Chipewyan node carries Turnor's and Fidler's journals (5 km), the Great Divide node Mackenzie's
+crossing (68 km), the Bella Coola and Dean Channel nodes his rock inscription (49 km and 1 km);
+on the Grand Portage Route the Lachine node carries Champlain's Place Royale. The document
+detail route returns the spot columns as it returns every column.
+
+**Read aloud.** `expo-speech` (~13.1.7, the Expo SDK's wrapper over the phone's own speech
+synthesiser; approved by the owner 2026-10-20) is the one new dependency. `lib/speech.ts` wraps
+it: `useReadAloud(text)` speaks on demand at a rate a little under normal, reports whether it is
+speaking, stops when the screen or card goes away, and one passage speaks at a time; the
+language is Canadian French when the passage reads as French (Cartier's Louvain sentence,
+Champlain's French), else Canadian English. `ReadAloudButton` is the Read aloud / Stop control.
+No recording is made and nothing is downloaded.
+
+**On the map.** The filter menu gains a "Voices on the map" section: a toggle row, and once on,
+the 27 sources (year · author) to jump to. With the layer on, a rust quote marker stands at each
+spot; tapping one docks the source's card (`VoiceCard`) where the preview card sits: In their
+own words, title, author · date, the spot, the opening of the transcription with "Read the whole
+passage", Read aloud, and "Open the document". A document's page gains "Where these words were
+written" with the spot and "Show on the map" (`/?voiceId=`), which turns the layer on, flies to
+the spot and docks the card. Tapping a pin, a river or the map clears the card; the voice
+markers are the last children of the MapView, so toggling the layer adds and removes them at
+the end (10.11).
+
+**On the document page.** Read aloud sits at the right of the Transcription heading.
+
+**In the journeys.** A node with sources near it shows them under its narrative as compact
+voice cards, each with Read aloud and the way to the document.
+
+Build required for all of the app side (the expo-speech module needs the native build); the
+spots, links and the voices API are live now.
+
 ### 10.6 Order of work
 10.5's three features first (citations, then expedition routes, then the cartography gallery, because routes and maps both cite); then 1, 3, 5, 16, 18, 6, 7, 9, 10, 11, 13, 12, 17, 4; item 8 when recordings exist.
 
