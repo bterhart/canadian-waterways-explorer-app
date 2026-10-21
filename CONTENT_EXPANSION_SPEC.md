@@ -2501,6 +2501,53 @@ quizzes, documents still by band); search for "fur trade" dropped 42 banded hits
 waterways; another device and a request with no id were unaffected. The membership was then deleted
 and the class restored to Everything, verified.
 
+### 10.28 Manitoba, Nova Scotia, Newfoundland and Labrador, and the territories (owner, 2026-10-21; data live, build required for the chip labels only)
+
+**Manitoba, 231 rows.** The Kindergarten to Grade 8 Social Studies framework of 2003, grades 4
+(Manitoba, Canada, and the North), 5 (People and Stories of Canada to 1867) and 6 (Canada: A Country
+of Change, 1867 to Present), read by column from the Ministry's grade PDFs: every knowledge and values
+outcome with its code (5-KH-030, 6-KI-007) and its cluster as the strand, the document's "Include:"
+and "Examples:" lines kept with the statement. The skills outcomes (S-codes) are the same process
+skills in every grade and were left out. **110 mappings** across the 33 lessons, most to Grade 5's
+First Peoples, Early European Colonization and Fur Trade clusters.
+
+**Nova Scotia, 123 rows.** Social Studies 4, 5 and 6 from the P–6 Outcomes and Indicators at a Glance
+document of 2019, and Social Studies 7 and 8 from the At a Glance documents of 2022: each outcome
+("Learners will …") and every indicator under it, the competency tags kept as printed. Nova Scotia
+publishes no codes; rows are found by grade and wording. Grade 4 is exploration and the landscapes of
+Canada, Grade 5 the First Nations and Inuit of what became Atlantic Canada and their interactions with
+the British and French, Grade 7 the Maritimes 1820–1920. **57 mappings.**
+
+**Newfoundland and Labrador, 343 rows.** The Department's curriculum guides sit behind the
+eNLightenED login (the public site returns 401 for every address), so the rows were read from the
+Georg Eckert Institute's mirror of the same PDFs, which carries the Department's editions with their
+acknowledgements: Grade 4 (2010 interim; exploration, Earth's and Canada's landscapes), Grade 5 (2012
+interim; investigating past societies, the First Nations and Inuit of the Atlantic region and their
+interactions with settlers), Grade 7 (2004 interim; empowerment, British North America to 1920, with
+responsible government, Confederation, the Red River and Northwest resistances) and Grade 8
+(Newfoundland and Labrador History, 2005 interim; the Beothuk, Innu, Inuit, Labrador Métis and
+Mi'kmaq, the migratory fishery, settlement, the truck system, the Moravian Mission and the Hudson's Bay
+Company in Labrador). Each row is a specific curriculum outcome with its code (4.0, 7.4.2, 2.3.14) or a
+delineation under it. One correction to the printed text: the Grade 8 PDF's apostrophe glyph in
+"Mi'kmaq" prints as "3 " and was restored. **101 mappings.** The source link on each row is the
+mirror's; the title names the Department's edition.
+
+**The territories.** Yukon teaches British Columbia's curriculum, the Northwest Territories is
+adopting it, and Nunavut's secondary programs draw on Alberta's. Rather than copy rows, the backend
+holds an alias table: a request for YT or NT is answered with British Columbia's rows, NU with
+Alberta's, and the summary lists the three with the names "Yukon (British Columbia curriculum)",
+"Northwest Territories (British Columbia curriculum)" and "Nunavut (Alberta curriculum)" and a
+`teaches` field. The province chips show those names with no app change; a build is needed only for
+the new optional field in the mobile type.
+
+**Held.** New Brunswick (every curriculum address tried returns 404) and Prince Edward Island (the
+site refuses non-browser requests) wait until a reachable address turns up.
+
+**Totals after this.** 2,270 outcomes across eight provinces (and three territories by alias), 664
+mappings, every one of the 33 lessons. Applied and verified in Turso; the territory aliases and the
+new provinces exercised on a local backend (summary lists ten jurisdictions, a Yukon filter returns the
+48 BC rows, a Nunavut lesson filter returns all 33 lessons, code search 5-KH-030 finds six lessons).
+
 ### 10.6 Order of work
 10.5's three features first (citations, then expedition routes, then the cartography gallery, because routes and maps both cite); then 1, 3, 5, 16, 18, 6, 7, 9, 10, 11, 13, 12, 17, 4; item 8 when recordings exist.
 

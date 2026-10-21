@@ -91,6 +91,8 @@ export interface CurriculumSummary {
   provinceName: string;
   grades: { grade: string; course: string; outcomes: number }[];
   sourceTitles: string[];
+  /** Set for a territory that teaches another jurisdiction's curriculum (YT and NT: BC; NU: AB); its rows are that curriculum's. */
+  teaches?: string;
 }
 
 export interface LessonPlanDetail extends LessonPlanSummary {
