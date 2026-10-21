@@ -35,7 +35,7 @@ export default function DecadesScreen() {
     return (
       <View>
         {newCentury ? <Text style={styles.century}>{centuryLabel(item.decade)}</Text> : null}
-        <Pressable style={({ pressed }) => [styles.row, pressed && styles.rowPressed]} onPress={() => router.push(`/decades/${item.decade}`)} accessibilityRole="button">
+        <Pressable style={styles.row} onPress={() => router.push(`/decades/${item.decade}`)} accessibilityRole="button">
           <View style={styles.decadeBadge}>
             <Text style={styles.decadeText}>{item.decade}s</Text>
             <View style={styles.bar}><View style={[styles.barFill, { width: `${Math.max(6, Math.round(weight * 100))}%` }]} /></View>

@@ -180,7 +180,7 @@ export default function PrintablesScreen() {
       />
 
       {/* Make a printable (roadmap item 13): blank maps, timeline strips and pronunciation cards from the live records */}
-      <Pressable style={({ pressed }) => [styles.makeCard, pressed && { opacity: 0.85 }]} onPress={() => router.push('/printables/make')} accessibilityRole="button">
+      <Pressable style={styles.makeCard} onPress={() => router.push('/printables/make')} accessibilityRole="button">
         <View style={styles.makeIcon}>
           <Printer size={22} color="white" />
         </View>

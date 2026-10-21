@@ -49,7 +49,7 @@ export default function ComparisonsScreen() {
 
   const renderComparisonCard = ({ item }: { item: ComparisonSummary }) => (
     <Pressable
-      style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
+      style={styles.card}
       onPress={() => router.push(`/comparisons/${item.id}`)}
     >
       <View style={styles.cardHeader}>

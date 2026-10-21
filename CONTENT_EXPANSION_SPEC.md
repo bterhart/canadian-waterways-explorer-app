@@ -2847,6 +2847,31 @@ quotes a historical author.
 **After.** 10-12: 12 lessons, 4 quizzes, 3 trips, 3 printables, 3 comparisons. Verified in Turso
 after the apply. Nothing in the app changes; the rows appear in the existing lists.
 
+### 10.36 Invisible buttons: Read aloud and Print (owner, 2026-10-22; build required)
+
+**What the owner saw.** In the build of 2026-10-21 the Read aloud button on every In Their Own
+Words card, and the Print or share button on every stored printable, could not be seen. Tapping
+where the button should be worked: the audio played. The screenshots show the cause: the controls
+rendered, but without any of their styles, as white text and a white icon on a cream card, the
+icon on one line and the word on the next. 10.31 and 10.33 had shipped both buttons; neither was
+visible on the device.
+
+**The cause.** Both controls gave `Pressable` a *style function* (the React Native form that
+receives the pressed state and returns an array of styles), the Read aloud one returning nested
+arrays. On the device, in this app's build (React Native 0.79 with NativeWind's JSX interop
+wrapping every element), those style functions lost their styles entirely. Plain style objects on
+the same `Pressable` render correctly (the "Show on the map" row under each card, same screen).
+I had checked the data and the code paths and not the rendered result, which was the error.
+
+**The fix.** Every `Pressable` I added since 2026-10-19 that used a style function now takes a
+plain style (an object or a static array): the Read aloud button (one flattened object, pressed
+feedback kept in state), the printable's Print or share button (now at the top of the sheet,
+under the title, where it cannot be missed; the Download File link beside it when a file exists),
+the Make a printable card, the Checking the Record cards, the search hits, the decade screens,
+the explorer modal's link rows and Follow the Water. The pressed opacity on list rows is dropped;
+visibility comes first. The cards and rows that were already rendering (Discover, Quick Access)
+are untouched.
+
 ### 10.6 Order of work
 10.5's three features first (citations, then expedition routes, then the cartography gallery, because routes and maps both cite); then 1, 3, 5, 16, 18, 6, 7, 9, 10, 11, 13, 12, 17, 4; item 8 when recordings exist.
 

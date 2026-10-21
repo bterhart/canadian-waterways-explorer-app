@@ -64,6 +64,7 @@ export default function PrintableDetailScreen() {
     [printable?.content]
   );
   const [printing, setPrinting] = useState(false);
+  const [printPressed, setPrintPressed] = useState(false);
 
   const printOrShare = async () => {
     if (!html || !printable) return;
@@ -137,6 +138,28 @@ export default function PrintableDetailScreen() {
         <View style={styles.topicBadge}>
           <Text style={styles.topicText}>{printable.topic}</Text>
         </View>
+        {/* Print or share as a PDF, at the top where it cannot be missed. A plain style object, not a
+            style function: the function form lost its styles on the device in the builds of
+            2026-10-21 and left this button as white text on cream (owner, 2026-10-22). */}
+        {html ? (
+          <Pressable
+            style={printing || printPressed ? styles.printButtonDim : styles.printButton}
+            onPress={printOrShare}
+            onPressIn={() => setPrintPressed(true)}
+            onPressOut={() => setPrintPressed(false)}
+            disabled={printing}
+            accessibilityRole="button"
+          >
+            {printing ? <ActivityIndicator color="white" /> : <Printer size={18} color="white" />}
+            <Text style={styles.printButtonText}>{printing ? 'Preparing PDF…' : 'Print or share as PDF'}</Text>
+          </Pressable>
+        ) : null}
+        {printable.fileUrl ? (
+          <Pressable style={styles.fileLink} onPress={() => Linking.openURL(printable.fileUrl as string)} accessibilityRole="link">
+            <Download size={16} color={colors.forestGreen} />
+            <Text style={styles.fileLinkText}>Download File</Text>
+          </Pressable>
+        ) : null}
       </View>
 
       {/* Content */}
@@ -161,29 +184,6 @@ export default function PrintableDetailScreen() {
         </View>
       )}
 
-      {/* Print or share the rendered content as a PDF */}
-      {html ? (
-        <Pressable
-          style={({ pressed }) => [styles.downloadButton, (pressed || printing) && { opacity: 0.8 }]}
-          onPress={printOrShare}
-          disabled={printing}
-          accessibilityRole="button"
-        >
-          {printing ? <ActivityIndicator color="white" /> : <Printer size={18} color="white" />}
-          <Text style={styles.downloadText}>{printing ? 'Preparing PDF…' : 'Print or share as PDF'}</Text>
-        </Pressable>
-      ) : null}
-
-      {/* File download, only when a file exists */}
-      {printable.fileUrl ? (
-        <Pressable
-          style={[styles.downloadButton, styles.fileButton]}
-          onPress={() => Linking.openURL(printable.fileUrl as string)}
-        >
-          <Download size={18} color="white" />
-          <Text style={styles.downloadText}>Download File</Text>
-        </Pressable>
-      ) : null}
     </View>
   );
 }
@@ -274,22 +274,44 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
   },
-  downloadButton: {
+  printButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
     backgroundColor: colors.forestGreen,
-    padding: 16,
+    paddingVertical: 13,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    marginTop: 14,
   },
-  fileButton: {
-    backgroundColor: colors.darkGreen,
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(255,255,255,0.15)',
+  printButtonDim: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    backgroundColor: colors.forestGreen,
+    paddingVertical: 13,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    marginTop: 14,
+    opacity: 0.7,
   },
-  downloadText: {
+  printButtonText: {
     fontSize: 15,
-    fontWeight: '600',
+    fontWeight: '700',
     color: 'white',
+  },
+  fileLink: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginTop: 10,
+    alignSelf: 'flex-start',
+  },
+  fileLinkText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: colors.forestGreen,
   },
 });

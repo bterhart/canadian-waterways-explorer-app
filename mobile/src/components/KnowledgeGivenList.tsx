@@ -29,7 +29,7 @@ export function KnowledgeGivenList({ records, titleColor = '#2D5A3D', onBeforeNa
         {records.map((r) => (
           <Pressable
             key={r.id}
-            style={({ pressed }) => [styles.row, pressed && { opacity: 0.7 }]}
+            style={styles.row}
             onPress={() => { onBeforeNavigate?.(); router.push(`/knowledge/${r.id}`); }}
             accessibilityRole="button"
           >

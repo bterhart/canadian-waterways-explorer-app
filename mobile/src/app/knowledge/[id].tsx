@@ -89,7 +89,7 @@ export default function KnowledgeRecordScreen() {
           </Pressable>
           {place ? (
             <Pressable
-              style={({ pressed }) => [styles.who, pressed && { opacity: 0.7 }]}
+              style={styles.who}
               onPress={() => router.push({ pathname: '/', params: { markerId: place.id, markerType: record.location ? 'location' : 'waterway' } })}
               accessibilityRole="button"
             >
