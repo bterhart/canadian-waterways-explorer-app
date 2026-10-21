@@ -17,7 +17,7 @@ export default function KnowledgeScreen() {
   const shown = useMemo(() => (data ?? []).filter((r) => !kind || r.kind === kind), [data, kind]);
 
   const renderRow = ({ item }: { item: KnowledgeRecord }) => (
-    <Pressable style={({ pressed }) => [styles.card, pressed && styles.cardPressed]} onPress={() => router.push(`/knowledge/${item.id}`)}>
+    <Pressable style={styles.card} onPress={() => router.push(`/knowledge/${item.id}`)}>
       {item.figure?.imageUrl ? (
         <Image source={{ uri: item.figure.imageUrl }} style={styles.portrait} resizeMode="cover" />
       ) : (

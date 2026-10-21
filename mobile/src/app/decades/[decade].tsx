@@ -60,7 +60,7 @@ export default function DecadeScreen() {
       {data ? (
         <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
           {waterCount > 0 ? (
-            <Pressable style={({ pressed }) => [styles.mapButton, pressed && { opacity: 0.85 }]} onPress={() => router.push({ pathname: '/', params: { decade: String(decade) } })} accessibilityRole="button">
+            <Pressable style={styles.mapButton} onPress={() => router.push({ pathname: '/', params: { decade: String(decade) } })} accessibilityRole="button">
               <MapIcon size={16} color="white" />
               <Text style={styles.mapButtonText}>Show this decade on the map · {waterCount} {waterCount === 1 ? 'water' : 'waters'}</Text>
             </Pressable>
@@ -71,7 +71,7 @@ export default function DecadeScreen() {
             <Section title="On the water" icon={<Droplets size={16} color={colors.waterBlue} />} color={colors.waterBlue}>
               {data.explorers.map((group) => (
                 <View key={group.explorer.id} style={styles.explorerBlock}>
-                  <Pressable style={({ pressed }) => [styles.explorerRow, pressed && { opacity: 0.7 }]} onPress={() => setSelectedExplorerId(group.explorer.id)} accessibilityRole="button" accessibilityLabel={`Everything about ${group.explorer.name}`}>
+                  <Pressable style={styles.explorerRow} onPress={() => setSelectedExplorerId(group.explorer.id)} accessibilityRole="button" accessibilityLabel={`Everything about ${group.explorer.name}`}>
                     {group.explorer.imageUrl ? (
                       <Image source={{ uri: group.explorer.imageUrl }} style={styles.portrait} />
                     ) : (
@@ -88,7 +88,7 @@ export default function DecadeScreen() {
                   </Pressable>
                   <View style={styles.visitChips}>
                     {group.visits.map((v) => (
-                      <Pressable key={`${v.waterway.id}-${v.year}`} style={({ pressed }) => [styles.visitChip, pressed && { opacity: 0.7 }]} onPress={() => openOnMap(router, 'waterway', v.waterway.id)} accessibilityRole="button" accessibilityLabel={`Open ${v.waterway.name} on the map`}>
+                      <Pressable key={`${v.waterway.id}-${v.year}`} style={styles.visitChip} onPress={() => openOnMap(router, 'waterway', v.waterway.id)} accessibilityRole="button" accessibilityLabel={`Open ${v.waterway.name} on the map`}>
                         <Text style={styles.visitYear}>{v.year}</Text>
                         <Text style={styles.visitName} numberOfLines={1}>{v.waterway.name}</Text>
                       </Pressable>
@@ -102,7 +102,7 @@ export default function DecadeScreen() {
           {data.expeditions.length > 0 ? (
             <Section title="Journeys underway" icon={<Route size={16} color="#B45309" />} color="#B45309">
               {data.expeditions.map((e) => (
-                <Pressable key={e.id} style={({ pressed }) => [styles.lineRow, pressed && { opacity: 0.7 }]} onPress={() => router.push({ pathname: '/', params: { expeditionId: e.id } })} accessibilityRole="button" accessibilityLabel={`Show ${e.name} on the map`}>
+                <Pressable key={e.id} style={styles.lineRow} onPress={() => router.push({ pathname: '/', params: { expeditionId: e.id } })} accessibilityRole="button" accessibilityLabel={`Show ${e.name} on the map`}>
                   <View style={[styles.swatch, { backgroundColor: e.color ?? '#B45309' }]} />
                   <View style={{ flex: 1 }}>
                     <Text style={styles.lineTitle}>{e.name}</Text>
@@ -117,7 +117,7 @@ export default function DecadeScreen() {
           {data.locations.length > 0 ? (
             <Section title="Posts and places founded" icon={<Landmark size={16} color="#EF4444" />} color="#EF4444">
               {data.locations.map((l) => (
-                <Pressable key={l.id} style={({ pressed }) => [styles.lineRow, pressed && { opacity: 0.7 }]} onPress={() => openOnMap(router, 'location', l.id)} accessibilityRole="button" accessibilityLabel={`Open ${l.name} on the map`}>
+                <Pressable key={l.id} style={styles.lineRow} onPress={() => openOnMap(router, 'location', l.id)} accessibilityRole="button" accessibilityLabel={`Open ${l.name} on the map`}>
                   <Text style={styles.yearBadge}>{l.yearEstablished}</Text>
                   <View style={{ flex: 1 }}>
                     <Text style={styles.lineTitle}>{l.name}</Text>
@@ -134,7 +134,7 @@ export default function DecadeScreen() {
               {data.events.map((ev) => {
                 const target = ev.location ? { type: 'location' as const, id: ev.location.id } : ev.waterway ? { type: 'waterway' as const, id: ev.waterway.id } : null;
                 return (
-                  <Pressable key={ev.id} disabled={!target} style={({ pressed }) => [styles.lineRow, pressed && { opacity: 0.7 }]} onPress={() => target && openOnMap(router, target.type, target.id)} accessibilityRole="button">
+                  <Pressable key={ev.id} disabled={!target} style={styles.lineRow} onPress={() => target && openOnMap(router, target.type, target.id)} accessibilityRole="button">
                     <Text style={styles.yearBadge}>{ev.year}</Text>
                     <View style={{ flex: 1 }}>
                       <Text style={styles.lineTitle}>{ev.title}</Text>
@@ -154,7 +154,7 @@ export default function DecadeScreen() {
           {data.documents.length > 0 ? (
             <Section title="Written in this decade" icon={<FileText size={16} color="#6D28D9" />} color="#6D28D9">
               {data.documents.map((d) => (
-                <Pressable key={d.id} style={({ pressed }) => [styles.lineRow, pressed && { opacity: 0.7 }]} onPress={() => router.push(`/documents/${d.id}`)} accessibilityRole="button">
+                <Pressable key={d.id} style={styles.lineRow} onPress={() => router.push(`/documents/${d.id}`)} accessibilityRole="button">
                   <Text style={styles.yearBadge}>{d.originalYear}</Text>
                   <View style={{ flex: 1 }}>
                     <Text style={styles.lineTitle}>{d.title}</Text>

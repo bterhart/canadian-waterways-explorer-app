@@ -180,7 +180,7 @@ export default function SearchScreen() {
               <Text style={styles.groupCount}>{hits.length}</Text>
             </View>
             {hits.map((hit) => (
-              <Pressable key={`${hit.type}-${hit.id}`} style={({ pressed }) => [styles.hit, pressed && { opacity: 0.7 }]} onPress={() => open(hit)} accessibilityRole="button">
+              <Pressable key={`${hit.type}-${hit.id}`} style={styles.hit} onPress={() => open(hit)} accessibilityRole="button">
                 <View style={{ flex: 1 }}>
                   <Text style={styles.hitTitle}>{hit.title}</Text>
                   {hit.subtitle ? <Text style={styles.hitSubtitle} numberOfLines={2}>{hit.subtitle}</Text> : null}

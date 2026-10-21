@@ -3,7 +3,12 @@
 // Two looks: `outline` (the small pill used in the document page header) and `filled` (a solid
 // button the width of its row, used on the voice cards; owner, 2026-10-21: the icon and the words
 // must read as one button on one line, not as a link beside an icon).
-import React from 'react';
+//
+// The style is one flattened object, never a function returning nested arrays: in the builds of
+// 2026-10-21 that shape lost every style on the device, leaving white text on a cream card, so
+// the button worked when tapped but could not be seen (owner, 2026-10-22). Pressed feedback is
+// kept in state instead.
+import React, { useState } from 'react';
 import { Pressable, Text, StyleSheet, ActivityIndicator, View } from 'react-native';
 import { Volume2, Square } from 'lucide-react-native';
 import { useReadAloud } from '@/lib/speech';
@@ -20,26 +25,39 @@ interface Props {
 export function ReadAloudButton({ text, documentId, color = '#2D5A3D', compact, variant = 'outline' }: Props) {
   const { t } = useTranslation();
   const { state, toggle } = useReadAloud(text, documentId);
-  if (!text) return null;
+  const [pressed, setPressed] = useState(false);
+  const filled = variant === 'filled';
+  // A filled button is part of its card's layout and stays visible even when there is nothing to
+  // read (disabled); the outline pill, used beside a heading, disappears instead.
+  if (!text && !filled) return null;
+  const disabled = !text;
   const active = state !== 'idle';
   const label = state === 'loading' ? t('loading') : active ? t('stopReading') : t('readAloud');
-  const filled = variant === 'filled';
-  const inkOnFill = 'white';
-  const ink = filled || active ? inkOnFill : color;
+  const ink = filled || active ? 'white' : color;
   const iconSize = compact ? 14 : filled ? 18 : 16;
+
+  const buttonStyle = StyleSheet.flatten([
+    styles.button,
+    filled ? styles.filled : styles.outline,
+    filled ? { backgroundColor: color } : { borderColor: color },
+    !filled && active ? { backgroundColor: color } : null,
+    filled && active ? styles.filledActive : null,
+    compact ? styles.compact : null,
+    disabled ? styles.disabled : null,
+    pressed ? styles.pressed : null,
+  ]);
+  const labelStyle = StyleSheet.flatten([styles.label, { color: ink }, filled ? styles.labelFilled : null, compact ? styles.labelCompact : null]);
+
   return (
     <Pressable
       onPress={toggle}
-      style={({ pressed }) => [
-        styles.button,
-        filled ? [styles.filled, { backgroundColor: color }] : [styles.outline, { borderColor: color }, active && { backgroundColor: color }],
-        filled && active && styles.filledActive,
-        compact && styles.compact,
-        pressed && styles.pressed,
-      ]}
+      onPressIn={() => setPressed(true)}
+      onPressOut={() => setPressed(false)}
+      disabled={disabled}
+      style={buttonStyle}
       accessibilityRole="button"
       accessibilityLabel={label}
-      accessibilityState={{ busy: state === 'loading', selected: active }}
+      accessibilityState={{ busy: state === 'loading', selected: active, disabled }}
       hitSlop={6}
     >
       <View style={styles.icon}>
@@ -51,7 +69,7 @@ export function ReadAloudButton({ text, documentId, color = '#2D5A3D', compact, 
           <Volume2 size={iconSize} color={ink} />
         )}
       </View>
-      <Text style={[styles.label, { color: ink }, filled && styles.labelFilled, compact && styles.labelCompact]} numberOfLines={1}>
+      <Text style={labelStyle} numberOfLines={1}>
         {label}
       </Text>
     </Pressable>
@@ -63,6 +81,7 @@ const styles = StyleSheet.create({
   outline: { borderWidth: 1.5, backgroundColor: 'white', alignSelf: 'flex-start' },
   filled: { alignSelf: 'stretch', borderRadius: 10, minHeight: 42, paddingVertical: 10, paddingHorizontal: 16 },
   filledActive: { opacity: 0.88 },
+  disabled: { opacity: 0.45 },
   compact: { paddingVertical: 4, paddingHorizontal: 10, minHeight: 28 },
   pressed: { opacity: 0.75 },
   icon: { width: 20, alignItems: 'center', justifyContent: 'center' },

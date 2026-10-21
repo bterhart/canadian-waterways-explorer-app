@@ -53,7 +53,7 @@ export function FollowTheWater({ waterwayId, onBeforeNavigate }: Props) {
 
   const Row = ({ step, indent = 0, mark }: { step: SystemStep; indent?: number; mark?: React.ReactNode }) => (
     <Pressable
-      style={({ pressed }) => [styles.row, { marginLeft: indent }, pressed && { opacity: 0.7 }]}
+      style={[styles.row, { marginLeft: indent }]}
       onPress={() => open(step)}
       accessibilityRole="button"
       accessibilityLabel={`Open ${step.name} on the map`}
@@ -133,7 +133,7 @@ export function FollowTheWater({ waterwayId, onBeforeNavigate }: Props) {
           </View>
         ) : null}
 
-        <Pressable style={({ pressed }) => [styles.systemButton, pressed && { opacity: 0.85 }]} onPress={showSystem} accessibilityRole="button">
+        <Pressable style={styles.systemButton} onPress={showSystem} accessibilityRole="button">
           <Network size={16} color="white" />
           <Text style={styles.systemButtonText}>Show the whole system on the map · {waterwayIds.length} waters</Text>
         </Pressable>

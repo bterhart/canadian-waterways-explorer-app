@@ -58,7 +58,7 @@ export function VoiceCard({ voice, onClose, hideOpen, full, compact }: Props) {
       {/* Read aloud as one solid button the width of the card, icon and words on one line, the text
           links under it (owner, 2026-10-20 and 2026-10-21). The narration reads the whole passage either way. */}
       <View style={styles.readRow}>
-        <ReadAloudButton text={voice.text} documentId={voice.id} color={VOICE_COLOR} variant="filled" />
+        <ReadAloudButton text={voice.text || voice.excerpt} documentId={voice.id} color={VOICE_COLOR} variant="filled" />
       </View>
       {canExpand || !hideOpen ? (
         <View style={styles.actions}>

@@ -124,7 +124,7 @@ export default function ExplorerDetailModal({ explorer, onClose }: ExplorerDetai
                 {explorer.waterways.map((explorerWaterway: ExplorerWaterwayDetail) => (
                   <View key={explorerWaterway.id} style={styles.waterwayItem}>
                     <Pressable
-                      style={({ pressed }) => [styles.waterwayHeader, pressed && { opacity: 0.7 }]}
+                      style={styles.waterwayHeader}
                       onPress={() => explorerWaterway.waterway && go({ pathname: '/', params: { markerId: explorerWaterway.waterway.id, markerType: 'waterway' } })}
                       accessibilityRole="button"
                       accessibilityLabel={`Open ${explorerWaterway.waterway?.name ?? 'waterway'} on the map`}
@@ -154,7 +154,7 @@ export default function ExplorerDetailModal({ explorer, onClose }: ExplorerDetai
                         onPress={() => go(`/decades/${decadeOf(explorerWaterway.yearExplored!)}`)}
                         accessibilityRole="button"
                         accessibilityLabel={`Who else was here in the ${decadeOf(explorerWaterway.yearExplored)}s`}
-                        style={({ pressed }) => [styles.yearLink, pressed && { opacity: 0.7 }]}
+                        style={styles.yearLink}
                       >
                         <History size={12} color={colors.waterBlue} />
                         <Text style={styles.waterwayYear}>Explored {explorerWaterway.yearExplored} · who else was here in the {decadeOf(explorerWaterway.yearExplored)}s</Text>
@@ -179,7 +179,7 @@ export default function ExplorerDetailModal({ explorer, onClose }: ExplorerDetai
                 {events.map((ev) => {
                   const target = ev.location ? { type: 'location' as const, id: ev.location.id } : ev.waterway ? { type: 'waterway' as const, id: ev.waterway.id } : null;
                   return (
-                    <Pressable key={ev.id} disabled={!target} style={({ pressed }) => [styles.linkRow, pressed && { opacity: 0.7 }]} onPress={() => target && go({ pathname: '/', params: { markerId: target.id, markerType: target.type } })} accessibilityRole="button">
+                    <Pressable key={ev.id} disabled={!target} style={styles.linkRow} onPress={() => target && go({ pathname: '/', params: { markerId: target.id, markerType: target.type } })} accessibilityRole="button">
                       <Text style={styles.linkYear}>{ev.year}</Text>
                       <View style={{ flex: 1 }}>
                         <Text style={styles.linkTitle}>{ev.title}</Text>
@@ -198,7 +198,7 @@ export default function ExplorerDetailModal({ explorer, onClose }: ExplorerDetai
               <Text style={[styles.sectionTitle, { color: '#6D28D9' }]}>Documents</Text>
               <View style={[styles.sectionContent, { backgroundColor: '#F5F3FF' }]}>
                 {explorer.documents.map((d) => (
-                  <Pressable key={d.id} style={({ pressed }) => [styles.linkRow, pressed && { opacity: 0.7 }]} onPress={() => go(`/documents/${d.id}`)} accessibilityRole="button">
+                  <Pressable key={d.id} style={styles.linkRow} onPress={() => go(`/documents/${d.id}`)} accessibilityRole="button">
                     <FileText size={16} color="#6D28D9" />
                     <View style={{ flex: 1 }}>
                       <Text style={styles.linkTitle}>{d.title}</Text>
@@ -216,7 +216,7 @@ export default function ExplorerDetailModal({ explorer, onClose }: ExplorerDetai
               <Text style={[styles.sectionTitle, { color: '#7E22CE' }]}>People Connected</Text>
               <View style={[styles.sectionContent, { backgroundColor: '#F7F0FF' }]}>
                 {explorer.notableFigures.map((f) => (
-                  <Pressable key={f.id} style={({ pressed }) => [styles.linkRow, pressed && { opacity: 0.7 }]} onPress={() => go(`/notable-figures/${f.id}`)} accessibilityRole="button">
+                  <Pressable key={f.id} style={styles.linkRow} onPress={() => go(`/notable-figures/${f.id}`)} accessibilityRole="button">
                     {f.imageUrl ? <Image source={{ uri: f.imageUrl }} style={styles.figurePortrait} /> : <View style={[styles.figurePortrait, { backgroundColor: '#A855F7', alignItems: 'center', justifyContent: 'center' }]}><Text style={{ color: 'white', fontWeight: '700' }}>{f.name.charAt(0)}</Text></View>}
                     <View style={{ flex: 1 }}>
                       <Text style={styles.linkTitle}>{f.name}</Text>
@@ -234,7 +234,7 @@ export default function ExplorerDetailModal({ explorer, onClose }: ExplorerDetai
               <Text style={[styles.sectionTitle, { color: colors.earthBrown }]}>Maps</Text>
               <View style={[styles.sectionContent, { backgroundColor: '#F5ECD7' }]}>
                 {explorer.maps.map((m) => (
-                  <Pressable key={m.id} style={({ pressed }) => [styles.linkRow, pressed && { opacity: 0.7 }]} onPress={() => go(`/historical-maps/${m.id}`)} accessibilityRole="button">
+                  <Pressable key={m.id} style={styles.linkRow} onPress={() => go(`/historical-maps/${m.id}`)} accessibilityRole="button">
                     <Image source={{ uri: m.imageUrl }} style={styles.mapThumb} resizeMode="cover" />
                     <View style={{ flex: 1 }}>
                       <Text style={styles.linkTitle}>{m.title}</Text>
@@ -262,7 +262,7 @@ export default function ExplorerDetailModal({ explorer, onClose }: ExplorerDetai
                   <Pressable
                     key={d.id}
                     disabled={!d.waterway && d.latitude === null}
-                    style={({ pressed }) => [styles.linkRow, pressed && { opacity: 0.7 }]}
+                    style={styles.linkRow}
                     onPress={() => d.waterway ? go({ pathname: '/', params: { markerId: d.waterway.id, markerType: 'waterway' } }) : go({ pathname: '/', params: { lat: String(d.latitude), lng: String(d.longitude) } })}
                     accessibilityRole="button"
                   >
@@ -283,7 +283,7 @@ export default function ExplorerDetailModal({ explorer, onClose }: ExplorerDetai
               <Text style={[styles.sectionTitle, { color: colors.forestGreen }]}>Deep Dives</Text>
               <View style={styles.sectionContent}>
                 {explorer.lessonPlans.map((l) => (
-                  <Pressable key={l.id} style={({ pressed }) => [styles.linkRow, pressed && { opacity: 0.7 }]} onPress={() => go(`/lessons/${l.id}`)} accessibilityRole="button">
+                  <Pressable key={l.id} style={styles.linkRow} onPress={() => go(`/lessons/${l.id}`)} accessibilityRole="button">
                     <BookOpen size={16} color={colors.forestGreen} />
                     <View style={{ flex: 1 }}>
                       <Text style={styles.linkTitle}>{l.title}</Text>

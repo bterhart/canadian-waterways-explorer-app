@@ -50,7 +50,7 @@ export default function DeepDivesScreen() {
 
   const renderLessonCard = ({ item }: { item: LessonPlanSummary }) => (
     <Pressable
-      style={({ pressed }) => [styles.lessonCard, pressed && styles.cardPressed]}
+      style={styles.lessonCard}
       onPress={() => router.push(`/lessons/${item.id}`)}
     >
       <View style={styles.cardHeader}>

@@ -22,7 +22,7 @@ export default function HistoricalMapsScreen() {
   const shown = useMemo(() => (data ?? []).filter((m) => (!century || centuryOf(m.year) === century) && (!region || m.region === region)), [data, century, region]);
 
   const renderCard = ({ item }: { item: HistoricalMapSummary }) => (
-    <Pressable style={({ pressed }) => [styles.card, pressed && styles.cardPressed]} onPress={() => router.push(`/historical-maps/${item.id}`)}>
+    <Pressable style={styles.card} onPress={() => router.push(`/historical-maps/${item.id}`)}>
       <Image source={{ uri: item.imageUrl }} style={styles.thumb} resizeMode="cover" />
       <View style={styles.cardBody}>
         <Text style={styles.cardYear}>{item.yearLabel ?? item.year}</Text>

@@ -21,7 +21,7 @@ export default function SourcePairsScreen() {
   const { data: kinds } = useSourcePairKinds();
 
   const renderPair = ({ item }: { item: SourcePairSummary }) => (
-    <Pressable style={({ pressed }) => [styles.card, pressed && { opacity: 0.7 }]} onPress={() => router.push(`/source-pairs/${item.id}`)} accessibilityRole="button">
+    <Pressable style={styles.card} onPress={() => router.push(`/source-pairs/${item.id}`)} accessibilityRole="button">
       <View style={styles.cardTop}>
         <View style={[styles.kindBadge, item.kind === 'confirmed' ? styles.kindConfirmed : item.kind === 'unverifiable' || item.kind === 'no_such_document' ? styles.kindUnverifiable : styles.kindChanged]}>
           <Text style={styles.kindBadgeText}>{item.kindLabel}</Text>

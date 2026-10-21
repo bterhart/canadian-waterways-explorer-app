@@ -58,7 +58,7 @@ export default function TeacherLessonPlansScreen() {
 
   const renderLessonCard = ({ item }: { item: LessonPlanSummary }) => (
     <Pressable
-      style={({ pressed }) => [styles.lessonCard, pressed && styles.cardPressed]}
+      style={styles.lessonCard}
       onPress={() => router.push(`/teacher/lesson-plan/${item.id}`)}
     >
       <View style={styles.cardHeader}>
