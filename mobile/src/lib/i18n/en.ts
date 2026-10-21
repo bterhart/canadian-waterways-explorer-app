@@ -59,6 +59,8 @@ export const en = {
   journeys: 'Journeys',
   thenAndNow: 'Then and Now',
   thenAndNowDesc: 'Travel back in time: slide between a period view and a photograph of the same spot today',
+  checkingTheRecordTitle: 'Checking the Record',
+  checkingTheRecordDesc: 'Passages as this app first carried them beside the sentences as published, and what changed',
   inTheirOwnWordsTitle: 'In Their Own Words',
   inTheirOwnWordsDesc: 'Hear the explorers, traders and guides read aloud, from the spots where they wrote',
   voicesIntro: 'Every passage here is a checked transcription of what someone wrote on the water, oldest first, read in the voice chosen in Settings. The words are the author\'s, checked against the edition named on each document.',

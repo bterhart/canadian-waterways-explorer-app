@@ -62,6 +62,8 @@ export const fr: Record<TranslationKey, string> = {
   journeys: 'Voyages',
   thenAndNow: 'Hier et aujourd\'hui',
   thenAndNowDesc: 'Voyagez dans le temps : glissez entre une vue d\'époque et une photo du même lieu aujourd\'hui',
+  checkingTheRecordTitle: 'Vérifier la source',
+  checkingTheRecordDesc: 'Les passages tels que l’application les portait d’abord, à côté des phrases publiées, et ce qui a changé',
   inTheirOwnWordsTitle: 'Dans leurs propres mots',
   inTheirOwnWordsDesc: 'Écoutez les explorateurs, traiteurs et guides lus à voix haute, depuis les lieux où ils ont écrit',
   voicesIntro: 'Chaque passage est une transcription vérifiée de ce que quelqu\'un a écrit sur l\'eau, du plus ancien au plus récent, lue avec la voix choisie dans les Paramètres. Les mots sont ceux de l\'auteur, vérifiés contre l\'édition indiquée sur chaque document.',
