@@ -1,6 +1,7 @@
 // Teacher Portal - Lesson Plan Detail Screen
 import React from 'react';
 import {
+  Linking,
   View,
   Text,
   ScrollView,
@@ -197,6 +198,33 @@ export default function TeacherLessonPlanDetailScreen() {
           <Text style={styles.assessmentText}>
             {lesson.assessment}
           </Text>
+        </Section>
+      ) : null}
+
+      {/* Curriculum outcomes by province (roadmap item 9): the ministry's wording, with code and source */}
+      {lesson.outcomes && lesson.outcomes.length > 0 ? (
+        <Section
+          title="Curriculum Outcomes"
+          icon={<BookOpen size={20} color={colors.forestGreen} />}
+        >
+          {lesson.outcomes.map((o) => (
+            <View key={o.id} style={styles.curriculumCard}>
+              <Text style={styles.curriculumProvince}>
+                {o.provinceName} · {o.course}{o.strand ? ` · ${o.strand}` : ''}
+              </Text>
+              <View style={styles.listItem}>
+                <View style={styles.bulletPoint} />
+                <Text style={styles.listItemText}>
+                  {o.code ? <Text style={styles.outcomeCode}>{o.code} </Text> : null}
+                  {o.text}
+                </Text>
+              </View>
+              {o.note ? <Text style={styles.outcomeNote}>{o.note}</Text> : null}
+              <Pressable onPress={() => Linking.openURL(o.sourceUrl)} hitSlop={6}>
+                <Text style={styles.outcomeSource}>{o.sourceTitle}{o.sourceYear ? ` (${o.sourceYear})` : ''}</Text>
+              </Pressable>
+            </View>
+          ))}
         </Section>
       ) : null}
 
@@ -449,6 +477,9 @@ const styles = StyleSheet.create({
     color: colors.darkGreen,
     marginBottom: 10,
   },
+  outcomeCode: { fontWeight: '800', color: colors.forestGreen },
+  outcomeNote: { fontSize: 13, color: '#4B5563', fontStyle: 'italic', marginTop: 4, marginLeft: 14 },
+  outcomeSource: { fontSize: 12, color: '#3B82A3', textDecorationLine: 'underline', marginTop: 6, marginLeft: 14 },
   relatedSection: {
     backgroundColor: 'white',
     marginTop: 12,

@@ -78,6 +78,8 @@ import type {
   // Notable Figures types
   NotableFigureSummary,
   NotableFigureDetail,
+  CurriculumOutcome,
+  CurriculumSummary,
 } from '@/lib/types/education';
 
 // ============= Query Keys =============
@@ -178,10 +180,13 @@ export const printablesKeys = {
 
 // ============= Lesson Plans Hooks =============
 
-export function useLessonPlans(filters?: { gradeLevel?: string; topic?: string }) {
+export function useLessonPlans(filters?: { gradeLevel?: string; topic?: string; province?: string; outcome?: string }) {
   const params = new URLSearchParams();
   if (filters?.gradeLevel) params.append('gradeLevel', filters.gradeLevel);
   if (filters?.topic) params.append('topic', filters.topic);
+  // Curriculum filters (item 9): a province whose outcomes the lesson meets, or one outcome by id or code
+  if (filters?.province) params.append('province', filters.province);
+  if (filters?.outcome) params.append('outcome', filters.outcome);
   const queryString = params.toString();
 
   return useQuery({
@@ -1590,5 +1595,37 @@ export function useSubmitQuizAttempt() {
         `/api/quizzes/${quizId}/attempt`,
         payload
       ),
+  });
+}
+
+// ============= Curriculum alignment (roadmap item 9) =============
+
+export const curriculumKeys = {
+  all: ['curriculum'] as const,
+  summary: () => [...curriculumKeys.all, 'summary'] as const,
+  outcomes: (filters: { province?: string; grade?: string; q?: string }) => [...curriculumKeys.all, 'outcomes', filters] as const,
+};
+
+/** The provinces and grades that have outcomes, with counts (for the filter chips). */
+export function useCurriculumSummary() {
+  return useQuery({
+    queryKey: curriculumKeys.summary(),
+    queryFn: () => api.get<CurriculumSummary[]>('/api/curriculum'),
+    staleTime: 10 * 60 * 1000,
+  });
+}
+
+/** Outcomes by province, grade and a query matched against the code or the wording. */
+export function useCurriculumOutcomes(filters: { province?: string; grade?: string; q?: string }, enabled = true) {
+  const params = new URLSearchParams();
+  if (filters.province) params.append('province', filters.province);
+  if (filters.grade) params.append('grade', filters.grade);
+  if (filters.q) params.append('q', filters.q);
+  const queryString = params.toString();
+  return useQuery({
+    queryKey: curriculumKeys.outcomes(filters),
+    queryFn: () => api.get<CurriculumOutcome[]>(`/api/curriculum/outcomes${queryString ? `?${queryString}` : ''}`),
+    enabled,
+    staleTime: 10 * 60 * 1000,
   });
 }
