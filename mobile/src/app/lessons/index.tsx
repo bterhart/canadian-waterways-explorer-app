@@ -32,6 +32,7 @@ const TOPICS = [
   'Women in History',
   'Cartography',
   'Early Explorers',
+  'Exploration',
   'Primary Sources',
 ];
 
