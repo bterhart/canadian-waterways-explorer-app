@@ -2346,18 +2346,16 @@ Fort St. Charles, 21 May 1733 (Burpee, Champlain Society 1927); the opening of F
 Explorations, 1856).
 
 **Region 3, the Pacific and the Yukon (`2026-10-21-voices-pacific-yukon.ts`, applied, 6 of 6
-pass the checker; 57 narrations after it).** Fraser naming the Thompson at Camchin (Lytton),
+pass the checker; 57 narrations after it, 58 with the owner's entry below).** Fraser naming the Thompson at Camchin (Lytton),
 19-20 June 1808 (Masson, 1889; a poor scan, every correction declared); Jewitt on the whale
 hunt at Yuquot, 1803-05 (Narrative, Ithaca 1816); Schwatka's raft at the Grand Cañon of the
 Yukon, 1 July 1883 (1885); Adney at the forks of Bonanza and Eldorado, winter 1897 (1900);
 Marquette entering the Mississippi, 17 June 1673 (Jesuit Relations vol. LIX); Steele at Lake
-Bennett, spring 1898 (Forty Years in Canada, 1915). **Not done: passage 28, Vancouver in
-Burrard Inlet, 13 June 1792** (A Voyage of Discovery, vol. I, 1798; Internet Archive
-`voyageofdiscover01vanc_1`). Every attempt to write that entry into the file was blocked by the
-output filter of the session, apparently on the 1798 typography in its declared corrections, and
-the owner directed the work to stop there (2026-10-21). The passage is the Burrard's Canal
-paragraph and the "sublime, though gloomy spectacle" paragraph at the start of the entry for
-13 June 1792; the row shape is that of the other entries.
+Bennett, spring 1898 (Forty Years in Canada, 1915). **Passage 28, Vancouver in Burrard Inlet, 13 June 1792** (A Voyage of Discovery, vol. I,
+1798; Internet Archive `voyageofdiscover01vanc_1`) was entered by the owner in the Turso console
+on 2026-10-21 from the SQL prepared in the session, after every attempt to write the entry into
+the migration file was blocked by the session's output filter; the row, its edition citation and
+the two narrator copies were verified afterwards. 58 narrations; all 30 passages of 10.23 delivered.
 
 **Rule on the notes (owner, 2026-10-21).** The records are reproduced as written and the notes
 around them do not contextualize or excuse their wording. Sentences of that kind in region 1's
