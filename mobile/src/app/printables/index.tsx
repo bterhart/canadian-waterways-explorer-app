@@ -12,6 +12,7 @@ import {
   Linking,
 } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
+import { ChevronRight as MakeChevron } from 'lucide-react-native';
 import {
   Printer,
   Download,
@@ -178,6 +179,18 @@ export default function PrintablesScreen() {
         }}
       />
 
+      {/* Make a printable (roadmap item 13): blank maps, timeline strips and pronunciation cards from the live records */}
+      <Pressable style={({ pressed }) => [styles.makeCard, pressed && { opacity: 0.85 }]} onPress={() => router.push('/printables/make')} accessibilityRole="button">
+        <View style={styles.makeIcon}>
+          <Printer size={22} color="white" />
+        </View>
+        <View style={{ flex: 1 }}>
+          <Text style={styles.makeTitle}>Make a printable</Text>
+          <Text style={styles.makeText} numberOfLines={2}>A blank river map, a timeline strip or pronunciation cards, built from the app's records and ready to print.</Text>
+        </View>
+        <MakeChevron size={20} color="white" />
+      </Pressable>
+
       {/* Filters */}
       <View style={styles.filtersSection}>
         <View style={styles.filterRow}>
@@ -313,6 +326,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.creamWhite,
   },
+  makeCard: { flexDirection: 'row', alignItems: 'center', gap: 12, marginHorizontal: 16, marginTop: 12, padding: 14, borderRadius: 14, backgroundColor: colors.forestGreen },
+  makeIcon: { width: 42, height: 42, borderRadius: 12, backgroundColor: 'rgba(255,255,255,0.2)', alignItems: 'center', justifyContent: 'center' },
+  makeTitle: { fontSize: 16, fontWeight: '700', color: 'white' },
+  makeText: { fontSize: 12, color: 'rgba(255,255,255,0.85)', marginTop: 2, lineHeight: 16 },
   filtersSection: {
     backgroundColor: 'white',
     paddingVertical: 12,
