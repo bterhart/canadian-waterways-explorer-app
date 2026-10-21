@@ -1075,6 +1075,46 @@ model KnowledgeGiven {
 
 // Then-and-now imagery (roadmap item 7, 2026-10-20): a period image of a spot paired with a
 // modern photograph of the same spot, each with year, caption, credit and source page.
+// Curriculum alignment by province (roadmap item 9, 2026-10-21). One row per outcome quoted from a
+// province's published curriculum: province (ON, BC, AB, QC), grade or course, strand, the ministry's
+// code where the document has one (Ontario expectations, Alberta outcomes; BC and Quebec publish
+// none), the text as published, and the source document. kind: expectation | big_idea | content |
+// competency | knowledge. Created by 2026-10-21-curriculum-outcomes.sql, CREATE-only.
+model CurriculumOutcome {
+  id          String   @id @default(cuid())
+  province    String
+  grade       String
+  course      String
+  strand      String?
+  code        String?
+  text        String
+  kind        String   @default("expectation")
+  sourceTitle String
+  sourceUrl   String
+  sourceYear  String?
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  lessons     LessonOutcome[]
+
+  @@index([province, grade])
+  @@index([code])
+}
+
+// A lesson plan meeting an outcome, with an optional note on how.
+model LessonOutcome {
+  id           String            @id @default(cuid())
+  lessonPlanId String
+  outcomeId    String
+  note         String?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  outcome      CurriculumOutcome @relation(fields: [outcomeId], references: [id], onDelete: Cascade)
+
+  @@unique([lessonPlanId, outcomeId])
+  @@index([outcomeId])
+}
+
 model ThenAndNow {
   id            String   @id @default(cuid())
   title         String
