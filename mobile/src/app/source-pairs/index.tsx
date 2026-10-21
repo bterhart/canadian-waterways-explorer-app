@@ -1,5 +1,5 @@
-// Checking the Record (roadmap item 10): every passage the app first carried before it was checked,
-// beside the sentences as published, sorted by the kind of difference. Grade and kind chips; the
+// Checking the Record (roadmap item 10): the 44 passages the app once carried unchecked, since
+// corrected, beside the sentences as published, sorted by the kind of difference. Grade and kind chips; the
 // list honours the device's class content scope through its id.
 import React, { useState } from 'react';
 import { View, Text, FlatList, Pressable, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
@@ -50,7 +50,7 @@ export default function SourcePairsScreen() {
       <View style={styles.intro}>
         <FileCheck size={20} color={colors.earthBrown} />
         <Text style={styles.introText}>
-          When this app was built, 44 of its documents carried quoted passages that read well and had never been checked. Each is shown here as it was, beside the sentences as published in the edition the document now cites, with what changed. Read both. The first column is never the author's words.
+          Historical texts are often misquoted, and sometimes invented outright. Here are 44 real cases this app found in its own pages and set right against the published editions. Each shows the passage as it first read, beside the sentences as published in the edition the document now cites, with what changed. Read both. The first column is never the author's words.
         </Text>
       </View>
       <View style={styles.filters}>

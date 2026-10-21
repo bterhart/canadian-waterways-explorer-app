@@ -2700,6 +2700,36 @@ the Nelson), Robert Campbell's seven dated events on a strip, the exploration th
 with 22 events, and the Algonquin cards. A missing water id is refused with 400; no match is a 404 the
 maker shows as a message.
 
+### 10.33 Discover cards, Checking the Record, printing and the portal (owner, 2026-10-21; build required)
+
+**Full-width cards.** The Then and Now and Near You cards were still narrower than Cartography in the
+build of 2026-10-21. The cause was not the pressed state (10.31's guess) but the width itself: the
+full-width cards were sized as a percentage inside the wrapping row of cards, and in that row they
+were being sized to their text instead, so a card whose description wrapped (Cartography) filled the
+row and a card with a short line (Then and Now, Near You) shrank to it. The full-width cards now use a
+measured width, the same arithmetic as the half-width cards, and cannot shrink.
+
+**Then and Now.** The card has the same three parts as the others: the section title above the card
+(Then and Now), the bold line inside it (Yesterday Meets Today; French *Hier rencontre aujourd'hui*)
+and the description below that, restored to the original ("Period views paired with photographs of
+the same spots today; slide between them"). 10.31 had put the subtitle in the description's place.
+
+**Checking the Record.** The card moves from People in History to Learning Tools, where the other
+tools sit. The screen's introduction no longer reads as if the 44 misquotations were still in the app:
+it now says that historical texts are often misquoted and sometimes invented, that these are 44 real
+cases the app found in its own pages and set right against the published editions, and that each is
+shown as it first read beside the sentences as published, with what changed.
+
+**Printing a stored printable.** The detail screen of a stored printable (the fur-trade blank map, the
+vocabulary builder, the reading guides) showed the sheet in a web view with no way to print it; the
+only print button was in the maker. Every stored printable now has the same "Print or share as PDF"
+button as the maker, through expo-print and expo-sharing. The "Download File" button remains for the
+day a printable carries a file; none does today.
+
+**Teacher portal.** The dashboard had no way to the printables; teachers reached them only through
+the Discover tab's Quick Access list. A Printables card now sits beside Deep Dives and Lesson Plans
+and opens the same list, with the maker at its top.
+
 ### 10.6 Order of work
 10.5's three features first (citations, then expedition routes, then the cartography gallery, because routes and maps both cite); then 1, 3, 5, 16, 18, 6, 7, 9, 10, 11, 13, 12, 17, 4; item 8 when recordings exist.
 

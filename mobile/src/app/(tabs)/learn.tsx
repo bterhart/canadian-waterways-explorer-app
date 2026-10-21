@@ -262,7 +262,7 @@ export default function LearnHubScreen() {
         <Text style={styles.sectionTitle}>{t('thenAndNow')}</Text>
         <View style={styles.cardsGrid}>
           <FeatureCard
-            title={t('thenAndNow')}
+            title={t('thenAndNowSubtitle')}
             description={t('thenAndNowDesc')}
             icon={<Images size={28} color="white" />}
             gradientColors={['#0E7490', '#155E75'] as const}
@@ -322,14 +322,6 @@ export default function LearnHubScreen() {
             gradientColors={['#7C2D12', '#4A1A0A'] as const}
             onPress={() => router.push('/voices')}
           />
-          {/* Checking the record (roadmap item 10): the seed passages beside the published sentences */}
-          <FeatureCard
-            title={t('checkingTheRecordTitle')}
-            description={t('checkingTheRecordDesc')}
-            icon={<FileCheck size={28} color="white" />}
-            gradientColors={['#92400E', '#78350F'] as const}
-            onPress={() => router.push('/source-pairs')}
-          />
         </View>
       </View>
 
@@ -364,6 +356,15 @@ export default function LearnHubScreen() {
             icon={<Volume2 size={28} color="white" />}
             gradientColors={['#EC4899', '#BE185D'] as const}
             onPress={() => router.push('/pronunciations')}
+          />
+          {/* Checking the record (roadmap item 10): the seed passages beside the published sentences.
+              A tool, not a people topic (owner, 2026-10-21). */}
+          <FeatureCard
+            title={t('checkingTheRecordTitle')}
+            description={t('checkingTheRecordDesc')}
+            icon={<FileCheck size={28} color="white" />}
+            gradientColors={['#92400E', '#78350F'] as const}
+            onPress={() => router.push('/source-pairs')}
           />
         </View>
       </View>
@@ -514,13 +515,13 @@ const styles = StyleSheet.create({
     width: CARD_WIDTH,
     height: 150,
   },
+  // Measured, not a percentage: with '100%' the full-width cards were sized to their text in this
+  // wrapping row (Then and Now shrank to one short line, Near You to its sentence), while a card
+  // whose text wrapped happened to fill the row. Same arithmetic as CARD_WIDTH (owner, 2026-10-21).
   cardLarge: {
-    width: '100%',
+    width: width - 32,
     height: 160,
   },
-  // Opacity only: a scale on press could be left applied when a card's screen opened a system
-  // dialog mid-press (the Near You card asks for location), which showed as a card narrower than
-  // the others (owner, 2026-10-21).
   cardPressed: {
     opacity: 0.85,
   },
