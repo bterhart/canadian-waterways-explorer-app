@@ -107,12 +107,13 @@ export const IMG = {
 const FW = { greatHall: "cmlirhtmx0001m2hcvo0uc9q0", canoeYard: "cmlirhtmx0002m2hco0fd0pdk", warehouse: "cmlirhtmx0003m2hcxz1oil97", encampment: "cmlirhtmx0004m2hc6tddnngu", council: "cmlirhtmx0005m2hc2gsnqtyn", partnership: "cmlirhtmx0006m2hcv9o09nlv" };
 const YF = { ship: "cmligcdja0001m233n2qb4d4z", depot: "cmligcdje0003m233x3it70y4", tradingRoom: "cmligcdjh0005m233czdu36nl", warehouse: "cmligcdjk0007m2336ybt7yx8", cemetery: "cmligcdjo0009m233gfnlbg59", yorkBoat: "cmligcdjt000bm233jyh0qisf" };
 
+export type Band = "K-3" | "4-6" | "7-9" | "10-12";
 export interface PackImage { url: string; caption: string; credit: string }
 export interface PackActivity { title: string; description: string; duration: string; materials: string[] }
 export interface PackKeyFigure { name: string; role: string; years: string; description: string; explorerId?: string; notableFigureId?: string }
 export interface PackTimelineItem { year: number; title: string; description: string; eventId?: string }
 export interface PackLesson {
-  id: string; title: string; description: string; gradeLevel: "K-3" | "4-6"; topic: string; estimatedMinutes: number; readingTimeMinutes: number;
+  id: string; title: string; description: string; gradeLevel: Band; topic: string; estimatedMinutes: number; readingTimeMinutes: number;
   heroImageUrl: string; images: PackImage[]; narrativeContent: string; introduction: string; mainContent: string;
   objectives: string[]; materials: string[]; activities: PackActivity[]; discussionQuestions: string[]; assessment: string; extensions: string;
   curriculumConnections: { subject: string; strand: string; expectation: string }[];
@@ -122,11 +123,11 @@ export interface PackLesson {
   outcomes: (string | [string, string])[];
 }
 export interface PackQuestion { questionText: string; options: string[]; correct: number; explanation: string; sourceType: "explorer" | "waterway" | "location" | "notable_figure"; sourceId: string }
-export interface PackQuiz { id: string; title: string; description: string; category: string; gradeLevel: "K-3" | "4-6"; difficulty: "easy" | "medium"; questions: PackQuestion[] }
+export interface PackQuiz { id: string; title: string; description: string; category: string; gradeLevel: Band; difficulty: "easy" | "medium" | "hard"; questions: PackQuestion[] }
 export interface PackStop { title: string; description: string; lat: number; lng: number; imageUrl: string; locationId: string | null; waterwayId: string; funFact: string; thinkQuestion: string }
-export interface PackTrip { id: string; title: string; description: string; gradeLevel: "K-3" | "4-6"; estimatedMinutes: number; theme: "explorer" | "fur_trade"; coverImageUrl: string; stops: PackStop[] }
-export interface PackPrintable { id: string; title: string; description: string; resourceType: string; gradeLevel: "K-3" | "4-6"; topic: string; content: string; teacherNotes: string; answerKey: string }
-export interface PackComparison { id: string; title: string; description: string; comparisonType: string; gradeLevel: "K-3" | "4-6"; items: Record<string, string>[]; criteria: { criterion: string; description: string }[]; analysisPrompts: string[] }
+export interface PackTrip { id: string; title: string; description: string; gradeLevel: Band; estimatedMinutes: number; theme: "explorer" | "fur_trade"; coverImageUrl: string; stops: PackStop[] }
+export interface PackPrintable { id: string; title: string; description: string; resourceType: string; gradeLevel: Band; topic: string; content: string; teacherNotes: string; answerKey: string }
+export interface PackComparison { id: string; title: string; description: string; comparisonType: string; gradeLevel: Band; items: Record<string, string>[]; criteria: { criterion: string; description: string }[]; analysisPrompts: string[] }
 
 const W = IDS.waterway, L = IDS.location, E = IDS.explorer, F = IDS.figure, T = IDS.event;
 
