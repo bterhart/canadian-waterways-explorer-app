@@ -30,6 +30,13 @@ export interface Outcome {
 
 export interface LessonOutcomeRow extends Outcome { note: string | null }
 
+/** Grades in school order: numeric grades by value; Quebec's cycle and secondary labels by the grades they cover. */
+const GRADE_LABEL_RANK: Record<string, number> = { K: 0, "Elementary Cycle One (Grades 1-2)": 1.5, "Elementary Cycle Two (Grades 3-4)": 3.5, "Elementary Cycle Three (Grades 5-6)": 5.5, "Secondary I": 7, "Secondary II": 8, "Secondary III": 9, "Secondary IV": 10, "Secondary V": 11 };
+function gradeRank(grade: string): number {
+  const n = Number(grade);
+  return Number.isFinite(n) ? n : GRADE_LABEL_RANK[grade] ?? 99;
+}
+
 const CURRICULUM_TTL_MS = 10 * 60 * 1000;
 let cache: { builtAt: number; outcomes: Outcome[]; byLesson: Map<string, LessonOutcomeRow[]> } | null = null;
 
@@ -55,7 +62,7 @@ async function load() {
     list.push({ ...o, note: m.note });
     byLesson.set(m.lessonPlanId, list);
   }
-  for (const list of byLesson.values()) list.sort((a, b) => a.province.localeCompare(b.province) || a.grade.localeCompare(b.grade, undefined, { numeric: true }) || a.sortOrder - b.sortOrder);
+  for (const list of byLesson.values()) list.sort((a, b) => a.province.localeCompare(b.province) || gradeRank(a.grade) - gradeRank(b.grade) || a.sortOrder - b.sortOrder);
   cache = { builtAt: Date.now(), outcomes, byLesson };
   return cache;
 }
@@ -82,7 +89,7 @@ export async function curriculumSummary(): Promise<{ province: string; provinceN
     const g = p.grades.get(o.grade) ?? { grade: o.grade, course: o.course, outcomes: 0 };
     g.outcomes += 1; p.grades.set(o.grade, g); p.sources.add(o.sourceTitle); out.set(o.province, p);
   }
-  return [...out.values()].map((p) => ({ province: p.province, provinceName: p.provinceName, grades: [...p.grades.values()].sort((a, b) => a.grade.localeCompare(b.grade, undefined, { numeric: true })), sourceTitles: [...p.sources] }));
+  return [...out.values()].map((p) => ({ province: p.province, provinceName: p.provinceName, grades: [...p.grades.values()].sort((a, b) => gradeRank(a.grade) - gradeRank(b.grade)), sourceTitles: [...p.sources] }));
 }
 
 /** The outcomes a lesson plan meets, in province and grade order. */
