@@ -2363,6 +2363,72 @@ context notes and questions (Brébeuf, the Chaudière, Cormack) and in region 2'
 were removed and the rows re-applied; the spec's own remark at 10.21 about the narrator reading
 the words as printed stands as a description, not an apology.
 
+### 10.25 Curriculum alignment by province (item 9, delivered 2026-10-21; API and data live, build required)
+
+**Shape.** Two tables, created in Turso on 2026-10-21 (`2026-10-21-curriculum-outcomes.sql`,
+CREATE-only). `CurriculumOutcome` is one outcome as a province publishes it: province, grade or
+course, strand, the ministry's code where the document has one, the text as published, its kind,
+and the source title, URL and year. `LessonOutcome` maps a lesson plan to an outcome with an
+optional one-line note on how the lesson meets it. Backend `lib/curriculum.ts` loads both once
+(10-minute cache) and serves `GET /api/curriculum` (provinces, grades and counts),
+`GET /api/curriculum/outcomes?province&grade&q` (q matches a code exactly or by prefix, or the
+wording, strand or course), and `GET /api/curriculum/outcomes/:id/lessons`. `GET /api/lesson-plans`
+takes `province=` and `outcome=` (id or code); the detail carries `outcomes`. No existing route
+changed shape.
+
+**Teacher UI.** On the teacher lesson-plans screen a row of province chips (All, Ontario, British
+Columbia, Alberta, Quebec) narrows the list to lessons meeting that province's outcomes; below it
+a search box finds outcomes by code or keyword (matches show province, grade, code and how many
+lessons meet them) and choosing one narrows the list to its lessons. The teacher lesson page gains
+a Curriculum Outcomes section: province and grade, the code, the ministry's wording, the note where
+one exists, and the source document as a link. Nothing on the student side changed.
+
+**The outcomes (1,192 rows, `2026-10-21-curriculum-outcomes-seed.ts` from the JSON files under
+`turso-migrations/data/`, applied and verified).** Every row quotes the published document; the
+province's own grade labels and codes are kept.
+- *Ontario, 237.* Social Studies Grade 3 (Heritage and Identity: Communities in Canada 1780–1850, and
+  People and Environments), Grade 5 (Interactions of Indigenous Peoples and Europeans prior to 1713,
+  and The Role of Government), Grade 6 (Communities in Canada Past and Present; Canada's Interactions
+  with the Global Community), History Grade 7 (New France and British North America 1713–1800;
+  Canada 1800–1850) and Grade 8 (Creating Canada 1850–1890; Canada 1890–1914) from the 2026 history
+  curriculum, and NBV3C strands B and C. Overall and specific expectations with their codes
+  (A3.4, B2.4 and so on), read from the Ministry's curriculum content service.
+- *British Columbia, 48.* Social Studies 4, 5, 9 and 10 Big Ideas and Content, from
+  curriculum.gov.bc.ca. BC publishes no codes; rows are found by grade and wording.
+- *Alberta, 388.* The K–6 Social Studies program of 2024 (implemented 2025–26) for grades 2, 3, 4
+  and 6: each learning outcome, and under it every knowledge, understanding and skills-and-procedures
+  statement; and the 2005 Program of Studies Grade 7, outcomes 7.1.1–7.2.7 with every inquiry
+  question under its outcome's code. Read from curriculum.learnalberta.ca's public content files
+  (the site is a single-page app; its JSON lives under `/cdn/curriculum/` and `/cdn/pos/json/`).
+  Grades 8–9 and the high-school program are not included: their topics (Japan, Renaissance
+  Europe, the Aztecs, governance and economics, globalization, nationalism, ideology) do not
+  touch the app's subject.
+- *Quebec, 519.* The elementary Progression of Learning in Geography, History and Citizenship
+  Education (2009) for the societies the app covers: Iroquoian society around 1500, French society
+  in New France around 1645 and 1745, Canadian society around 1820 (91 items with their codes,
+  C.2.3.a and so on); and the History of Québec and Canada program for Secondary III–IV (2017), all
+  eight periods from the origins to the present, every knowledge element under its heading (428).
+  Read from the Ministry's PDFs; the two-column secondary tables were split by column position and
+  checked.
+
+**The map (276 mappings, every one of the 33 lesson plans, 6 to 13 outcomes each).** Hand-authored
+in the seed script, by the lesson's band and subject: the K–3 lessons to Ontario Grade 3, Alberta
+Grades 2–4 and Quebec's elementary societies; the 4–6 lessons to Ontario Grade 5, Alberta Grade 4
+(the fur trade outcome and its statements) and BC Grade 4; the 7–9 lessons to Ontario Grades 7–8,
+Alberta Grade 7 and Quebec Secondary III; the 10–12 lessons to NBV3C, BC Grade 10 and Quebec
+Secondary IV, with Alberta Grade 7 where no senior Alberta outcome applies. Notes are used only where
+the link needs a date (the Franklin expedition, the Oregon Treaty, the transfer of Rupert's Land,
+the Pemmican Proclamation, Hudson Bay confirmed to Britain in 1713, Amundsen's transit). The seed
+aborts if a lesson's title in Turso differs from the title recorded beside its id.
+
+**Saskatchewan.** Proposed as a fifth province, since the owner's own class is there; the backend's
+province list already names SK. Not sourced yet; awaiting the owner's word.
+
+**Checked.** `bun run typecheck` clean in both layers (the backend's pre-existing errors only);
+the four endpoints and the two lesson-plan filters exercised on a local backend against Turso
+(summary counts per province and grade, code search 7.1.4, lessons for A3.4, the Quebec filter
+narrowing to The Fall of New France, a lesson detail carrying its ten outcomes with the one note).
+
 ### 10.6 Order of work
 10.5's three features first (citations, then expedition routes, then the cartography gallery, because routes and maps both cite); then 1, 3, 5, 16, 18, 6, 7, 9, 10, 11, 13, 12, 17, 4; item 8 when recordings exist.
 

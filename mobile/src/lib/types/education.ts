@@ -63,8 +63,40 @@ export interface CurriculumConnection {
   expectation?: string;
 }
 
+// Curriculum alignment by province (roadmap item 9, 2026-10-21): an outcome quoted from a
+// province's published curriculum (CurriculumOutcome in Turso), served by /api/curriculum.
+export interface CurriculumOutcome {
+  id: string;
+  province: string;
+  provinceName: string;
+  grade: string;
+  course: string;
+  strand: string | null;
+  code: string | null;
+  text: string;
+  kind: string;
+  sourceTitle: string;
+  sourceUrl: string;
+  sourceYear: string | null;
+  sortOrder: number;
+  lessonCount: number;
+}
+
+export interface LessonOutcome extends CurriculumOutcome {
+  note: string | null;
+}
+
+export interface CurriculumSummary {
+  province: string;
+  provinceName: string;
+  grades: { grade: string; course: string; outcomes: number }[];
+  sourceTitles: string[];
+}
+
 export interface LessonPlanDetail extends LessonPlanSummary {
   curriculumConnections: CurriculumConnection[] | null;
+  // The outcomes the lesson meets, by province (item 9); [] until mapped
+  outcomes: LessonOutcome[];
   objectives: string[];
   materials: string[] | null;
   activities: LessonPlanActivity[] | null;

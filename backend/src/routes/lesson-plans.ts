@@ -3,6 +3,7 @@ import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { db } from "../db";
 import { completeResource, POINTS } from "../lib/progress";
+import { lessonIdsForOutcome, lessonIdsForProvince, outcomesForLesson } from "../lib/curriculum";
 
 const completeSchema = z.object({
   userId: z.string().min(1, "userId is required"), // device identity (mobile lib/identity.ts)
@@ -14,11 +15,15 @@ const lessonPlansRouter = new Hono();
 lessonPlansRouter.get("/", async (c) => {
   const gradeLevel = c.req.query("gradeLevel");
   const topic = c.req.query("topic");
+  // Curriculum filters (item 9): a province whose outcomes the lesson meets, or one outcome by id or code
+  const province = c.req.query("province");
+  const outcome = c.req.query("outcome");
 
   const whereClause: {
     isPublished: boolean;
     gradeLevel?: string;
     topic?: string;
+    id?: { in: string[] };
   } = {
     isPublished: true,
   };
@@ -28,6 +33,11 @@ lessonPlansRouter.get("/", async (c) => {
   }
   if (topic) {
     whereClause.topic = topic;
+  }
+  if (outcome) {
+    whereClause.id = { in: await lessonIdsForOutcome(outcome, province || undefined) };
+  } else if (province) {
+    whereClause.id = { in: await lessonIdsForProvince(province) };
   }
 
   const lessonPlans = await db.lessonPlan.findMany({
@@ -67,6 +77,8 @@ lessonPlansRouter.get("/:id", async (c) => {
   // Parse JSON fields - General User content
   const result = {
     ...lessonPlan,
+    // Curriculum outcomes the lesson meets, by province (item 9); [] until mapped
+    outcomes: await outcomesForLesson(lessonPlan.id),
     // General user narrative content
     images: lessonPlan.images ? JSON.parse(lessonPlan.images) : null,
     keyFigures: lessonPlan.keyFigures ? JSON.parse(lessonPlan.keyFigures) : null,

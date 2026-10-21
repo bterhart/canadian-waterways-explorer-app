@@ -8,12 +8,13 @@ import {
   StyleSheet,
   ActivityIndicator,
   ScrollView,
+  TextInput,
 } from 'react-native';
 import { useRouter, Stack } from 'expo-router';
-import { BookOpen, Clock, ChevronRight, Filter } from 'lucide-react-native';
-import { useLessonPlans } from '@/lib/api/education-api';
+import { BookOpen, Clock, ChevronRight, Filter, MapPin, Search } from 'lucide-react-native';
+import { useLessonPlans, useCurriculumSummary, useCurriculumOutcomes } from '@/lib/api/education-api';
 import { getGradeLevelRangeColor, getGradeLevelRangeLabel, GRADE_LEVEL_RANGES } from '@/lib/types/education';
-import type { LessonPlanSummary } from '@/lib/types/education';
+import type { LessonPlanSummary, CurriculumOutcome } from '@/lib/types/education';
 
 const colors = {
   forestGreen: '#2D5A3D',
@@ -37,10 +38,22 @@ export default function TeacherLessonPlansScreen() {
   const router = useRouter();
   const [selectedGrade, setSelectedGrade] = useState<string | undefined>();
   const [selectedTopic, setSelectedTopic] = useState<string | undefined>();
+  // Curriculum alignment (roadmap item 9): a province chip narrows to lessons meeting that
+  // province's outcomes; a code or keyword finds outcomes, and choosing one narrows to its lessons.
+  const [selectedProvince, setSelectedProvince] = useState<string | undefined>();
+  const [outcomeQuery, setOutcomeQuery] = useState('');
+  const [selectedOutcome, setSelectedOutcome] = useState<CurriculumOutcome | undefined>();
+  const { data: curriculum } = useCurriculumSummary();
+  const { data: outcomeMatches } = useCurriculumOutcomes(
+    { province: selectedProvince, q: outcomeQuery.trim() },
+    outcomeQuery.trim().length >= 2 && !selectedOutcome
+  );
 
   const { data: lessonPlans, isLoading, isError } = useLessonPlans({
     gradeLevel: selectedGrade,
     topic: selectedTopic,
+    province: selectedProvince,
+    outcome: selectedOutcome?.id,
   });
 
   const renderLessonCard = ({ item }: { item: LessonPlanSummary }) => (
@@ -192,6 +205,65 @@ export default function TeacherLessonPlansScreen() {
             ))}
           </ScrollView>
         </View>
+
+        {/* Curriculum (item 9): province chips, then an outcome by code or keyword */}
+        {curriculum && curriculum.length > 0 ? (
+          <View style={styles.filterRow}>
+            <MapPin size={16} color="#6B7280" />
+            <Text style={styles.filterLabel}>Province:</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ flexGrow: 0 }} contentContainerStyle={styles.filterChips}>
+              <Pressable style={[styles.filterChip, !selectedProvince && styles.filterChipActive]} onPress={() => { setSelectedProvince(undefined); setSelectedOutcome(undefined); }}>
+                <Text style={[styles.filterChipText, !selectedProvince && styles.filterChipTextActive]}>All</Text>
+              </Pressable>
+              {curriculum.map((p) => (
+                <Pressable
+                  key={p.province}
+                  style={[styles.filterChip, selectedProvince === p.province && styles.filterChipActive]}
+                  onPress={() => { setSelectedProvince(selectedProvince === p.province ? undefined : p.province); setSelectedOutcome(undefined); }}
+                >
+                  <Text style={[styles.filterChipText, selectedProvince === p.province && styles.filterChipTextActive]}>{p.provinceName}</Text>
+                </Pressable>
+              ))}
+            </ScrollView>
+          </View>
+        ) : null}
+        {curriculum && curriculum.length > 0 ? (
+          <View style={styles.outcomeSearch}>
+            <View style={styles.outcomeInputRow}>
+              <Search size={16} color="#6B7280" />
+              <TextInput
+                style={styles.outcomeInput}
+                placeholder="Outcome code or keyword (e.g. A3.1, fur trade)"
+                placeholderTextColor="#9CA3AF"
+                value={selectedOutcome ? `${selectedOutcome.code ? selectedOutcome.code + ' · ' : ''}${selectedOutcome.provinceName} ${selectedOutcome.grade}` : outcomeQuery}
+                onChangeText={(v) => { setSelectedOutcome(undefined); setOutcomeQuery(v); }}
+                autoCapitalize="none"
+                autoCorrect={false}
+                clearButtonMode="while-editing"
+              />
+              {selectedOutcome ? (
+                <Pressable onPress={() => { setSelectedOutcome(undefined); setOutcomeQuery(''); }} hitSlop={8}>
+                  <Text style={styles.outcomeClear}>Clear</Text>
+                </Pressable>
+              ) : null}
+            </View>
+            {!selectedOutcome && outcomeMatches && outcomeMatches.length > 0 ? (
+              <View style={styles.outcomeMatches}>
+                {outcomeMatches.slice(0, 6).map((o) => (
+                  <Pressable key={o.id} style={styles.outcomeMatch} onPress={() => setSelectedOutcome(o)}>
+                    <Text style={styles.outcomeMatchHead}>
+                      {o.provinceName} · {o.grade}{o.code ? ` · ${o.code}` : ''}{o.lessonCount ? ` · ${o.lessonCount} lesson${o.lessonCount === 1 ? '' : 's'}` : ''}
+                    </Text>
+                    <Text style={styles.outcomeMatchText} numberOfLines={2}>{o.text}</Text>
+                  </Pressable>
+                ))}
+              </View>
+            ) : null}
+            {selectedOutcome ? (
+              <Text style={styles.outcomeSelectedText} numberOfLines={3}>{selectedOutcome.text}</Text>
+            ) : null}
+          </View>
+        ) : null}
       </View>
 
       {/* Content */}
@@ -236,6 +308,15 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#E5E7EB',
   },
+  outcomeSearch: { paddingHorizontal: 16, paddingTop: 8 },
+  outcomeInputRow: { flexDirection: 'row', alignItems: 'center', gap: 8, borderWidth: 1, borderColor: '#E5E7EB', borderRadius: 10, paddingHorizontal: 10, paddingVertical: 6, backgroundColor: '#F9FAFB' },
+  outcomeInput: { flex: 1, fontSize: 14, color: '#1F2937', paddingVertical: 2 },
+  outcomeClear: { fontSize: 13, fontWeight: '600', color: colors.forestGreen },
+  outcomeMatches: { marginTop: 6, borderWidth: 1, borderColor: '#E5E7EB', borderRadius: 10, backgroundColor: 'white', overflow: 'hidden' },
+  outcomeMatch: { paddingHorizontal: 12, paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: '#F3F4F6' },
+  outcomeMatchHead: { fontSize: 11, fontWeight: '800', color: colors.forestGreen, letterSpacing: 0.3 },
+  outcomeMatchText: { fontSize: 13, color: '#374151', marginTop: 2, lineHeight: 18 },
+  outcomeSelectedText: { fontSize: 12, color: '#4B5563', marginTop: 6, lineHeight: 17, fontStyle: 'italic' },
   filterRow: {
     flexDirection: 'row',
     alignItems: 'center',
