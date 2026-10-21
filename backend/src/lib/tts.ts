@@ -40,12 +40,16 @@ export function languageOf(text: string): "en" | "fr" {
 
 /**
  * What the voice is given: the editions' editorial brackets are read as their words ("[Friday]"
- * → "Friday"), an omitted stretch "[...]" becomes a pause, and the engine's own tag syntax is
- * never produced by accident.
+ * → "Friday"), an omitted stretch "[...]" becomes a silent sentence break (the engine read the
+ * earlier "[pause]" marker aloud as the word; owner, 2026-10-21), and the engine's own tag syntax
+ * is never produced by accident.
  */
 export function spokenText(text: string): string {
   return text
-    .replace(/\[\s*(\.\.\.|…)\s*\]/g, " [pause] ")
+    .replace(/\s*\[\s*(\.\.\.|…)\s*\]\s*/g, (_m, _g, offset: number, whole: string) => {
+      const before = whole.slice(0, offset).trimEnd();
+      return /[.!?;:]$/.test(before) ? " " : ". ";
+    })
     .replace(/\[([^\]]{1,80})\]/g, "$1")
     .replace(/<[^>]{1,40}>/g, "")
     .replace(/\s+/g, " ")
@@ -87,15 +91,17 @@ export const voiceAudioUrl = (documentId: string, voice: NarratorVoice): string 
 const known = new Set<string>();
 const inFlight = new Map<string, Promise<string>>();
 
-/** The public URL of the spoken copy, synthesising and storing it on first request. */
-export async function ensureVoiceAudio(documentId: string, voice: NarratorVoice): Promise<{ url: string; generated: boolean }> {
+/** The public URL of the spoken copy, synthesising and storing it on first request; `force` remakes an existing copy (scripts only). */
+export async function ensureVoiceAudio(documentId: string, voice: NarratorVoice, force = false): Promise<{ url: string; generated: boolean }> {
   const key = voiceAudioKey(documentId, voice);
   const url = voiceAudioUrl(documentId, voice);
   if (!url) throw new Error("R2_PUBLIC_URL is not set");
-  if (known.has(key)) return { url, generated: false };
-  if (await cdnObjectExists(key)) {
-    known.add(key);
-    return { url, generated: false };
+  if (!force) {
+    if (known.has(key)) return { url, generated: false };
+    if (await cdnObjectExists(key)) {
+      known.add(key);
+      return { url, generated: false };
+    }
   }
   const pending = inFlight.get(key);
   if (pending) return { url: await pending, generated: true };

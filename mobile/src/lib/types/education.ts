@@ -508,6 +508,70 @@ export interface MyClassMembership {
   assignments: StudentAssignment[];
 }
 
+// Class report (roadmap item 11, 2026-10-21): GET /api/classes/:id/report. One JSON shape the
+// device renders as CSV or PDF. Mirrors backend/src/routes/classes.ts.
+export interface ClassReportAssignmentRow {
+  id: string;
+  title: string;
+  type: 'quiz' | 'lesson_plan' | 'field_trip' | string;
+  dueDate: string | null;
+  resourceTitle: string | null;
+  status: string;
+  score: number | null;
+  maxScore: number | null;
+  completedAt: string | null;
+}
+
+export interface ClassReportQuizAnswer {
+  question: string;
+  selectedAnswer: string;
+  correctAnswer: string | null;
+  isCorrect: boolean;
+  orderIndex: number;
+}
+
+export interface ClassReportQuizAttempt {
+  quizTitle: string;
+  score: number;
+  totalQuestions: number;
+  percentageScore: number;
+  completedAt: string;
+  answers: ClassReportQuizAnswer[];
+}
+
+export interface ClassReportJournalEntry {
+  title: string | null;
+  content: string;
+  createdAt: string;
+  tags: string[];
+}
+
+export interface ClassReportReadingEvent {
+  kind: string;
+  label: string;
+  title: string;
+  at: string;
+}
+
+export interface ClassReportStudent {
+  id: string;
+  displayName: string;
+  joinedAt: string;
+  linkedToDevice: boolean;
+  assignments: ClassReportAssignmentRow[];
+  quizAttempts: ClassReportQuizAttempt[];
+  journalEntries: ClassReportJournalEntry[];
+  reading: ClassReportReadingEvent[];
+}
+
+export interface ClassReport {
+  generatedAt: string;
+  class: { id: string; name: string; gradeLevel: string; schoolYear: string | null; teacherName: string };
+  assignments: { id: string; title: string; type: string; dueDate: string | null }[];
+  students: ClassReportStudent[];
+  totals: { students: number; linkedToDevice: number; assignmentsCompleted: number; quizAttempts: number; journalEntries: number; readingEvents: number };
+}
+
 export interface ClassDetail {
   id: string;
   name: string;

@@ -575,6 +575,16 @@ export function useClass(id: string | null) {
   });
 }
 
+/** The class report (roadmap item 11): fetched on demand with refetch(), then rendered as CSV or PDF on the device. */
+export function useClassReport(id: string | null) {
+  return useQuery({
+    queryKey: [...classesKeys.detail(id ?? ''), 'report'] as const,
+    queryFn: () => api.get<import('@/lib/types/education').ClassReport>(`/api/classes/${id}/report`),
+    enabled: false,
+    staleTime: 0,
+  });
+}
+
 export function useCreateClass() {
   const queryClient = useQueryClient();
   return useMutation({
