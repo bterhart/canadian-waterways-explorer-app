@@ -1,11 +1,14 @@
 import { Hono } from "hono";
 import { db } from "../db";
+import { applyScope, scopeForUser } from "../lib/content-scope";
 import { loadRelated, attachRelated } from "../lib/related";
 
 const documentsRouter = new Hono();
 
 // GET / - List all published primary source documents
 documentsRouter.get("/", async (c) => {
+  // Class content scope (spec 10.27): a student device sends its id; the list is cut to what its classes allow.
+  const scopeUserId = c.req.query("userId");
   const documentType = c.req.query("type");
   const gradeLevel = c.req.query("gradeLevel");
 
@@ -40,7 +43,7 @@ documentsRouter.get("/", async (c) => {
     orderBy: [{ originalYear: "asc" }, { createdAt: "desc" }],
   });
 
-  return c.json({ data: documents });
+  return c.json({ data: applyScope(await scopeForUser(scopeUserId), documents) });
 });
 
 // GET /types - Get all unique document types

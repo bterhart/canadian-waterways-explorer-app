@@ -10,6 +10,7 @@ import { useSearch } from '@/lib/api/search-api';
 import { useExplorerDetail } from '@/lib/api/waterways-api';
 import ExplorerDetailModal from '@/components/ExplorerDetailModal';
 import { SEARCH_TYPE_COLOR, SEARCH_TYPE_LABEL, type SearchHit, type SearchType } from '@/lib/types/search';
+import { useDeviceId } from '@/lib/identity';
 
 const colors = { forestGreen: '#2D5A3D', creamWhite: '#FFFEF7', earthBrown: '#8B5A2B', waterBlue: '#3B82A3' };
 
@@ -31,8 +32,9 @@ export default function SearchScreen() {
     return () => clearTimeout(handle);
   }, [text]);
 
-  const { data, isFetching, isError } = useSearch(query, type ? [type] : null);
-  const { data: allData } = useSearch(query, null);
+  const userId = useDeviceId() ?? undefined; // class content scope (spec 10.27)
+  const { data, isFetching, isError } = useSearch(query, type ? [type] : null, userId);
+  const { data: allData } = useSearch(query, null, userId);
   const counts = allData?.counts ?? data?.counts ?? {};
 
   // Types that have hits for this query, most hits first, for the filter chips

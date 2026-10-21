@@ -14,6 +14,7 @@ import { BookOpen, Clock, ChevronRight, Filter } from 'lucide-react-native';
 import { useLessonPlans } from '@/lib/api/education-api';
 import { getGradeLevelRangeColor, getGradeLevelRangeLabel, GRADE_LEVEL_RANGES } from '@/lib/types/education';
 import type { LessonPlanSummary } from '@/lib/types/education';
+import { useDeviceId } from '@/lib/identity';
 
 const colors = {
   forestGreen: '#2D5A3D',
@@ -38,9 +39,11 @@ export default function DeepDivesScreen() {
   const [selectedGrade, setSelectedGrade] = useState<string | undefined>();
   const [selectedTopic, setSelectedTopic] = useState<string | undefined>();
 
+  const userId = useDeviceId() ?? undefined; // class content scope (spec 10.27)
   const { data: lessonPlans, isLoading, isError } = useLessonPlans({
     gradeLevel: selectedGrade,
     topic: selectedTopic,
+    userId,
   });
 
   const renderLessonCard = ({ item }: { item: LessonPlanSummary }) => (

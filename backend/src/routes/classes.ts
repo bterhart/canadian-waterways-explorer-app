@@ -3,6 +3,7 @@ import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { db } from "../db";
 import { requireTeacher } from "../lib/teacher-middleware";
+import { classBands } from "../lib/content-scope";
 // "@prisma/client" below is the query library's generated types, not a database. Data lives in Turso.
 import type { Teacher } from "@prisma/client";
 
@@ -31,6 +32,9 @@ const updateClassSchema = z.object({
   gradeLevel: z.string().min(1).optional(),
   schoolYear: z.string().optional().nullable(),
   isActive: z.boolean().optional(),
+  // Content scope (spec 10.27): what the class's students see. contentBands null or [] means the class's own band.
+  scopeMode: z.enum(["all", "bands", "assigned"]).optional(),
+  contentBands: z.array(z.enum(["K-3", "4-6", "7-9", "10-12"])).optional().nullable(),
 });
 
 const joinClassSchema = z.object({
@@ -186,6 +190,9 @@ classesRouter.get("/mine", async (c) => {
         gradeLevel: m.class.gradeLevel,
         schoolYear: m.class.schoolYear,
         teacherName: m.class.teacher.name,
+        // Content scope (spec 10.27), so the device can say what the class shows
+        scopeMode: m.class.scopeMode,
+        contentBands: classBands(m.class),
       },
       assignments: m.class.assignments.map((a) => {
         const p = m.progress.find((x) => x.assignmentId === a.id);
@@ -331,6 +338,8 @@ classesRouter.patch(
         ...(data.gradeLevel !== undefined && { gradeLevel: data.gradeLevel }),
         ...(data.schoolYear !== undefined && { schoolYear: data.schoolYear }),
         ...(data.isActive !== undefined && { isActive: data.isActive }),
+        ...(data.scopeMode !== undefined && { scopeMode: data.scopeMode }),
+        ...(data.contentBands !== undefined && { contentBands: data.contentBands && data.contentBands.length > 0 ? JSON.stringify(data.contentBands) : null }),
       },
     });
 

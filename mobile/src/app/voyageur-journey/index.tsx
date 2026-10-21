@@ -24,6 +24,7 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { useVoyageurJourneys } from '@/lib/api/education-api';
 import type { VoyageurJourneySummary } from '@/lib/types/education';
+import { useDeviceId } from '@/lib/identity';
 
 const { width } = Dimensions.get('window');
 
@@ -164,7 +165,8 @@ function JourneyCard({ journey, onPress }: JourneyCardProps) {
 
 export default function VoyageurJourneyListScreen() {
   const router = useRouter();
-  const { data: journeys, isLoading, error, refetch } = useVoyageurJourneys();
+  const userId = useDeviceId() ?? undefined; // class content scope (spec 10.27)
+  const { data: journeys, isLoading, error, refetch } = useVoyageurJourneys({ userId });
 
   return (
     <>

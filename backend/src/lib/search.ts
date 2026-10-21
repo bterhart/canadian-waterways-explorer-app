@@ -10,6 +10,7 @@
  * migrations, never through the app, so a short staleness is acceptable.
  */
 import { db } from "../db";
+import { applyScope, type ContentScope } from "./content-scope";
 
 export type SearchType =
   | "waterway"
@@ -49,6 +50,8 @@ export interface SearchEntry {
   years: number[];
   /** What the app needs to open the record. */
   target: Record<string, string | number | null>;
+  /** Grade band of banded content (lessons, field trips, quizzes, stories, documents), for the class content scope. */
+  gradeLevel?: string | null;
 }
 
 export interface SearchHit {
@@ -91,7 +94,7 @@ async function buildIndex(): Promise<SearchEntry[]> {
     db.location.findMany({ select: { id: true, name: true, indigenousName: true, indigenousLanguage: true, locationType: true, yearEstablished: true, description: true, historicalNotes: true, latitude: true, longitude: true, waterway: { select: { name: true } } } }),
     db.explorer.findMany({ select: { id: true, name: true, nationality: true, birthYear: true, deathYear: true, biography: true, notableAchievements: true } }),
     db.notableFigure.findMany({ select: { id: true, name: true, alternateNames: true, nation: true, role: true, figureType: true, biography: true, significance: true, birthYear: true, deathYear: true } }),
-    db.primarySourceDocument.findMany({ where: { isPublished: true }, select: { id: true, title: true, author: true, documentType: true, originalYear: true, originalDate: true, transcription: true, originalText: true, historicalContext: true } }),
+    db.primarySourceDocument.findMany({ where: { isPublished: true }, select: { id: true, title: true, author: true, documentType: true, originalYear: true, originalDate: true, transcription: true, originalText: true, historicalContext: true, gradeLevel: true } }),
     db.timelineEvent.findMany({ select: { id: true, title: true, description: true, year: true, theme: true, waterwayId: true, locationId: true } }),
     db.historicalEvent.findMany({ select: { id: true, title: true, description: true, year: true, category: true, locationName: true, latitude: true, longitude: true, waterwayId: true, locationId: true } }),
     db.lessonPlan.findMany({ where: { isPublished: true }, select: { id: true, title: true, description: true, topic: true, gradeLevel: true, keyFigures: true } }),
@@ -191,6 +194,7 @@ async function buildIndex(): Promise<SearchEntry[]> {
       body: [str(d.transcription), str(d.originalText), str(d.historicalContext), d.documentType],
       years: d.originalYear ? [d.originalYear] : [],
       target: { documentId: d.id },
+      gradeLevel: d.gradeLevel,
     });
   }
   for (const t of timeline) {
@@ -236,6 +240,7 @@ async function buildIndex(): Promise<SearchEntry[]> {
       body: [l.description, str(l.topic), keyNames.join(", ")],
       years: [],
       target: { lessonId: l.id },
+      gradeLevel: l.gradeLevel,
     });
   }
   for (const t of trips) {
@@ -248,6 +253,7 @@ async function buildIndex(): Promise<SearchEntry[]> {
       body: [t.description, str(t.theme)],
       years: [],
       target: { fieldTripId: t.id },
+      gradeLevel: t.gradeLevel,
     });
   }
   for (const m of maps) {
@@ -322,6 +328,7 @@ async function buildIndex(): Promise<SearchEntry[]> {
       body: [str(q.description), q.category],
       years: [],
       target: { quizId: q.id },
+      gradeLevel: q.gradeLevel,
     });
   }
   for (const s of stories) {
@@ -334,6 +341,7 @@ async function buildIndex(): Promise<SearchEntry[]> {
       body: [str(s.summary), str(s.nation), str(s.language), str(s.theme)],
       years: [],
       target: { storyId: s.id },
+      gradeLevel: s.gradeLevel,
     });
   }
   return entries;
@@ -374,7 +382,15 @@ const wordBoundaryIndex = (haystack: string, needle: string): number => {
   return m ? m.index + (m[1]?.length ?? 0) : -1;
 };
 
-export async function search(rawQuery: string, types: SearchType[] | null, limit = 60): Promise<{ hits: SearchHit[]; total: number; counts: Record<string, number> }> {
+const SCOPE_KIND: Partial<Record<SearchType, "lesson_plan" | "quiz" | "field_trip">> = { lesson_plan: "lesson_plan", quiz: "quiz", field_trip: "field_trip" };
+
+/** Banded entries a class content scope (spec 10.27) hides; everything else passes. */
+function allowedByScope(entry: SearchEntry, scope: ContentScope | undefined): boolean {
+  if (!scope || !scope.restricted || entry.gradeLevel === undefined) return true;
+  return applyScope(scope, [{ id: entry.id, gradeLevel: entry.gradeLevel }], SCOPE_KIND[entry.type]).length === 1;
+}
+
+export async function search(rawQuery: string, types: SearchType[] | null, limit = 60, scope?: ContentScope): Promise<{ hits: SearchHit[]; total: number; counts: Record<string, number> }> {
   const query = fold(rawQuery.trim()).replace(/\s+/g, " ");
   if (query.length < 2) return { hits: [], total: 0, counts: {} };
   const terms = query.split(" ").filter((t) => t.length > 0);
@@ -384,6 +400,7 @@ export async function search(rawQuery: string, types: SearchType[] | null, limit
   const hits: SearchHit[] = [];
   entries.forEach((entry, i) => {
     if (types && !types.includes(entry.type)) return;
+    if (!allowedByScope(entry, scope)) return;
     const f = folded[i]!;
     let score = 0;
     let snippet: string | null = null;

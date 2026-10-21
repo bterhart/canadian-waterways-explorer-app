@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { db } from "../db";
+import { applyScope, scopeForUser } from "../lib/content-scope";
 import { completeResource, POINTS } from "../lib/progress";
 import { lessonIdsForOutcome, lessonIdsForProvince, outcomesForLesson } from "../lib/curriculum";
 
@@ -13,6 +14,8 @@ const lessonPlansRouter = new Hono();
 
 // GET / - List all published lesson plans with optional filters
 lessonPlansRouter.get("/", async (c) => {
+  // Class content scope (spec 10.27): a student device sends its id; the list is cut to what its classes allow.
+  const scopeUserId = c.req.query("userId");
   const gradeLevel = c.req.query("gradeLevel");
   const topic = c.req.query("topic");
   // Curriculum filters (item 9): a province whose outcomes the lesson meets, or one outcome by id or code
@@ -56,7 +59,7 @@ lessonPlansRouter.get("/", async (c) => {
     orderBy: { createdAt: "desc" },
   });
 
-  return c.json({ data: lessonPlans });
+  return c.json({ data: applyScope(await scopeForUser(scopeUserId), lessonPlans, "lesson_plan") });
 });
 
 // GET /:id - Get a single lesson plan with full details

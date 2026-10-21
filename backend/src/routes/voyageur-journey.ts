@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { db } from "../db";
+import { applyScope, scopeForUser } from "../lib/content-scope";
 import { decorateNode, decorateNodes, parseChoices, type JourneyChoice } from "../lib/journeys";
 import { EXPLORATION_ACTIVITIES, recordActivity } from "../lib/progress";
 
@@ -10,6 +11,8 @@ const voyageurJourneyRouter = new Hono();
 
 // GET / - List all published journeys
 voyageurJourneyRouter.get("/", async (c) => {
+  // Class content scope (spec 10.27): a student device sends its id; the list is cut to what its classes allow.
+  const scopeUserId = c.req.query("userId");
   const gradeLevel = c.req.query("gradeLevel");
   const difficulty = c.req.query("difficulty");
 
@@ -64,7 +67,7 @@ voyageurJourneyRouter.get("/", async (c) => {
     nodeCount: journey._count.nodes,
   }));
 
-  return c.json({ data: result });
+  return c.json({ data: applyScope(await scopeForUser(scopeUserId), result) });
 });
 
 // GET /:id - Get journey with all nodes

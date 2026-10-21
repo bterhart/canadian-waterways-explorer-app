@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { db } from "../db";
+import { applyScope, scopeForUser } from "../lib/content-scope";
 
 const indigenousLanguageRouter = new Hono();
 
@@ -213,6 +214,8 @@ indigenousLanguageRouter.post(
 
 // Get all Indigenous stories
 indigenousLanguageRouter.get("/stories", async (c) => {
+  // Class content scope (spec 10.27): a student device sends its id; the list is cut to what its classes allow.
+  const scopeUserId = c.req.query("userId");
   const nation = c.req.query("nation");
   const theme = c.req.query("theme");
   const gradeLevel = c.req.query("gradeLevel");
@@ -238,7 +241,7 @@ indigenousLanguageRouter.get("/stories", async (c) => {
     },
   });
 
-  return c.json({ data: stories });
+  return c.json({ data: applyScope(await scopeForUser(scopeUserId), stories) });
 });
 
 // Get single story details

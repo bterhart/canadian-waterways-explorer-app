@@ -7,6 +7,7 @@
  */
 import { Hono } from "hono";
 import { search, SEARCH_TYPES, type SearchType } from "../lib/search";
+import { scopeForUser } from "../lib/content-scope";
 
 const searchRouter = new Hono();
 
@@ -21,7 +22,9 @@ searchRouter.get("/", async (c) => {
     : null;
   const limitParam = Number(c.req.query("limit") ?? 60);
   const limit = Number.isFinite(limitParam) ? Math.min(200, Math.max(1, Math.floor(limitParam))) : 60;
-  const result = await search(q, types && types.length > 0 ? types : null, limit);
+  // Class content scope (spec 10.27): a student device sends its id; banded hits outside its classes' scope are dropped.
+  const scope = await scopeForUser(c.req.query("userId"));
+  const result = await search(q, types && types.length > 0 ? types : null, limit, scope);
   return c.json({ data: { query: q, ...result } });
 });
 

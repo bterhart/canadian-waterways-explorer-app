@@ -2429,6 +2429,78 @@ the four endpoints and the two lesson-plan filters exercised on a local backend 
 (summary counts per province and grade, code search 7.1.4, lessons for A3.4, the Quebec filter
 narrowing to The Fall of New France, a lesson detail carrying its ten outcomes with the one note).
 
+### 10.26 Saskatchewan added as the fifth province (owner, 2026-10-21; data live, no build required)
+
+**381 rows** from the Saskatchewan Curriculum's Social Studies 4, 5, 6, 7 and 8 documents
+(2009–2010; `curriculum.gov.sk.ca/CurriculumHome?id=167`–`171`, PDFs read by column): every outcome
+with its code (IN5.1, DR4.3, PA7.1, RW8.3) and every indicator under its outcome's code, the strand
+being the K-12 goal the code's letters stand for. Grade 9 (The Roots of Society, world history) and
+Social Studies 10, 20 and 30 are not included: the first is off the app's subject; the senior
+guides on the Ministry's site are scanned images of the 1990s documents without machine-readable
+text (Social Studies 10 is OCR'd but carries no outcome codes). **120 mappings** added to the 33
+lessons (2 to 8 each), most to Grade 5's "European influence on pre-Confederation Canadian society"
+indicators (the explorers' voyages, New France, the transition to British rule, the Acadian
+deportation, trade and the first communities, the fur trade inquiry) and "Aboriginal heritage of
+Canada" indicators (habitation areas, ways of life before contact, the coming together with the
+French and British, the Métis); Grade 4's First Nations and Métis relationship with the land and
+the Treaty relationship; Grade 7's maps, Pacific and northern geography and traditional economies;
+Grade 8's treaty relationship, the Indian Act and the Royal Proclamation. Totals after this:
+1,573 outcomes across five provinces, 396 mappings. Applied and verified in Turso; the teacher
+screens need no change (Saskatchewan was already in the province list).
+
+**The other jurisdictions (assessed 2026-10-21, nothing done).** Manitoba (K–8 framework PDFs with
+coded outcomes such as 5-KH-024; Grade 5 is People and Stories of Canada to 1867, Grade 6 Canada
+1867 to the present, Grade 4 Manitoba, Canada and the North) and Nova Scotia (Social Studies P–6
+"at a glance" outcomes PDF of 2019 and the grade guides; Grades 5 and 6 cover Canada's peoples and
+history) are reachable and structured like the five provinces already in. Newfoundland and
+Labrador publishes its guides as PDFs (reachable; the Grade 5 and 6 and the Newfoundland and
+Labrador Studies 2205 documents are the relevant ones). New Brunswick's curriculum pages returned
+404 at every address tried; another address is needed. Prince Edward Island, Yukon and Nunavut sit
+behind a browser-check page that refuses non-browser requests. Yukon teaches the British Columbia
+curriculum, and the Northwest Territories is adopting it; Nunavut's secondary programs draw on
+Alberta's. For those three the BC and Alberta rows already serve, and a note in the province chips
+can say so.
+
+### 10.27 What students see: class content scope (owner's ask, delivered 2026-10-21; API and data live, build required)
+
+**The problem.** A Grade 3 student in a teacher's class saw the same lists as everyone: Grade 12
+documents, senior lesson plans, quizzes for 10–12. The owner asked for a setting teachers control.
+
+**The setting.** Two columns on `Class`, added in Turso on 2026-10-21 (`2026-10-21-class-content-scope.sql`,
+ALTER TABLE ADD COLUMN only, verified by PRAGMA; `schema.prisma` mirrors them): `scopeMode`
+('all', the default and today's behaviour; 'bands'; 'assigned') and `contentBands` (a JSON array of
+band labels K-3, 4-6, 7-9, 10-12, or null for the class's own band; a class whose grade is a single
+grade such as "8" maps to its band). On the teacher's class page a card, **What students see**, offers
+the three choices with a sentence each, and when the choice is not Everything, chips for the bands
+to show; each tap saves through `PATCH /api/classes/:id`, which now accepts `scopeMode` and
+`contentBands` and rejects anything outside those values.
+
+**What it does.** The student's device already carries an anonymous id (lib/identity.ts) and the
+server already knows which classes that id belongs to. The eight banded list routes (lesson plans,
+quizzes, field trips, documents, printables, comparisons, voyageur journeys, Indigenous stories) and
+search now take `?userId=`; the app's student screens send it. With it the server computes the
+device's scope (`backend/src/lib/content-scope.ts`) as the union of what its active classes allow and
+cuts the list: in 'bands' mode to the chosen bands; in 'assigned' mode lessons, quizzes and field
+trips to the ones assigned to the class, and the other banded content to the bands. A device in no
+class, an unknown id, or a membership in any class left at Everything sees everything, so nothing
+changes for anyone until a teacher chooses. Content with no band is never hidden, and the
+reference layers (map, waterways, explorers, people, historical maps, timeline) are not banded and
+are not touched: a Grade 3 class still has the whole country to explore. Search hides only the
+banded hit types. `GET /api/classes/mine` returns the class's mode and resolved bands, and My Class
+says in one line what the teacher has set, so a missing item is not a mystery. Direct links still
+open (a teacher-assigned Grade 7 lesson opens for a Grade 3 class); the scope is about what the
+lists offer, not a lock.
+
+**Checked.** Both typechecks clean. The rules were unit-checked (band of a grade, a class's bands,
+the three modes, a student in a 'bands' class and an 'assigned' class at once). Then end to end on a
+local backend against Turso with the owner's empty Grade 7 Social Studies class (no students, no
+assignments): a throwaway device joined, and the lists were read in each mode (Everything: 33
+lessons across four bands; own band: 11 lessons, 11 quizzes, 101 documents, all 7–9; K-3 and 4-6
+chosen: 14 lessons, 7 field trips, 4 printables; assigned with nothing assigned: no lessons or
+quizzes, documents still by band); search for "fur trade" dropped 42 banded hits and kept the
+waterways; another device and a request with no id were unaffected. The membership was then deleted
+and the class restored to Everything, verified.
+
 ### 10.6 Order of work
 10.5's three features first (citations, then expedition routes, then the cartography gallery, because routes and maps both cite); then 1, 3, 5, 16, 18, 6, 7, 9, 10, 11, 13, 12, 17, 4; item 8 when recordings exist.
 

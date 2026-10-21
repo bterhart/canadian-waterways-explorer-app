@@ -15,6 +15,7 @@ import { FileText, Calendar, User, ChevronRight, Filter } from 'lucide-react-nat
 import { useDocuments, useDocumentTypes } from '@/lib/api/education-api';
 import type { DocumentSummary } from '@/lib/types/education';
 import { GRADE_LEVEL_RANGES } from '@/lib/types/education';
+import { useDeviceId } from '@/lib/identity';
 
 const colors = {
   forestGreen: '#2D5A3D',
@@ -43,9 +44,11 @@ export default function DocumentsScreen() {
   // Both filters are applied by the server (GET /api/documents?type=&gradeLevel=).
   // A document with no gradeLevel never matches a grade chip, so the fix-first data
   // pass sets a grade on every row.
+  const userId = useDeviceId() ?? undefined; // class content scope (spec 10.27)
   const { data: documents, isLoading, isError } = useDocuments({
     type: selectedType,
     gradeLevel: selectedGrade,
+    userId,
   });
   const { data: documentTypes } = useDocumentTypes();
 

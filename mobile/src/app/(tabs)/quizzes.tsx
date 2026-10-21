@@ -5,6 +5,7 @@ import { BookOpen, Clock, HelpCircle, ChevronRight, AlertCircle } from 'lucide-r
 import { cn } from '@/lib/cn';
 import { useQuizzes } from '@/lib/api/education-api';
 import type { QuizSummary } from '@/lib/types/education';
+import { useDeviceId } from '@/lib/identity';
 
 // Theme colors
 const colors = {
@@ -176,7 +177,8 @@ export default function QuizzesScreen() {
   const [selectedGradeLevel, setSelectedGradeLevel] = useState<GradeLevel>('All');
 
   // Build filter params for API
-  const filterParams: { category?: string; gradeLevel?: string } = {};
+  const userId = useDeviceId() ?? undefined; // class content scope (spec 10.27)
+  const filterParams: { category?: string; gradeLevel?: string; userId?: string } = { userId };
   if (selectedCategory !== 'All') {
     filterParams.category = selectedCategory;
   }
