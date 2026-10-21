@@ -37,19 +37,17 @@ export interface Dataset {
   /** Row keys that hold the point for GeoJSON, when rows are points. */
   point?: { lat: string; lng: string };
   /** Builds the LineString/MultiLineString geometries for every row at once, keyed by row id, when rows are lines. */
-  lines?: () => Promise<Map<string, GeoJSON.Geometry>>;
+  lines?: () => Promise<Map<string, GeoGeometry>>;
   /** A cheap count for the index, for datasets whose load is expensive; others are counted by loading. */
   count?: () => Promise<number>;
   load: () => Promise<Row[]>;
 }
 
-// Minimal GeoJSON typing, enough for what is emitted.
-export namespace GeoJSON {
-  export type Position = [number, number];
-  export type Geometry = { type: "Point"; coordinates: Position } | { type: "LineString"; coordinates: Position[] } | { type: "MultiLineString"; coordinates: Position[][] };
-  export interface Feature { type: "Feature"; id?: string; geometry: Geometry | null; properties: Row }
-  export interface FeatureCollection { type: "FeatureCollection"; features: Feature[]; licence?: typeof OPEN_DATA.licence; attribution?: string; generatedAt?: string }
-}
+// Minimal GeoJSON typing, enough for what is emitted (plain aliases, no namespace, so any Bun runs it).
+export type GeoPosition = [number, number];
+export type GeoGeometry = { type: "Point"; coordinates: GeoPosition } | { type: "LineString"; coordinates: GeoPosition[] } | { type: "MultiLineString"; coordinates: GeoPosition[][] };
+export interface GeoFeature { type: "Feature"; id?: string; geometry: GeoGeometry | null; properties: Row }
+export interface GeoFeatureCollection { type: "FeatureCollection"; features: GeoFeature[]; licence?: typeof OPEN_DATA.licence; attribution?: string; generatedAt?: string }
 
 const str = (v: unknown): string | null => (v === null || v === undefined ? null : String(v));
 
@@ -70,7 +68,7 @@ export const DATASETS: Dataset[] = [
     // One query for every geometry, downsampled to at most GEOMETRY_POINTS points per water (the
     // drawn lines are far denser than any map needs; the full KML stays in the app's own API).
     lines: async () => {
-      const out = new Map<string, GeoJSON.Geometry>();
+      const out = new Map<string, GeoGeometry>();
       for (const w of await db.waterway.findMany({ where: { kmlData: { not: null } }, select: { id: true, kmlData: true } })) {
         const lines = kmlLines(w.kmlData!, GEOMETRY_POINTS);
         if (lines.length === 0) continue;
@@ -213,10 +211,10 @@ export function toJson(d: Dataset, rows: Row[]): string {
   return JSON.stringify({ dataset: d.key, title: d.title, description: d.description, licence: OPEN_DATA.licence, attribution: OPEN_DATA.attribution, generatedAt: new Date().toISOString(), count: rows.length, fields: Object.fromEntries(d.fields), rows });
 }
 export async function toGeoJson(d: Dataset, rows: Row[]): Promise<string> {
-  const features: GeoJSON.Feature[] = [];
+  const features: GeoFeature[] = [];
   const lines = d.lines ? await d.lines() : null;
   for (const row of rows) {
-    let geometry: GeoJSON.Geometry | null = null;
+    let geometry: GeoGeometry | null = null;
     if (d.point) {
       const lat = Number(row[d.point.lat]), lng = Number(row[d.point.lng]);
       if (Number.isFinite(lat) && Number.isFinite(lng) && row[d.point.lat] !== null && row[d.point.lng] !== null) geometry = { type: "Point", coordinates: [lng, lat] };
@@ -226,7 +224,7 @@ export async function toGeoJson(d: Dataset, rows: Row[]): Promise<string> {
     if (!geometry) continue;
     features.push({ type: "Feature", id: str(row.id) ?? undefined, geometry, properties: row });
   }
-  const fc: GeoJSON.FeatureCollection = { type: "FeatureCollection", features, licence: OPEN_DATA.licence, attribution: OPEN_DATA.attribution, generatedAt: new Date().toISOString() };
+  const fc: GeoFeatureCollection = { type: "FeatureCollection", features, licence: OPEN_DATA.licence, attribution: OPEN_DATA.attribution, generatedAt: new Date().toISOString() };
   return JSON.stringify(fc);
 }
 
