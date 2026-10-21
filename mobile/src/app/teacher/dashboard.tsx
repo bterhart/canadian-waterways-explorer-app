@@ -20,6 +20,7 @@ import {
   Settings,
   BookOpen,
   Compass,
+  Printer,
 } from 'lucide-react-native';
 import { useTeacherClasses } from '@/lib/api/education-api';
 import { loadSession, logoutSession, onSessionExpired } from '@/lib/api/api';
@@ -213,6 +214,24 @@ export default function TeacherDashboardScreen() {
             <Text style={styles.resourceTitle}>Lesson Plans</Text>
             <Text style={styles.resourceSubtitle}>
               Curriculum-aligned lessons
+            </Text>
+          </View>
+          <ChevronRight size={20} color="#9CA3AF" />
+        </Pressable>
+
+        {/* Printables Card: the stored sheets and the maker (owner, 2026-10-21: nothing in the
+            portal reached them before) */}
+        <Pressable
+          style={({ pressed }) => [styles.resourceCard, pressed && styles.cardPressed]}
+          onPress={() => router.push('/printables')}
+        >
+          <View style={[styles.resourceIcon, { backgroundColor: '#8B5CF615' }]}>
+            <Printer size={24} color="#8B5CF6" />
+          </View>
+          <View style={styles.resourceInfo}>
+            <Text style={styles.resourceTitle}>Printables</Text>
+            <Text style={styles.resourceSubtitle}>
+              Worksheets, guides, blank maps, timeline strips and cards
             </Text>
           </View>
           <ChevronRight size={20} color="#9CA3AF" />

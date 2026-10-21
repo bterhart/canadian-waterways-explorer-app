@@ -1,6 +1,7 @@
-// Printable Resource Detail Screen — renders the stored HTML `content`.
+// Printable Resource Detail Screen — renders the stored HTML `content` and prints or shares it as
+// a PDF (the same path as the printable maker; owner, 2026-10-21: the sheet had no print button).
 // Live data: every printable has HTML content; none has a fileUrl yet.
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -8,9 +9,12 @@ import {
   ActivityIndicator,
   Pressable,
   Linking,
+  Alert,
 } from 'react-native';
 import { useLocalSearchParams, Stack } from 'expo-router';
 import { WebView } from 'react-native-webview';
+import * as Print from 'expo-print';
+import * as Sharing from 'expo-sharing';
 import { Download, Printer } from 'lucide-react-native';
 import { usePrintable } from '@/lib/api/education-api';
 import {
@@ -59,6 +63,24 @@ export default function PrintableDetailScreen() {
     () => (printable?.content ? buildHtml(printable.content) : null),
     [printable?.content]
   );
+  const [printing, setPrinting] = useState(false);
+
+  const printOrShare = async () => {
+    if (!html || !printable) return;
+    setPrinting(true);
+    try {
+      const { uri } = await Print.printToFileAsync({ html, base64: false });
+      if (await Sharing.isAvailableAsync()) {
+        await Sharing.shareAsync(uri, { mimeType: 'application/pdf', dialogTitle: printable.title, UTI: 'com.adobe.pdf' });
+      } else {
+        await Print.printAsync({ uri });
+      }
+    } catch (e) {
+      Alert.alert('Not printed', (e as Error).message || 'The printable could not be prepared. Try again.');
+    } finally {
+      setPrinting(false);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -139,10 +161,23 @@ export default function PrintableDetailScreen() {
         </View>
       )}
 
+      {/* Print or share the rendered content as a PDF */}
+      {html ? (
+        <Pressable
+          style={({ pressed }) => [styles.downloadButton, (pressed || printing) && { opacity: 0.8 }]}
+          onPress={printOrShare}
+          disabled={printing}
+          accessibilityRole="button"
+        >
+          {printing ? <ActivityIndicator color="white" /> : <Printer size={18} color="white" />}
+          <Text style={styles.downloadText}>{printing ? 'Preparing PDF…' : 'Print or share as PDF'}</Text>
+        </Pressable>
+      ) : null}
+
       {/* File download, only when a file exists */}
       {printable.fileUrl ? (
         <Pressable
-          style={styles.downloadButton}
+          style={[styles.downloadButton, styles.fileButton]}
           onPress={() => Linking.openURL(printable.fileUrl as string)}
         >
           <Download size={18} color="white" />
@@ -246,6 +281,11 @@ const styles = StyleSheet.create({
     gap: 8,
     backgroundColor: colors.forestGreen,
     padding: 16,
+  },
+  fileButton: {
+    backgroundColor: colors.darkGreen,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255,255,255,0.15)',
   },
   downloadText: {
     fontSize: 15,
