@@ -61,7 +61,7 @@ export const fr: Record<TranslationKey, string> = {
   knowledgeGiven: 'Savoirs transmis',
   journeys: 'Voyages',
   thenAndNow: 'Hier et aujourd\'hui',
-  thenAndNowDesc: 'Voyagez dans le temps : glissez entre une vue d\'époque et une photo du même lieu aujourd\'hui',
+  thenAndNowDesc: 'Hier rencontre aujourd\'hui',
   checkingTheRecordTitle: 'Vérifier la source',
   checkingTheRecordDesc: 'Les passages tels que l’application les portait d’abord, à côté des phrases publiées, et ce qui a changé',
   inTheirOwnWordsTitle: 'Dans leurs propres mots',

@@ -518,9 +518,11 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 160,
   },
+  // Opacity only: a scale on press could be left applied when a card's screen opened a system
+  // dialog mid-press (the Near You card asks for location), which showed as a card narrower than
+  // the others (owner, 2026-10-21).
   cardPressed: {
-    opacity: 0.9,
-    transform: [{ scale: 0.98 }],
+    opacity: 0.85,
   },
   cardGradient: {
     flex: 1,
