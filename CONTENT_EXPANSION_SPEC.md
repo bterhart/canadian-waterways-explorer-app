@@ -2668,6 +2668,38 @@ state applied when the user returns. The pressed state is now opacity only, so n
 narrower. The Then and Now card carried the same words as its section title; its subtitle is now
 "Yesterday Meets Today" ("Hier rencontre aujourd'hui" in French).
 
+### 10.32 Generated printables (item 13, delivered 2026-10-21; API live, build required)
+
+**What is made, and from what.** Three kinds of printable built on the server from the live records
+at the moment they are asked for, each a complete HTML document with inline SVG sized for Letter
+paper; nothing is stored. `backend/src/lib/generated-printables.ts`, served at `/api/generated-printables`.
+- *Blank map.* A river system drawn from the waterways' own KML geometry (180 of the 192 waters have
+  it): the chosen water and its connected waters from the connections table (item 1's system), up to
+  24, the chosen water in the thicker line, a scale bar sized to the map and a north arrow. Three
+  label modes: numbers on the map with a key to fill in and a word bank (the answer key on its own
+  page), the word bank alone, or the names printed. Geometry is drawn as one path per water with a
+  point budget, so a system is about 100–200 KB of HTML rather than the megabytes the raw KML would make.
+- *Timeline strip.* The dated events of a river, an explorer or a theme on one strip, ticks placed by
+  year, titles alternating above and below and kept inside the strip at either end; or, left to fill
+  in, two lines at each date and a word bank of the titles. The events are listed with their
+  descriptions under a shown strip.
+- *Pronunciation cards.* Cut-out cards from the pronunciation guide by language: the term, the
+  phonetic spelling as recorded, the language and term type, the meaning and the note.
+An options endpoint gives the pickers their choices: the waters with geometry (and how many dated
+events each has), the themes, the explorers with dated events, the languages and term types.
+
+**In the app.** A "Make a printable" card at the top of Printable Resources opens the maker: three
+kinds, the choices for each (a search box for the 180 waters and the 130 explorers with events, chips
+for themes, label modes, shown or blank titles, languages), a live preview in a WebView, and Print or
+share as PDF through expo-print and expo-sharing, both already in the app.
+
+**Checked.** Both typechecks clean. Each kind generated on a local backend and rendered to an image
+with the project's Chromium: the Churchill River system (three waters, Reindeer Lake and Hudson Bay)
+and the North Saskatchewan system (five waters to Hudson Bay by the Saskatchewan, Lake Winnipeg and
+the Nelson), Robert Campbell's seven dated events on a strip, the exploration theme as a blank strip
+with 22 events, and the Algonquin cards. A missing water id is refused with 400; no match is a 404 the
+maker shows as a message.
+
 ### 10.6 Order of work
 10.5's three features first (citations, then expedition routes, then the cartography gallery, because routes and maps both cite); then 1, 3, 5, 16, 18, 6, 7, 9, 10, 11, 13, 12, 17, 4; item 8 when recordings exist.
 
