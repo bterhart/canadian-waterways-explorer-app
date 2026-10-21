@@ -1,0 +1,19 @@
+{
+ "generatedAt": "2026-10-21T08:16:14.813Z",
+ "apply": true,
+ "note": "The pack only creates rows; this file lists the ids it creates so they can be removed if needed.",
+ "lessons": [],
+ "quizzes": [],
+ "fieldTrips": [],
+ "printables": [],
+ "comparisons": [],
+ "lessonOutcomes": [],
+ "printablesUpdated": [
+  {
+   "id": "printable_k3_parts_of_a_canoe",
+   "before": {
+    "content": "<h2>Parts of a Birchbark Canoe</h2><p>Name: ______________________</p><p>Write the right word in each box. Use the word bank.</p><svg viewBox=\"0 0 720 300\" width=\"100%\" style=\"max-width:720px;display:block;margin:12px auto\" xmlns=\"http://www.w3.org/2000/svg\" font-family=\"Helvetica, Arial, sans-serif\">\n  <path d=\"M40 170 Q 360 330 680 170 Q 520 225 360 225 Q 200 225 40 170 Z\" fill=\"#E8D5B5\" stroke=\"#5C3A1A\" stroke-width=\"4\"/>\n  <path d=\"M40 170 Q 360 260 680 170\" fill=\"none\" stroke=\"#5C3A1A\" stroke-width=\"3\"/>\n  <path d=\"M40 170 Q 30 150 60 125\" fill=\"none\" stroke=\"#5C3A1A\" stroke-width=\"4\"/>\n  <path d=\"M680 170 Q 690 150 660 125\" fill=\"none\" stroke=\"#5C3A1A\" stroke-width=\"4\"/>\n  <line x1=\"200\" y1=\"190\" x2=\"200\" y2=\"212\" stroke=\"#5C3A1A\" stroke-width=\"4\"/><line x1=\"360\" y1=\"196\" x2=\"360\" y2=\"215\" stroke=\"#5C3A1A\" stroke-width=\"4\"/><line x1=\"520\" y1=\"190\" x2=\"520\" y2=\"212\" stroke=\"#5C3A1A\" stroke-width=\"4\"/>\n  <line x1=\"470\" y1=\"120\" x2=\"560\" y2=\"235\" stroke=\"#8B5A2B\" stroke-width=\"6\" stroke-linecap=\"round\"/><ellipse cx=\"572\" cy=\"250\" rx=\"14\" ry=\"26\" transform=\"rotate(-38 572 250)\" fill=\"#8B5A2B\"/>\n  <g stroke=\"#374151\" stroke-width=\"1.5\" fill=\"none\" stroke-dasharray=\"4 4\">\n    <line x1=\"52\" y1=\"135\" x2=\"90\" y2=\"60\"/><line x1=\"668\" y1=\"135\" x2=\"630\" y2=\"60\"/><line x1=\"360\" y1=\"255\" x2=\"360\" y2=\"282\"/><line x1=\"200\" y1=\"205\" x2=\"150\" y2=\"282\"/><line x1=\"585\" y1=\"255\" x2=\"620\" y2=\"282\"/>\n  </g>\n  <g font-size=\"18\" fill=\"#111827\">\n    <rect x=\"40\" y=\"36\" width=\"110\" height=\"30\" fill=\"none\" stroke=\"#374151\"/><text x=\"95\" y=\"30\" text-anchor=\"middle\" font-size=\"12\">front</text>\n    <rect x=\"580\" y=\"36\" width=\"110\" height=\"30\" fill=\"none\" stroke=\"#374151\"/><text x=\"635\" y=\"30\" text-anchor=\"middle\" font-size=\"12\">back</text>\n    <rect x=\"300\" y=\"262\" width=\"120\" height=\"30\" fill=\"none\" stroke=\"#374151\"/><text x=\"360\" y=\"256\" text-anchor=\"middle\" font-size=\"12\">what it is made of</text>\n    <rect x=\"90\" y=\"262\" width=\"120\" height=\"30\" fill=\"none\" stroke=\"#374151\"/><text x=\"150\" y=\"256\" text-anchor=\"middle\" font-size=\"12\">the cross bar you sit by</text>\n    <rect x=\"580\" y=\"262\" width=\"120\" height=\"30\" fill=\"none\" stroke=\"#374151\"/><text x=\"640\" y=\"256\" text-anchor=\"middle\" font-size=\"12\">it pushes the water</text>\n  </g>\n</svg><div style=\"border:2px solid #2D5A3D;border-radius:10px;padding:10px 14px;font-size:20px;text-align:center;letter-spacing:1px\"><b>Word bank:</b> &nbsp; BOW &nbsp;·&nbsp; STERN &nbsp;·&nbsp; PADDLE &nbsp;·&nbsp; THWART &nbsp;·&nbsp; BIRCH BARK</div><h3>Now you try</h3><p>1. The front of the canoe is the ____________.</p><p>2. The back of the canoe is the ____________.</p><p>3. The canoe is made of ____________ ____________ from a tree.</p><p>4. Draw yourself in the canoe. Draw the river. Draw a fish!</p>"
+   }
+  }
+ ]
+}

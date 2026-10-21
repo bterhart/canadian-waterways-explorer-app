@@ -2730,6 +2730,74 @@ day a printable carries a file; none does today.
 the Discover tab's Quick Access list. A Printables card now sits beside Deep Dives and Lesson Plans
 and opens the same list, with the maker at its top.
 
+### 10.34 Grade-band balance (item 12, delivered 2026-10-21; content live, build required only for one chip)
+
+**The gap, measured in Turso the same day.** Everything a teacher can assign had been written for
+grades 7-9 first and labelled down afterwards. Before this pack:
+
+| Band | Lessons | Quizzes (questions) | Field trips | Printables | Comparisons |
+|---|---|---|---|---|---|
+| K-3 | 6 | 1 (5) | 1 | 0 | 0 |
+| 4-6 | 9 | 2 (11) | 6 | 4 | 0 |
+| 7-9 | 12 | 11 (75) | 5 | 4 | 3 |
+| 10-12 | 9 | 1 (5) | 1 | 1 | 1 |
+
+The six K-3 lessons are the February seed (ships, animals, voyageurs, canoe builders, trading
+post, rivers), none tied to a record in the app. The one K-3 quiz, *Canada's Waterways Geography*,
+asks the length of the Mackenzie in kilometres and which Great Lake lies entirely within Canada
+(none); it is a 7-9 quiz with a K-3 label and is left as the owner's call (see below).
+
+**What was written, for the band and from the records.** `packs/grade-bands.ts`, applied by
+`2026-10-21-grade-band-pack.ts` (dry run, id checks against every explorer, waterway, location,
+figure, timeline event and curriculum outcome it points at, image checks, create-only, backup of
+the ids written). Every row points at live records by id; nothing quotes a historical author.
+- *Lessons (6).* K-3: **Champlain's Big Paddle, 1615** (the Ottawa, Mattawa, Nipissing, French
+  River route; Tessouat at Allumette Island; the guides, not the explorer, knew the way), **Names on
+  the Water** (eight Indigenous place names with the meanings carried on the pronunciation guide)
+  and **The Big Lakes Go to the Sea** (water runs downhill: Superior to the Atlantic). 4-6:
+  **Cartier and Donnacona, 1534-1536** (the cross, the sons, Stadacona and Hochelaga, the scurvy
+  winter and the annedda cure, the kidnapping, *kanata*), **Down the Fraser, 1808** (Fort George to
+  the sea; the Nlaka'pamux ladders, Camchin, the Stó:lō villages, the 49-degree reading) and **The
+  Klondike Stampede, 1896-1899** (the Tagish discoverers by name, the Golden Stairs and the supply
+  rule, Bennett, Miles Canyon, Dawson on Tr'ochëk, the move to Moosehide). Each has the student face
+  (narrative, hero and gallery images already on the records) and the teacher face (objectives,
+  materials, three or four activities, discussion, assessment, extensions, teacher notes), key
+  figures linked to explorer and notable-figure records, timeline items linked to timeline events,
+  and related waterway, location, explorer and quiz ids. Topic *Exploration* now has its chip on the
+  Deep Dives screen (the one app change; one lesson already carried the topic with no chip).
+- *Quizzes (6, 42 questions, every question with a source record).* K-3, six questions each,
+  easy: **Rivers Are Roads** (Geography), **Who Paddled the Big Canoes?** (Fur Trade), **What Does
+  the Name Mean?** (Indigenous Heritage). 4-6, eight questions each: **Cartier, Champlain and New
+  France**, **Over the Mountains to the Pacific** (Mackenzie, Fraser, Thompson, Kwah), **Gold! The
+  Klondike, 1896-1898**.
+- *Field trips (4, 22 stops, every stop on a location or waterway with an image already in Turso).*
+  K-3: **Fort William: The Big Summer Meeting** and **York Factory: Where the Ship Comes In**
+  (five stops each, the 4-6 trips' stop photographs reused, text rewritten for the band). 4-6:
+  **Down the Fraser with Simon Fraser, 1808** (Fort St. James to the mouth, six stops) and **The
+  Klondike Trail, 1898** (Golden Stairs to Moosehide, six stops).
+- *Printables (5, HTML with inline SVG, answer keys stored).* K-3: **Parts of a Birchbark Canoe**
+  (label sheet with a word bank), **Fur Trade Match-Up**, **The Big Lakes Go to the Sea: Cut and
+  Order**. 4-6: **Explorer Timeline Cards: Cut and Order** (twelve shuffled cards, Cabot to the
+  Klondike) and **New France Word Search** (fifteen words in a generated 15-by-15 grid, stored once).
+  Each was rendered with the project's Chromium and checked by eye.
+- *Comparisons (2).* K-3 **Birchbark Canoe and York Boat**; 4-6 **Three Ways to Travel: Canoe,
+  York Boat and Red River Cart**. Type `transportation`, new to the four types in use.
+- *Curriculum (139 mappings).* Each lesson is mapped to the outcomes it teaches in all eight
+  provinces, chosen from the outcome texts: the K-3 lessons to Ontario grade 3, Alberta grades 2
+  and 3 and Quebec Cycle Two directly, and to the nearest grade 4 or 5 outcomes where a province's
+  seeded curriculum starts at grade 4 (the same rule the February K-3 lessons follow).
+
+**After.** K-3: 9 lessons, 4 quizzes, 3 trips, 3 printables, 1 comparison. 4-6: 12 lessons,
+5 quizzes, 8 trips, 6 printables, 1 comparison. Verified in Turso after the apply; the local backend
+served every new row through the public routes (lesson list and detail, quiz with questions, trip
+with stops, printable, comparisons, the Ontario grade 3 outcome A3.6 now counting four lessons).
+
+**Not done, and why.** No K-3 primary-source documents: a transcription is not K-3 material, and
+the 4-6 band already has seventeen. No new Indigenous stories: a traditional story needs its
+teller and permission, not an author in a cloud session. The 10-12 band is still thin (one quiz, one
+trip) but is not this item. The mislabelled K-3 quiz is the owner's decision: relabel it 7-9 (it
+duplicates a 7-9 quiz by title), or delete it now that three true K-3 quizzes exist.
+
 ### 10.6 Order of work
 10.5's three features first (citations, then expedition routes, then the cartography gallery, because routes and maps both cite); then 1, 3, 5, 16, 18, 6, 7, 9, 10, 11, 13, 12, 17, 4; item 8 when recordings exist.
 
