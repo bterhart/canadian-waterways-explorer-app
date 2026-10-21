@@ -2801,6 +2801,52 @@ trip) but is not this item. The mislabelled K-3 quiz was the owner's decision: r
 7-9, by `2026-10-21-relabel-geography-quiz.ts` (dry run, backup of the previous band, verify).
 Quizzes by band after it: K-3 3, 4-6 5, 7-9 12, 10-12 1; every K-3 quiz was written for K-3.
 
+### 10.35 The 10-12 pack (owner, 2026-10-21; content live, no build)
+
+**The gap.** After item 12 the senior band had nine lessons but one quiz, one field trip, one
+printable and one comparison. The nine lessons are essays (historiography, mercantilism, the fall
+of New France, the Pacific contest, the Arctic searches); what the band lacked was work on sources,
+which is what a senior history course does, and which the app is unusually able to supply: 86
+documents at 10-12, ten of them with Checking the Record pairs.
+
+**What was written** (`packs/grade-bands-senior.ts`, applied by `2026-10-21-senior-band-pack.ts`
+through the shared `lib/apply-band-pack.ts`, the same dry run, id and image checks, create-only
+transaction and verification as item 12's pack). Every row points at live records by id; nothing
+quotes a historical author.
+- *Lessons (3).* **Reading the Company's Paper: Instructions, Journals and Reports** (the
+  Hudson's Bay Company's three working genres, on the six Prince of Wales Fort and York Factory
+  documents the app holds at 10-12, with their three Checking the Record pairs; an origin, purpose,
+  audience, silences, corroboration and verification frame). **Whose Testimony Counts? The Franklin
+  Search, 1854-2016** (Rae's report from Inuit testimony through William Ouligbuck, its rejection in
+  London, the Victory Point record, Hall's witnesses, and the 2014 and 2016 wrecks found where Inuit
+  oral history placed them; evidence rejected for who gave it). **Claiming a Coast: Possession, Law
+  and the Nootka Papers, 1774-1794** (acts of possession from Cartier's cross and La Salle's notary
+  to Meares's hut; the memorial, the Convention, Moziño; Maquinna's absence from every document; the
+  doctrine of discovery forward to the treaties and the courts). Each has both faces, key figures
+  linked to explorer and notable-figure records (the interpreters by name), timeline items linked to
+  timeline events, and related ids.
+- *Quizzes (3, 24 questions, hard, every question with a source record).* **Reading the Company's
+  Paper** (Fur Trade), **The Franklin Search: Evidence and Testimony** (Explorers), **Acts of
+  Possession: Claims on Paper** (Maritime History).
+- *Field trips (2, 13 stops).* **The Franklin Search: Beechey Island to Terror Bay** (seven stops on
+  the evidence trail, 1846 to 2016, ending at Gjoa Haven's Nattilik Heritage Centre) and **Prince of
+  Wales Fort: The Paper of a Stone Fort, 1717-1782** (six stops, each tied to a document in the app,
+  the 7-9 trip's photographs reused).
+- *Printables (2).* **Source Analysis Frame** (the lesson's frame as a one-page sheet) and
+  **Franklin Search Evidence Table** (eleven pieces of evidence to classify by kind, transmission
+  and reception). Rendered and checked.
+- *Comparisons (2).* **Three Kinds of Company Paper** (type `documents`) and **Rae 1854 and
+  McClintock 1859: Two Ways of Finding Out** (type `explorers`).
+- *Curriculum (86 mappings).* Ontario grade 11 (colonization strand), British Columbia grades 9
+  and 10, Quebec Secondary III and IV directly; the historical-inquiry expectations of Ontario
+  grades 7 and 8 and Newfoundland grade 8 (sources, credibility, evidence), and the nearest
+  Alberta 7, Saskatchewan 7 and 8, Manitoba 4 and 6 and Nova Scotia 8 outcomes, chosen from the
+  outcome texts. No province's curriculum names Nootka or Franklin; the mappings are to the skills
+  and concepts the lessons teach.
+
+**After.** 10-12: 12 lessons, 4 quizzes, 3 trips, 3 printables, 3 comparisons. Verified in Turso
+after the apply. Nothing in the app changes; the rows appear in the existing lists.
+
 ### 10.6 Order of work
 10.5's three features first (citations, then expedition routes, then the cartography gallery, because routes and maps both cite); then 1, 3, 5, 16, 18, 6, 7, 9, 10, 11, 13, 12, 17, 4; item 8 when recordings exist.
 
