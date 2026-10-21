@@ -1,5 +1,5 @@
 /**
- * open-data.ts — the records as open data (roadmap item 17, 2026-10-22).
+ * open-data.ts — the records as open data (roadmap item 17, 2026-10-21).
  *
  * Every dataset here is read from Turso on request, shaped into flat rows, and served as CSV,
  * JSON or (where rows carry coordinates) GeoJSON by routes/open-data.ts. One licence covers the

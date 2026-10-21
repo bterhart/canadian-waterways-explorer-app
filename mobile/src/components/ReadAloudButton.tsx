@@ -6,7 +6,7 @@
 //
 // The style is one flattened object, never a function returning nested arrays: in the builds of
 // 2026-10-21 that shape lost every style on the device, leaving white text on a cream card, so
-// the button worked when tapped but could not be seen (owner, 2026-10-22). Pressed feedback is
+// the button worked when tapped but could not be seen (owner, 2026-10-21). Pressed feedback is
 // kept in state instead.
 import React, { useState } from 'react';
 import { Pressable, Text, StyleSheet, ActivityIndicator, View } from 'react-native';
