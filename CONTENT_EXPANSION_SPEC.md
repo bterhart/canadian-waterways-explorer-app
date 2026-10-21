@@ -2847,7 +2847,7 @@ quotes a historical author.
 **After.** 10-12: 12 lessons, 4 quizzes, 3 trips, 3 printables, 3 comparisons. Verified in Turso
 after the apply. Nothing in the app changes; the rows appear in the existing lists.
 
-### 10.36 Invisible buttons: Read aloud and Print (owner, 2026-10-22; build required)
+### 10.36 Invisible buttons: Read aloud and Print (owner, 2026-10-21; build required)
 
 **What the owner saw.** In the build of 2026-10-21 the Read aloud button on every In Their Own
 Words card, and the Print or share button on every stored printable, could not be seen. Tapping
@@ -2872,7 +2872,7 @@ the explorer modal's link rows and Follow the Water. The pressed opacity on list
 visibility comes first. The cards and rows that were already rendering (Discover, Quick Access)
 are untouched.
 
-### 10.37 Open data (item 17, delivered 2026-10-22; API live on deploy, no build)
+### 10.37 Open data (item 17, delivered 2026-10-21; API live on deploy, no build)
 
 **What it is.** The records behind the app, read-only, as they stand in Turso at the moment of the
 request, under one licence, from the production server:
@@ -2916,6 +2916,12 @@ first build, then cached), the CSV (192 rows, 13 columns, no ragged rows), the J
 for waterways (180 features), locations, documents, events, discoveries and then-and-now, the
 404 and 400 responses and the human page were all read back. Not exported on purpose: the earlier
 text of the Checking the Record pairs, which is not the author's words.
+
+**Deploy.** Forty minutes after PR #100 and #101 were merged, the production server still answered
+404 on `/api/open-data` and `/open-data` while `/health` and every route merged on 2026-10-21
+answered 200, so Railway had not deployed main since the morning. The code is on main and runs
+locally; whether a build failed or the deploy was never triggered is visible only in the Railway
+dashboard's Deployments view.
 
 ### 10.6 Order of work
 10.5's three features first (citations, then expedition routes, then the cartography gallery, because routes and maps both cite); then 1, 3, 5, 16, 18, 6, 7, 9, 10, 11, 13, 12, 17, 4; item 8 when recordings exist.

@@ -140,7 +140,7 @@ export default function PrintableDetailScreen() {
         </View>
         {/* Print or share as a PDF, at the top where it cannot be missed. A plain style object, not a
             style function: the function form lost its styles on the device in the builds of
-            2026-10-21 and left this button as white text on cream (owner, 2026-10-22). */}
+            2026-10-21 and left this button as white text on cream (owner, 2026-10-21). */}
         {html ? (
           <Pressable
             style={printing || printPressed ? styles.printButtonDim : styles.printButton}

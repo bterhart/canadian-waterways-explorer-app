@@ -1,5 +1,5 @@
 /**
- * open-data.ts — read-only open data (roadmap item 17, 2026-10-22).
+ * open-data.ts — read-only open data (roadmap item 17, 2026-10-21).
  *
  * GET /api/open-data                      → index: licence, scope, every dataset with counts, fields and URLs
  * GET /api/open-data/:key.csv|json|geojson → one dataset; Content-Disposition names the file
