@@ -38,6 +38,7 @@ import {
   Search as SearchIcon,
 } from 'lucide-react-native';
 import { Users as ClassIcon } from 'lucide-react-native';
+import { FileCheck } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTranslation } from '@/lib/i18n';
 
@@ -320,6 +321,14 @@ export default function LearnHubScreen() {
             icon={<MessageSquareQuote size={28} color="white" />}
             gradientColors={['#7C2D12', '#4A1A0A'] as const}
             onPress={() => router.push('/voices')}
+          />
+          {/* Checking the record (roadmap item 10): the seed passages beside the published sentences */}
+          <FeatureCard
+            title={t('checkingTheRecordTitle')}
+            description={t('checkingTheRecordDesc')}
+            icon={<FileCheck size={28} color="white" />}
+            gradientColors={['#92400E', '#78350F'] as const}
+            onPress={() => router.push('/source-pairs')}
           />
         </View>
       </View>

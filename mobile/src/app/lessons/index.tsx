@@ -32,6 +32,7 @@ const TOPICS = [
   'Women in History',
   'Cartography',
   'Early Explorers',
+  'Primary Sources',
 ];
 
 export default function DeepDivesScreen() {

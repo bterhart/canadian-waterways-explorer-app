@@ -971,6 +971,28 @@ model ReadingGuide {
   @@index([targetType, targetId])
 }
 
+// Primary-source literacy (roadmap item 10, 2026-10-21): the passage a document first carried in the
+// seed data beside the sentences as published. The published side is the document's transcription.
+// kind: not_in_source | partly_in_source | paraphrase | number_changed | date_or_author | abbreviation |
+//       confirmed | unverifiable | no_such_document
+model SourcePair {
+  id          String   @id @default(cuid())
+  documentId  String
+  seedTitle   String
+  seedText    String
+  kind        String
+  whatChanged String
+  task        String
+  gradeLevel  String?
+  sortOrder   Int      @default(0)
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([documentId])
+  @@index([kind])
+}
+
 // A map that made the country (roadmap item 15, 2026-10-19): the cartography gallery. Optional
 // overlay bounds let the app draw the image over the live map; related ids are JSON string arrays.
 model HistoricalMap {
