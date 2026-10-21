@@ -2795,8 +2795,11 @@ with stops, printable, comparisons, the Ontario grade 3 outcome A3.6 now countin
 **Not done, and why.** No K-3 primary-source documents: a transcription is not K-3 material, and
 the 4-6 band already has seventeen. No new Indigenous stories: a traditional story needs its
 teller and permission, not an author in a cloud session. The 10-12 band is still thin (one quiz, one
-trip) but is not this item. The mislabelled K-3 quiz is the owner's decision: relabel it 7-9 (it
-duplicates a 7-9 quiz by title), or delete it now that three true K-3 quizzes exist.
+trip) but is not this item. The mislabelled K-3 quiz was the owner's decision: relabel or delete.
+
+**Relabelled (owner, later the same day).** *Canada's Waterways Geography* (five questions) is now
+7-9, by `2026-10-21-relabel-geography-quiz.ts` (dry run, backup of the previous band, verify).
+Quizzes by band after it: K-3 3, 4-6 5, 7-9 12, 10-12 1; every K-3 quiz was written for K-3.
 
 ### 10.6 Order of work
 10.5's three features first (citations, then expedition routes, then the cartography gallery, because routes and maps both cite); then 1, 3, 5, 16, 18, 6, 7, 9, 10, 11, 13, 12, 17, 4; item 8 when recordings exist.
