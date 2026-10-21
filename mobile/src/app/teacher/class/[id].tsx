@@ -20,14 +20,18 @@ import {
   Trash2,
   User,
   Eye,
+  FileSpreadsheet,
+  FileText,
 } from 'lucide-react-native';
 import * as Clipboard from 'expo-clipboard';
 import {
   useClass,
+  useClassReport,
   useRegenerateClassCode,
   useRemoveStudent,
   useUpdateClass,
 } from '@/lib/api/education-api';
+import { shareReportCsv, shareReportPdf } from '@/lib/class-report';
 import type { ClassStudent, ClassAssignment, ContentScopeMode } from '@/lib/types/education';
 import { GRADE_LEVEL_RANGES } from '@/lib/types/education';
 
@@ -61,6 +65,24 @@ export default function ClassDetailScreen() {
   const regenerateCode = useRegenerateClassCode();
   const removeStudent = useRemoveStudent();
   const updateClass = useUpdateClass();
+  const report = useClassReport(id ?? null);
+  const [sharing, setSharing] = React.useState<'csv' | 'pdf' | null>(null);
+
+  // Class report (spec 10.30): fetch fresh, render on the device, hand to the share sheet
+  const shareReport = async (format: 'csv' | 'pdf') => {
+    if (!id) return;
+    setSharing(format);
+    try {
+      const { data, error } = await report.refetch();
+      if (error || !data) throw error ?? new Error('No report');
+      if (format === 'csv') await shareReportCsv(data);
+      else await shareReportPdf(data);
+    } catch (e) {
+      Alert.alert('Report not shared', (e as Error).message || 'The report could not be prepared. Try again.');
+    } finally {
+      setSharing(null);
+    }
+  };
 
   const scopeMode: ContentScopeMode = classData?.scopeMode ?? 'all';
   const chosenBands = parseBands(classData?.contentBands ?? null);
@@ -333,6 +355,27 @@ export default function ClassDetailScreen() {
         )}
       </View>
 
+      {/* Class report (roadmap item 11, spec 10.30): who read what, quiz answers by question, journal entries */}
+      <View style={styles.section}>
+        <View style={styles.sectionHeader}>
+          <FileText size={20} color={colors.forestGreen} />
+          <Text style={styles.sectionTitle}>Class report</Text>
+        </View>
+        <Text style={styles.reportText}>
+          Every student's assignments and scores, each quiz attempt with the answer given to every question, journal entries, and the documents, waterways, places and journeys they opened. Built fresh when you share it. Students who joined with a device have all of it; a student you added by name has assignment rows only.
+        </Text>
+        <View style={styles.reportButtons}>
+          <Pressable style={[styles.reportButton, sharing && styles.reportButtonDisabled]} onPress={() => shareReport('csv')} disabled={!!sharing} accessibilityRole="button">
+            {sharing === 'csv' ? <ActivityIndicator size="small" color="white" /> : <FileSpreadsheet size={18} color="white" />}
+            <Text style={styles.reportButtonText}>Share as CSV</Text>
+          </Pressable>
+          <Pressable style={[styles.reportButton, sharing && styles.reportButtonDisabled]} onPress={() => shareReport('pdf')} disabled={!!sharing} accessibilityRole="button">
+            {sharing === 'pdf' ? <ActivityIndicator size="small" color="white" /> : <FileText size={18} color="white" />}
+            <Text style={styles.reportButtonText}>Share as PDF</Text>
+          </Pressable>
+        </View>
+      </View>
+
       <View style={styles.bottomSpacer} />
     </ScrollView>
   );
@@ -517,6 +560,12 @@ const styles = StyleSheet.create({
   bottomSpacer: {
     height: 32,
   },
+  // Class report (spec 10.30)
+  reportText: { fontSize: 13, color: '#6B7280', lineHeight: 19, marginBottom: 12 },
+  reportButtons: { flexDirection: 'row', gap: 10 },
+  reportButton: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: colors.forestGreen, paddingVertical: 12, borderRadius: 10 },
+  reportButtonDisabled: { opacity: 0.6 },
+  reportButtonText: { fontSize: 14, fontWeight: '700', color: 'white' },
   // What students see (spec 10.27)
   scopeOption: { flexDirection: 'row', alignItems: 'flex-start', gap: 12, padding: 12, borderRadius: 10, backgroundColor: '#F9FAFB', marginBottom: 8 },
   scopeOptionActive: { backgroundColor: colors.forestGreen + '12', borderWidth: 1, borderColor: colors.forestGreen + '55' },

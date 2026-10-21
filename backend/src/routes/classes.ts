@@ -889,4 +889,102 @@ classesRouter.put(
   }
 );
 
+// GET /:id/report - Class report (roadmap item 11, 2026-10-21): who read what, quiz answers by
+// question, journal entries, and assignment progress, for every student in the class. One JSON
+// shape; the app renders it as CSV or PDF on the device. Students are matched to their work by the
+// device id they joined with (ClassStudent.userId); a student added by name only has assignment rows.
+classesRouter.get("/:id/report", async (c) => {
+  const id = c.req.param("id");
+  const cls = await db.class.findUnique({
+    where: { id },
+    include: {
+      teacher: { select: { name: true } },
+      students: { orderBy: { displayName: "asc" } },
+      assignments: { where: { isActive: true }, orderBy: { createdAt: "asc" }, include: { lessonPlan: { select: { title: true } }, progress: true } },
+    },
+  });
+  if (!cls) return c.json({ error: { message: "Class not found", code: "NOT_FOUND" } }, 404);
+  if (cls.teacherId !== c.get("teacher").id) return c.json({ error: { message: "You can only manage your own classes", code: "FORBIDDEN" } }, 403);
+
+  const userIds = cls.students.map((s) => s.userId).filter((u): u is string => !!u);
+  const [quizTitles, tripTitles, attempts, journals, explorations] = await Promise.all([
+    db.quiz.findMany({ where: { id: { in: cls.assignments.map((a) => a.quizId).filter((x): x is string => !!x) } }, select: { id: true, title: true } }),
+    db.virtualFieldTrip.findMany({ where: { id: { in: cls.assignments.map((a) => a.fieldTripId).filter((x): x is string => !!x) } }, select: { id: true, title: true } }),
+    userIds.length ? db.quizAttempt.findMany({ where: { userId: { in: userIds } }, orderBy: { createdAt: "asc" }, include: { quiz: { select: { title: true, questions: { select: { id: true, questionText: true, correctAnswer: true, orderIndex: true } } } } } }) : Promise.resolve([]),
+    userIds.length ? db.studentJournal.findMany({ where: { studentIdentifier: { in: userIds } }, include: { entries: { orderBy: { createdAt: "asc" } } } }) : Promise.resolve([]),
+    userIds.length ? db.userExploration.findMany({ where: { userId: { in: userIds } }, orderBy: { createdAt: "asc" } }) : Promise.resolve([]),
+  ]);
+  const quizTitle = new Map(quizTitles.map((q) => [q.id, q.title]));
+  const tripTitle = new Map(tripTitles.map((t) => [t.id, t.title]));
+
+  // Names for the records a device explored or read
+  const idsBy = (type: string) => explorations.filter((e) => e.activityType === type).map((e) => e.resourceId);
+  const [docs, waters, locs, journeys, pronunciations, lessons, trips] = await Promise.all([
+    db.primarySourceDocument.findMany({ where: { id: { in: idsBy("document_read") } }, select: { id: true, title: true } }),
+    db.waterway.findMany({ where: { id: { in: idsBy("waterway_explored") } }, select: { id: true, name: true } }),
+    db.location.findMany({ where: { id: { in: idsBy("location_visited") } }, select: { id: true, name: true } }),
+    db.voyageurJourney.findMany({ where: { id: { in: idsBy("journey_completed") } }, select: { id: true, title: true } }),
+    db.pronunciationGuide.findMany({ where: { id: { in: idsBy("pronunciation_learned") } }, select: { id: true, term: true } }),
+    db.lessonPlan.findMany({ where: { id: { in: idsBy("lesson_completed") } }, select: { id: true, title: true } }),
+    db.virtualFieldTrip.findMany({ where: { id: { in: idsBy("field_trip_completed") } }, select: { id: true, title: true } }),
+  ]);
+  const nameOf = new Map<string, string>([
+    ...docs.map((d) => [`document_read:${d.id}`, d.title] as const),
+    ...waters.map((w) => [`waterway_explored:${w.id}`, w.name] as const),
+    ...locs.map((l) => [`location_visited:${l.id}`, l.name] as const),
+    ...journeys.map((j) => [`journey_completed:${j.id}`, j.title] as const),
+    ...pronunciations.map((p) => [`pronunciation_learned:${p.id}`, p.term] as const),
+    ...lessons.map((l) => [`lesson_completed:${l.id}`, l.title] as const),
+    ...trips.map((t) => [`field_trip_completed:${t.id}`, t.title] as const),
+  ]);
+  const READING_LABELS: Record<string, string> = {
+    document_read: "Document read", waterway_explored: "Waterway explored", location_visited: "Place visited", journey_completed: "Journey completed",
+    pronunciation_learned: "Pronunciation learned", lesson_completed: "Lesson completed", field_trip_completed: "Field trip completed",
+  };
+
+  const students = cls.students.map((s) => {
+    const mine = (userId: string | null) => (userId && s.userId ? userId === s.userId : false);
+    return {
+      id: s.id,
+      displayName: s.displayName,
+      joinedAt: s.createdAt,
+      linkedToDevice: !!s.userId,
+      assignments: cls.assignments.map((a) => {
+        const p = a.progress.find((x) => x.studentId === s.id);
+        return {
+          id: a.id, title: a.title, type: a.assignmentType, dueDate: a.dueDate,
+          resourceTitle: a.lessonPlan?.title ?? (a.quizId ? quizTitle.get(a.quizId) : a.fieldTripId ? tripTitle.get(a.fieldTripId) : null) ?? null,
+          status: p?.status ?? "not_started", score: p?.score ?? null, maxScore: p?.maxScore ?? null, completedAt: p?.completedAt ?? null,
+        };
+      }),
+      quizAttempts: attempts.filter((a) => mine(a.userId)).map((a) => {
+        const answers = (() => { try { return JSON.parse(a.answers) as { questionId: string; selectedAnswer: string; isCorrect: boolean }[]; } catch { return []; } })();
+        const qById = new Map(a.quiz.questions.map((q) => [q.id, q]));
+        return {
+          quizTitle: a.quiz.title, score: a.score, totalQuestions: a.totalQuestions, percentageScore: Math.round(a.percentageScore), completedAt: a.completedAt ?? a.createdAt,
+          answers: answers.map((ans) => { const q = qById.get(ans.questionId); return { question: q?.questionText ?? ans.questionId, selectedAnswer: ans.selectedAnswer, correctAnswer: q?.correctAnswer ?? null, isCorrect: ans.isCorrect, orderIndex: q?.orderIndex ?? 0 }; }).sort((x, y) => x.orderIndex - y.orderIndex),
+        };
+      }),
+      journalEntries: journals.filter((j) => mine(j.studentIdentifier)).flatMap((j) => j.entries.map((e) => ({ title: e.title, content: e.content, createdAt: e.createdAt, tags: (() => { try { return e.tags ? (JSON.parse(e.tags) as string[]) : []; } catch { return []; } })() }))),
+      reading: explorations.filter((e) => mine(e.userId)).map((e) => ({ kind: e.activityType, label: READING_LABELS[e.activityType] ?? e.activityType, title: nameOf.get(`${e.activityType}:${e.resourceId}`) ?? e.resourceId, at: e.createdAt })),
+    };
+  });
+
+  return c.json({
+    data: {
+      generatedAt: new Date(),
+      class: { id: cls.id, name: cls.name, gradeLevel: cls.gradeLevel, schoolYear: cls.schoolYear, teacherName: cls.teacher.name },
+      assignments: cls.assignments.map((a) => ({ id: a.id, title: a.title, type: a.assignmentType, dueDate: a.dueDate })),
+      students,
+      totals: {
+        students: students.length, linkedToDevice: students.filter((s) => s.linkedToDevice).length,
+        assignmentsCompleted: students.reduce((n, s) => n + s.assignments.filter((a) => a.status === "completed").length, 0),
+        quizAttempts: students.reduce((n, s) => n + s.quizAttempts.length, 0),
+        journalEntries: students.reduce((n, s) => n + s.journalEntries.length, 0),
+        readingEvents: students.reduce((n, s) => n + s.reading.length, 0),
+      },
+    },
+  });
+});
+
 export { classesRouter };

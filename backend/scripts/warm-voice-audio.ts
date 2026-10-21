@@ -1,7 +1,10 @@
 // Synthesise and store the spoken copy of every checked transcription in both narrator voices,
 // so no reader waits on the first play (roadmap item 5, 2026-10-20). Idempotent: copies already
 // on R2 are skipped. Needs XAI_API_KEY and the R2 variables in the environment.
-//   bun run scripts/warm-voice-audio.ts [--only <title substring>] [--voice male|female]
+//   bun run scripts/warm-voice-audio.ts [--only <title substring>] [--voice male|female] [--refresh] [--omissions]
+//   --refresh remakes copies that already exist (after a change to spokenText); --omissions limits
+//   the run to passages whose text carries an omitted stretch "[...]" (2026-10-21: the engine had
+//   read the old pause marker aloud as the word).
 import { db } from "../src/db";
 import { listVoices } from "../src/lib/voices";
 import { ensureVoiceAudio, NARRATOR_VOICES, ttsConfigured, type NarratorVoice } from "../src/lib/tts";
@@ -16,12 +19,16 @@ async function main() {
   const only = onlyIndex >= 0 ? process.argv[onlyIndex + 1]?.toLowerCase() ?? null : null;
   const voiceIndex = process.argv.indexOf("--voice");
   const voices = voiceIndex >= 0 ? [process.argv[voiceIndex + 1] as NarratorVoice] : NARRATOR_VOICES;
-  const docs = (await listVoices()).filter((v) => !only || v.title.toLowerCase().includes(only));
+  const refresh = process.argv.includes("--refresh");
+  const omissionsOnly = process.argv.includes("--omissions");
+  const docs = (await listVoices())
+    .filter((v) => !only || v.title.toLowerCase().includes(only))
+    .filter((v) => !omissionsOnly || /\[\s*(\.\.\.|…)\s*\]/.test(v.text));
   let made = 0, kept = 0, failed = 0;
   for (const doc of docs) {
     for (const voice of voices) {
       try {
-        const { url, generated } = await ensureVoiceAudio(doc.id, voice);
+        const { url, generated } = await ensureVoiceAudio(doc.id, voice, refresh);
         generated ? made++ : kept++;
         console.log(`${generated ? "made" : "kept"}  ${voice.padEnd(6)} ${doc.title.slice(0, 60).padEnd(60)} ${url}`);
       } catch (e) {
