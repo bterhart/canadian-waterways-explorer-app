@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { db } from "../db";
+import { applyScope, scopeForUser } from "../lib/content-scope";
 import { completeResource, POINTS } from "../lib/progress";
 import { loadRelated } from "../lib/related";
 
@@ -13,6 +14,8 @@ const fieldTripsRouter = new Hono();
 
 // GET / - List all published virtual field trips
 fieldTripsRouter.get("/", async (c) => {
+  // Class content scope (spec 10.27): a student device sends its id; the list is cut to what its classes allow.
+  const scopeUserId = c.req.query("userId");
   const gradeLevel = c.req.query("gradeLevel");
   const theme = c.req.query("theme");
 
@@ -61,7 +64,7 @@ fieldTripsRouter.get("/", async (c) => {
     stopCount: trip._count.stops,
   }));
 
-  return c.json({ data: result });
+  return c.json({ data: applyScope(await scopeForUser(scopeUserId), result, "field_trip") });
 });
 
 // GET /:id - Get a single field trip with all stops

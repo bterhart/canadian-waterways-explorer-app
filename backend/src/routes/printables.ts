@@ -1,10 +1,13 @@
 import { Hono } from "hono";
 import { db } from "../db";
+import { applyScope, scopeForUser } from "../lib/content-scope";
 
 const printablesRouter = new Hono();
 
 // GET / - List all published printable resources
 printablesRouter.get("/", async (c) => {
+  // Class content scope (spec 10.27): a student device sends its id; the list is cut to what its classes allow.
+  const scopeUserId = c.req.query("userId");
   const resourceType = c.req.query("type");
   const topic = c.req.query("topic");
   const gradeLevel = c.req.query("gradeLevel");
@@ -44,7 +47,7 @@ printablesRouter.get("/", async (c) => {
     orderBy: { createdAt: "desc" },
   });
 
-  return c.json({ data: printables });
+  return c.json({ data: applyScope(await scopeForUser(scopeUserId), printables) });
 });
 
 // GET /types - Get all unique resource types

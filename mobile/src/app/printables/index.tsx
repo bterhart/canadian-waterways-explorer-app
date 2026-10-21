@@ -30,6 +30,7 @@ import {
   GRADE_LEVEL_RANGES,
 } from '@/lib/types/education';
 import type { PrintableResource } from '@/lib/types/education';
+import { useDeviceId } from '@/lib/identity';
 
 const colors = {
   forestGreen: '#2D5A3D',
@@ -58,10 +59,12 @@ export default function PrintablesScreen() {
   const [selectedTopic, setSelectedTopic] = useState<string | undefined>();
   const [selectedGrade, setSelectedGrade] = useState<string | undefined>();
 
+  const userId = useDeviceId() ?? undefined; // class content scope (spec 10.27)
   const { data: printables, isLoading, isError } = usePrintables({
     type: selectedType,
     topic: selectedTopic,
     gradeLevel: selectedGrade,
+    userId,
   });
   const { data: resourceTypes } = usePrintableTypes();
   const { data: topics } = usePrintableTopics();

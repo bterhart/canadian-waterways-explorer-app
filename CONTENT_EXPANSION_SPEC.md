@@ -2461,6 +2461,46 @@ curriculum, and the Northwest Territories is adopting it; Nunavut's secondary pr
 Alberta's. For those three the BC and Alberta rows already serve, and a note in the province chips
 can say so.
 
+### 10.27 What students see: class content scope (owner's ask, delivered 2026-10-21; API and data live, build required)
+
+**The problem.** A Grade 3 student in a teacher's class saw the same lists as everyone: Grade 12
+documents, senior lesson plans, quizzes for 10–12. The owner asked for a setting teachers control.
+
+**The setting.** Two columns on `Class`, added in Turso on 2026-10-21 (`2026-10-21-class-content-scope.sql`,
+ALTER TABLE ADD COLUMN only, verified by PRAGMA; `schema.prisma` mirrors them): `scopeMode`
+('all', the default and today's behaviour; 'bands'; 'assigned') and `contentBands` (a JSON array of
+band labels K-3, 4-6, 7-9, 10-12, or null for the class's own band; a class whose grade is a single
+grade such as "8" maps to its band). On the teacher's class page a card, **What students see**, offers
+the three choices with a sentence each, and when the choice is not Everything, chips for the bands
+to show; each tap saves through `PATCH /api/classes/:id`, which now accepts `scopeMode` and
+`contentBands` and rejects anything outside those values.
+
+**What it does.** The student's device already carries an anonymous id (lib/identity.ts) and the
+server already knows which classes that id belongs to. The eight banded list routes (lesson plans,
+quizzes, field trips, documents, printables, comparisons, voyageur journeys, Indigenous stories) and
+search now take `?userId=`; the app's student screens send it. With it the server computes the
+device's scope (`backend/src/lib/content-scope.ts`) as the union of what its active classes allow and
+cuts the list: in 'bands' mode to the chosen bands; in 'assigned' mode lessons, quizzes and field
+trips to the ones assigned to the class, and the other banded content to the bands. A device in no
+class, an unknown id, or a membership in any class left at Everything sees everything, so nothing
+changes for anyone until a teacher chooses. Content with no band is never hidden, and the
+reference layers (map, waterways, explorers, people, historical maps, timeline) are not banded and
+are not touched: a Grade 3 class still has the whole country to explore. Search hides only the
+banded hit types. `GET /api/classes/mine` returns the class's mode and resolved bands, and My Class
+says in one line what the teacher has set, so a missing item is not a mystery. Direct links still
+open (a teacher-assigned Grade 7 lesson opens for a Grade 3 class); the scope is about what the
+lists offer, not a lock.
+
+**Checked.** Both typechecks clean. The rules were unit-checked (band of a grade, a class's bands,
+the three modes, a student in a 'bands' class and an 'assigned' class at once). Then end to end on a
+local backend against Turso with the owner's empty Grade 7 Social Studies class (no students, no
+assignments): a throwaway device joined, and the lists were read in each mode (Everything: 33
+lessons across four bands; own band: 11 lessons, 11 quizzes, 101 documents, all 7–9; K-3 and 4-6
+chosen: 14 lessons, 7 field trips, 4 printables; assigned with nothing assigned: no lessons or
+quizzes, documents still by band); search for "fur trade" dropped 42 banded hits and kept the
+waterways; another device and a request with no id were unaffected. The membership was then deleted
+and the class restored to Everything, verified.
+
 ### 10.6 Order of work
 10.5's three features first (citations, then expedition routes, then the cartography gallery, because routes and maps both cite); then 1, 3, 5, 16, 18, 6, 7, 9, 10, 11, 13, 12, 17, 4; item 8 when recordings exist.
 

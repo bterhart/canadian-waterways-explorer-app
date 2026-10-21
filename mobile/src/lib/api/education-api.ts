@@ -180,8 +180,9 @@ export const printablesKeys = {
 
 // ============= Lesson Plans Hooks =============
 
-export function useLessonPlans(filters?: { gradeLevel?: string; topic?: string; province?: string; outcome?: string }) {
+export function useLessonPlans(filters?: { gradeLevel?: string; topic?: string; province?: string; outcome?: string; userId?: string }) {
   const params = new URLSearchParams();
+  if (filters?.userId) params.append('userId', filters.userId); // class content scope (spec 10.27)
   if (filters?.gradeLevel) params.append('gradeLevel', filters.gradeLevel);
   if (filters?.topic) params.append('topic', filters.topic);
   // Curriculum filters (item 9): a province whose outcomes the lesson meets, or one outcome by id or code
@@ -245,8 +246,9 @@ export function useTimelineEvent(id: string | null) {
 
 // ============= Field Trips Hooks =============
 
-export function useFieldTrips(filters?: { gradeLevel?: string; theme?: string }) {
+export function useFieldTrips(filters?: { gradeLevel?: string; theme?: string; userId?: string }) {
   const params = new URLSearchParams();
+  if (filters?.userId) params.append('userId', filters.userId); // class content scope (spec 10.27)
   if (filters?.gradeLevel) params.append('gradeLevel', filters.gradeLevel);
   if (filters?.theme) params.append('theme', filters.theme);
   const queryString = params.toString();
@@ -270,8 +272,9 @@ export function useFieldTrip(id: string | null) {
 
 // ============= Documents Hooks =============
 
-export function useDocuments(filters?: { type?: string; gradeLevel?: string }) {
+export function useDocuments(filters?: { type?: string; gradeLevel?: string; userId?: string }) {
   const params = new URLSearchParams();
+  if (filters?.userId) params.append('userId', filters.userId); // class content scope (spec 10.27)
   if (filters?.type) params.append('type', filters.type);
   if (filters?.gradeLevel) params.append('gradeLevel', filters.gradeLevel);
   const queryString = params.toString();
@@ -302,8 +305,9 @@ export function useDocument(id: string | null) {
 
 // ============= Comparisons Hooks =============
 
-export function useComparisons(filters?: { type?: string; gradeLevel?: string }) {
+export function useComparisons(filters?: { type?: string; gradeLevel?: string; userId?: string }) {
   const params = new URLSearchParams();
+  if (filters?.userId) params.append('userId', filters.userId); // class content scope (spec 10.27)
   if (filters?.type) params.append('type', filters.type);
   if (filters?.gradeLevel) params.append('gradeLevel', filters.gradeLevel);
   const queryString = params.toString();
@@ -591,7 +595,7 @@ export function useUpdateClass() {
       payload,
     }: {
       id: string;
-      payload: Partial<Pick<ClassDetail, 'name' | 'gradeLevel' | 'schoolYear' | 'isActive'>>;
+      payload: Partial<Pick<ClassDetail, 'name' | 'gradeLevel' | 'schoolYear' | 'isActive' | 'scopeMode'>> & { contentBands?: string[] | null };
     }) => api.patch<ClassDetail>(`/api/classes/${id}`, payload),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: classesKeys.detail(variables.id) });
@@ -787,8 +791,10 @@ export function usePrintables(filters?: {
   type?: string;
   topic?: string;
   gradeLevel?: string;
+  userId?: string;
 }) {
   const params = new URLSearchParams();
+  if (filters?.userId) params.append('userId', filters.userId); // class content scope (spec 10.27)
   if (filters?.type) params.append('type', filters.type);
   if (filters?.topic) params.append('topic', filters.topic);
   if (filters?.gradeLevel) params.append('gradeLevel', filters.gradeLevel);
@@ -938,8 +944,10 @@ export function useIndigenousStories(filters?: {
   nation?: string;
   theme?: string;
   gradeLevel?: string;
+  userId?: string;
 }) {
   const params = new URLSearchParams();
+  if (filters?.userId) params.append('userId', filters.userId); // class content scope (spec 10.27)
   if (filters?.nation) params.append('nation', filters.nation);
   if (filters?.theme) params.append('theme', filters.theme);
   if (filters?.gradeLevel) params.append('gradeLevel', filters.gradeLevel);
@@ -1127,8 +1135,9 @@ export const voyageurJourneyKeys = {
 
 // ============= Voyageur Journey Hooks =============
 
-export function useVoyageurJourneys(filters?: { gradeLevel?: string; difficulty?: string }) {
+export function useVoyageurJourneys(filters?: { gradeLevel?: string; difficulty?: string; userId?: string }) {
   const params = new URLSearchParams();
+  if (filters?.userId) params.append('userId', filters.userId); // class content scope (spec 10.27)
   if (filters?.gradeLevel) params.append('gradeLevel', filters.gradeLevel);
   if (filters?.difficulty) params.append('difficulty', filters.difficulty);
   const queryString = params.toString();
@@ -1558,8 +1567,10 @@ export function useQuizzes(filters?: {
   category?: string;
   gradeLevel?: string;
   difficulty?: string;
+  userId?: string;
 }) {
   const params = new URLSearchParams();
+  if (filters?.userId) params.append('userId', filters.userId); // class content scope (spec 10.27)
   if (filters?.category) params.append('category', filters.category);
   if (filters?.gradeLevel) params.append('gradeLevel', filters.gradeLevel);
   if (filters?.difficulty) params.append('difficulty', filters.difficulty);

@@ -486,6 +486,11 @@ export interface StudentAssignment extends ClassAssignment {
   progress: StudentAssignmentProgress | null;
 }
 
+// Class content scope (spec 10.27): what the class's students see.
+// 'all' everything; 'bands' only content in contentBands (the class's own band when none listed);
+// 'assigned' only assigned lessons, quizzes and field trips, other banded content by band.
+export type ContentScopeMode = 'all' | 'bands' | 'assigned';
+
 export interface MyClassMembership {
   student: { id: string; displayName: string; joinedAt: string };
   class: {
@@ -494,6 +499,9 @@ export interface MyClassMembership {
     gradeLevel: string;
     schoolYear: string | null;
     teacherName: string;
+    scopeMode: ContentScopeMode;
+    /** The bands the class shows (resolved by the server: contentBands, else the class's own band). */
+    contentBands: string[];
   };
   assignments: StudentAssignment[];
 }
@@ -505,6 +513,9 @@ export interface ClassDetail {
   schoolYear: string | null;
   joinCode: string;
   isActive: boolean;
+  scopeMode: ContentScopeMode;
+  /** JSON array of band labels as stored, or null for the class's own band. */
+  contentBands: string | null;
   createdAt: string;
   teacher: {
     id: string;

@@ -14,6 +14,7 @@ import { GitCompare, ChevronRight, Filter } from 'lucide-react-native';
 import { useComparisons, useComparisonTypes } from '@/lib/api/education-api';
 import { getGradeLevelRangeColor, getGradeLevelRangeLabel, GRADE_LEVEL_RANGES } from '@/lib/types/education';
 import type { ComparisonSummary } from '@/lib/types/education';
+import { useDeviceId } from '@/lib/identity';
 
 const colors = {
   forestGreen: '#2D5A3D',
@@ -38,9 +39,11 @@ export default function ComparisonsScreen() {
   const [selectedType, setSelectedType] = useState<string | undefined>();
   const [selectedGrade, setSelectedGrade] = useState<string | undefined>();
 
+  const userId = useDeviceId() ?? undefined; // class content scope (spec 10.27)
   const { data: comparisons, isLoading, isError } = useComparisons({
     type: selectedType,
     gradeLevel: selectedGrade,
+    userId,
   });
   const { data: comparisonTypes } = useComparisonTypes();
 

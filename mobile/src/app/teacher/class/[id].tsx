@@ -19,14 +19,34 @@ import {
   RefreshCw,
   Trash2,
   User,
+  Eye,
 } from 'lucide-react-native';
 import * as Clipboard from 'expo-clipboard';
 import {
   useClass,
   useRegenerateClassCode,
   useRemoveStudent,
+  useUpdateClass,
 } from '@/lib/api/education-api';
-import type { ClassStudent, ClassAssignment } from '@/lib/types/education';
+import type { ClassStudent, ClassAssignment, ContentScopeMode } from '@/lib/types/education';
+import { GRADE_LEVEL_RANGES } from '@/lib/types/education';
+
+// Class content scope (spec 10.27): what the class's students see.
+const SCOPE_OPTIONS: { mode: ContentScopeMode; label: string; detail: string }[] = [
+  { mode: 'all', label: 'Everything', detail: 'Students see every lesson, quiz, document and activity in the app.' },
+  { mode: 'bands', label: 'Only these grades', detail: 'Students see lessons, quizzes, documents and activities for the grade bands chosen below. The map, waterways, explorers and people are always shown.' },
+  { mode: 'assigned', label: 'Assigned work only', detail: 'Students see only the lessons, quizzes and field trips you assign; documents and other activities follow the grade bands below. The map, waterways, explorers and people are always shown.' },
+];
+
+function parseBands(raw: string | null): string[] {
+  if (!raw) return [];
+  try {
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed.filter((b): b is string => typeof b === 'string') : [];
+  } catch {
+    return [];
+  }
+}
 
 const colors = {
   forestGreen: '#2D5A3D',
@@ -40,6 +60,29 @@ export default function ClassDetailScreen() {
   const { data: classData, isLoading, refetch } = useClass(id ?? null);
   const regenerateCode = useRegenerateClassCode();
   const removeStudent = useRemoveStudent();
+  const updateClass = useUpdateClass();
+
+  const scopeMode: ContentScopeMode = classData?.scopeMode ?? 'all';
+  const chosenBands = parseBands(classData?.contentBands ?? null);
+
+  const setScopeMode = async (mode: ContentScopeMode) => {
+    if (!id || mode === scopeMode) return;
+    try {
+      await updateClass.mutateAsync({ id, payload: { scopeMode: mode } });
+    } catch {
+      Alert.alert('Not saved', 'The setting could not be saved. Try again.');
+    }
+  };
+
+  const toggleBand = async (band: string) => {
+    if (!id) return;
+    const next = chosenBands.includes(band) ? chosenBands.filter((b) => b !== band) : [...chosenBands, band];
+    try {
+      await updateClass.mutateAsync({ id, payload: { contentBands: next.length > 0 ? next : null } });
+    } catch {
+      Alert.alert('Not saved', 'The setting could not be saved. Try again.');
+    }
+  };
 
   const handleCopyCode = async () => {
     if (classData?.joinCode) {
@@ -145,6 +188,51 @@ export default function ClassDetailScreen() {
             </Pressable>
           </View>
         </View>
+      </View>
+
+      {/* What students see (class content scope, spec 10.27) */}
+      <View style={styles.section}>
+        <View style={styles.sectionHeader}>
+          <Eye size={20} color={colors.forestGreen} />
+          <Text style={styles.sectionTitle}>What students see</Text>
+          {updateClass.isPending ? <ActivityIndicator size="small" color={colors.forestGreen} /> : null}
+        </View>
+        {SCOPE_OPTIONS.map((opt) => (
+          <Pressable
+            key={opt.mode}
+            style={[styles.scopeOption, scopeMode === opt.mode && styles.scopeOptionActive]}
+            onPress={() => setScopeMode(opt.mode)}
+            disabled={updateClass.isPending}
+          >
+            <View style={[styles.scopeRadio, scopeMode === opt.mode && styles.scopeRadioActive]} />
+            <View style={styles.scopeText}>
+              <Text style={[styles.scopeLabel, scopeMode === opt.mode && styles.scopeLabelActive]}>{opt.label}</Text>
+              <Text style={styles.scopeDetail}>{opt.detail}</Text>
+            </View>
+          </Pressable>
+        ))}
+        {scopeMode !== 'all' ? (
+          <View style={styles.bandsBlock}>
+            <Text style={styles.bandsLabel}>
+              Grade bands shown{chosenBands.length === 0 ? ` (none chosen: the class's own grade, ${classData.gradeLevel})` : ''}
+            </Text>
+            <View style={styles.bandsRow}>
+              {GRADE_LEVEL_RANGES.map((band) => {
+                const on = chosenBands.includes(band);
+                return (
+                  <Pressable
+                    key={band}
+                    style={[styles.bandChip, on && styles.bandChipActive]}
+                    onPress={() => toggleBand(band)}
+                    disabled={updateClass.isPending}
+                  >
+                    <Text style={[styles.bandChipText, on && styles.bandChipTextActive]}>{band}</Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+          </View>
+        ) : null}
       </View>
 
       {/* Students Section */}
@@ -429,4 +517,20 @@ const styles = StyleSheet.create({
   bottomSpacer: {
     height: 32,
   },
+  // What students see (spec 10.27)
+  scopeOption: { flexDirection: 'row', alignItems: 'flex-start', gap: 12, padding: 12, borderRadius: 10, backgroundColor: '#F9FAFB', marginBottom: 8 },
+  scopeOptionActive: { backgroundColor: colors.forestGreen + '12', borderWidth: 1, borderColor: colors.forestGreen + '55' },
+  scopeRadio: { width: 18, height: 18, borderRadius: 9, borderWidth: 2, borderColor: '#9CA3AF', marginTop: 2 },
+  scopeRadioActive: { borderColor: colors.forestGreen, backgroundColor: colors.forestGreen },
+  scopeText: { flex: 1 },
+  scopeLabel: { fontSize: 15, fontWeight: '600', color: colors.darkGreen },
+  scopeLabelActive: { color: colors.forestGreen },
+  scopeDetail: { fontSize: 13, color: '#6B7280', marginTop: 2, lineHeight: 18 },
+  bandsBlock: { marginTop: 4 },
+  bandsLabel: { fontSize: 13, fontWeight: '600', color: '#6B7280', marginBottom: 8 },
+  bandsRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  bandChip: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, backgroundColor: '#F3F4F6', borderWidth: 1, borderColor: '#E5E7EB' },
+  bandChipActive: { backgroundColor: colors.forestGreen, borderColor: colors.forestGreen },
+  bandChipText: { fontSize: 14, fontWeight: '600', color: '#374151' },
+  bandChipTextActive: { color: 'white' },
 });

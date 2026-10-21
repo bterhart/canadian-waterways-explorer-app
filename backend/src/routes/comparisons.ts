@@ -1,10 +1,13 @@
 import { Hono } from "hono";
 import { db } from "../db";
+import { applyScope, scopeForUser } from "../lib/content-scope";
 
 const comparisonsRouter = new Hono();
 
 // GET / - List all published comparison templates
 comparisonsRouter.get("/", async (c) => {
+  // Class content scope (spec 10.27): a student device sends its id; the list is cut to what its classes allow.
+  const scopeUserId = c.req.query("userId");
   const comparisonType = c.req.query("type");
   const gradeLevel = c.req.query("gradeLevel");
 
@@ -36,7 +39,7 @@ comparisonsRouter.get("/", async (c) => {
     orderBy: { createdAt: "desc" },
   });
 
-  return c.json({ data: comparisons });
+  return c.json({ data: applyScope(await scopeForUser(scopeUserId), comparisons) });
 });
 
 // GET /types - Get all unique comparison types

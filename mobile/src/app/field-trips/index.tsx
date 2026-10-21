@@ -15,6 +15,7 @@ import { Map, Clock, MapPin, ChevronRight, Filter } from 'lucide-react-native';
 import { useFieldTrips } from '@/lib/api/education-api';
 import { getGradeLevelRangeColor, getGradeLevelRangeLabel, GRADE_LEVEL_RANGES } from '@/lib/types/education';
 import type { FieldTripSummary } from '@/lib/types/education';
+import { useDeviceId } from '@/lib/identity';
 
 const colors = {
   forestGreen: '#2D5A3D',
@@ -27,9 +28,11 @@ export default function FieldTripsScreen() {
   const [selectedGrade, setSelectedGrade] = useState<string | undefined>();
   const [selectedTheme, setSelectedTheme] = useState<string | undefined>();
 
+  const userId = useDeviceId() ?? undefined; // class content scope (spec 10.27)
   const { data: fieldTrips, isLoading, isError } = useFieldTrips({
     gradeLevel: selectedGrade,
     theme: selectedTheme,
+    userId,
   });
 
   const renderFieldTripCard = ({ item }: { item: FieldTripSummary }) => (

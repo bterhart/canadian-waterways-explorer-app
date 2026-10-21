@@ -130,6 +130,12 @@ export default function MyClassScreen() {
                 {m.class.schoolYear ? ` · ${m.class.schoolYear}` : ''}
               </Text>
               <Text style={styles.classMeta}>You are signed in as {m.student.displayName}</Text>
+              {/* Class content scope (spec 10.27): say what this class limits, so a missing item is not a mystery */}
+              {m.class.scopeMode === 'bands' ? (
+                <Text style={styles.scopeNote}>Your teacher has set this class to show grade {m.class.contentBands.join(', ')} lessons, quizzes, documents and activities.</Text>
+              ) : m.class.scopeMode === 'assigned' ? (
+                <Text style={styles.scopeNote}>Your teacher has set this class to show assigned work only, with grade {m.class.contentBands.join(', ')} documents and activities.</Text>
+              ) : null}
             </View>
           </View>
 
@@ -267,6 +273,7 @@ const styles = StyleSheet.create({
   classText: { flex: 1 },
   className: { fontSize: 18, fontWeight: '800', color: colors.darkGreen, marginBottom: 2 },
   classMeta: { fontSize: 13, color: '#6B7280', marginTop: 2 },
+  scopeNote: { fontSize: 12, color: '#4B5563', marginTop: 6, lineHeight: 17, fontStyle: 'italic' },
   sectionTitle: { fontSize: 14, fontWeight: '700', color: colors.darkGreen, marginBottom: 10 },
   noAssignments: { fontSize: 14, color: '#9CA3AF', fontStyle: 'italic' },
   assignment: {

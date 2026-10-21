@@ -33,6 +33,7 @@ import type {
   VocabularyQuizSummary,
   IndigenousStorySummary,
 } from '@/lib/types/education';
+import { useDeviceId } from '@/lib/identity';
 
 const { width } = Dimensions.get('window');
 
@@ -73,7 +74,8 @@ export default function IndigenousLanguagesScreen() {
     language: selectedLanguage,
   });
   const { data: quizzes } = useVocabularyQuizzes();
-  const { data: stories } = useIndigenousStories();
+  const userId = useDeviceId() ?? undefined; // class content scope (spec 10.27)
+  const { data: stories } = useIndigenousStories({ userId });
 
   const renderWordOfDayCard = () => {
     if (loadingWordOfDay) {

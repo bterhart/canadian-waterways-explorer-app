@@ -514,6 +514,10 @@ model Class {
   joinCode    String            @unique
   teacherId   String
   isActive    Boolean           @default(true)
+  // Content scope (2026-10-21): what the class's students see. 'all' | 'bands' | 'assigned';
+  // contentBands is a JSON array of band labels (K-3, 4-6, 7-9, 10-12) or null for the class's own band.
+  scopeMode    String           @default("all")
+  contentBands String?
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
   teacher     Teacher           @relation(fields: [teacherId], references: [id], onDelete: Cascade)

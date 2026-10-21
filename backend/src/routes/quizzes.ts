@@ -2,12 +2,15 @@ import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { db } from "../db";
+import { applyScope, scopeForUser } from "../lib/content-scope";
 import { completeResource, quizPoints } from "../lib/progress";
 
 const quizzesRouter = new Hono();
 
 // GET / - List all published quizzes with question count
 quizzesRouter.get("/", async (c) => {
+  // Class content scope (spec 10.27): a student device sends its id; the list is cut to what its classes allow.
+  const scopeUserId = c.req.query("userId");
   const category = c.req.query("category");
   const gradeLevel = c.req.query("gradeLevel");
   const difficulty = c.req.query("difficulty");
@@ -60,7 +63,7 @@ quizzesRouter.get("/", async (c) => {
     questionCount: quiz._count.questions,
   }));
 
-  return c.json({ data: result });
+  return c.json({ data: applyScope(await scopeForUser(scopeUserId), result, "quiz") });
 });
 
 // GET /:id - Get a quiz with all its questions (for taking the quiz)
