@@ -9,7 +9,25 @@
  */
 import { db } from "../db";
 
-export const PROVINCES: Record<string, string> = { ON: "Ontario", BC: "British Columbia", AB: "Alberta", QC: "Quebec", SK: "Saskatchewan" };
+export const PROVINCES: Record<string, string> = { ON: "Ontario", BC: "British Columbia", AB: "Alberta", QC: "Quebec", SK: "Saskatchewan", MB: "Manitoba", NS: "Nova Scotia", NL: "Newfoundland and Labrador" };
+
+/**
+ * Territories that teach another jurisdiction's curriculum (2026-10-21): Yukon teaches British
+ * Columbia's, the Northwest Territories is adopting it, and Nunavut's secondary programs draw on
+ * Alberta's. They have no rows of their own; a request for one is answered with the rows of the
+ * curriculum it teaches, and the summary lists them so the chips can say so.
+ */
+export const TERRITORY_ALIASES: Record<string, { teaches: string; name: string }> = {
+  YT: { teaches: "BC", name: "Yukon (British Columbia curriculum)" },
+  NT: { teaches: "BC", name: "Northwest Territories (British Columbia curriculum)" },
+  NU: { teaches: "AB", name: "Nunavut (Alberta curriculum)" },
+};
+
+/** The province code whose rows answer for the given code: itself, or the curriculum a territory teaches. */
+export function resolveProvince(code: string): string {
+  const p = code.toUpperCase();
+  return TERRITORY_ALIASES[p]?.teaches ?? p;
+}
 
 export interface Outcome {
   id: string;
@@ -74,14 +92,14 @@ export async function listOutcomes(filter: { province?: string; grade?: string; 
   const { outcomes } = await load();
   const q = filter.q?.trim().toLowerCase();
   return outcomes.filter((o) =>
-    (!filter.province || o.province === filter.province.toUpperCase()) &&
+    (!filter.province || o.province === resolveProvince(filter.province)) &&
     (!filter.grade || o.grade === filter.grade) &&
     (!q || o.code?.toLowerCase() === q || o.code?.toLowerCase().startsWith(q) || o.text.toLowerCase().includes(q) || (o.strand ?? "").toLowerCase().includes(q) || o.course.toLowerCase().includes(q)),
   );
 }
 
 /** The provinces and grades that have outcomes, with counts, for the filter chips. */
-export async function curriculumSummary(): Promise<{ province: string; provinceName: string; grades: { grade: string; course: string; outcomes: number }[]; sourceTitles: string[] }[]> {
+export async function curriculumSummary(): Promise<{ province: string; provinceName: string; grades: { grade: string; course: string; outcomes: number }[]; sourceTitles: string[]; teaches?: string }[]> {
   const { outcomes } = await load();
   const out = new Map<string, { province: string; provinceName: string; grades: Map<string, { grade: string; course: string; outcomes: number }>; sources: Set<string> }>();
   for (const o of outcomes) {
@@ -89,7 +107,13 @@ export async function curriculumSummary(): Promise<{ province: string; provinceN
     const g = p.grades.get(o.grade) ?? { grade: o.grade, course: o.course, outcomes: 0 };
     g.outcomes += 1; p.grades.set(o.grade, g); p.sources.add(o.sourceTitle); out.set(o.province, p);
   }
-  return [...out.values()].map((p) => ({ province: p.province, provinceName: p.provinceName, grades: [...p.grades.values()].sort((a, b) => gradeRank(a.grade) - gradeRank(b.grade)), sourceTitles: [...p.sources] }));
+  const summary = [...out.values()].map((p) => ({ province: p.province, provinceName: p.provinceName, grades: [...p.grades.values()].sort((a, b) => gradeRank(a.grade) - gradeRank(b.grade)), sourceTitles: [...p.sources], teaches: undefined as string | undefined }));
+  // Territories answer with the rows of the curriculum they teach
+  for (const [code, t] of Object.entries(TERRITORY_ALIASES)) {
+    const base = summary.find((p) => p.province === t.teaches);
+    if (base) summary.push({ ...base, province: code, provinceName: t.name, teaches: t.teaches });
+  }
+  return summary;
 }
 
 /** The outcomes a lesson plan meets, in province and grade order. */
@@ -102,7 +126,7 @@ export async function outcomesForLesson(lessonPlanId: string): Promise<LessonOut
 export async function lessonIdsForOutcome(outcomeIdOrCode: string, province?: string): Promise<string[]> {
   const { outcomes, byLesson } = await load();
   const key = outcomeIdOrCode.trim().toLowerCase();
-  const matching = new Set(outcomes.filter((o) => (o.id === outcomeIdOrCode || o.code?.toLowerCase() === key) && (!province || o.province === province.toUpperCase())).map((o) => o.id));
+  const matching = new Set(outcomes.filter((o) => (o.id === outcomeIdOrCode || o.code?.toLowerCase() === key) && (!province || o.province === resolveProvince(province))).map((o) => o.id));
   const ids: string[] = [];
   for (const [lessonId, list] of byLesson) if (list.some((o) => matching.has(o.id))) ids.push(lessonId);
   return ids;
@@ -111,7 +135,7 @@ export async function lessonIdsForOutcome(outcomeIdOrCode: string, province?: st
 /** Lesson plan ids that meet any outcome of a province (for the province filter on the lesson list). */
 export async function lessonIdsForProvince(province: string): Promise<string[]> {
   const { byLesson } = await load();
-  const p = province.toUpperCase();
+  const p = resolveProvince(province);
   const ids: string[] = [];
   for (const [lessonId, list] of byLesson) if (list.some((o) => o.province === p)) ids.push(lessonId);
   return ids;
