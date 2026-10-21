@@ -2872,6 +2872,51 @@ the explorer modal's link rows and Follow the Water. The pressed opacity on list
 visibility comes first. The cards and rows that were already rendering (Discover, Quick Access)
 are untouched.
 
+### 10.37 Open data (item 17, delivered 2026-10-22; API live on deploy, no build)
+
+**What it is.** The records behind the app, read-only, as they stand in Turso at the moment of the
+request, under one licence, from the production server:
+- `/open-data`: the human page, with the licence, its scope, how to cite, and every dataset with
+  its row count, its fields and its download links.
+- `/api/open-data`: the same as a JSON index for machines.
+- `/api/open-data/<key>.csv`, `.json`, and `.geojson` where the rows carry coordinates.
+  Downloads are named, carry `Cache-Control` for ten minutes and an `X-Licence` header.
+
+**Datasets (21).** waterways (192; GeoJSON with the drawn geometry of 180 of them), waterway
+connections (165), fur trade on the waters (80), locations (199; GeoJSON), explorers (186),
+explorers on the waters (645), expeditions (18) and their legs (85), notable figures (65),
+timeline events (244), what happened here (132; GeoJSON), primary source documents (204; GeoJSON
+for the 58 with a spot), citations (826), reading guides (2,000), pronunciations (172), knowledge
+given (28), archaeological discoveries (32; GeoJSON), historic maps (16, with overlay corners and
+projection), then and now (15; GeoJSON), Indigenous nations (7), checking the record (44). Every
+row carries the stable record id, and foreign ids are joined to names so a CSV reads on its own.
+
+**One source of truth.** The dataset list, the fields with their descriptions, the licence text
+and its scope live in `backend/src/lib/open-data.ts`; the page, the index and the files are all
+generated from it, so they cannot drift. `backend/OPEN_DATA.md` points at the endpoints.
+
+**Geometry.** The full KML is 116 MB across 180 waters (Lake Huron alone is 12.7 MB), far denser
+than any map needs. The GeoJSON keeps at most 4,000 points per water, which makes the whole file
+14.8 MB with 606,000 points; the app's own waterway API still serves the full KML. Each water's
+geometry is read once per render, not once per row, so the file builds in about nine seconds and
+is then cached.
+
+**Licence: the owner's decision.** The code ships with Creative Commons Attribution 4.0 (CC BY
+4.0), attribution *Canadian Interactive Waterways Initiative, open data, CC BY 4.0*, as one
+constant. The scope statement says what it covers (the text and metadata written for the project
+and the drawn geometry), what is public domain and checked (the transcriptions, with the edition
+in the citations), what is referenced and not relicensed (the Commons images and maps, each with
+its credit), and what is not exported (provincial curriculum outcomes, the teaching material, and
+everything about users, classes, teachers, journals and progress). If a different licence is
+wanted, or CC0, or a no-derivatives term, it is one line in the constant, and the page, the index
+and the headers follow.
+
+**Checked.** Backend typecheck clean. On a local backend every dataset loaded; the index (5 s on
+first build, then cached), the CSV (192 rows, 13 columns, no ragged rows), the JSON, the GeoJSON
+for waterways (180 features), locations, documents, events, discoveries and then-and-now, the
+404 and 400 responses and the human page were all read back. Not exported on purpose: the earlier
+text of the Checking the Record pairs, which is not the author's words.
+
 ### 10.6 Order of work
 10.5's three features first (citations, then expedition routes, then the cartography gallery, because routes and maps both cite); then 1, 3, 5, 16, 18, 6, 7, 9, 10, 11, 13, 12, 17, 4; item 8 when recordings exist.
 

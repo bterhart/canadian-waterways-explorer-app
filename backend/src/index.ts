@@ -47,6 +47,7 @@ import { thenAndNowRouter } from "./routes/then-and-now";
 import { curriculumRouter } from "./routes/curriculum";
 import { sourcePairsRouter } from "./routes/source-pairs";
 import { generatedPrintablesRouter } from "./routes/generated-printables";
+import { openDataRouter, openDataPageRouter } from "./routes/open-data";
 import { scheduleImageHealthCheck } from "./jobs/image-health-check";
 import { logger } from "hono/logger";
 import { readFileSync } from "fs";
@@ -141,6 +142,9 @@ app.route("/api/then-and-now", thenAndNowRouter);
 app.route("/api/curriculum", curriculumRouter);
 app.route("/api/source-pairs", sourcePairsRouter);
 app.route("/api/generated-printables", generatedPrintablesRouter);
+// Open data (roadmap item 17): the records as CSV, JSON and GeoJSON under one licence, plus a human page
+app.route("/api/open-data", openDataRouter);
+app.route("/open-data", openDataPageRouter);
 
 // Schedule daily image URL health check (runs at 02:00 server time)
 scheduleImageHealthCheck();
