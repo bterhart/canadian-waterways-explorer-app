@@ -2660,6 +2660,14 @@ the map dock, the journey nodes) use it; the document page keeps the compact out
 header. The two text links under it (the entire passage, the document) lost their underline and sit
 on one row, so the hierarchy is button first, links second.
 
+**Two Discover callouts (owner, 2026-10-21).** The Near You card showed slightly narrower than the
+other full-width cards. Every large card shares one style (width 100%), so the width itself was not
+different; the pressed state scaled a card to 98%, and the Near You card is the one whose screen
+opens a system dialog (location permission) in the middle of the press, which can leave the pressed
+state applied when the user returns. The pressed state is now opacity only, so no card can be left
+narrower. The Then and Now card carried the same words as its section title; its subtitle is now
+"Yesterday Meets Today" ("Hier rencontre aujourd'hui" in French).
+
 ### 10.6 Order of work
 10.5's three features first (citations, then expedition routes, then the cartography gallery, because routes and maps both cite); then 1, 3, 5, 16, 18, 6, 7, 9, 10, 11, 13, 12, 17, 4; item 8 when recordings exist.
 

@@ -58,7 +58,7 @@ export const en = {
   knowledgeGiven: 'Knowledge Given',
   journeys: 'Journeys',
   thenAndNow: 'Then and Now',
-  thenAndNowDesc: 'Travel back in time: slide between a period view and a photograph of the same spot today',
+  thenAndNowDesc: 'Yesterday Meets Today',
   checkingTheRecordTitle: 'Checking the Record',
   checkingTheRecordDesc: 'Passages as this app first carried them beside the sentences as published, and what changed',
   inTheirOwnWordsTitle: 'In Their Own Words',
