@@ -2429,6 +2429,38 @@ the four endpoints and the two lesson-plan filters exercised on a local backend 
 (summary counts per province and grade, code search 7.1.4, lessons for A3.4, the Quebec filter
 narrowing to The Fall of New France, a lesson detail carrying its ten outcomes with the one note).
 
+### 10.26 Saskatchewan added as the fifth province (owner, 2026-10-21; data live, no build required)
+
+**381 rows** from the Saskatchewan Curriculum's Social Studies 4, 5, 6, 7 and 8 documents
+(2009–2010; `curriculum.gov.sk.ca/CurriculumHome?id=167`–`171`, PDFs read by column): every outcome
+with its code (IN5.1, DR4.3, PA7.1, RW8.3) and every indicator under its outcome's code, the strand
+being the K-12 goal the code's letters stand for. Grade 9 (The Roots of Society, world history) and
+Social Studies 10, 20 and 30 are not included: the first is off the app's subject; the senior
+guides on the Ministry's site are scanned images of the 1990s documents without machine-readable
+text (Social Studies 10 is OCR'd but carries no outcome codes). **120 mappings** added to the 33
+lessons (2 to 8 each), most to Grade 5's "European influence on pre-Confederation Canadian society"
+indicators (the explorers' voyages, New France, the transition to British rule, the Acadian
+deportation, trade and the first communities, the fur trade inquiry) and "Aboriginal heritage of
+Canada" indicators (habitation areas, ways of life before contact, the coming together with the
+French and British, the Métis); Grade 4's First Nations and Métis relationship with the land and
+the Treaty relationship; Grade 7's maps, Pacific and northern geography and traditional economies;
+Grade 8's treaty relationship, the Indian Act and the Royal Proclamation. Totals after this:
+1,573 outcomes across five provinces, 396 mappings. Applied and verified in Turso; the teacher
+screens need no change (Saskatchewan was already in the province list).
+
+**The other jurisdictions (assessed 2026-10-21, nothing done).** Manitoba (K–8 framework PDFs with
+coded outcomes such as 5-KH-024; Grade 5 is People and Stories of Canada to 1867, Grade 6 Canada
+1867 to the present, Grade 4 Manitoba, Canada and the North) and Nova Scotia (Social Studies P–6
+"at a glance" outcomes PDF of 2019 and the grade guides; Grades 5 and 6 cover Canada's peoples and
+history) are reachable and structured like the five provinces already in. Newfoundland and
+Labrador publishes its guides as PDFs (reachable; the Grade 5 and 6 and the Newfoundland and
+Labrador Studies 2205 documents are the relevant ones). New Brunswick's curriculum pages returned
+404 at every address tried; another address is needed. Prince Edward Island, Yukon and Nunavut sit
+behind a browser-check page that refuses non-browser requests. Yukon teaches the British Columbia
+curriculum, and the Northwest Territories is adopting it; Nunavut's secondary programs draw on
+Alberta's. For those three the BC and Alberta rows already serve, and a note in the province chips
+can say so.
+
 ### 10.6 Order of work
 10.5's three features first (citations, then expedition routes, then the cartography gallery, because routes and maps both cite); then 1, 3, 5, 16, 18, 6, 7, 9, 10, 11, 13, 12, 17, 4; item 8 when recordings exist.
 
