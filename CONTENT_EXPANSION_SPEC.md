@@ -2649,6 +2649,17 @@ sentence break (a period where the sentence has none), and the 26 narrations tha
 were re-synthesised in both voices, 52 copies made, none failed, same URLs. The warming script gained
 `--refresh` and `--omissions` for the purpose.
 
+### 10.31 Read aloud as a button (owner, 2026-10-21; build required)
+
+On the voice cards the Read aloud control was a small outlined pill above two text links, and on
+the owner's phone the speaker icon and the words read as two separate links. `ReadAloudButton` now
+has a `filled` look: one solid button in the card's colour, the width of the card, icon and label
+centred on a single line that cannot wrap, the label with no font padding so icon and text sit on
+the same baseline, Stop as the same button with the square icon. The voice cards (In Their Own Words,
+the map dock, the journey nodes) use it; the document page keeps the compact outline pill in its
+header. The two text links under it (the entire passage, the document) lost their underline and sit
+on one row, so the hierarchy is button first, links second.
+
 ### 10.6 Order of work
 10.5's three features first (citations, then expedition routes, then the cartography gallery, because routes and maps both cite); then 1, 3, 5, 16, 18, 6, 7, 9, 10, 11, 13, 12, 17, 4; item 8 when recordings exist.
 
